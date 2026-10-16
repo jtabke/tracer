@@ -1,7 +1,7 @@
 <h1 align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="ui/public/tracer-wordmark-light.svg" />
-    <img src="ui/public/tracer-wordmark.svg" alt="Tracer" width="224" height="72" />
+    <img src="ui/public/tracer-wordmark.svg" alt="Tracer" width="264" height="72" />
   </picture>
 </h1>
 
