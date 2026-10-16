@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "erasableSyntaxOnly": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "examples/**/*.ts",
+    "ui/**/*.ts",
+    "ui/**/*.tsx",
+    "playwright.config.ts",
+    "vite.config.ts",
+    "test/**/*.tsx"
+  ]
+}

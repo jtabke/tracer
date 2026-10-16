@@ -1,0 +1,57 @@
+.saved-view-panel {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+.saved-view-panel .toolbar {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+.saved-view-panel label {
+  min-width: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.saved-view-panel select,
+.saved-view-panel input {
+  max-width: 100%;
+  width: 160px;
+}
+.saved-view-panel pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 720px) {
+  .saved-view-panel > .toolbar:first-of-type {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .saved-view-panel > .toolbar:first-of-type label {
+    flex: 0 0 auto;
+  }
+  .saved-view-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .saved-view-panel > .toolbar:first-of-type select {
+    width: 130px;
+  }
+  .saved-view-panel > .toolbar:first-of-type button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .saved-view-panel .toolbar label {
+    flex: 1 0 100%;
+  }
+  .saved-view-panel input,
+  .saved-view-panel select {
+    width: 100%;
+  }
+}

@@ -1,0 +1,125 @@
+.application > .main {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.application .global-header {
+  flex-wrap: nowrap;
+}
+.project-opening {
+  padding: 32px;
+}
+.project-notice {
+  padding: 6px 20px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.project-notice > button {
+  margin-right: 12px;
+}
+.project-notice p {
+  margin: 4px 0;
+}
+.project-notice:has([role="alert"]) {
+  background: #382b22;
+}
+.project-actions {
+  display: grid;
+  gap: 5px;
+  margin-top: 12px;
+}
+.project-actions button {
+  text-align: left;
+  border-color: transparent;
+  background: transparent;
+}
+.project-actions button:hover {
+  background: #273b3c;
+}
+.native-task {
+  color: #eaece8;
+  background: #151c20;
+  border: 1px solid #52636d;
+  border-radius: 10px;
+  width: min(1180px, 96vw);
+  height: min(900px, 92dvh);
+  max-width: 96vw;
+  max-height: 92dvh;
+  padding: 20px;
+  overflow: auto;
+}
+.native-task::backdrop {
+  background: rgb(0 0 0 / 65%);
+}
+.native-task-header {
+  position: sticky;
+  top: -20px;
+  z-index: 5;
+  background: #151c20;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #354047;
+}
+.task-draft-note {
+  color: #a7b3b9;
+  font-size: 12px;
+}
+.native-task label {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0;
+}
+.native-task textarea {
+  width: 100%;
+  min-height: 90px;
+}
+.native-task > [hidden] {
+  display: none !important;
+}
+.application .rail {
+  z-index: 3;
+}
+@media (max-width: 760px) {
+  .native-task {
+    padding: 12px;
+    width: 96vw;
+  }
+  .native-task-header {
+    top: -12px;
+  }
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.mobile-project-tools {
+  display: none;
+}
+@media (max-width: 760px) {
+  .application .global-header {
+    flex-wrap: wrap;
+  }
+  .project-notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .mobile-project-tools {
+    display: block;
+    position: relative;
+  }
+  .mobile-project-tools .project-actions {
+    display: grid;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    z-index: 50;
+    width: 220px;
+    background: #182329;
+    border: 1px solid #52636d;
+    padding: 8px;
+  }
+}

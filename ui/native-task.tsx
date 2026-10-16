@@ -1,0 +1,286 @@
+import { useEffect, useEffectEvent, useRef, useState } from "react";
+import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
+import { ConfigurationWorkspace } from "./configuration-workspace.tsx";
+import { DocumentationView } from "./documentation.tsx";
+import type { Editing } from "./editing.ts";
+import { EvidenceView } from "./evidence.tsx";
+import { FieldControl, fieldsFrom } from "./fields.tsx";
+import { SchemaEditor } from "./schema-editor.tsx";
+import "./style.css";
+import { NativeTypeOptions } from "./type-options.tsx";
+import { WorkItem } from "./work-item.tsx";
+
+export type NativeTask = "item" | "create" | "schema" | "evaluations" | "configurations" | "docs";
+export function NativeTasks({
+  task,
+  entity,
+  schema,
+  editing,
+  onClose,
+  changed,
+  onSchema,
+}: {
+  task: NativeTask | null;
+  entity?: Entity;
+  schema: SchemaObject | null;
+  editing: Editing;
+  onClose(): void;
+  changed(): void;
+  onSchema(draft: Schema, version: number): Promise<boolean>;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [visited, setVisited] = useState<NativeTask[]>([]);
+  const [focused, setFocused] = useState(entity);
+  const [dirty, setDirty] = useState(false);
+  useEffect(() => {
+    if (task) setVisited((current) => (current.includes(task) ? current : [...current, task]));
+    syncTaskDialog(dialog.current, task);
+  }, [task]);
+  const adoptEntity = useEffectEvent(() => {
+    const next = chooseFocusedEntity(entity, focused?.id, dirty);
+    if (next) {
+      setFocused(next);
+      setDirty(false);
+    }
+  });
+  useEffect(() => {
+    adoptEntity();
+  }, [entity?.id]);
+  const panels = {
+    item: () =>
+      schema && focused ? (
+        <WorkItem
+          key={focused.id}
+          entity={focused}
+          schema={schema}
+          editing={editing}
+          onDirty={setDirty}
+          onChoose={setFocused}
+          onTable={onClose}
+          returnLabel="Return to development map"
+        />
+      ) : null,
+    create: () => (schema ? <CreateItem schema={schema} editing={editing} /> : null),
+    schema: () => (
+      <SchemaEditor schema={schema} busy={editing.busy} onSave={onSchema} onCancel={onClose} />
+    ),
+    evaluations: () => (
+      <EvidenceView
+        epoch={editing.epoch}
+        changed={changed}
+        report={editing.report}
+        mutate={editing.mutate}
+      />
+    ),
+    configurations: () => (
+      <ConfigurationWorkspace
+        epoch={editing.epoch}
+        busy={editing.busy}
+        changed={changed}
+        report={editing.report}
+      />
+    ),
+    docs: () => <DocumentationView active={task === "docs"} />,
+  };
+  return (
+    <dialog
+      ref={dialog}
+      className="native-task"
+      aria-label="Project task"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") event.stopPropagation();
+      }}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+    >
+      <header className="native-task-header">
+        <strong>{task ? taskTitles[task] : "Project task"}</strong>
+        <button onClick={onClose}>Return to map</button>
+      </header>
+      {editing.error && <p role="alert">{editing.error}</p>}
+      <p className="task-draft-note">
+        Returning to the map retains this task and its in-session drafts.
+      </p>
+      {visited.map((name) => (
+        <div key={name} hidden={task !== name}>
+          {panels[name]()}
+        </div>
+      ))}
+    </dialog>
+  );
+}
+function syncTaskDialog(dialog: HTMLDialogElement | null, task: NativeTask | null) {
+  if (!dialog) return;
+  if (!task) {
+    dialog.close();
+    return;
+  }
+  if (!dialog.open) dialog.showModal();
+}
+function chooseFocusedEntity(
+  entity: Entity | undefined,
+  focusedId: string | undefined,
+  dirty: boolean,
+) {
+  if (!entity) return;
+  if (entity.id === focusedId) return;
+  if (discardAllowed(dirty)) return entity;
+}
+function discardAllowed(dirty: boolean) {
+  return (
+    !dirty || window.confirm("Discard the focused item's unsaved draft to inspect another item?")
+  );
+}
+const taskTitles = {
+  item: "Item details and editing",
+  create: "New item",
+  schema: "Project model",
+  evaluations: "Evaluations",
+  configurations: "Configurations",
+  docs: "Documentation",
+};
+
+function CreateItem({ schema, editing }: { schema: SchemaObject; editing: Editing }) {
+  const [captured, setCaptured] = useState(schema);
+  const [type, setType] = useState(Object.keys(schema.entityTypes)[0] ?? "");
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [key, setKey] = useState("");
+  const [id, setId] = useState(() => crypto.randomUUID());
+  const [notice, setNotice] = useState("");
+  const stale = captured.version !== schema.version;
+  const definitions = creationFields(captured, type);
+  return (
+    <form
+      aria-label="Create project item"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void save();
+      }}
+    >
+      <h2>New item</h2>
+      <label>
+        Item type
+        <select
+          aria-label="New item type"
+          value={type}
+          disabled={editing.busy || Object.keys(values).length > 0}
+          onChange={(event) => setType(event.target.value)}
+        >
+          <NativeTypeOptions names={Object.keys(captured.entityTypes)} />
+        </select>
+      </label>
+      <label>
+        Key (optional)
+        <input
+          aria-label="New item key"
+          disabled={editing.busy}
+          value={key}
+          onChange={(event) => setKey(event.target.value)}
+        />
+      </label>
+      <NewItemFields
+        definitions={definitions}
+        values={values}
+        editing={editing}
+        setValues={setValues}
+      />
+      <NewItemModelNotice
+        stale={stale}
+        adopt={() => {
+          setCaptured(schema);
+          setType((current) => currentType(schema, current));
+        }}
+      />
+      <button type="submit" disabled={!canCreate(editing.busy, stale, type)}>
+        Create item
+      </button>
+      <button
+        type="button"
+        disabled={editing.busy}
+        onClick={() => {
+          if (!window.confirm("Discard this unsaved creation draft and start a new item?")) return;
+          setValues({});
+          setKey("");
+          setId(crypto.randomUUID());
+          setCaptured(schema);
+          setType(currentType(schema, type));
+          setNotice("Creation draft discarded.");
+        }}
+      >
+        Discard creation draft
+      </button>
+      <p role="status">{notice}</p>
+    </form>
+  );
+  async function save() {
+    try {
+      const fields = fieldsFrom(values, definitions, { keepEmptyRequiredStrings: true });
+      if (
+        await editing.commit(
+          [{ op: "entity.create", id, input: { type, ...(key ? { key } : {}), fields } }],
+          captured.version,
+        )
+      ) {
+        setNotice("Item saved. Return to the map to inspect it.");
+        setValues({});
+        setKey("");
+        setId(crypto.randomUUID());
+      }
+    } catch (error) {
+      editing.report(error);
+    }
+  }
+}
+
+function creationFields(schema: SchemaObject, type: string) {
+  return schema.entityTypes[type]?.fields ?? {};
+}
+function canCreate(busy: boolean, stale: boolean, type: string) {
+  return [!busy, !stale, !!type].every(Boolean);
+}
+function currentType(schema: SchemaObject, type: string) {
+  return schema.entityTypes[type] ? type : (Object.keys(schema.entityTypes)[0] ?? "");
+}
+function NewItemModelNotice({ stale, adopt }: { stale: boolean; adopt(): void }) {
+  if (!stale) return null;
+  return (
+    <p role="alert">
+      The model changed. Your proposal is retained.{" "}
+      <button type="button" onClick={adopt}>
+        Use current model
+      </button>
+    </p>
+  );
+}
+function NewItemFields({
+  definitions,
+  values,
+  editing,
+  setValues,
+}: {
+  definitions: SchemaObject["entityTypes"][string]["fields"];
+  values: Record<string, string>;
+  editing: Editing;
+  setValues: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+}) {
+  return (
+    <>
+      {Object.entries(definitions).map(([name, field]) => (
+        <label key={name}>
+          {name.replaceAll("_", " ")}
+          {field.required ? " *" : ""}
+          <FieldControl
+            field={field}
+            value={values[name] ?? ""}
+            name={`New item ${name}`}
+            multiline={name === "statement" || field.type === "json"}
+            disabled={editing.busy}
+            onChange={(value) => setValues((current) => ({ ...current, [name]: value }))}
+          />
+        </label>
+      ))}
+    </>
+  );
+}

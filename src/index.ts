@@ -1,0 +1,43 @@
+/** Portable public application API. Platform adapters are separate package entry points. */
+export { Tracer } from "./application/service.ts";
+export type { Runtime } from "./application/service.ts";
+export { TracerError } from "./core/model.ts";
+export type {
+  Json,
+  Fields,
+  Field,
+  TypeDefinition,
+  RelationshipDefinition,
+  Schema,
+  SchemaObject,
+  Entity,
+  Relationship,
+  Kind,
+  Stored,
+  Provenance,
+  Changeset,
+  Revision,
+  ErrorCode,
+  ErrorDetails,
+  Page,
+  PageQuery,
+  EntityQuery,
+  RelationshipQuery,
+  WorkingSetQuery,
+  HistoryQuery,
+} from "./core/model.ts";
+export type * from "./application/commands.ts";
+export type * from "./application/views.ts";
+export type * from "./core/schema-preview.ts";
+export type * from "./core/project-snapshot.ts";
+export type * from "./core/configuration.ts";
+export type * from "./core/baseline.ts";
+export type { Repository, Transaction } from "./persistence/contracts.ts";
+export type { Observer } from "./application/evidence.ts";
+export type * from "./core/evidence.ts";
+export type * from "./core/coverage.ts";
+export type * from "./core/impact.ts";
+export type * from "./core/working-context.ts";
+export type * from "./core/presentation.ts";
+export type * from "./core/schema-workflow.ts";
+export type { ViewSave } from "./application/saved-views.ts";

@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracer · Orbit connected requirements study</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="rail">
+        <a class="brand" href="#requirements"><span>↗</span> Tracer</a>
+        <div class="project-switcher">
+          <span class="project-mark">O</span>
+          <div><strong>Orbit R1</strong><small>Integrated product</small></div>
+        </div>
+        <nav aria-label="Project navigation">
+          <a class="active" href="#requirements">Connections</a>
+          <a href="#requirements">Records</a>
+          <a href="#requirements">Project model</a>
+        </nav>
+        <small class="study-note">Standalone study · no project writes</small>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div class="breadcrumbs">
+            <span>Orbit R1</span><b>/</b><span>Design</span><b>/</b
+            ><strong data-breadcrumb-record>DES-01</strong>
+          </div>
+          <button class="icon-button" aria-label="More options">•••</button>
+        </header>
+
+        <section class="page requirements-page" data-page="requirements">
+          <header class="page-heading">
+            <h1>Connected requirements</h1>
+            <span class="read-count">5 requirements · complete read</span>
+          </header>
+
+          <section class="change-context" aria-label="Selected design change">
+            <div class="record-identity">
+              <a href="#requirements">DES-01</a><span>current v2</span>
+            </div>
+            <div>
+              <strong>Blower-control firmware design</strong>
+              <p>
+                Example blower-control design increases the proposed maximum duty from its baseline
+                profile to improve pickup. Review energy, thermal, acoustic and command-timing
+                effects before adoption; earlier baseline results remain captured against v1.
+              </p>
+            </div>
+          </section>
+
+          <div class="records-table" role="table" aria-label="Requirements connected to DES-01">
+            <div class="table-head" role="row">
+              <span role="columnheader">Requirement</span>
+              <span role="columnheader">Statement</span>
+              <span role="columnheader">Recorded evaluation</span>
+              <span role="columnheader">Design input</span>
+              <span role="columnheader">Review</span>
+            </div>
+
+            <article class="record-row" role="row">
+              <div class="record-name" role="cell">
+                <a>REQ-R01</a><strong>Blower operating envelope</strong>
+              </div>
+              <p role="cell">
+                Operate the selected blower within the recorded duty envelope while providing the
+                flow used by the example pickup profile.
+              </p>
+              <div class="result-cell" role="cell">
+                <a>EVAL-R01</a><span>SIMULATED target not met</span>
+              </div>
+              <span class="drift changed" role="cell">v1 → v2</span>
+              <span class="review-state" role="cell">Unreviewed</span>
+            </article>
+
+            <article class="record-row selected" role="row" aria-selected="true">
+              <div class="record-name" role="cell">
+                <small>Selected</small><a>REQ-R03</a
+                ><strong>Whole-product energy allocation</strong>
+              </div>
+              <p role="cell">
+                Allocate a draft average 60 W across the defined cleaning profile using the
+                fictional 60 Wh usable-energy assumption; preserve reserve and profile assumptions.
+              </p>
+              <div class="result-cell" role="cell">
+                <a>EVAL-R02</a><span>SIMULATED within old allocation</span>
+              </div>
+              <span class="drift changed" role="cell">v1 → v2</span>
+              <div class="row-review" role="cell">
+                <span class="review-state" data-review-state>Unreviewed</span
+                ><button class="row-action" data-open-receipt>Review receipt</button>
+              </div>
+            </article>
+
+            <article class="record-row" role="row">
+              <div class="record-name" role="cell">
+                <a>REQ-R04</a><strong>Driver thermal monitoring</strong>
+              </div>
+              <p role="cell">
+                Monitor the selected driver temperature indication and use an explicit derating
+                behavior before the recorded component limit is reached.
+              </p>
+              <div class="result-cell" role="cell">
+                <a>EVAL-R03</a><span>SIMULATED partial coverage</span>
+              </div>
+              <span class="drift changed" role="cell">v1 → v2</span>
+              <span class="review-state" role="cell">Unreviewed</span>
+            </article>
+
+            <article class="record-row" role="row">
+              <div class="record-name" role="cell">
+                <a>REQ-R05</a><strong>Actuator command timing</strong>
+              </div>
+              <p role="cell">
+                Deliver the recorded blower and traction commands without violating the navigation
+                controller's allocated timing budget.
+              </p>
+              <div class="result-cell empty" role="cell"><span>No evaluation connected</span></div>
+              <span class="drift empty" role="cell">—</span>
+              <span class="review-state empty" role="cell">—</span>
+            </article>
+
+            <article class="record-row" role="row">
+              <div class="record-name" role="cell">
+                <a>REQ-R10</a><strong>Acoustic operating profile</strong>
+              </div>
+              <p role="cell">
+                Evaluate the selected blower, mounting and speed profile together against the
+                acoustic target; no motor-only result represents the whole robot.
+              </p>
+              <div class="result-cell" role="cell">
+                <a>EVAL-R05</a><span>No result · definition only</span>
+              </div>
+              <span class="drift empty" role="cell">—</span>
+              <span class="review-state empty" role="cell">—</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="page receipt-page" data-page="receipt" hidden>
+          <button class="back-link" data-return>← Connected requirements</button>
+          <header class="receipt-heading">
+            <div>
+              <h1 tabindex="-1" data-receipt-heading>Simulated baseline energy evaluation</h1>
+              <p class="receipt-meta">
+                Output v1 · recorded
+                <time datetime="2026-10-14T06:48:50.568Z">2026-10-14 06:48:50 UTC</time>
+              </p>
+            </div>
+            <span class="review-state" data-review-state>Unreviewed</span>
+          </header>
+
+          <div class="receipt-layout">
+            <div class="receipt-content">
+              <dl class="evaluation-fields">
+                <div>
+                  <dt>Recorded outcome</dt>
+                  <dd>SIMULATED within old allocation; predates firmware edit</dd>
+                </div>
+                <div>
+                  <dt>Method</dt>
+                  <dd>Invented whole-product power trace</dd>
+                </div>
+              </dl>
+
+              <details class="captured-output">
+                <summary>Captured output details</summary>
+                <dl>
+                  <div>
+                    <dt>Output record</dt>
+                    <dd>EVAL-R02 · v1</dd>
+                  </div>
+                  <div>
+                    <dt>Receipt ID</dt>
+                    <dd class="long-id">35f4fd6a-2f35-490d-aa6c-aa789fad8d86</dd>
+                  </div>
+                  <div>
+                    <dt>Configuration</dt>
+                    <dd>BUILD-R01 · v2</dd>
+                  </div>
+                  <div>
+                    <dt>Purpose</dt>
+                    <dd>Evaluate energy allocation.</dd>
+                  </div>
+                  <div class="wide-field">
+                    <dt>Recorded statement</dt>
+                    <dd>
+                      SIMULATED: the invented duty-profile observation supports the old baseline
+                      allocation only. The later blower-control change has not been evaluated.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd>illustrative draft</dd>
+                  </div>
+                  <div>
+                    <dt>Owner</dt>
+                    <dd>fictional example team</dd>
+                  </div>
+                  <div class="wide-field">
+                    <dt>Notes</dt>
+                    <dd>
+                      Fictional native record for exploration. No actual device, source code, test
+                      execution, approval or release is represented.
+                    </dd>
+                  </div>
+                </dl>
+              </details>
+
+              <section class="inputs-section">
+                <header>
+                  <div>
+                    <h2>Inputs used by this result</h2>
+                    <p>Five captured records · one changed · none unknown</p>
+                  </div>
+                </header>
+                <div class="input-list">
+                  <details>
+                    <summary>
+                      <span class="input-identity"
+                        ><a>TGT-02</a><strong>Draft cleaning runtime target</strong></span
+                      ><span class="input-summary-meta"
+                        ><span>v1 · unchanged</span><span class="inspect-label">Inspect</span></span
+                      >
+                    </summary>
+                    <div class="input-detail">
+                      <dl class="recorded-fields">
+                        <div class="wide-field">
+                          <dt>Recorded statement</dt>
+                          <dd>
+                            Complete 60 minutes of the defined mixed navigation and cleaning profile
+                            on the selected battery configuration.
+                          </dd>
+                        </div>
+                        <div class="wide-field">
+                          <dt>Acceptance</dt>
+                          <dd>
+                            Invented duty profile; compare whole-product consumption and usable
+                            battery energy.
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Status</dt>
+                          <dd>illustrative draft</dd>
+                        </div>
+                        <div>
+                          <dt>Owner</dt>
+                          <dd>fictional example team</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </details>
+                  <details>
+                    <summary>
+                      <span class="input-identity"
+                        ><a>REQ-R03</a><strong>Whole-product energy allocation</strong></span
+                      ><span class="input-summary-meta"
+                        ><span>v1 · unchanged</span><span class="inspect-label">Inspect</span></span
+                      >
+                    </summary>
+                    <div class="input-detail">
+                      <dl class="recorded-fields">
+                        <div class="wide-field">
+                          <dt>Recorded statement</dt>
+                          <dd>
+                            Allocate a draft average 60 W across the defined cleaning profile using
+                            the fictional 60 Wh usable-energy assumption; preserve reserve and
+                            profile assumptions.
+                          </dd>
+                        </div>
+                        <div class="wide-field">
+                          <dt>Acceptance</dt>
+                          <dd>
+                            Engineering allocation to investigate, not an engine-computed runtime
+                            guarantee.
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Status</dt>
+                          <dd>illustrative draft</dd>
+                        </div>
+                        <div>
+                          <dt>Owner</dt>
+                          <dd>fictional example team</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </details>
+                  <details class="changed-input" open>
+                    <summary>
+                      <span class="input-identity"
+                        ><a>DES-01</a><strong>Blower-control firmware design</strong></span
+                      ><span class="input-summary-meta"
+                        ><span>captured v1 · current v2</span
+                        ><span class="inspect-label">Inspect</span></span
+                      >
+                    </summary>
+                    <div class="version-comparison">
+                      <div>
+                        <b>Captured v1</b>
+                        <p>
+                          Example control design uses the baseline duty profile and retains command
+                          timing while monitoring driver temperature.
+                        </p>
+                      </div>
+                      <div>
+                        <b>Current v2</b>
+                        <p>
+                          Example blower-control design increases the proposed maximum duty from its
+                          baseline profile to improve pickup. Review energy, thermal, acoustic and
+                          command-timing effects before adoption; earlier baseline results remain
+                          captured against v1.
+                        </p>
+                      </div>
+                    </div>
+                    <dl class="recorded-fields comparison-fields">
+                      <div class="wide-field">
+                        <dt>Artifact</dt>
+                        <dd>Invented artifact controls/blower-profile.ts</dd>
+                      </div>
+                      <div>
+                        <dt>Status</dt>
+                        <dd>illustrative draft</dd>
+                      </div>
+                      <div>
+                        <dt>Owner</dt>
+                        <dd>fictional example team</dd>
+                      </div>
+                    </dl>
+                  </details>
+                  <details>
+                    <summary>
+                      <span class="input-identity"
+                        ><a>DES-04</a><strong>Battery and power schematic</strong></span
+                      ><span class="input-summary-meta"
+                        ><span>v1 · unchanged</span><span class="inspect-label">Inspect</span></span
+                      >
+                    </summary>
+                    <div class="input-detail">
+                      <dl class="recorded-fields">
+                        <div class="wide-field">
+                          <dt>Recorded statement</dt>
+                          <dd>
+                            Example schematic and energy allocation describe pack use, shared rail
+                            and transient supply needs.
+                          </dd>
+                        </div>
+                        <div class="wide-field">
+                          <dt>Artifact</dt>
+                          <dd>Invented schematic PWR-04</dd>
+                        </div>
+                        <div>
+                          <dt>Status</dt>
+                          <dd>illustrative draft</dd>
+                        </div>
+                        <div>
+                          <dt>Owner</dt>
+                          <dd>fictional example team</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </details>
+                  <details>
+                    <summary>
+                      <span class="input-identity"
+                        ><a>BUILD-R01</a><strong>Prototype A — recorded configuration</strong></span
+                      ><span class="input-summary-meta"
+                        ><span>v2 · unchanged</span><span class="inspect-label">Inspect</span></span
+                      >
+                    </summary>
+                    <div class="input-detail">
+                      <dl class="recorded-fields">
+                        <div class="wide-field">
+                          <dt>Recorded statement</dt>
+                          <dd>
+                            Fictional starting build combines the baseline blower, physical design,
+                            driver and firmware records. Its manifest records selected native
+                            revisions before the blower-profile edit.
+                          </dd>
+                        </div>
+                        <div class="wide-field">
+                          <dt>Scope</dt>
+                          <dd>
+                            Selected native revisions for fictional baseline prototype; an immutable
+                            native input set is captured separately; no physical build exists.
+                          </dd>
+                        </div>
+                        <div class="manifest-field">
+                          <dt>Manifest · 9 pins</dt>
+                          <dd>
+                            <span>DES-01 v1</span><span>DES-02 v1</span><span>DES-03 v1</span
+                            ><span>DES-04 v1</span><span>DES-05 v1</span><span>DES-06 v1</span
+                            ><span>DES-07 v1</span><span>DES-08 v1</span><span>REQ-R03 v1</span>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Status</dt>
+                          <dd>recorded example configuration</dd>
+                        </div>
+                        <div>
+                          <dt>Owner</dt>
+                          <dd>fictional example team</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </details>
+                </div>
+              </section>
+            </div>
+
+            <aside class="review-panel">
+              <h2>Review this receipt</h2>
+              <p>
+                Judge whether the recorded result remains applicable after the disclosed input
+                change.
+              </p>
+              <form data-review-form>
+                <label for="judgment"
+                  >Judgment<select id="judgment" name="judgment" required>
+                    <option value="">Select…</option>
+                    <option value="Evidence still applicable">Evidence still applicable</option>
+                    <option value="Acknowledge change">Acknowledge change</option>
+                    <option value="Needs reevaluation">Needs reevaluation</option>
+                  </select></label
+                >
+                <label for="rationale"
+                  >Rationale<textarea
+                    id="rationale"
+                    name="rationale"
+                    rows="6"
+                    placeholder="Record the reason for this receipt"
+                    required
+                  ></textarea>
+                </label>
+                <p class="form-feedback" role="status" hidden></p>
+                <button type="submit" class="primary">Save judgment</button>
+              </form>
+              <small
+                >Study session only. This form does not write project data; the recorded outcome
+                remains unchanged.</small
+              >
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

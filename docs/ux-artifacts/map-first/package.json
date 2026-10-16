@@ -1,0 +1,10 @@
+{
+  "name": "tracer-map-first-study",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix ../../.. run workspace:medical",
+    "build": "npm --prefix ../../.. run build",
+    "test": "node --test ../../../test/map/*.test.mjs"
+  }
+}

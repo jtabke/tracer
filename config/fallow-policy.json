@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "name": "tracer",
+  "rules": [
+    {
+      "id": "portable-domain",
+      "kind": "banned-import",
+      "files": ["src/core/**", "src/application/**"],
+      "specifiers": ["react", "react-dom"],
+      "severity": "error",
+      "message": "Keep domain/application code portable; inject platform capabilities through contracts."
+    },
+    {
+      "id": "typed-http",
+      "kind": "banned-call",
+      "files": ["ui/**"],
+      "exclude": ["ui/http-transport.ts"],
+      "callees": ["fetch"],
+      "severity": "error",
+      "message": "Use the endpoint-typed read API or the shared mutation executor."
+    },
+    {
+      "id": "shared-editing-owner",
+      "kind": "banned-export",
+      "files": ["test/legacy-ui/components/table.tsx"],
+      "exports": ["Editing", "Focus"],
+      "severity": "error",
+      "message": "Shared UI contracts belong in ui/editing.ts."
+    },
+    {
+      "id": "production-only",
+      "kind": "banned-import",
+      "files": ["ui/**", "src/**"],
+      "specifiers": [
+        "../test/legacy-ui",
+        "../docs/ux-artifacts",
+        "../../test/legacy-ui",
+        "../../docs/ux-artifacts",
+        "../../../test/legacy-ui",
+        "../../../docs/ux-artifacts",
+        "../../../../test/legacy-ui",
+        "../../../../docs/ux-artifacts"
+      ],
+      "severity": "error",
+      "message": "Production code must not import the test-only legacy UI or archived UX studies."
+    }
+  ]
+}

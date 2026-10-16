@@ -1,0 +1,68 @@
+{
+  "name": "@tracer-local/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.15"
+  },
+  "scripts": {
+    "tracer": "node src/interfaces/cli.ts",
+    "seed": "node examples/seed.ts",
+    "demo": "npm run build && node src/interfaces/serve.ts --seed-demo",
+    "demo:large": "npm run demo -- --demo-size large",
+    "demo:working": "npm run demo -- --demo-size working",
+    "demo:small": "npm run demo -- --demo-size small",
+    "workspace": "npm run demo -- --demo-size software",
+    "workspace:engineering": "npm run demo -- --demo-size engineering",
+    "workspace:medical": "npm run demo -- --demo-size medical",
+    "workspace:technology": "npm run demo -- --demo-size technology",
+    "workspace:integrated": "npm run demo -- --demo-size integrated",
+    "workspace:empty": "npm run demo -- --demo-size empty",
+    "workspace:large": "npm run demo -- --demo-size large",
+    "test": "node test/run-unit.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run format:check && npm run typecheck && npm run lint && npm test && npm run test:ui && npm run quality",
+    "benchmark": "node examples/benchmark.ts",
+    "build": "vite build",
+    "start": "npm run build && node src/interfaces/serve.ts",
+    "test:ui": "npm run build && npm run build:test-ui && playwright test",
+    "quality": "node test/merge-coverage.ts && fallow dead-code --format compact --fail-on-issues && fallow dupes --format compact --fail-on-issues && fallow health --format compact --fail-on-issues",
+    "quality:health": "fallow health",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build:test-ui": "vite build --config test/legacy-vite.config.ts",
+    "lint": "eslint ui --max-warnings 0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@typescript-eslint/parser": "^8.71.2",
+    "c8": "12.0.0",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "fallow": "^3.31.0",
+    "istanbul-lib-coverage": "3.2.2",
+    "prettier": "^3.9.9",
+    "type-fest": "4.41.0",
+    "typescript": "^5.9.0",
+    "v8-to-istanbul": "9.3.0",
+    "vite": "^8.3.3"
+  },
+  "dependencies": {
+    "@xyflow/react": "12.12.0",
+    "elkjs": "0.12.0",
+    "mermaid": "12.2.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sqlite": "./src/persistence/sqlite.ts"
+  }
+}

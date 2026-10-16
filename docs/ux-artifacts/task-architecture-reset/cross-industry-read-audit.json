@@ -1,0 +1,361 @@
+{
+  "status": "isolated fictional fixture read audit; not a new consistent projection or usability acceptance",
+  "cases": [
+    {
+      "domain": "integrated",
+      "root": "DES-01",
+      "rootVersion": 2,
+      "familyRelationship": "realized_by",
+      "direction": "incoming",
+      "checkRelationship": "evaluated_by",
+      "resultRelationship": null,
+      "nativeHead": 246,
+      "evidenceRevision": 4,
+      "rows": [
+        {
+          "key": "REQ-R03",
+          "type": "requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "EVAL-R02",
+              "directDefinitionReceiptCount": 1,
+              "resultRoute": "direct output",
+              "runKeys": ["EVAL-R02"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "EVAL-R02",
+                  "declaredDefinition": false,
+                  "declaredMember": true,
+                  "declaredFocus": true,
+                  "focusedState": "changed",
+                  "fullState": "changed",
+                  "hasChanged": true,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED within old allocation; predates firmware edit"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "REQ-R04",
+          "type": "requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "EVAL-R03",
+              "directDefinitionReceiptCount": 1,
+              "resultRoute": "direct output",
+              "runKeys": ["EVAL-R03"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "EVAL-R03",
+                  "declaredDefinition": false,
+                  "declaredMember": true,
+                  "declaredFocus": true,
+                  "focusedState": "changed",
+                  "fullState": "changed",
+                  "hasChanged": true,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED partial thermal coverage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "REQ-R05",
+          "type": "requirement",
+          "checkConnectionCount": 0,
+          "checks": []
+        },
+        {
+          "key": "REQ-R10",
+          "type": "requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "EVAL-R05",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "direct output",
+              "runKeys": ["EVAL-R05"],
+              "resultCount": 0,
+              "receipts": []
+            }
+          ]
+        },
+        {
+          "key": "REQ-R01",
+          "type": "requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "EVAL-R01",
+              "directDefinitionReceiptCount": 1,
+              "resultRoute": "direct output",
+              "runKeys": ["EVAL-R01"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "EVAL-R01",
+                  "declaredDefinition": false,
+                  "declaredMember": false,
+                  "declaredFocus": true,
+                  "focusedState": "changed",
+                  "fullState": "changed",
+                  "hasChanged": true,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED pickup target not met"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "medical",
+      "root": "CMP-05",
+      "rootVersion": 1,
+      "familyRelationship": "decomposes_into",
+      "direction": "incoming",
+      "checkRelationship": "verified_by",
+      "resultRelationship": "executed_as",
+      "nativeHead": 399,
+      "evidenceRevision": 8,
+      "rows": [
+        {
+          "key": "SYS-08",
+          "type": "subsystem_requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "VER-06",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "executed_as",
+              "runKeys": ["RUN-06"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-06",
+                  "declaredDefinition": true,
+                  "declaredMember": false,
+                  "declaredFocus": false,
+                  "focusedState": "not_declared",
+                  "fullState": "current",
+                  "hasChanged": false,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED fail; passive release unresolved"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "SYS-07",
+          "type": "subsystem_requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "VER-06",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "executed_as",
+              "runKeys": ["RUN-06"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-06",
+                  "declaredDefinition": true,
+                  "declaredMember": false,
+                  "declaredFocus": false,
+                  "focusedState": "not_declared",
+                  "fullState": "current",
+                  "hasChanged": false,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED fail; passive release unresolved"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "SYS-06",
+          "type": "subsystem_requirement",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "VER-05",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "executed_as",
+              "runKeys": ["RUN-05"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-05",
+                  "declaredDefinition": true,
+                  "declaredMember": false,
+                  "declaredFocus": false,
+                  "focusedState": "not_declared",
+                  "fullState": "current",
+                  "hasChanged": false,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED pass for listed fault cases"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "technology",
+      "root": "WORK-03",
+      "rootVersion": 1,
+      "familyRelationship": "implemented_by",
+      "direction": "incoming",
+      "checkRelationship": "checked_by",
+      "resultRelationship": "exercised_as",
+      "nativeHead": 309,
+      "evidenceRevision": 6,
+      "rows": [
+        {
+          "key": "STORY-02",
+          "type": "story",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "TEST-01",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "exercised_as",
+              "runKeys": ["RUN-TECH-01"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-TECH-01",
+                  "declaredDefinition": true,
+                  "declaredMember": true,
+                  "declaredFocus": false,
+                  "focusedState": "not_declared",
+                  "fullState": "changed",
+                  "hasChanged": true,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED restart recovery pass"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "STORY-09",
+          "type": "story",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "TEST-07",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "exercised_as",
+              "runKeys": [],
+              "resultCount": 0,
+              "receipts": []
+            }
+          ]
+        },
+        {
+          "key": "STORY-03",
+          "type": "story",
+          "checkConnectionCount": 3,
+          "checks": [
+            {
+              "key": "TEST-01",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "exercised_as",
+              "runKeys": ["RUN-TECH-01"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-TECH-01",
+                  "declaredDefinition": true,
+                  "declaredMember": true,
+                  "declaredFocus": false,
+                  "focusedState": "not_declared",
+                  "fullState": "changed",
+                  "hasChanged": true,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED restart recovery pass"
+                }
+              ]
+            },
+            {
+              "key": "TEST-10",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "exercised_as",
+              "runKeys": [],
+              "resultCount": 0,
+              "receipts": []
+            },
+            {
+              "key": "TEST-02",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "exercised_as",
+              "runKeys": ["RUN-TECH-02"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-TECH-02",
+                  "declaredDefinition": true,
+                  "declaredMember": true,
+                  "declaredFocus": true,
+                  "focusedState": "current",
+                  "fullState": "changed",
+                  "hasChanged": true,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED immediate retry pass; predates extended retry horizon"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "STORY-06",
+          "type": "story",
+          "checkConnectionCount": 1,
+          "checks": [
+            {
+              "key": "TEST-05",
+              "directDefinitionReceiptCount": 0,
+              "resultRoute": "exercised_as",
+              "runKeys": ["RUN-TECH-04"],
+              "resultCount": 1,
+              "receipts": [
+                {
+                  "output": "RUN-TECH-04",
+                  "declaredDefinition": true,
+                  "declaredMember": false,
+                  "declaredFocus": false,
+                  "focusedState": "not_declared",
+                  "fullState": "current",
+                  "hasChanged": false,
+                  "hasUnknown": false,
+                  "review": "unreviewed",
+                  "outcome": "SIMULATED cached-agenda pass; refresh coverage partial"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

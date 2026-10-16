@@ -1,0 +1,258 @@
+.studio-app .documentation-workspace {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  gap: 2.5rem;
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 2rem;
+  min-width: 0;
+  align-items: start;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+.studio-app .documentation-topics {
+  display: block;
+  position: sticky;
+  top: 1.5rem;
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+.studio-app .documentation-topics section {
+  margin-bottom: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.studio-app .documentation-topics h2 {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.6rem;
+}
+.documentation-topics button {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  margin: 0.2rem 0;
+  white-space: normal;
+}
+.documentation-topics button[aria-current="page"] {
+  background: var(--color-emphasis);
+  color: var(--color-accent);
+}
+.documentation-topic-select {
+  display: none;
+}
+.documentation-reading {
+  min-width: 0;
+  max-width: 75ch;
+}
+.documentation-reading-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.documentation-article {
+  line-height: 1.7;
+  font-size: 0.95rem;
+  overflow-wrap: break-word;
+}
+.documentation-article h1 {
+  font-size: clamp(1.6rem, 2.3vw, 2.3rem);
+  line-height: 1.2;
+  margin: 0 0 1.5rem;
+  letter-spacing: -0.035em;
+}
+.studio-app .documentation-article h2 {
+  font-size: 1.3rem;
+  line-height: 1.35;
+  margin: 2.5rem 0 1rem;
+  letter-spacing: -0.02em;
+}
+.documentation-article h3 {
+  font-size: 1.05rem;
+  margin: 1.8rem 0 0.75rem;
+}
+.documentation-article h1,
+.documentation-article h2,
+.documentation-article h3,
+.documentation-article h4 {
+  scroll-margin-top: 1.5rem;
+}
+.documentation-article p {
+  margin: 1rem 0;
+}
+.documentation-article ul,
+.documentation-article ol {
+  padding-left: 1.6rem;
+  margin: 1rem 0;
+}
+.documentation-article li {
+  padding-left: 0.25rem;
+  margin: 0.45rem 0;
+}
+.documentation-article a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.documentation-article code {
+  font: 0.85em var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.documentation-article pre {
+  overflow: auto;
+  padding: 1rem;
+  border: 1px solid var(--color-divider);
+  border-radius: 0.4rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.documentation-article pre code {
+  overflow-wrap: normal;
+}
+.documentation-article blockquote {
+  padding: 0.2rem 1rem;
+  border-left: 2px solid var(--color-accent);
+  margin: 1.5rem 0;
+  color: var(--color-muted);
+}
+.documentation-article img {
+  max-width: 100%;
+  height: auto;
+}
+.documentation-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--color-divider);
+  border-radius: 0.4rem;
+}
+.documentation-table-scroll table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 34rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.documentation-table-scroll th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-emphasis);
+}
+.documentation-table-scroll th,
+.documentation-table-scroll td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--color-divider);
+  vertical-align: top;
+}
+.documentation-table-scroll tr:last-child td {
+  border-bottom: 0;
+}
+.documentation-source-reference {
+  color: var(--color-muted);
+}
+.documentation-source-reference small {
+  font-size: 0.75em;
+}
+.documentation-diagram {
+  margin: 1.5rem 0;
+  border-block: 1px solid var(--color-divider);
+  padding: 1rem 0;
+}
+.documentation-diagram-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.documentation-diagram-controls strong {
+  margin-right: auto;
+  font-size: 0.85rem;
+}
+.documentation-diagram-controls span {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.documentation-diagram figcaption {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+.documentation-diagram-viewport {
+  width: 100%;
+  max-height: 35rem;
+  overflow: auto;
+}
+.documentation-diagram-svg > svg {
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+  display: block;
+}
+.documentation-diagram-svg .node rect,
+.documentation-diagram-svg .node circle,
+.documentation-diagram-svg .node polygon,
+.documentation-diagram-svg .node path {
+  fill: var(--color-control);
+  stroke: var(--color-accent);
+  stroke-width: 1px;
+}
+.documentation-diagram-svg .flowchart-link {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.5px;
+}
+.documentation-diagram-svg marker path {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+.documentation-diagram-svg .nodeLabel,
+.documentation-diagram-svg .edgeLabel {
+  color: var(--color-text);
+  fill: var(--color-text);
+  font:
+    14px system-ui,
+    sans-serif;
+}
+.documentation-diagram-svg .nodeLabel p {
+  margin: 0;
+  line-height: 1.4;
+}
+@media (max-width: 1000px) {
+  .studio-app .documentation-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.25rem;
+  }
+  .studio-app .documentation-topics {
+    display: none;
+  }
+  .documentation-topic-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .documentation-topic-select select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .documentation-reading {
+    max-width: 100%;
+  }
+}

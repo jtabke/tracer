@@ -1,0 +1,249 @@
+.trace-walker {
+  position: fixed;
+  z-index: 60;
+  inset: 0 0 0 212px;
+  background: #151b1f;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.trace-walker.walk-full-width {
+  left: 0;
+}
+.walk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.walk-header h1 {
+  font-size: 20px;
+  margin: 0;
+}
+.walk-header p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.walk-header > button {
+  flex-shrink: 0;
+}
+.walk-trail {
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.walk-trail > button {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.walk-trail ol {
+  display: flex;
+  list-style: none;
+  overflow-x: auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 0 5px;
+  margin: 0;
+}
+.walk-trail li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.walk-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  flex: 1;
+  min-height: 0;
+}
+.walk-canvas {
+  position: relative;
+  min-height: 180px;
+  min-width: 0;
+}
+.walk-inspector {
+  padding: 18px;
+  border-left: 1px solid var(--line);
+  overflow-y: auto;
+  background: #1c252a;
+}
+.walk-inspector h2 {
+  font-size: 16px;
+  margin: 6px 0 16px;
+}
+.walk-inspector .statement {
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+.walk-inspector .type-label {
+  font-size: 11px;
+  margin: 0;
+  color: #b0cbd3;
+}
+.walk-choices h3 {
+  font-size: 14px;
+  margin: 16px 0 6px;
+}
+.walk-choices h3 small {
+  color: var(--muted);
+  margin-left: 6px;
+}
+.walk-choices > input,
+.walk-choices select {
+  width: 100%;
+  font-size: 12px;
+}
+.walk-choices label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 8px 0;
+}
+.walk-options {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.walk-options button {
+  display: grid;
+  gap: 5px;
+  text-align: left;
+  padding: 10px;
+}
+.walk-options strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.walk-options span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.walk-options .walk-relation {
+  color: #a1e4db;
+  font-size: 11px;
+}
+.walk-options .walk-target-folder {
+  color: #b0cbd3;
+}
+.walk-pager {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.walk-pager span {
+  margin-right: auto;
+}
+.walk-link-detail {
+  font-size: 12px;
+  color: var(--muted);
+  border-block: 1px solid var(--line);
+  padding: 10px 0;
+}
+.walk-status {
+  padding: 7px 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+}
+.walk-folder {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 10px;
+  color: #a7b3b9;
+  line-height: 1.35;
+  margin-top: 8px;
+}
+@media (max-width: 1000px) {
+  .walk-workspace {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+@media (max-width: 760px) {
+  .trace-walker {
+    left: 0;
+  }
+  .walk-header {
+    padding: 10px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .walk-header h1 {
+    font-size: 17px;
+  }
+  .walk-header p {
+    font-size: 11px;
+  }
+  .walk-header > button {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+  .walk-trail {
+    padding: 8px 12px;
+  }
+  .walk-workspace {
+    display: flex;
+    flex-direction: column;
+  }
+  .walk-canvas {
+    flex: 1;
+    min-height: 180px;
+  }
+  .walk-inspector {
+    flex: 0 0 55%;
+    max-height: 55%;
+    padding: 12px;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .walk-inspector h2 {
+    margin-bottom: 8px;
+  }
+  .walk-inspector .statement {
+    margin-bottom: 8px;
+  }
+  .walk-status {
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+}
+.walk-trail > button + button {
+  margin-left: 8px;
+}
+.walk-outside {
+  font-size: 11px;
+  color: #a1e4db;
+  margin: 6px 0;
+}
+.walk-mobile-details {
+  display: none;
+}
+@media (max-width: 760px) {
+  .walk-inspector > .statement {
+    display: none;
+  }
+  .walk-mobile-details {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .walk-choices > p {
+    font-size: 11px;
+    margin: 4px 0 8px;
+  }
+  .walk-choices h3 {
+    margin: 10px 0 4px;
+  }
+  .walk-choices label {
+    margin: 4px 0;
+  }
+}

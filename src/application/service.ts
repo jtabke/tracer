@@ -1,0 +1,718 @@
+import { validateNativeEntity, validateNativeRelationship } from "./native-validation.ts";
+import { previewSchema } from "./schema-preview.ts";
+import type { SchemaPreviewInput } from "../core/schema-preview.ts";
+import { captureCommand } from "./native-command.ts";
+import { expectVersion } from "./version-guard.ts";
+import { readNative } from "./native-read.ts";
+import type {
+  CreateEntityCommand,
+  UpdateEntityCommand,
+  RemoveEntityCommand,
+  CreateRelationshipCommand,
+  UpdateRelationshipCommand,
+  RemoveRelationshipCommand,
+  SetSchemaCommand,
+  ChangesetCommand,
+  ChangesetResult,
+} from "./commands.ts";
+import type {
+  EntityQuery,
+  RelationshipQuery,
+  WorkingSetQuery,
+  ErrorDetails,
+} from "../core/model.ts";
+import { projectSnapshot } from "./project-snapshot.ts";
+import { snapshotInput } from "../core/input-snapshot.ts";
+import { NativeQueries } from "./native-queries.ts";
+import { WorkingContextService } from "./working-context.ts";
+import type { WorkingContext, WorkingContextQuery } from "../core/working-context.ts";
+import {
+  projectSchema,
+  nativeObjects,
+  validateObjectQuery,
+  validatePageLimit,
+  queryShape,
+} from "./native-query-support.ts";
+import {
+  ensure,
+  record,
+  validateProvenance,
+  validateSchema,
+  type Entity,
+  type HistoryQuery,
+  type Provenance,
+  type Relationship,
+  type Schema,
+  type SchemaObject,
+} from "../core/model.ts";
+import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type {
+  ChangesetInput,
+  Deletion,
+  EntityEdit,
+  EntityInput,
+  Operation,
+  RelationshipInput,
+} from "./commands.ts";
+import { EvidenceService, type Observer } from "./evidence.ts";
+import { pinEntity } from "./native-pins.ts";
+import { nativeTimeline } from "./temporal.ts";
+import type {
+  Connections,
+  ConnectionsQuery,
+  Graph,
+  GraphQuery,
+  Matrix,
+  MatrixQuery,
+  Table,
+  TableQuery,
+  WorkingSet,
+  ChainQuery,
+  ChainTable,
+  FamilyQuery,
+  FamilyWorkspace,
+  RecordedConnections,
+  RecordedConnectionsQuery,
+} from "./views.ts";
+
+import { Configurations } from "./configurations.ts";
+import { SavedViews } from "./saved-views.ts";
+import { Baselines } from "./baselines.ts";
+import { Coverage } from "./coverage.ts";
+import { ChangeImpactService } from "./impact.ts";
+import type { ChangeImpact, ChangeImpactQuery } from "../core/impact.ts";
+
+export type Runtime = { newId(): string };
+export class Tracer {
+  readonly evidence: EvidenceService;
+  readonly savedViews: SavedViews;
+  readonly configurations: Configurations;
+  readonly baselines: Baselines;
+  readonly coverage: Coverage;
+  private queries: NativeQueries;
+  private workingContext: WorkingContextService;
+  private impact: ChangeImpactService;
+  private repository: Repository;
+  private runtime: Runtime;
+  constructor(
+    repository: Repository,
+    runtime: Runtime = { newId: () => globalThis.crypto.randomUUID() },
+    observer?: Observer,
+  ) {
+    this.repository = repository;
+    this.runtime = runtime;
+    this.evidence = new EvidenceService(repository, () => this.runtime.newId(), observer);
+    this.queries = new NativeQueries(repository, this.evidence);
+    this.workingContext = new WorkingContextService(repository);
+    this.savedViews = new SavedViews(repository, () => this.runtime.newId());
+    this.configurations = new Configurations(repository, () => this.runtime.newId());
+    this.baselines = new Baselines(repository, () => this.runtime.newId());
+    this.coverage = new Coverage(repository, () => this.runtime.newId());
+    this.impact = new ChangeImpactService(repository);
+  }
+  /** Read an exact native revision and its historical schema without creating a capture. */
+  getNativePin(id: string, version: number) {
+    return this.repository.transaction((tx) => pinEntity(tx, id, version));
+  }
+  private expected(
+    actual: number,
+    expected: number,
+    schema = false,
+    subject: Pick<ErrorDetails, "kind" | "id"> = {},
+  ) {
+    expectVersion(actual, expected, schema, subject);
+  }
+  private async schema(tx: Transaction, expected?: number): Promise<SchemaObject> {
+    const schema = await projectSchema(tx);
+    if (expected !== undefined)
+      this.expected(schema.version, expected, true, { kind: "schema", id: "project" });
+    return schema;
+  }
+  setSchema(command: SetSchemaCommand): Promise<SchemaObject>;
+  setSchema(schema: Schema, expectedVersion: number, provenance: Provenance): Promise<SchemaObject>;
+  async setSchema(value: Schema | SetSchemaCommand, version?: number, provenance?: Provenance) {
+    const request =
+      version === undefined
+        ? captureCommand(value as SetSchemaCommand)
+        : { schema: value as Schema, expectedVersion: version, provenance: provenance! };
+    const origin = validateProvenance(request.provenance);
+    const schema = snapshotInput(request.schema);
+    const expectedVersion = request.expectedVersion;
+    validateSchema(schema);
+    return this.repository.transaction(async (tx) => {
+      const current = await tx.get("schema", "project");
+      this.expected(current?.version ?? 0, expectedVersion, true, {
+        kind: "schema",
+        id: "project",
+      });
+      for (const entity of await nativeObjects(tx, "entity"))
+        validateNativeEntity(schema, entity as Entity);
+      for (const link of await nativeObjects(tx, "relationship"))
+        await validateNativeRelationship(tx, schema, link as Relationship);
+      const result: SchemaObject = {
+        entityTypes: schema.entityTypes,
+        relationshipTypes: schema.relationshipTypes,
+        ...(schema.coverageExpectations === undefined
+          ? {}
+          : { coverageExpectations: schema.coverageExpectations }),
+        id: "project",
+        version: expectedVersion + 1,
+      };
+      await tx.beginChangeset(this.runtime.newId(), result.version, origin);
+      await tx.save("schema", result, expectedVersion);
+      return result;
+    });
+  }
+  applyChangeset(command: ChangesetCommand): Promise<ChangesetResult>;
+  applyChangeset(input: ChangesetInput, provenance: Provenance): Promise<ChangesetResult>;
+  async applyChangeset(input: ChangesetInput | ChangesetCommand, provenance?: Provenance) {
+    const origin = validateProvenance(
+      provenance === undefined ? captureCommand(input as ChangesetCommand).provenance : provenance,
+    );
+    input = snapshotInput(input);
+    ensure(
+      record(input) &&
+        Number.isSafeInteger(input.expectedSchemaVersion) &&
+        input.expectedSchemaVersion > 0 &&
+        Array.isArray(input.operations) &&
+        input.operations.length > 0 &&
+        input.operations.length <= 1000,
+      "validation",
+      "Changeset needs an expected schema version and 1–1000 operations",
+    );
+    return this.repository.transaction(async (tx) => {
+      const schema = await this.schema(tx, input.expectedSchemaVersion);
+      const changeset = await tx.beginChangeset(this.runtime.newId(), schema.version, origin);
+      const results: (Entity | Relationship | Deletion)[] = [];
+      for (const operation of input.operations)
+        results.push(await this.apply(tx, schema, operation));
+      return { changeset, results };
+    });
+  }
+  private async apply(
+    tx: Transaction,
+    schema: SchemaObject,
+    operation: Operation,
+  ): Promise<Entity | Relationship | Deletion> {
+    ensure(record(operation), "validation", "Invalid operation");
+    if (operation.op === "entity.create" || operation.op === "relationship.create") {
+      return this.createObject(tx, schema, operation);
+    }
+    ensure(
+      ["entity.update", "entity.remove", "relationship.update", "relationship.remove"].includes(
+        operation.op,
+      ),
+      "validation",
+      "Unknown operation",
+    );
+    ensure(typeof operation.id === "string", "validation", "Object ID is required");
+    const kind = operation.op.startsWith("entity.") ? "entity" : "relationship";
+    const current = (await tx.get(kind, operation.id)) as Entity | Relationship | undefined;
+    ensure(current, "not_found", "Object not found", { kind, id: operation.id });
+    this.expected(current.version, operation.expectedVersion, false, { kind, id: current.id });
+    if (operation.op === "entity.update") {
+      ensure(record(operation.input), "validation", "Object input is required");
+      const value: Entity = {
+        ...(current as Entity),
+        fields: operation.input.fields,
+        ...(operation.input.key === undefined ? {} : { key: operation.input.key }),
+        version: current.version + 1,
+      };
+      validateNativeEntity(schema, value);
+      await tx.save("entity", value, current.version);
+      return value;
+    }
+    if (operation.op === "relationship.update") {
+      ensure(record(operation.input), "validation", "Object input is required");
+      const value: Relationship = {
+        id: current.id,
+        type: operation.input.type,
+        source: operation.input.source,
+        target: operation.input.target,
+        fields: operation.input.fields,
+        version: current.version + 1,
+      };
+      await validateNativeRelationship(tx, schema, value);
+      await tx.save("relationship", value, current.version);
+      return value;
+    }
+    if (operation.op === "entity.remove") {
+      await this.removeIncidentConnections(tx, current.id, operation.cascade);
+    }
+    await tx.remove(kind, current.id, current.version);
+    return { id: current.id, version: current.version + 1, deleted: true };
+  }
+  private async createObject(
+    tx: Transaction,
+    schema: SchemaObject,
+    operation: Extract<Operation, { op: "entity.create" | "relationship.create" }>,
+  ): Promise<Entity | Relationship> {
+    ensure(record(operation.input), "validation", "Object input is required");
+    const id = operation.id ?? this.runtime.newId();
+    ensure(
+      typeof id === "string" &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id),
+      "validation",
+      "Identity must be a UUID",
+    );
+    if (operation.op === "entity.create") {
+      const value: Entity = {
+        id,
+        version: 1,
+        type: operation.input.type,
+        fields: operation.input.fields,
+        ...(operation.input.key === undefined ? {} : { key: operation.input.key }),
+      };
+      validateNativeEntity(schema, value);
+      await tx.save("entity", value, 0);
+      return value;
+    }
+    const value: Relationship = {
+      id,
+      version: 1,
+      type: operation.input.type,
+      source: operation.input.source,
+      target: operation.input.target,
+      fields: operation.input.fields,
+    };
+    await validateNativeRelationship(tx, schema, value);
+    await this.checkConnectionCapture(tx, value, operation);
+    await tx.save("relationship", value, 0);
+    return value;
+  }
+  private async checkConnectionCapture(
+    tx: Transaction,
+    value: Relationship,
+    operation: Extract<Operation, { op: "relationship.create" }>,
+  ) {
+    if (operation.expectedEndpoints !== undefined) {
+      ensure(record(operation.expectedEndpoints), "validation", "Endpoint versions are required");
+      const source = (await tx.get("entity", value.source)) as Entity;
+      const target = (await tx.get("entity", value.target)) as Entity;
+      this.expected(source.version, operation.expectedEndpoints.sourceVersion, false, {
+        kind: "entity",
+        id: source.id,
+      });
+      this.expected(target.version, operation.expectedEndpoints.targetVersion, false, {
+        kind: "entity",
+        id: target.id,
+      });
+    }
+    ensure(
+      operation.rejectExisting === undefined || typeof operation.rejectExisting === "boolean",
+      "validation",
+      "rejectExisting must be boolean",
+    );
+    if (operation.rejectExisting) {
+      const existing = await tx.query("relationship", {
+        source: value.source,
+        target: value.target,
+        type: value.type,
+        limit: 1,
+      });
+      ensure(!existing.items.length, "conflict", "This connection already exists");
+    }
+  }
+  private async removeIncidentConnections(
+    tx: Transaction,
+    id: string,
+    cascade: boolean | undefined,
+  ) {
+    ensure(
+      cascade === undefined || typeof cascade === "boolean",
+      "validation",
+      "Cascade must be boolean",
+    );
+    const links = (await nativeObjects(tx, "relationship", {
+      incident: id,
+    })) as Relationship[];
+    ensure(
+      cascade || links.length === 0,
+      "referential_integrity",
+      "Remove connected relationships first or explicitly request cascade",
+    );
+    for (const link of links) await tx.remove("relationship", link.id, link.version);
+  }
+  private async one(operation: Operation, expectedSchemaVersion: number, provenance: Provenance) {
+    return (
+      await this.applyChangeset({ expectedSchemaVersion, operations: [operation] }, provenance)
+    ).results[0];
+  }
+  createEntity(command: CreateEntityCommand): Promise<Entity>;
+  createEntity(
+    input: EntityInput,
+    expectedSchemaVersion: number,
+    provenance: Provenance,
+  ): Promise<Entity>;
+  async createEntity(
+    input: EntityInput | CreateEntityCommand,
+    version?: number,
+    provenance?: Provenance,
+  ): Promise<Entity> {
+    if (version === undefined) {
+      const {
+        expectedSchemaVersion,
+        provenance: origin,
+        id,
+        ...value
+      } = captureCommand(input as CreateEntityCommand);
+      return this.one(
+        { op: "entity.create", id, input: value },
+        expectedSchemaVersion,
+        origin,
+      ) as Promise<Entity>;
+    }
+    return this.one({ op: "entity.create", input }, version, provenance!) as Promise<Entity>;
+  }
+  updateEntity(command: UpdateEntityCommand): Promise<Entity>;
+  updateEntity(
+    id: string,
+    expectedVersion: number,
+    input: EntityEdit,
+    expectedSchemaVersion: number,
+    provenance: Provenance,
+  ): Promise<Entity>;
+  async updateEntity(
+    value: string | UpdateEntityCommand,
+    expectedVersion?: number,
+    input?: EntityEdit,
+    version?: number,
+    provenance?: Provenance,
+  ): Promise<Entity> {
+    if (typeof value !== "string") {
+      const {
+        id,
+        expectedVersion: expected,
+        expectedSchemaVersion,
+        provenance: origin,
+        ...fields
+      } = captureCommand(value);
+      return this.one(
+        { op: "entity.update", id, expectedVersion: expected, input: fields },
+        expectedSchemaVersion,
+        origin,
+      ) as Promise<Entity>;
+    }
+    return this.one(
+      { op: "entity.update", id: value, expectedVersion: expectedVersion!, input: input! },
+      version!,
+      provenance!,
+    ) as Promise<Entity>;
+  }
+  removeEntity(command: RemoveEntityCommand): Promise<Deletion>;
+  removeEntity(
+    id: string,
+    expectedVersion: number,
+    expectedSchemaVersion: number,
+    provenance: Provenance,
+    cascade?: boolean,
+  ): Promise<Deletion>;
+  async removeEntity(
+    value: string | RemoveEntityCommand,
+    expectedVersion?: number,
+    version?: number,
+    provenance?: Provenance,
+    cascade = false,
+  ): Promise<Deletion> {
+    if (typeof value !== "string") {
+      const {
+        id,
+        expectedVersion: expected,
+        expectedSchemaVersion,
+        provenance: origin,
+        cascade,
+      } = captureCommand(value);
+      return this.one(
+        { op: "entity.remove", id, expectedVersion: expected, cascade },
+        expectedSchemaVersion,
+        origin,
+      ) as Promise<Deletion>;
+    }
+    return this.one(
+      { op: "entity.remove", id: value, expectedVersion: expectedVersion!, cascade },
+      version!,
+      provenance!,
+    ) as Promise<Deletion>;
+  }
+  createRelationship(command: CreateRelationshipCommand): Promise<Relationship>;
+  createRelationship(
+    input: RelationshipInput,
+    expectedSchemaVersion: number,
+    provenance: Provenance,
+  ): Promise<Relationship>;
+  async createRelationship(
+    input: RelationshipInput | CreateRelationshipCommand,
+    version?: number,
+    provenance?: Provenance,
+  ): Promise<Relationship> {
+    if (version === undefined) {
+      const {
+        expectedSchemaVersion,
+        provenance: origin,
+        id,
+        expectedEndpoints,
+        rejectExisting,
+        ...value
+      } = captureCommand(input as CreateRelationshipCommand);
+      return this.one(
+        { op: "relationship.create", id, expectedEndpoints, rejectExisting, input: value },
+        expectedSchemaVersion,
+        origin,
+      ) as Promise<Relationship>;
+    }
+    return this.one(
+      { op: "relationship.create", input },
+      version,
+      provenance!,
+    ) as Promise<Relationship>;
+  }
+  updateRelationship(command: UpdateRelationshipCommand): Promise<Relationship>;
+  updateRelationship(
+    id: string,
+    expectedVersion: number,
+    input: RelationshipInput,
+    expectedSchemaVersion: number,
+    provenance: Provenance,
+  ): Promise<Relationship>;
+  async updateRelationship(
+    value: string | UpdateRelationshipCommand,
+    expectedVersion?: number,
+    input?: RelationshipInput,
+    version?: number,
+    provenance?: Provenance,
+  ): Promise<Relationship> {
+    if (typeof value !== "string") {
+      const {
+        id,
+        expectedVersion: expected,
+        expectedSchemaVersion,
+        provenance: origin,
+        ...fields
+      } = captureCommand(value);
+      return this.one(
+        { op: "relationship.update", id, expectedVersion: expected, input: fields },
+        expectedSchemaVersion,
+        origin,
+      ) as Promise<Relationship>;
+    }
+    return this.one(
+      { op: "relationship.update", id: value, expectedVersion: expectedVersion!, input: input! },
+      version!,
+      provenance!,
+    ) as Promise<Relationship>;
+  }
+  removeRelationship(command: RemoveRelationshipCommand): Promise<Deletion>;
+  removeRelationship(
+    id: string,
+    expectedVersion: number,
+    expectedSchemaVersion: number,
+    provenance: Provenance,
+  ): Promise<Deletion>;
+  async removeRelationship(
+    value: string | RemoveRelationshipCommand,
+    expectedVersion?: number,
+    version?: number,
+    provenance?: Provenance,
+  ): Promise<Deletion> {
+    if (typeof value !== "string") {
+      const {
+        id,
+        expectedVersion: expected,
+        expectedSchemaVersion,
+        provenance: origin,
+      } = captureCommand(value);
+      return this.one(
+        { op: "relationship.remove", id, expectedVersion: expected },
+        expectedSchemaVersion,
+        origin,
+      ) as Promise<Deletion>;
+    }
+    return this.one(
+      { op: "relationship.remove", id: value, expectedVersion: expectedVersion! },
+      version!,
+      provenance!,
+    ) as Promise<Deletion>;
+  }
+  /** Explicit whole-field replacement; omitted fields are removed, not merged. */
+  replaceEntityFields(command: UpdateEntityCommand): Promise<Entity> {
+    return this.updateEntity(command);
+  }
+  getEntity(id: string): Promise<Entity> {
+    return readNative(this.repository, "entity", id);
+  }
+  getRelationship(id: string): Promise<Relationship> {
+    return readNative(this.repository, "relationship", id);
+  }
+  previewSchema(input: SchemaPreviewInput) {
+    return previewSchema(this.repository, input);
+  }
+  getSchema() {
+    return this.repository.transaction((tx) => tx.get("schema", "project")) as Promise<
+      SchemaObject | undefined
+    >;
+  }
+  timeline(before?: number) {
+    return this.repository.transaction((tx) => nativeTimeline(tx, before));
+  }
+  getGraph(query: GraphQuery): Promise<Graph> {
+    return this.queries.getGraph(query);
+  }
+  getChangeImpact(query: ChangeImpactQuery): Promise<ChangeImpact> {
+    return this.impact.get(query);
+  }
+  async getTable(query: TableQuery): Promise<Table> {
+    return this.queries.getTable(query);
+  }
+  async getMatrix(query: MatrixQuery): Promise<Matrix> {
+    return this.queries.getMatrix(query);
+  }
+  getChain(query: ChainQuery): Promise<ChainTable> {
+    return this.queries.getChain(query);
+  }
+  getWorkingSet(query: WorkingSetQuery = {}): Promise<WorkingSet> {
+    return this.queries.getWorkingSet(query);
+  }
+  getRecordedConnections(query: RecordedConnectionsQuery): Promise<RecordedConnections> {
+    return this.queries.getRecordedConnections(query);
+  }
+  getFamily(query: FamilyQuery): Promise<FamilyWorkspace> {
+    return this.queries.getFamily(query);
+  }
+  getWorkingContext(query: WorkingContextQuery): Promise<WorkingContext> {
+    return this.workingContext.get(query);
+  }
+  getConnections(query: ConnectionsQuery): Promise<Connections> {
+    return this.queries.getConnections(query);
+  }
+  getProjectSnapshot() {
+    return this.repository.transaction(projectSnapshot);
+  }
+  async queryEntities(query: EntityQuery = {}) {
+    query = snapshotInput(query);
+    validateObjectQuery(query, "entity");
+    return this.repository.transaction((tx) => tx.query("entity", query)) as Promise<
+      import("../core/model.ts").Page<Entity>
+    >;
+  }
+  async queryRelationships(query: RelationshipQuery = {}) {
+    query = snapshotInput(query);
+    validateObjectQuery(query, "relationship");
+    return this.repository.transaction((tx) => tx.query("relationship", query)) as Promise<
+      import("../core/model.ts").Page<Relationship>
+    >;
+  }
+  async history(query: HistoryQuery = {}) {
+    query = snapshotInput(query);
+    queryShape(query, ["kind", "id", "after", "limit"], "Invalid history query");
+    validatePageLimit(query.limit);
+    ensure(
+      query.kind === undefined || ["schema", "entity", "relationship"].includes(query.kind),
+      "validation",
+      "Invalid history kind",
+    );
+    ensure(
+      query.id === undefined || typeof query.id === "string",
+      "validation",
+      "Invalid history ID",
+    );
+    ensure(
+      query.after === undefined ||
+        (typeof query.after === "string" &&
+          /^\d+:\d+$/.test(query.after) &&
+          query.after.split(":").every((value) => Number.isSafeInteger(Number(value)))),
+      "validation",
+      "Invalid history cursor",
+    );
+    return this.repository.transaction((tx) => tx.history(query));
+  }
+  async changesets(afterRevision = 0, limit = 100) {
+    validatePageLimit(limit);
+    ensure(
+      Number.isSafeInteger(afterRevision) && afterRevision >= 0,
+      "validation",
+      "Invalid project revision",
+    );
+    return this.repository.transaction((tx) => tx.changesets(afterRevision, limit));
+  }
+  async traverse(
+    id: string,
+    options: {
+      direction?: "forward" | "reverse" | "both";
+      type?: string;
+      maxDepth?: number;
+      maxNodes?: number;
+    } = {},
+  ) {
+    options = snapshotInput(options);
+    const { direction, maxDepth, maxNodes } = traversalOptions(id, options);
+    return this.repository.transaction(async (tx) => {
+      ensure(await tx.get("entity", id), "not_found", "Entity not found");
+      const visited = new Set([id]),
+        queue = [{ id, depth: 0 }];
+      function visit(next: string, depth: number) {
+        if (!visited.has(next)) {
+          ensure(
+            queue.length - 1 < maxNodes,
+            "validation",
+            "Traversal node limit exceeded; narrow the query",
+          );
+          visited.add(next);
+          const item = { id: next, depth: depth + 1 };
+          queue.push(item);
+        }
+      }
+      for (let index = 0; index < queue.length; index++) {
+        const current = queue[index];
+        if (current.depth >= maxDepth) continue;
+        const endpoint =
+          direction === "forward"
+            ? { source: current.id }
+            : direction === "reverse"
+              ? { target: current.id }
+              : { incident: current.id };
+        for (const link of (await nativeObjects(tx, "relationship", {
+          ...endpoint,
+          type: options.type,
+        })) as Relationship[]) {
+          const next =
+            link.source === current.id && direction !== "reverse" ? link.target : link.source;
+          visit(next, current.depth);
+        }
+      }
+      return queue.slice(1);
+    });
+  }
+}
+
+function traversalOptions(
+  id: string,
+  options: {
+    direction?: "forward" | "reverse" | "both";
+    type?: string;
+    maxDepth?: number;
+    maxNodes?: number;
+  },
+) {
+  const direction = options.direction ?? "forward",
+    maxDepth = options.maxDepth ?? Number.MAX_SAFE_INTEGER,
+    maxNodes = options.maxNodes ?? 10000;
+  ensure(
+    typeof id === "string" &&
+      ["forward", "reverse", "both"].includes(direction) &&
+      validTraversalBounds(maxDepth, maxNodes) &&
+      (options.type === undefined || typeof options.type === "string"),
+    "validation",
+    "Invalid traversal options",
+  );
+  return { direction, maxDepth, maxNodes };
+}
+
+function validTraversalBounds(depth: number, nodes: number) {
+  return (
+    Number.isSafeInteger(depth) &&
+    depth >= 0 &&
+    Number.isSafeInteger(nodes) &&
+    nodes > 0 &&
+    nodes <= 10000
+  );
+}

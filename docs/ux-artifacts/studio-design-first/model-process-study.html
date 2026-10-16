@@ -1,0 +1,2086 @@
+<div id="tracer-orbit-model-study" aria-label="Orbit development model design study">
+  <div class="mp-app"></div>
+</div>
+<style>
+  #tracer-orbit-model-study {
+    color-scheme: dark;
+    --mp-bg: #111715;
+    --mp-panel: #1b2420;
+    --mp-raised: #24322a;
+    --mp-text: #e7ede9;
+    --mp-muted: #a4b2aa;
+    --mp-line: #34473c;
+    --mp-accent: #a0d9b5;
+    --mp-attention: #e2bd82;
+    color: var(--mp-text);
+    font:
+      14px/1.5 Inter,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  #tracer-orbit-model-study * {
+    box-sizing: border-box;
+  }
+  #tracer-orbit-model-study .mp-app {
+    background: var(--mp-bg);
+    min-height: 860px;
+  }
+  #tracer-orbit-model-study button,
+  #tracer-orbit-model-study input,
+  #tracer-orbit-model-study select,
+  #tracer-orbit-model-study textarea {
+    font: inherit;
+    color: inherit;
+    background: var(--mp-panel);
+    border: 1px solid var(--mp-line);
+    border-radius: 6px;
+    padding: 8px 11px;
+    min-width: 0;
+  }
+  #tracer-orbit-model-study button {
+    min-height: 38px;
+  }
+  #tracer-orbit-model-study button:disabled {
+    opacity: 0.5;
+  }
+  #tracer-orbit-model-study button[aria-pressed="true"] {
+    background: var(--mp-raised);
+    border-color: var(--mp-accent);
+  }
+  #tracer-orbit-model-study .mp-primary {
+    background: var(--mp-accent);
+    color: var(--mp-bg);
+    border-color: var(--mp-accent);
+  }
+  #tracer-orbit-model-study h1 {
+    font-size: 25px;
+    line-height: 1.3;
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: -0.6px;
+  }
+  #tracer-orbit-model-study h2 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 500;
+  }
+  #tracer-orbit-model-study h3 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+  }
+  #tracer-orbit-model-study p {
+    margin: 8px 0;
+  }
+  #tracer-orbit-model-study .mp-muted {
+    color: var(--mp-muted);
+    font-size: 12px;
+  }
+  #tracer-orbit-model-study .mp-top {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--mp-line);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+  #tracer-orbit-model-study .mp-top strong {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  #tracer-orbit-model-study .mp-page {
+    padding: 26px 24px;
+  }
+  #tracer-orbit-model-study .mp-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  #tracer-orbit-model-study .mp-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  #tracer-orbit-model-study .mp-toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  #tracer-orbit-model-study .mp-toolbar label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #tracer-orbit-model-study .mp-overview {
+    position: relative;
+    padding: 16px 0 10px;
+  }
+  #tracer-orbit-model-study .mp-lanes {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--mp-gap, 22px);
+    position: relative;
+  }
+  #tracer-orbit-model-study .mp-lane {
+    min-width: 0;
+  }
+  #tracer-orbit-model-study .mp-lane h2 {
+    color: var(--mp-muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+    min-height: 36px;
+  }
+  #tracer-orbit-model-study .mp-node {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px;
+    margin-bottom: 34px;
+    min-height: 66px;
+    position: relative;
+    z-index: 2;
+    background: var(--mp-panel);
+  }
+  #tracer-orbit-model-study .mp-node strong {
+    display: block;
+    font-weight: 500;
+  }
+  #tracer-orbit-model-study .mp-node span {
+    display: block;
+    font-size: 11px;
+    color: var(--mp-muted);
+    margin-top: 4px;
+  }
+  #tracer-orbit-model-study .mp-overview-lines,
+  #tracer-orbit-model-study .mp-focus-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  #tracer-orbit-model-study .mp-overview-lines path,
+  #tracer-orbit-model-study .mp-focus-lines path {
+    fill: none;
+    stroke: var(--mp-accent);
+    stroke-width: 1.5;
+    opacity: 0.8;
+  }
+  #tracer-orbit-model-study .mp-overview-lines path.mp-feedback,
+  #tracer-orbit-model-study .mp-focus-lines path.mp-feedback {
+    stroke: var(--mp-attention);
+    stroke-dasharray: 5 4;
+  }
+  #tracer-orbit-model-study .mp-overview-lines marker path,
+  #tracer-orbit-model-study .mp-focus-lines marker path {
+    fill: var(--mp-accent);
+    stroke: none;
+  }
+  #tracer-orbit-model-study .mp-overview-lines path.mp-context {
+    stroke: var(--mp-line);
+    opacity: 0.55;
+    stroke-width: 1;
+  }
+  #tracer-orbit-model-study .mp-selection {
+    border-top: 1px solid var(--mp-line);
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  #tracer-orbit-model-study .mp-selection p {
+    margin: 0;
+  }
+  #tracer-orbit-model-study .mp-count {
+    font-size: 12px;
+    color: var(--mp-muted);
+  }
+  #tracer-orbit-model-study .mp-focus {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 190px minmax(0, 1fr);
+    gap: 64px;
+    position: relative;
+    padding: 16px 0;
+    min-height: 330px;
+  }
+  #tracer-orbit-model-study .mp-route-list {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    z-index: 1;
+  }
+  #tracer-orbit-model-study .mp-route-list h2 {
+    font-size: 12px;
+    color: var(--mp-muted);
+    margin-bottom: 6px;
+  }
+  #tracer-orbit-model-study .mp-route {
+    text-align: left;
+    position: relative;
+    min-height: 66px;
+    padding: 12px;
+  }
+  #tracer-orbit-model-study .mp-route strong {
+    display: block;
+    font-weight: 500;
+  }
+  #tracer-orbit-model-study .mp-route span {
+    display: block;
+    color: var(--mp-muted);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  #tracer-orbit-model-study .mp-route.mp-feedback {
+    border-style: dashed;
+  }
+  #tracer-orbit-model-study .mp-center {
+    align-self: center;
+    position: relative;
+    z-index: 1;
+  }
+  #tracer-orbit-model-study .mp-center-type {
+    border: 1px solid var(--mp-accent);
+    border-radius: 8px;
+    background: var(--mp-raised);
+    padding: 18px;
+  }
+  #tracer-orbit-model-study .mp-center-type h2 {
+    overflow-wrap: anywhere;
+  }
+  #tracer-orbit-model-study .mp-self {
+    display: block;
+    margin-top: 12px;
+    width: 100%;
+    font-size: 12px;
+    text-align: left;
+    border-style: dashed;
+  }
+  #tracer-orbit-model-study .mp-inspection {
+    border-top: 1px solid var(--mp-line);
+    padding: 18px 0;
+  }
+  #tracer-orbit-model-study .mp-definition .mp-inspection {
+    padding-top: 0;
+    border-top: 0;
+  }
+  #tracer-orbit-model-study .mp-return {
+    margin-bottom: 18px;
+  }
+  #tracer-orbit-model-study .mp-reference {
+    border-left: 2px solid var(--mp-accent);
+    padding: 8px 14px;
+    margin: 0 0 24px;
+  }
+  #tracer-orbit-model-study .mp-reference p {
+    margin: 0;
+  }
+  #tracer-orbit-model-study .mp-definition {
+    max-width: 860px;
+  }
+  #tracer-orbit-model-study .mp-inspection-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: start;
+    margin-bottom: 16px;
+  }
+  #tracer-orbit-model-study .mp-rule {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  #tracer-orbit-model-study .mp-rule p {
+    margin: 4px 0;
+  }
+  #tracer-orbit-model-study .mp-rule code {
+    display: block;
+    font:
+      12px/1.6 ui-monospace,
+      monospace;
+    overflow-wrap: anywhere;
+  }
+  #tracer-orbit-model-study .mp-example {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  #tracer-orbit-model-study .mp-example p {
+    max-width: 400px;
+  }
+  #tracer-orbit-model-study .mp-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  #tracer-orbit-model-study .mp-form label {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+  }
+  #tracer-orbit-model-study .mp-form .mp-check {
+    flex-direction: row;
+    align-items: center;
+  }
+  #tracer-orbit-model-study input[type="checkbox"] {
+    accent-color: var(--mp-accent);
+    width: 17px;
+    height: 17px;
+  }
+  #tracer-orbit-model-study .mp-fields {
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) minmax(90px, 1fr) 100px;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  #tracer-orbit-model-study .mp-fields .mp-check {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  #tracer-orbit-model-study .mp-fields > span {
+    font-size: 12px;
+    color: var(--mp-muted);
+    overflow-wrap: anywhere;
+  }
+  #tracer-orbit-model-study .mp-text {
+    width: 100%;
+    min-height: 460px;
+    font:
+      12px/1.6 ui-monospace,
+      monospace;
+    resize: vertical;
+  }
+  #tracer-orbit-model-study .mp-draft-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    font-size: 12px;
+    color: var(--mp-muted);
+  }
+  #tracer-orbit-model-study .mp-notice {
+    border-left: 2px solid var(--mp-attention);
+    padding: 10px 14px;
+    margin: 12px 0;
+    color: var(--mp-attention);
+  }
+  #tracer-orbit-model-study .mp-footer {
+    border-top: 1px solid var(--mp-line);
+    padding: 12px 24px;
+    color: var(--mp-muted);
+    font-size: 11px;
+  }
+  @media (max-width: 800px) {
+    #tracer-orbit-model-study .mp-lanes {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    #tracer-orbit-model-study .mp-focus {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 600px) {
+    #tracer-orbit-model-study .mp-top,
+    #tracer-orbit-model-study .mp-footer {
+      padding: 12px 16px;
+    }
+    #tracer-orbit-model-study .mp-page {
+      padding: 20px 16px;
+    }
+    #tracer-orbit-model-study .mp-heading {
+      gap: 12px;
+    }
+    #tracer-orbit-model-study .mp-lanes {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    #tracer-orbit-model-study .mp-lane h2 {
+      min-height: 0;
+      margin-bottom: 10px;
+    }
+    #tracer-orbit-model-study .mp-node {
+      margin-bottom: 8px;
+      min-height: 48px;
+      padding: 10px 12px;
+    }
+    #tracer-orbit-model-study .mp-node strong {
+      font-size: 14px;
+    }
+    #tracer-orbit-model-study .mp-node span {
+      display: none;
+    }
+    #tracer-orbit-model-study .mp-focus {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    #tracer-orbit-model-study .mp-center {
+      grid-row: 2;
+    }
+    #tracer-orbit-model-study .mp-route-list {
+      gap: 8px;
+      padding-left: 24px;
+    }
+    #tracer-orbit-model-study .mp-rule,
+    #tracer-orbit-model-study .mp-form {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    #tracer-orbit-model-study .mp-fields {
+      grid-template-columns: minmax(70px, 1fr) 105px 38px;
+      gap: 6px;
+    }
+    #tracer-orbit-model-study .mp-fields select {
+      padding: 8px 5px;
+    }
+    #tracer-orbit-model-study input,
+    #tracer-orbit-model-study select,
+    #tracer-orbit-model-study textarea {
+      font-size: 16px;
+    }
+    #tracer-orbit-model-study .mp-toolbar label {
+      width: 100%;
+      justify-content: space-between;
+    }
+    #tracer-orbit-model-study .mp-toolbar select {
+      max-width: 65%;
+    }
+  }
+</style>
+<script type="application/json" id="tracer-orbit-model-data">
+  {
+    "schema": {
+      "entityTypes": {
+        "product": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "goal": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "target": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "acceptance": { "type": "string" }
+          }
+        },
+        "function": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "requirement": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "acceptance": { "type": "string" }
+          }
+        },
+        "component": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "interface": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "design": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "artifact": { "type": "string" }
+          }
+        },
+        "concept": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "experiment": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "purpose": { "type": "string" }
+          }
+        },
+        "decision": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "alternatives": { "type": "string" },
+            "consequences": { "type": "string" }
+          }
+        },
+        "build_configuration": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "scope": { "type": "string" },
+            "manifest": { "type": "json", "required": true }
+          }
+        },
+        "evaluation": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "outcome": { "type": "string" },
+            "method": { "type": "string" },
+            "purpose": { "type": "string" }
+          }
+        },
+        "finding": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" }
+          }
+        },
+        "change_assessment": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "scope": { "type": "string" }
+          }
+        },
+        "release": {
+          "fields": {
+            "title": { "type": "string", "required": true },
+            "statement": { "type": "string", "required": true },
+            "status": { "type": "string" },
+            "owner": { "type": "string" },
+            "notes": { "type": "string" },
+            "disposition": { "type": "string" }
+          }
+        }
+      },
+      "relationshipTypes": {
+        "breaks_down_into": {
+          "source": ["product", "goal", "target", "function"],
+          "target": ["goal", "target", "function", "requirement"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "product",
+              "target": "goal",
+              "direction": "forward",
+              "label": "product intent"
+            },
+            {
+              "source": "goal",
+              "target": "target",
+              "direction": "forward",
+              "label": "measurable targets"
+            },
+            {
+              "source": "target",
+              "target": "function",
+              "direction": "forward",
+              "label": "functional allocation"
+            },
+            {
+              "source": "function",
+              "target": "requirement",
+              "direction": "forward",
+              "label": "engineering requirements"
+            }
+          ]
+        },
+        "contains": {
+          "source": ["product", "component"],
+          "target": ["component"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "product",
+              "target": "component",
+              "direction": "forward",
+              "label": "product architecture"
+            }
+          ]
+        },
+        "realized_by": {
+          "source": ["requirement"],
+          "target": ["design"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "requirement",
+              "target": "design",
+              "direction": "forward",
+              "label": "design input"
+            }
+          ]
+        },
+        "defines": {
+          "source": ["design"],
+          "target": ["component"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "design",
+              "target": "component",
+              "direction": "forward",
+              "label": "component definition"
+            }
+          ]
+        },
+        "provides": {
+          "source": ["component"],
+          "target": ["interface"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "component",
+              "target": "interface",
+              "direction": "forward",
+              "label": "provided interface"
+            }
+          ]
+        },
+        "consumes": {
+          "source": ["component"],
+          "target": ["interface"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "component",
+              "target": "interface",
+              "direction": "reverse",
+              "label": "interface input",
+              "feedback": true
+            }
+          ]
+        },
+        "depends_on": {
+          "source": ["design"],
+          "target": ["design"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "design",
+              "target": "design",
+              "direction": "forward",
+              "label": "design dependency",
+              "feedback": true
+            }
+          ]
+        },
+        "considers": {
+          "source": ["decision"],
+          "target": ["concept", "experiment", "finding", "evaluation"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "decision",
+              "target": "concept",
+              "direction": "reverse",
+              "label": "alternative"
+            },
+            {
+              "source": "decision",
+              "target": "experiment",
+              "direction": "reverse",
+              "label": "experiment input"
+            },
+            {
+              "source": "decision",
+              "target": "finding",
+              "direction": "reverse",
+              "label": "finding input",
+              "feedback": true
+            },
+            {
+              "source": "decision",
+              "target": "evaluation",
+              "direction": "reverse",
+              "label": "evaluation input",
+              "feedback": true
+            }
+          ]
+        },
+        "explores": {
+          "source": ["experiment"],
+          "target": ["concept"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "experiment",
+              "target": "concept",
+              "direction": "reverse",
+              "label": "concept under investigation"
+            }
+          ]
+        },
+        "evaluated_by": {
+          "source": ["target", "requirement", "design", "interface"],
+          "target": ["evaluation"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "target",
+              "target": "evaluation",
+              "direction": "forward",
+              "label": "target acceptance criteria"
+            },
+            {
+              "source": "requirement",
+              "target": "evaluation",
+              "direction": "forward",
+              "label": "requirement acceptance criteria"
+            },
+            {
+              "source": "design",
+              "target": "evaluation",
+              "direction": "forward",
+              "label": "design under test"
+            },
+            {
+              "source": "interface",
+              "target": "evaluation",
+              "direction": "forward",
+              "label": "interface criteria"
+            }
+          ]
+        },
+        "finding_from": {
+          "source": ["finding"],
+          "target": ["evaluation"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "finding",
+              "target": "evaluation",
+              "direction": "reverse",
+              "label": "observed finding"
+            }
+          ]
+        },
+        "assessment_references": {
+          "source": ["change_assessment"],
+          "target": [
+            "target",
+            "requirement",
+            "interface",
+            "design",
+            "component",
+            "evaluation",
+            "build_configuration"
+          ],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "change_assessment",
+              "target": "evaluation",
+              "direction": "reverse",
+              "label": "assessment evidence"
+            },
+            {
+              "source": "change_assessment",
+              "target": "requirement",
+              "direction": "reverse",
+              "label": "reviewed requirements"
+            }
+          ]
+        },
+        "configuration_includes": {
+          "source": ["build_configuration"],
+          "target": ["design", "requirement"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "build_configuration",
+              "target": "design",
+              "direction": "reverse",
+              "label": "configured design"
+            },
+            {
+              "source": "build_configuration",
+              "target": "requirement",
+              "direction": "reverse",
+              "label": "configuration inputs"
+            }
+          ]
+        },
+        "evaluated_configuration": {
+          "source": ["evaluation"],
+          "target": ["build_configuration"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "evaluation",
+              "target": "build_configuration",
+              "direction": "reverse",
+              "label": "configuration under test"
+            }
+          ]
+        },
+        "release_considers": {
+          "source": ["release"],
+          "target": ["decision", "build_configuration", "finding"],
+          "fields": {
+            "scope": { "type": "string", "required": true },
+            "source_version": { "type": "number", "required": true },
+            "review": { "type": "string", "required": true }
+          },
+          "workflow": [
+            {
+              "source": "release",
+              "target": "decision",
+              "direction": "reverse",
+              "label": "release judgment"
+            },
+            {
+              "source": "release",
+              "target": "build_configuration",
+              "direction": "reverse",
+              "label": "release configuration"
+            },
+            {
+              "source": "release",
+              "target": "finding",
+              "direction": "reverse",
+              "label": "release findings"
+            }
+          ]
+        }
+      }
+    },
+    "routes": [
+      {
+        "key": "breaks_down_into:0",
+        "name": "breaks_down_into",
+        "index": 0,
+        "source": "product",
+        "target": "goal",
+        "direction": "forward",
+        "label": "product intent",
+        "from": "product",
+        "to": "goal"
+      },
+      {
+        "key": "breaks_down_into:1",
+        "name": "breaks_down_into",
+        "index": 1,
+        "source": "goal",
+        "target": "target",
+        "direction": "forward",
+        "label": "measurable targets",
+        "from": "goal",
+        "to": "target"
+      },
+      {
+        "key": "breaks_down_into:2",
+        "name": "breaks_down_into",
+        "index": 2,
+        "source": "target",
+        "target": "function",
+        "direction": "forward",
+        "label": "functional allocation",
+        "from": "target",
+        "to": "function"
+      },
+      {
+        "key": "breaks_down_into:3",
+        "name": "breaks_down_into",
+        "index": 3,
+        "source": "function",
+        "target": "requirement",
+        "direction": "forward",
+        "label": "engineering requirements",
+        "from": "function",
+        "to": "requirement"
+      },
+      {
+        "key": "contains:0",
+        "name": "contains",
+        "index": 0,
+        "source": "product",
+        "target": "component",
+        "direction": "forward",
+        "label": "product architecture",
+        "from": "product",
+        "to": "component"
+      },
+      {
+        "key": "realized_by:0",
+        "name": "realized_by",
+        "index": 0,
+        "source": "requirement",
+        "target": "design",
+        "direction": "forward",
+        "label": "design input",
+        "from": "requirement",
+        "to": "design"
+      },
+      {
+        "key": "defines:0",
+        "name": "defines",
+        "index": 0,
+        "source": "design",
+        "target": "component",
+        "direction": "forward",
+        "label": "component definition",
+        "from": "design",
+        "to": "component"
+      },
+      {
+        "key": "provides:0",
+        "name": "provides",
+        "index": 0,
+        "source": "component",
+        "target": "interface",
+        "direction": "forward",
+        "label": "provided interface",
+        "from": "component",
+        "to": "interface"
+      },
+      {
+        "key": "consumes:0",
+        "name": "consumes",
+        "index": 0,
+        "source": "component",
+        "target": "interface",
+        "direction": "reverse",
+        "label": "interface input",
+        "feedback": true,
+        "from": "interface",
+        "to": "component"
+      },
+      {
+        "key": "depends_on:0",
+        "name": "depends_on",
+        "index": 0,
+        "source": "design",
+        "target": "design",
+        "direction": "forward",
+        "label": "design dependency",
+        "feedback": true,
+        "from": "design",
+        "to": "design"
+      },
+      {
+        "key": "considers:0",
+        "name": "considers",
+        "index": 0,
+        "source": "decision",
+        "target": "concept",
+        "direction": "reverse",
+        "label": "alternative",
+        "from": "concept",
+        "to": "decision"
+      },
+      {
+        "key": "considers:1",
+        "name": "considers",
+        "index": 1,
+        "source": "decision",
+        "target": "experiment",
+        "direction": "reverse",
+        "label": "experiment input",
+        "from": "experiment",
+        "to": "decision"
+      },
+      {
+        "key": "considers:2",
+        "name": "considers",
+        "index": 2,
+        "source": "decision",
+        "target": "finding",
+        "direction": "reverse",
+        "label": "finding input",
+        "feedback": true,
+        "from": "finding",
+        "to": "decision"
+      },
+      {
+        "key": "considers:3",
+        "name": "considers",
+        "index": 3,
+        "source": "decision",
+        "target": "evaluation",
+        "direction": "reverse",
+        "label": "evaluation input",
+        "feedback": true,
+        "from": "evaluation",
+        "to": "decision"
+      },
+      {
+        "key": "explores:0",
+        "name": "explores",
+        "index": 0,
+        "source": "experiment",
+        "target": "concept",
+        "direction": "reverse",
+        "label": "concept under investigation",
+        "from": "concept",
+        "to": "experiment"
+      },
+      {
+        "key": "evaluated_by:0",
+        "name": "evaluated_by",
+        "index": 0,
+        "source": "target",
+        "target": "evaluation",
+        "direction": "forward",
+        "label": "target acceptance criteria",
+        "from": "target",
+        "to": "evaluation"
+      },
+      {
+        "key": "evaluated_by:1",
+        "name": "evaluated_by",
+        "index": 1,
+        "source": "requirement",
+        "target": "evaluation",
+        "direction": "forward",
+        "label": "requirement acceptance criteria",
+        "from": "requirement",
+        "to": "evaluation"
+      },
+      {
+        "key": "evaluated_by:2",
+        "name": "evaluated_by",
+        "index": 2,
+        "source": "design",
+        "target": "evaluation",
+        "direction": "forward",
+        "label": "design under test",
+        "from": "design",
+        "to": "evaluation"
+      },
+      {
+        "key": "evaluated_by:3",
+        "name": "evaluated_by",
+        "index": 3,
+        "source": "interface",
+        "target": "evaluation",
+        "direction": "forward",
+        "label": "interface criteria",
+        "from": "interface",
+        "to": "evaluation"
+      },
+      {
+        "key": "finding_from:0",
+        "name": "finding_from",
+        "index": 0,
+        "source": "finding",
+        "target": "evaluation",
+        "direction": "reverse",
+        "label": "observed finding",
+        "from": "evaluation",
+        "to": "finding"
+      },
+      {
+        "key": "assessment_references:0",
+        "name": "assessment_references",
+        "index": 0,
+        "source": "change_assessment",
+        "target": "evaluation",
+        "direction": "reverse",
+        "label": "assessment evidence",
+        "from": "evaluation",
+        "to": "change_assessment"
+      },
+      {
+        "key": "assessment_references:1",
+        "name": "assessment_references",
+        "index": 1,
+        "source": "change_assessment",
+        "target": "requirement",
+        "direction": "reverse",
+        "label": "reviewed requirements",
+        "from": "requirement",
+        "to": "change_assessment"
+      },
+      {
+        "key": "configuration_includes:0",
+        "name": "configuration_includes",
+        "index": 0,
+        "source": "build_configuration",
+        "target": "design",
+        "direction": "reverse",
+        "label": "configured design",
+        "from": "design",
+        "to": "build_configuration"
+      },
+      {
+        "key": "configuration_includes:1",
+        "name": "configuration_includes",
+        "index": 1,
+        "source": "build_configuration",
+        "target": "requirement",
+        "direction": "reverse",
+        "label": "configuration inputs",
+        "from": "requirement",
+        "to": "build_configuration"
+      },
+      {
+        "key": "evaluated_configuration:0",
+        "name": "evaluated_configuration",
+        "index": 0,
+        "source": "evaluation",
+        "target": "build_configuration",
+        "direction": "reverse",
+        "label": "configuration under test",
+        "from": "build_configuration",
+        "to": "evaluation"
+      },
+      {
+        "key": "release_considers:0",
+        "name": "release_considers",
+        "index": 0,
+        "source": "release",
+        "target": "decision",
+        "direction": "reverse",
+        "label": "release judgment",
+        "from": "decision",
+        "to": "release"
+      },
+      {
+        "key": "release_considers:1",
+        "name": "release_considers",
+        "index": 1,
+        "source": "release",
+        "target": "build_configuration",
+        "direction": "reverse",
+        "label": "release configuration",
+        "from": "build_configuration",
+        "to": "release"
+      },
+      {
+        "key": "release_considers:2",
+        "name": "release_considers",
+        "index": 2,
+        "source": "release",
+        "target": "finding",
+        "direction": "reverse",
+        "label": "release findings",
+        "from": "finding",
+        "to": "release"
+      }
+    ],
+    "samples": {
+      "product": [
+        {
+          "key": "ROBOT-01",
+          "title": "Orbit R1 robotic vacuum",
+          "statement": "Fictional battery-powered floor-cleaning robot with suction, brush, navigation firmware and a companion app. Product targets, experiments and results are invented for engineering exploration."
+        }
+      ],
+      "goal": [
+        {
+          "key": "GOAL-01",
+          "title": "Pick up ordinary household debris",
+          "statement": "Clean the defined example hard-floor debris set with little intervention; learn which brush and suction combination is worth developing."
+        },
+        {
+          "key": "GOAL-02",
+          "title": "Finish a useful cleaning session",
+          "statement": "Complete the intended cleaning task on one charge while maintaining predictable navigation and recovery."
+        }
+      ],
+      "target": [
+        {
+          "key": "TGT-01",
+          "title": "Draft debris pickup target",
+          "statement": "Collect at least 90% by mass of the fictional test debris set in the defined two-pass hard-floor task."
+        },
+        {
+          "key": "TGT-02",
+          "title": "Draft cleaning runtime target",
+          "statement": "Complete 60 minutes of the defined mixed navigation and cleaning profile on the selected battery configuration."
+        }
+      ],
+      "function": [
+        {
+          "key": "FUN-01",
+          "title": "Move air through the cleaning head",
+          "statement": "Provide the suction flow required by the selected brush and duct concept across the defined debris conditions."
+        },
+        {
+          "key": "FUN-02",
+          "title": "Agitate and collect debris",
+          "statement": "Use the brush and collection path to move the defined debris into the bin while avoiding the selected entanglement scenarios."
+        }
+      ],
+      "requirement": [
+        {
+          "key": "REQ-R01",
+          "title": "Blower operating envelope",
+          "statement": "Operate the selected blower within the recorded duty envelope while providing the flow used by the example pickup profile."
+        },
+        {
+          "key": "REQ-R02",
+          "title": "Brush and duct contribution",
+          "statement": "The brush geometry and duct path shall support the specified pickup task without assuming suction alone determines cleaning performance."
+        }
+      ],
+      "component": [
+        {
+          "key": "PART-01",
+          "title": "Cleaning assembly",
+          "statement": "Physical assembly contains the selected blower, brush, duct and removable bin; its functions overlap with power, thermal and acoustic work."
+        },
+        {
+          "key": "PART-02",
+          "title": "Baseline blower motor",
+          "statement": "Fictional blower option A used by the initial simulated build; retained as a distinct option from the higher-headroom concept."
+        }
+      ],
+      "interface": [
+        {
+          "key": "IF-01",
+          "title": "Actuator power interface",
+          "statement": "Record supply limits, expected transients and controller supply needs between battery/power and motor-driver work."
+        },
+        {
+          "key": "IF-02",
+          "title": "Blower command and monitoring interface",
+          "statement": "Record command timing, duty representation and temperature feedback between firmware and driver work."
+        }
+      ],
+      "design": [
+        {
+          "key": "DES-01",
+          "title": "Blower-control firmware design",
+          "statement": "Example control design uses the baseline duty profile and retains command timing while monitoring driver temperature."
+        },
+        {
+          "key": "DES-02",
+          "title": "Baseline blower installation drawing",
+          "statement": "Example drawing specifies motor option A, mounting and the selected duct interface."
+        }
+      ],
+      "concept": [
+        {
+          "key": "CON-R01",
+          "title": "Baseline blower and existing duct",
+          "statement": "Keep the initial integrated concept and investigate the pickup shortfall through brush and duct changes."
+        },
+        {
+          "key": "CON-R02",
+          "title": "Higher-headroom blower",
+          "statement": "Increase available suction by changing motor selection, accepting potential energy, thermal, acoustic and mounting consequences."
+        }
+      ],
+      "experiment": [
+        {
+          "key": "EXP-R01",
+          "title": "Compare pickup concepts",
+          "statement": "Plan controlled comparisons of brush/duct refinement and higher suction using the same defined debris and floor conditions."
+        },
+        {
+          "key": "EXP-R02",
+          "title": "Characterize combined power and heat",
+          "statement": "Plan simultaneous logging of supply, driver temperature and commanded duty for the proposed blower concept."
+        }
+      ],
+      "decision": [
+        {
+          "key": "DEC-R01",
+          "title": "Hold blower selection pending combined evidence",
+          "statement": "Keep baseline option A as the recorded starting design and compare alternatives before selecting option B."
+        },
+        {
+          "key": "DEC-R02",
+          "title": "Keep schedules locally usable",
+          "statement": "Use local schedule persistence with visible remote acknowledgment state in the fictional product design."
+        }
+      ],
+      "build_configuration": [
+        {
+          "key": "BUILD-R01",
+          "title": "Prototype A — recorded configuration",
+          "statement": "Fictional starting build combines the baseline blower, physical design, driver and firmware records. Its manifest records selected native revisions before the blower-profile edit."
+        },
+        {
+          "key": "BUILD-R02",
+          "title": "Prototype B — proposed configuration",
+          "statement": "Proposed configuration substitutes the option-B installation design. No assembled prototype or result is represented."
+        }
+      ],
+      "evaluation": [
+        {
+          "key": "EVAL-R01",
+          "title": "Simulated baseline pickup evaluation",
+          "statement": "SIMULATED: the invented baseline task collected 84% of the defined debris mass against the 90% draft target. This is a configuration-specific shortfall."
+        },
+        {
+          "key": "EVAL-R02",
+          "title": "Simulated baseline energy evaluation",
+          "statement": "SIMULATED: the invented duty-profile observation supports the old baseline allocation only. The later blower-control change has not been evaluated."
+        }
+      ],
+      "finding": [
+        {
+          "key": "FIND-R01",
+          "title": "Baseline pickup below the draft target",
+          "statement": "The simulated pickup finding motivates comparing concepts; it does not establish which motor or air-path change is best."
+        },
+        {
+          "key": "FIND-R02",
+          "title": "Energy evidence predates profile change",
+          "statement": "The stored energy receipt captures the baseline firmware design. The edited duty profile creates a reason to review that evidence."
+        }
+      ],
+      "change_assessment": [
+        {
+          "key": "CHG-R01",
+          "title": "Blower-profile change assessment",
+          "statement": "Review recorded connections from the blower-control edit to pickup, runtime, heat, sound, command timing and prior evidence. These are explicit assessment subjects, not inferred technical consequences."
+        },
+        {
+          "key": "CHG-R02",
+          "title": "Option-B motor substitution assessment",
+          "statement": "Assess mounting, driver loading, supply transients, control envelope and production setup before adopting the proposed motor configuration."
+        }
+      ],
+      "release": [
+        {
+          "key": "REL-R01",
+          "title": "Orbit R1 engineering release candidate",
+          "statement": "Fictional candidate remains open because pickup, shared-rail behavior, updated energy evidence, acoustics and user interaction have unresolved work."
+        }
+      ]
+    }
+  }
+</script>
+<script>
+  (() => {
+    const root = document.getElementById("tracer-orbit-model-study");
+    if (!root) return;
+    const app = root.querySelector(".mp-app");
+    const data = JSON.parse(document.getElementById("tracer-orbit-model-data").textContent);
+    const clone = (value) => JSON.parse(JSON.stringify(value));
+    const groups = [
+      ["Intent", ["product", "goal", "target"]],
+      ["Engineering", ["function", "requirement", "design", "component", "interface"]],
+      ["Exploration", ["concept", "experiment", "decision"]],
+      ["Build & evidence", ["build_configuration", "evaluation", "finding"]],
+      ["Review & release", ["change_assessment", "release"]],
+    ];
+    const state = {
+      view: "overview",
+      stage: "flow",
+      selected: "evaluation",
+      configure: false,
+      mode: "Visual",
+      draft: clone(data.schema),
+      saved: clone(data.schema),
+      baseVersion: 1,
+      currentVersion: 1,
+      selectedRoute: "evaluated_by:2",
+      editKind: "type",
+      text: "",
+      error: "",
+      message: "",
+      dirty: false,
+    };
+    const esc = (value) =>
+      String(value ?? "").replace(
+        /[&<>"']/g,
+        (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char],
+      );
+    const human = (name) => name.replaceAll("_", " ").replace(/^./, (char) => char.toUpperCase());
+    let rememberedSnapshot = "";
+    function routes() {
+      return Object.entries(state.draft.relationshipTypes).flatMap(([name, definition]) =>
+        (definition.workflow ?? []).map((route, index) => ({
+          key: `${name}:${index}`,
+          name,
+          index,
+          ...route,
+          from: route.direction === "reverse" ? route.target : route.source,
+          to: route.direction === "reverse" ? route.source : route.target,
+        })),
+      );
+    }
+    function remember() {
+      const snapshot = {
+        selected: state.selected,
+        view: state.view,
+        stage: state.stage,
+        configure: state.configure,
+        mode: state.mode,
+        draftPatch: patch(data.schema, state.draft),
+        savedPatch: patch(data.schema, state.saved),
+        baseVersion: state.baseVersion,
+        currentVersion: state.currentVersion,
+        selectedRoute: state.selectedRoute,
+        editKind: state.editKind,
+        error: state.error,
+        dirty: state.dirty,
+        textEdit:
+          state.mode === "Text" ? textEdit(JSON.stringify(state.draft, null, 2), state.text) : null,
+      };
+      const serialized = JSON.stringify(snapshot);
+      if (serialized.length < 15000) {
+        rememberedSnapshot = serialized;
+        window.openai
+          ?.setWidgetState?.({
+            modelContent: {
+              selectedType: state.selected,
+              view: state.view,
+              configurationMode: state.configure ? state.mode : "read",
+            },
+            privateContent: snapshot,
+          })
+          ?.catch(() => {});
+      }
+    }
+    function restore(snapshot) {
+      if (!snapshot || !Array.isArray(snapshot.draftPatch) || !Array.isArray(snapshot.savedPatch))
+        return;
+      Object.assign(state, snapshot);
+      state.draft = applyPatch(data.schema, snapshot.draftPatch);
+      state.saved = applyPatch(data.schema, snapshot.savedPatch);
+      const formatted = JSON.stringify(state.draft, null, 2);
+      state.text = snapshot.textEdit
+        ? formatted.slice(0, snapshot.textEdit.start) +
+          snapshot.textEdit.value +
+          formatted.slice(snapshot.textEdit.end)
+        : formatted;
+    }
+    function textEdit(before, after) {
+      let start = 0,
+        end = before.length,
+        last = after.length;
+      while (start < Math.min(end, last) && before[start] === after[start]) start++;
+      while (end > start && last > start && before[end - 1] === after[last - 1]) {
+        end--;
+        last--;
+      }
+      return { start, end, value: after.slice(start, last) };
+    }
+    function patch(before, after, path = []) {
+      if (JSON.stringify(before) === JSON.stringify(after)) return [];
+      if (
+        before &&
+        after &&
+        typeof before === "object" &&
+        typeof after === "object" &&
+        !Array.isArray(before) &&
+        !Array.isArray(after)
+      )
+        return [...new Set([...Object.keys(before), ...Object.keys(after)])].flatMap((key) =>
+          patch(before[key], after[key], [...path, key]),
+        );
+      return [{ path, ...(after === undefined ? { remove: true } : { value: after }) }];
+    }
+    function applyPatch(base, operations) {
+      const value = clone(base);
+      for (const operation of operations) {
+        const path = operation.path;
+        let owner = value;
+        for (const name of path.slice(0, -1)) {
+          owner[name] ??= {};
+          owner = owner[name];
+        }
+        if (operation.remove) delete owner[path.at(-1)];
+        else owner[path.at(-1)] = clone(operation.value);
+      }
+      return value;
+    }
+    restore(window.openai?.widgetState?.privateContent);
+    function typeOptions() {
+      return Object.keys(state.draft.entityTypes)
+        .map(
+          (name) =>
+            `<option value="${esc(name)}" ${name === state.selected ? "selected" : ""}>${esc(human(name))}</option>`,
+        )
+        .join("");
+    }
+    function overview() {
+      const counts = (name) =>
+        routes().filter((route) => route.from === name || route.to === name).length;
+      const extras = Object.keys(state.draft.entityTypes).filter(
+        (name) => !groups.some(([, names]) => names.includes(name)),
+      );
+      const visibleGroups = extras.length ? [...groups, ["Ungrouped", extras]] : groups;
+      return `<div class="mp-overview" aria-label="Full Orbit type workflow"><svg class="mp-overview-lines" aria-hidden="true"></svg><div class="mp-lanes">${visibleGroups
+        .map(
+          ([title, names]) =>
+            `<section class="mp-lane"><h2>${title}</h2>${names
+              .filter((name) => state.draft.entityTypes[name])
+              .map(
+                (name) =>
+                  `<button type="button" class="mp-node cursor-interaction" data-type="${name}" data-point="${name}" aria-pressed="${state.selected === name}"><strong>${esc(human(name))}</strong><span>${counts(name)} authored paths</span></button>`,
+              )
+              .join("")}</section>`,
+        )
+        .join(
+          "",
+        )}</div></div><div class="mp-selection"><div><p>${human(state.selected)} · ${routes().filter((route) => route.from === state.selected || route.to === state.selected).length} highlighted paths</p><span class="mp-count">${Object.keys(state.draft.entityTypes).length} types · ${routes().length} authored paths · grouped for reading</span></div><button type="button" class="cursor-interaction" data-action="focus">Explore inputs and outputs →</button></div>`;
+    }
+    function routeButton(route, direction) {
+      const other = direction === "input" ? route.from : route.to;
+      return `<button type="button" class="mp-route cursor-interaction ${route.feedback ? "mp-feedback" : ""}" data-route="${esc(route.key)}" data-route-point="${esc(route.key)}" data-side="${direction}" aria-pressed="${state.editKind === "connection" && state.selectedRoute === route.key}"><strong>${esc(human(other))}</strong><span>${esc(route.label)}${route.feedback ? " · feedback" : ""}</span></button>`;
+    }
+    function focus() {
+      const all = routes();
+      const incoming = all.filter(
+        (route) => route.to === state.selected && route.from !== state.selected,
+      );
+      const outgoing = all.filter(
+        (route) => route.from === state.selected && route.to !== state.selected,
+      );
+      const self = all.filter(
+        (route) => route.from === state.selected && route.to === state.selected,
+      );
+      return `<div class="mp-focus" aria-label="${esc(human(state.selected))} input and output workflow"><svg class="mp-focus-lines" aria-hidden="true"></svg><section class="mp-route-list"><h2>Inputs · ${incoming.length}</h2>${incoming.map((route) => routeButton(route, "input")).join("") || '<p class="mp-muted">No authored incoming path</p>'}</section><section class="mp-center" data-center><div class="mp-center-type"><h2>${esc(human(state.selected))}</h2><p class="mp-muted">${Object.keys(state.draft.entityTypes[state.selected].fields).length} fields</p><button type="button" class="cursor-interaction" data-action="inspect-type">${state.configure ? "Edit type" : "Type definition"}</button>${self.map((route) => `<button type="button" class="mp-self cursor-interaction" data-route="${route.key}">↶ ${esc(route.label)}</button>`).join("")}</div></section><section class="mp-route-list"><h2>Outputs · ${outgoing.length}</h2>${outgoing.map((route) => routeButton(route, "output")).join("") || '<p class="mp-muted">No authored outgoing path</p>'}</section></div>`;
+    }
+    function typeInspection() {
+      const fields = state.draft.entityTypes[state.selected].fields;
+      const samples = data.samples[state.selected] ?? [];
+      return `<section class="mp-inspection" aria-label="Selected type definition">${
+        state.configure
+          ? `<div class="mp-fields"><span>Field</span><span>Type</span><span>Required</span>${Object.entries(
+              fields,
+            )
+              .map(
+                ([name, definition]) =>
+                  `<span>${esc(name)}</span><select aria-label="${esc(name)} field type" data-field-type="${esc(name)}">${["string", "number", "boolean", "json"].map((type) => `<option ${definition.type === type ? "selected" : ""}>${type}</option>`).join("")}</select><label class="mp-check"><input type="checkbox" aria-label="${esc(name)} required" data-field-required="${esc(name)}" ${definition.required ? "checked" : ""}></label>`,
+              )
+              .join(
+                "",
+              )}</div><div class="mp-actions" data-add-field style="margin-top:16px"><input aria-label="New field name" name="field" placeholder="New field name" required pattern="[a-z][a-z0-9_]*"><select aria-label="New field type" name="type"><option>string</option><option>number</option><option>boolean</option><option>json</option></select><button type="button" class="cursor-interaction" data-action="add-field">Add field</button></div>`
+          : `<p>${Object.keys(fields)
+              .map((name) => esc(name))
+              .join(
+                " · ",
+              )}</p><div class="mp-example">${samples.map((sample) => `<div><span class="mp-muted">${esc(sample.key)}</span><p>${esc(sample.title)}</p></div>`).join("")}</div>`
+      }</section>`;
+    }
+    function connectionInspection() {
+      const route = routes().find((value) => value.key === state.selectedRoute);
+      if (!route) return typeInspection();
+      const definition = state.draft.relationshipTypes[route.name];
+      return `<section class="mp-inspection" aria-label="Selected connection definition">${state.configure ? `<div class="mp-form"><label>Flow label<input aria-label="Flow label" data-edit-route="label" value="${esc(route.label)}"></label><label>Flow direction<select aria-label="Flow direction" data-edit-route="direction"><option value="forward" ${route.direction === "forward" ? "selected" : ""}>Forward from native source</option><option value="reverse" ${route.direction === "reverse" ? "selected" : ""}>Reverse from native source</option></select></label><label class="mp-check"><input type="checkbox" aria-label="Feedback path" data-edit-route="feedback" ${route.feedback ? "checked" : ""}>Feedback path</label></div>` : ""}<div class="mp-rule" style="margin-top:18px"><div><span class="mp-muted">Native trace definition</span><code>${esc(route.name)}: ${esc(route.source)} → ${esc(route.target)}</code></div><div><span class="mp-muted">Allowed endpoints</span><code>Sources: ${esc(definition.source?.join(", ") ?? "Any")}</code><code>Targets: ${esc(definition.target?.join(", ") ?? "Any")}</code></div></div>${state.configure ? `<details style="margin-top:14px"><summary>Edit allowed endpoint sets</summary><div class="mp-form" style="margin-top:12px"><label>Sources<input aria-label="Allowed source types" data-endpoints="source" value="${esc(definition.source?.join(", ") ?? "")}"></label><label>Targets<input aria-label="Allowed target types" data-endpoints="target" value="${esc(definition.target?.join(", ") ?? "")}"></label></div></details>` : ""}<div class="mp-actions" style="margin-top:24px"><button type="button" class="cursor-interaction" data-action="follow-route">Explore ${human(route.to === state.selected ? route.from : route.to)} inputs and outputs →</button></div></section>`;
+    }
+    function notice() {
+      return state.error
+        ? `<p class="mp-notice" role="alert">${esc(state.error)}</p>`
+        : state.message
+          ? `<p class="mp-notice" role="status">${esc(state.message)}</p>`
+          : "";
+    }
+    function render() {
+      const isDefinition = state.stage === "definition";
+      const route =
+        state.editKind === "connection" &&
+        routes().find((value) => value.key === state.selectedRoute);
+      const selectedTitle = route
+        ? `${human(route.from)} → ${human(route.to)}`
+        : human(state.selected);
+      const heading = isDefinition
+        ? selectedTitle
+        : state.configure
+          ? "Configure model"
+          : "Project model";
+      const retainedView = state.view === "overview" ? "model overview" : "inputs and outputs";
+      const modeControls = state.configure
+        ? `<div class="mp-actions">${["Visual", "Text"].map((mode) => `<button type="button" class="cursor-interaction" data-mode="${mode}" aria-pressed="${state.mode === mode}">${mode}</button>`).join("")}</div>`
+        : "";
+      const flowControls = `<div class="mp-actions"><button type="button" class="cursor-interaction" data-action="overview" aria-pressed="${state.view === "overview"}">Overview</button><button type="button" class="cursor-interaction" data-action="focus" aria-pressed="${state.view === "focus"}">Inputs and outputs</button></div><label>Focus type<select aria-label="Focus type" data-selected>${typeOptions()}</select></label>`;
+      const body =
+        state.configure && state.mode === "Text"
+          ? `<label for="mp-schema-text" class="mp-muted">Project schema</label><textarea id="mp-schema-text" class="mp-text" aria-label="Project schema JSON">${esc(state.text)}</textarea>`
+          : isDefinition
+            ? `<div class="mp-definition">${route ? connectionInspection() : typeInspection()}</div>`
+            : state.view === "overview"
+              ? overview()
+              : focus();
+      app.innerHTML = `<header class="mp-top"><strong>Tracer</strong><span class="mp-muted">Orbit R1 / Project model</span></header><main class="mp-page">${isDefinition ? `<button type="button" class="mp-return cursor-interaction" data-action="return-flow">← Return to ${esc(human(state.selected))} ${retainedView}</button>` : ""}<div class="mp-heading"><div><span class="mp-muted">${isDefinition ? `${state.configure ? "Configure model" : "Project model"} / ${route ? "Workflow path" : "Type definition"}` : state.configure ? "Model draft" : "Orbit development workflow"}</span><h1>${esc(heading)}</h1></div><div class="mp-actions">${state.configure ? `<button type="button" class="mp-primary cursor-interaction" data-action="save" ${state.error ? "disabled" : ""}>Save preview model</button><button type="button" class="cursor-interaction" data-action="cancel">Cancel</button>` : '<button type="button" class="cursor-interaction" data-action="configure">Configure model</button>'}</div></div>${state.configure || !isDefinition ? `<div class="mp-toolbar">${modeControls}${isDefinition ? "" : flowControls}</div>` : ""}${isDefinition ? `<div class="mp-reference"><p>${route ? `${esc(route.label)}${route.feedback ? " · feedback path" : ""}` : `${Object.keys(state.draft.entityTypes[state.selected].fields).length} fields · ${routes().filter((value) => value.from === state.selected || value.to === state.selected).length} authored paths`}</p><span class="mp-muted">In ${esc(human(state.selected))} ${retainedView}</span></div>` : ""}${state.configure ? `<div class="mp-draft-line"><span>Based on v${state.baseVersion} · Current project v${state.currentVersion}${state.dirty ? " · Unsaved changes" : ""}</span><button type="button" class="cursor-interaction" data-action="simulate-conflict">Simulate newer project model</button></div>` : !isDefinition ? '<p class="mp-muted">Presentation groups · solid inputs/outputs · dashed feedback</p>' : ""}${notice()}${body}</main><footer class="mp-footer">Design study · actual Orbit schema and authored workflow · preview changes only</footer>`;
+      requestAnimationFrame(draw);
+      if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+    }
+    function connector(a, b, bounds, vertical) {
+      const ar = a.getBoundingClientRect(),
+        br = b.getBoundingClientRect();
+      if (vertical || Math.abs(ar.left - br.left) < 3) {
+        const down = br.top >= ar.top;
+        const x1 = ar.left - bounds.left + ar.width / 2,
+          y1 = (down ? ar.bottom : ar.top) - bounds.top;
+        const x2 = br.left - bounds.left + br.width / 2,
+          y2 = (down ? br.top : br.bottom) - bounds.top;
+        const c = Math.max(16, Math.abs(y2 - y1) / 2),
+          sign = down ? 1 : -1;
+        return `M${x1} ${y1} C${x1} ${y1 + c * sign},${x2} ${y2 - c * sign},${x2} ${y2}`;
+      }
+      const right = br.left >= ar.left;
+      const x1 = (right ? ar.right : ar.left) - bounds.left,
+        y1 = ar.top - bounds.top + ar.height / 2;
+      const x2 = (right ? br.left : br.right) - bounds.left,
+        y2 = br.top - bounds.top + br.height / 2;
+      const c = Math.max(12, Math.abs(x2 - x1) / 2),
+        sign = right ? 1 : -1;
+      return `M${x1} ${y1} C${x1 + c * sign} ${y1},${x2 - c * sign} ${y2},${x2} ${y2}`;
+    }
+    function draw() {
+      const overviewEl = app.querySelector(".mp-overview"),
+        focusEl = app.querySelector(".mp-focus");
+      const diagram = overviewEl ?? focusEl;
+      if (!diagram) return;
+      const bounds = diagram.getBoundingClientRect(),
+        svg = diagram.querySelector("svg");
+      if (!bounds.width) return;
+      svg.setAttribute("viewBox", `0 0 ${bounds.width} ${bounds.height}`);
+      const vertical = bounds.width < 600;
+      const paths = [];
+      if (overviewEl && !vertical)
+        for (const route of routes()) {
+          const a = diagram.querySelector(`[data-point="${route.from}"]`),
+            b = diagram.querySelector(`[data-point="${route.to}"]`);
+          if (a && b)
+            paths.push({
+              d: overviewConnector(a, b, bounds),
+              feedback: route.feedback,
+              context: route.from !== state.selected && route.to !== state.selected,
+            });
+        }
+      if (focusEl)
+        for (const button of diagram.querySelectorAll("[data-route-point]")) {
+          const route = routes().find((value) => value.key === button.dataset.routePoint),
+            center = diagram.querySelector("[data-center]");
+          const input = button.dataset.side === "input";
+          if (route && center)
+            paths.push({
+              d: vertical
+                ? narrowFocusConnector(button, center, bounds, input)
+                : connector(input ? button : center, input ? center : button, bounds, false),
+              feedback: route.feedback,
+            });
+        }
+      svg.innerHTML = `<defs><marker id="mp-model-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7"/></marker></defs>${paths.map((path) => `<path class="${path.feedback ? "mp-feedback" : ""} ${path.context ? "mp-context" : ""}" marker-end="url(#mp-model-arrow)" d="${path.d}"/>`).join("")}`;
+    }
+    function narrowFocusConnector(button, center, bounds, input) {
+      const br = button.getBoundingClientRect(),
+        cr = center.getBoundingClientRect();
+      const edge = br.left - bounds.left,
+        y = br.top - bounds.top + br.height / 2,
+        cx = cr.left - bounds.left + cr.width / 2;
+      if (input) {
+        const top = cr.top - bounds.top;
+        return `M${edge} ${y} H8 V${top - 16} H${cx} V${top}`;
+      }
+      const bottom = cr.bottom - bounds.top;
+      return `M${cx} ${bottom} V${bottom + 16} H8 V${y} H${edge}`;
+    }
+    function overviewConnector(a, b, bounds) {
+      const ar = a.getBoundingClientRect(),
+        br = b.getBoundingClientRect();
+      if (a === b) {
+        const right = ar.right - bounds.left,
+          mid = ar.top - bounds.top + ar.height / 2,
+          top = ar.top - bounds.top,
+          cx = ar.left - bounds.left + ar.width / 2;
+        return `M${right} ${mid} H${right + 10} V${top - 12} H${cx} V${top}`;
+      }
+      if (Math.abs(ar.left - br.left) < 3) return connector(a, b, bounds, true);
+      const forward = br.left > ar.left,
+        sign = forward ? 1 : -1;
+      const x1 = (forward ? ar.right : ar.left) - bounds.left,
+        x2 = (forward ? br.left : br.right) - bounds.left;
+      const y1 = ar.top - bounds.top + ar.height / 2,
+        y2 = br.top - bounds.top + br.height / 2;
+      const gutter = Math.min(ar.top, br.top) - bounds.top - 16;
+      return `M${x1} ${y1} H${x1 + 8 * sign} V${gutter} H${x2 - 8 * sign} V${y2} H${x2}`;
+    }
+    function validate(schema) {
+      if (!schema?.entityTypes || !schema?.relationshipTypes)
+        return "Schema needs entityTypes and relationshipTypes.";
+      if (!Object.keys(schema.entityTypes).length) return "At least one type is required.";
+      for (const [name, type] of Object.entries(schema.entityTypes))
+        if (
+          !type?.fields ||
+          Object.values(type.fields).some(
+            (field) => !["string", "number", "boolean", "json"].includes(field.type),
+          )
+        )
+          return `Invalid fields for ${name}.`;
+      for (const [name, definition] of Object.entries(schema.relationshipTypes))
+        for (const route of definition.workflow ?? []) {
+          if (
+            !schema.entityTypes[route.source] ||
+            !schema.entityTypes[route.target] ||
+            !["forward", "reverse"].includes(route.direction) ||
+            !route.label?.trim()
+          )
+            return `Invalid workflow path in ${name}.`;
+          if (
+            (definition.source && !definition.source.includes(route.source)) ||
+            (definition.target && !definition.target.includes(route.target))
+          )
+            return `Workflow endpoints must be permitted by ${name}.`;
+        }
+      return "";
+    }
+    app.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+      if (
+        !button.dataset.type &&
+        !button.dataset.route &&
+        !button.dataset.mode &&
+        !button.dataset.action
+      )
+        return;
+      const previousStage = state.stage;
+      if (button.dataset.type) {
+        state.selected = button.dataset.type;
+        state.editKind = "type";
+      }
+      if (button.dataset.route) {
+        state.selectedRoute = button.dataset.route;
+        state.editKind = "connection";
+        state.stage = "definition";
+      }
+      if (button.dataset.mode) {
+        if (button.dataset.mode === "Visual" && state.error) {
+          app.querySelector("textarea")?.focus();
+          return;
+        }
+        if (button.dataset.mode === "Text" && state.mode !== "Text")
+          state.text = JSON.stringify(state.draft, null, 2);
+        state.mode = button.dataset.mode;
+        state.stage = "definition";
+      }
+      switch (button.dataset.action) {
+        case "overview":
+          state.view = "overview";
+          state.stage = "flow";
+          break;
+        case "focus":
+          state.view = "focus";
+          state.stage = "flow";
+          break;
+        case "inspect-type":
+          state.editKind = "type";
+          state.stage = "definition";
+          break;
+        case "return-flow":
+          if (state.mode === "Text" && state.error) {
+            app.querySelector("textarea")?.focus();
+            return;
+          }
+          state.stage = "flow";
+          state.mode = "Visual";
+          break;
+        case "follow-route": {
+          const route = routes().find((value) => value.key === state.selectedRoute);
+          if (route) state.selected = route.to === state.selected ? route.from : route.to;
+          state.editKind = "type";
+          state.stage = "flow";
+          state.view = "focus";
+          break;
+        }
+        case "configure":
+          state.configure = true;
+          state.view = "focus";
+          state.stage = "definition";
+          state.mode = "Visual";
+          state.message = "";
+          break;
+        case "simulate-conflict":
+          state.currentVersion++;
+          state.message = "A newer project model is available. Your preview draft is retained.";
+          break;
+        case "save":
+          if (state.baseVersion !== state.currentVersion) {
+            state.error =
+              "Model version changed. Your draft remains captured against the earlier version; cancel to start again from the current preview.";
+            break;
+          }
+          state.saved = clone(state.draft);
+          state.baseVersion++;
+          state.currentVersion = state.baseVersion;
+          state.configure = false;
+          state.stage = "flow";
+          state.dirty = false;
+          state.message = "Preview model saved.";
+          break;
+        case "cancel":
+          state.draft = clone(state.saved);
+          state.baseVersion = state.currentVersion;
+          state.configure = false;
+          state.stage = "flow";
+          state.error = "";
+          state.message = "";
+          state.dirty = false;
+          break;
+        case "add-field": {
+          const controls = app.querySelector("[data-add-field]"),
+            nameInput = controls.querySelector('[name="field"]');
+          if (!nameInput.reportValidity()) return;
+          const name = nameInput.value;
+          if (Object.hasOwn(state.draft.entityTypes[state.selected].fields, name))
+            state.error = "That field already exists.";
+          else {
+            state.draft.entityTypes[state.selected].fields[name] = {
+              type: controls.querySelector('[name="type"]').value,
+            };
+            state.dirty = true;
+            state.error = "";
+          }
+          break;
+        }
+      }
+      render();
+      if (previousStage !== state.stage || button.dataset.action === "configure") {
+        const destination =
+          state.stage === "definition"
+            ? app.querySelector('[data-action="return-flow"]')
+            : app.querySelector(
+                `[data-action="${state.view === "overview" ? "overview" : "focus"}"]`,
+              );
+        destination?.focus();
+      }
+      remember();
+    });
+    app.addEventListener("change", (event) => {
+      const el = event.target;
+      if (el.dataset.editRoute === "label") {
+        return;
+      }
+      if (
+        !el.hasAttribute("data-selected") &&
+        !el.dataset.fieldType &&
+        !el.dataset.fieldRequired &&
+        !el.dataset.editRoute &&
+        !el.dataset.endpoints
+      )
+        return;
+      if (el.hasAttribute("data-selected")) {
+        state.selected = el.value;
+        state.view = "focus";
+        state.editKind = "type";
+        state.stage = "flow";
+        render();
+        remember();
+        return;
+      }
+      if (el.dataset.fieldType) {
+        state.draft.entityTypes[state.selected].fields[el.dataset.fieldType].type = el.value;
+        state.dirty = true;
+      }
+      if (el.dataset.fieldRequired) {
+        state.draft.entityTypes[state.selected].fields[el.dataset.fieldRequired].required =
+          el.checked;
+        state.dirty = true;
+      }
+      if (el.dataset.editRoute) {
+        const route = routes().find((value) => value.key === state.selectedRoute);
+        state.draft.relationshipTypes[route.name].workflow[route.index][el.dataset.editRoute] =
+          el.dataset.editRoute === "feedback" ? el.checked : el.value;
+        state.dirty = true;
+      }
+      if (el.dataset.endpoints) {
+        const route = routes().find((value) => value.key === state.selectedRoute);
+        state.draft.relationshipTypes[route.name][el.dataset.endpoints] = el.value
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean);
+        state.dirty = true;
+      }
+      state.error = validate(state.draft);
+      state.message = "";
+      render();
+      remember();
+    });
+    app.addEventListener("input", (event) => {
+      if (event.target.dataset.editRoute === "label") {
+        const route = routes().find((value) => value.key === state.selectedRoute);
+        state.draft.relationshipTypes[route.name].workflow[route.index].label = event.target.value;
+        state.dirty = true;
+        state.error = validate(state.draft);
+        app.querySelector('[data-action="save"]').disabled = !!state.error;
+        const routeNode = app.querySelector(`[data-route="${state.selectedRoute}"] span`);
+        if (routeNode)
+          routeNode.textContent = event.target.value + (route.feedback ? " · feedback" : "");
+        app.querySelector(".mp-draft-line > span").textContent =
+          `Based on v${state.baseVersion} · Current project v${state.currentVersion} · Unsaved changes`;
+        return;
+      }
+      if (event.target.id !== "mp-schema-text") return;
+      state.text = event.target.value;
+      state.dirty = true;
+      try {
+        const value = JSON.parse(state.text);
+        state.error = validate(value);
+        if (!state.error) {
+          state.draft = value;
+          if (!value.entityTypes[state.selected])
+            state.selected = Object.keys(value.entityTypes)[0];
+        }
+      } catch {
+        state.error =
+          "Invalid JSON. The text draft is retained; fix it before saving or switching to Visual.";
+      }
+      const save = app.querySelector('[data-action="save"]');
+      save.disabled = !!state.error;
+      app.querySelector(".mp-draft-line > span").textContent =
+        `Based on v${state.baseVersion} · Current project v${state.currentVersion} · Unsaved changes`;
+      const noticeEl = app.querySelector("[role=alert]");
+      if (noticeEl) noticeEl.textContent = state.error;
+      else if (state.error)
+        app
+          .querySelector(".mp-toolbar")
+          .insertAdjacentHTML(
+            "afterend",
+            `<p class="mp-notice" role="alert">${esc(state.error)}</p>`,
+          );
+      if (!state.error) app.querySelector("[role=alert]")?.remove();
+      remember();
+    });
+    window.addEventListener("openai:set_globals", (event) => {
+      const snapshot = event.detail?.globals?.widgetState?.privateContent;
+      if (snapshot && JSON.stringify(snapshot) !== rememberedSnapshot) {
+        restore(snapshot);
+        render();
+      }
+    });
+    const observer = new ResizeObserver(draw);
+    observer.observe(app);
+    render();
+    if (globalThis.Tweak) {
+      const options = { gaps: 22 };
+      const tweak = new Tweak({
+        container: root,
+        onChange: () => {
+          app.style.setProperty("--mp-gap", `${options.gaps}px`);
+          draw();
+        },
+      });
+      tweak.addSlider(options, "gaps", {
+        label: "Overview lane spacing",
+        min: 18,
+        max: 34,
+        unit: "px",
+      });
+    }
+  })();
+</script>

@@ -1,0 +1,122 @@
+# Project studio implementation contract
+
+Status: historical contract, superseded by the shared medical-device map direction in [the UX plan](../../ux-plan.md). Originally adopted implementation contract for the authorized native work, October 13, 2026. This resolves the remaining composition and scope choices for the authorized Project studio work. It is grounded in the owner's reported needs and existing native contracts; the local studies illustrate behavior and do not independently establish requirements or native correctness. No additional layout variants or blanket approval request are recommended.
+
+## Decision
+
+Implement **one scope-first Studio** with stable Project, Work, Evaluations, Configurations and Model areas. Work owns the library and its Graph/Table/Trace/Reading/Matrix representations. Those representations are not duplicated as primary rail destinations. Existing deeper tools may retain their internal controllers and compatible URLs; that is not a reason to expose a second competing workspace.
+
+Keep query tools in secondary project navigation, distinct from current-scope representations. Select the exact relationship/direction pair in one visible Family scope control without repeating it as a second permitted-scope control set. Comparison columns are compact visible choices; constrained toolbars may scroll locally while retaining keyboard access and revealing the active representation. Saved-view selection and Save view remain visible; editing the saved definition/name is an explicit task. Project home prioritizes saved work when present and distinguishes prepared example learning scopes. Hide pagination when neither another nor a previous page exists. Recorded endpoints use a visible link treatment and guarded inspection, retaining the starting scope; only explicit exploration changes that origin. Place contextual creation beside its actual selected source.
+
+Documentation is a secondary project destination alongside those five working areas. Read existing curated guides rather than duplicate their prose in page chrome. Desktop topic navigation and a narrow-screen topic selector serve the same reader. Diagrams represent process structure; prose explains evidence boundaries and sources. Keep readable diagram scale with deliberate Fit. Reading guides retains native task drafts and does not require a successful project-schema read. In an unscoped empty saved-view catalogue, omit controls with no available scope or retained work; show them for saved choices, any draft, loading, errors or recovery. Search occupies the mobile filter row, followed by Type and Clear together; count loaded items against matches/project totals without repeating identical totals.
+
+At desktop widths, reading/exploration uses a work surface and one closable docked contextual inspector. Authoring, connection proposals, captured comparison/review and selected Model definition editing become **primary task stages**, with a named Return and compact source context. At constrained widths, selection itself becomes a focused reading stage. Do not place the active draft or comparison below a long table/diagram.
+
+There is no remaining owner preference required to make this contract concrete. Judge the native candidate through the complete small tasks below; correct demonstrated problems without reopening the whole design as another set of variants.
+
+## Basis and source authority
+
+- Owner-selected Project studio; UN-001–005 in [product vision](../../user-needs.md#product-vision); PN-01–09 and UR-16–23 in [user needs](../../user-needs.md); the ND/SC candidate tasks in [user journeys](../../user-journeys.md).
+- [Complete task contract](complete-task-contract.md) and [independent product review](../team-review/complete-journey-product.md) establish task boundaries and the structural findings. They remain simulated critique, not human research.
+- The inspected reference board supplies transferable interaction principles: Carbon scoped graph/detail, Polarion continuous document reading, Jama contextual trace work, Notion reversible side inspection, React Flow local selected-object actions, and the owner-supplied datagrid/workflow/inline-edit screenshots. Borrow scoped composition, sibling readability and local action placement; do not copy vendor assets, inferred hierarchies or readiness semantics.
+- Native authority: [views/query types](../../../src/application/views.ts), [presentation metadata](../../../src/core/presentation.ts), [workspace](../../../test/legacy-ui/components/workspace.tsx), [inspector](../../../test/legacy-ui/components/workspace-inspector.tsx), [schema draft/editor](../../../ui/schema-editor.tsx), [evidence owner](../../../ui/evidence.tsx), [saved-view controller](../../../test/legacy-ui/components/use-saved-views.ts), and [architecture](../../architecture.md). Production behavior follows these native records/commands, not the prototype's local state.
+
+## Desktop selection and primary task stages
+
+| Mode                           | Main surface                                                                                        | Context and actions                                                                                                                                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Graph/Trace read               | Actual bounded topology or an explicit relationship recipe                                          | Docked selected item/link inspector. Compact identity in the drawing; complete selected statement in the inspector. Close returns width; selection remains.                                                 |
+| Table/Reading read             | Full scoped statements/fields, with siblings continuously available                                 | Docked actions, connected context and relevant evidence. Do not repeat the selected full statement already visible in the work surface. Offer full-item reading when its row is outside the rendered scope. |
+| Matrix read                    | One declared source/relationship/target mapping question                                            | Selected pair/connection context and explicit absent/partial-read meaning. No inference of verification or implementation from a filled cell.                                                               |
+| Create/edit                    | One full native schema-aware draft                                                                  | Compact read-only source statement and sibling identities; one Save/Cancel pair. “In context of” until a connection is recorded. Named Return permits contextual inspection while retaining the draft.      |
+| Connect/edit link              | Source → named relationship → target proposal, complete endpoint statements and relevant attributes | Search actual compatible targets, inspect candidate context, then explicitly Record/Cancel. Selection is not saving. Existing duplicate-pair/version guards remain.                                         |
+| Captured result/review         | Recorded outcome, complete declared-input state and selected before/after difference                | One comparison/review owner reached from scope or catalogue. Judgment retains evidence; named Return restores origin/selection and retained drafts.                                                         |
+| History                        | Exact native captured revision/statement, read-only                                                 | Current identity is explicitly separate. Return restores current scope; current receipt freshness never appears as historical evidence.                                                                     |
+| Model definition/configuration | Selected type or workflow/native relationship definition                                            | Primary properties stage with named Return to retained overview/focus. Visual/Text share one captured schema draft and one Save model/Cancel owner.                                                         |
+
+Use the available native field definitions and typed controls. Preserve optional/unknown nested native properties and existing fields; do not promote a field name such as `acceptance`, `owner` or `status` into an enforced industry workflow. Long string content gets adequate editable space; any string remains inspectable/editable without mandatory prose syntax. If additional field-presentation metadata is later needed, it is a separate explicit capability, not hardcoded domain inference.
+
+Creation and connection are **two deliberate steps** for this implementation. Create saves the identity; the next task shows a proposed connection against the retained source. Canceling that proposal leaves the created item unlinked and says so. Do not automatically select a parent, add a relationship or claim implementation/test completion. The native changeset engine can support combined commands, but a combined create/connect UI is outside this contract.
+
+## Constrained-width behavior and evidence hierarchy
+
+When the docked work/inspector pair no longer offers readable content, use a focused selected-object stage with a visible Return to the retained scope. Decide the breakpoint from content fit, not a scaled screenshot. Navigation remains compact and labeled; useful local representations stay visible when they affect the active work, using an accessible toolbar overflow only when the width requires it. No general Advanced accordion hides frequent controls.
+
+Suppress duplicate reading only for the exact fields already visible in the loaded work surface. A shared target, root or unshown field still needs its complete content. Continuous Reading keeps core statements visible. Return from editing pauses the captured form and restores scope position; Resume editing restores its attempted values and original base. Any separate read values must be labeled as loaded values so they cannot be mistaken for the retained draft.
+
+For mobile captured evidence, use this reading order:
+
+1. Result identity and recorded outcome; captured configuration when present; complete changed/unknown/matching summary.
+2. Selected input's exact captured/current revisions and difference. Prefer a changed input initially, then unknown, then matching; explicit receipt-edge input selection is retained even when another input changed.
+3. **The complete compact declared-input list**, with recognizable identity/title, captured/current revision and state for every input. Do not hide matching inputs or another changed/unknown input in a collapsed group or a separate modal. Selecting a row brings its comparison into the readable primary location while retaining result/review state.
+4. Review action, followed by decision/rationale while the comparison and whole input list remain available. No sticky review action bypasses the input context.
+
+Desktop places the same complete list beside the difference. Both layouts use the native full comparison result, not an independently fetched reduced list or a fabricated census. If the read is pending, failed or exceeds native bounds, pause review and state the actual problem. A current unavailable input retains captured content and shows unknown; it is not silently omitted. This does not introduce a requirement to approve each input individually or pretend that a matching version proves technical sufficiency.
+
+## Neighborhood depth and Trace steps are different controls
+
+**Graph neighborhood depth** counts ordinary connections followed from the scope origin in both directions. Keep the existing 1–6 native depth bound, recorded arrow meaning, shared identity and cycle termination. Native receipt inputs are provenance, not additional ordinary-depth recursion. Loaded counts/boundary disclosure and overflow errors remain visible.
+
+**Trace steps** selects a prefix of a declared ordered relationship recipe. Use `ChainQuery.steps` with its actual types, meanings and incoming/outgoing direction. The complete recipe remains available; selecting fewer steps does not overwrite it. An eight-column recipe has at most seven relationship steps. Trace does not inherit Graph depth or display that control. Column headings name the native meaning/direction; empty cells remain explicit and duplicate links retain their own identity.
+
+Use actual Aster allocation → output → protocol → run, Gatherline story → work → scenario → run, and Orbit requirement → design → evaluation recipes. Direct criteria-to-protocol/evaluation routes are separate named recipes or explicit selected-object context. Do not let a shortest path erase the design being evaluated. Shared identities remain recognizable across branches; the representation must not imply that horizontal row alignment creates a one-to-one relationship absent from the data.
+
+The existing chain API can read a type/search scope containing several roots; it does not currently promise an exact-ID root selector. If a selected-origin Trace must be strictly rooted by identity, add a small explicit validated `rootId` query/presentation extension rather than pretend a literal substring search is exact. Do not infer or silently choose a different root.
+
+## Evaluation authoring is an engineering task
+
+The current authoring form exposes field names and relationship UUIDs as text inputs. The customer-role and QA review identify a task-design gap, not a styling problem. Replace it with one retained authoring owner: named output with its full selected statement and outcome, a compact complete declaration list, and one active input editor. Desktop uses the available width for the outcome and declaration work; narrow layouts put the selected editor before the complete list. Keep Add, Remove and Record visible and deliberate. Return pauses the task without discarding any declaration or outcome.
+
+Select native items by key/title and show their actual chosen content. Selection captures the output/current input version and schema; refresh must not silently adopt a new version. Changed or unavailable reads retain the draft and pause Record until explicit adoption or recovery. Exact historical revisions use their own native content/schema, including fields no longer in the current schema. Configuration members use the immutable member pins. External inputs require an exact observation and cannot use native annotation-field scopes.
+
+Use explicit Whole item / Selected fields choices. Field choices come from the selected revision's schema and show readable values, including absent optional fields. Selected fields requires at least one choice. Use explicit Direct dependency / Recorded path choices. Direct dependency declares an input without implying a stored graph link. A path is built one actual outgoing connection at a time from the output until it reaches the chosen input; show ordered named endpoints and relationship meanings. Keep pagination truthful, allow native entity cycles through distinct links, and do not invent shortest paths or reverse stored directions. Exact historical/configuration inputs remain direct as required by the native contract.
+
+Capture the selected path identities and versions. Add optional aligned `expectedPathVersions` to the native declaration so the receipt transaction rejects changed connections atomically rather than rebasing an inspected path. Existing callers without guards retain their current contract. This is an additive capture guard, not a storage migration or new dependency kind. Deliberate output/input/revision/configuration changes must reconcile incompatible fields, observations and paths visibly; no hidden stale values may be serialized. Supersession applies only to the selected output identity.
+
+The unscoped Work library is a compact Key/Title/Type/Revision table in native page order. Type appears once per row, with a readable authored name; the Type filter replaces partial-page type-group disclosures. Keyless titles appear once. One row action retains native identity/dirty-selection guards and Return focus. Use the library container's available width to switch to stacked rows, including narrow panes on desktop. This transfers the original datagrid reference's aligned scanning pattern without adding sorting or an unrelated settings panel.
+
+## Presets belong to presentation metadata
+
+A named working scope/recipe is authored by the user or explicitly supplied by an example guide. Its name describes the question; its definition states the actual origin, relationship/direction or chain steps. Save/update it through the existing version-guarded saved-view owner. Presentation changes do not create native engineering revisions, alter schemas or establish readiness.
+
+Start with the **existing** `FamilyView` and `ChainView` capabilities. Reuse actual seeded task/chain definitions as clearly labeled example presets; ordinary projects receive no automatic “Engineering trace” relevance set based on their type names. Users can create/save equivalent scopes.
+
+For graph relationship-set presets, make one small explicit presentation/query extension:
+
+- Persist the selected relationship types and neighborhood depth as optional saved graph settings in presentation metadata, not schema workflow or native entity fields. Keep existing saved views valid and validate changed settings through the current saved-view version contract.
+- Validate actual schema relationship names and apply the selected set while following ordinary links in the native bounded graph read. The existing `GraphQuery` has `depth` but **no relationship-set filter**; adding that filter requires an explicit application/interface contract and meaningful bounded/cyclic tests.
+- Omitted selection means All recorded connection types. An explicitly empty set means follow none; do not confuse it with All. Selected types do not infer parentage, relevance, impact or completeness.
+- Display the active set and its truthful bounded counts. All connections is always available. Changing the set is a scope-definition change, not a silent presentation optimization. Historical reads validate against their historical schema and retain temporal limits.
+
+If that extension is outside the first integrated slice, ship the existing authored family/chain presets and **All connections** Graph. Do not emulate “connections followed” by filtering a graph after an unrestricted traversal while claiming the set governed traversal or reduced its bounds. This is a capability boundary, not a reason to delay the core author/read/review composition.
+
+## Full Model, Visual/Text and native saving
+
+One Model entry in the Studio shell reads the current project's actual schema. Its overview or selected inputs/outputs map uses **only authored `workflow` metadata**. Types without authored routes remain visible and explicitly unconnected; they do not receive invented process paths. Exact native relationship permissions are a distinct readable meaning. Requirements supply criteria and designs/implementations supply what is tested. Feedback/loops are authored, not lifecycle execution.
+
+Configure captures the native schema version. Visual and guided Text (with advanced JSON where already available) operate on that one draft. Selected properties become a primary stage; Return preserves type/path/focus and the draft. Do not leave a second editable definition in the diagram or a read panel. Invalid JSON remains intact and blocks unsafe Visual/Save transitions until repaired. Any/None endpoint constraints keep their current semantics.
+
+Switching Visual/Text preserves that selected-definition stage instead of prepending the complete register. Advanced JSON explicitly addresses the whole schema, and its Return cannot discard invalid text. The readonly Model opens at readable 100% with the complete topology retained. Focus type navigates/highlights within that map; Inputs and outputs is a separate deliberate scope choice. Fit is a secondary locator, not the default reading scale. Zoom, focus and definition Return preserve camera context; fitting a large map is not evidence that its labels are readable at thumbnail scale.
+
+Save model uses the existing `/api/schema` mutation with the captured expected version and native live-record validation. Close the draft only after confirmed success; refresh all affected projections while retaining unrelated captured drafts. Rejected validation/conflict keeps attempted content; explicit recovery/export/restart preserves the existing guard. Unknown transport outcomes remain unknown until authoritative inspection. No model changes are saved merely by dragging a node or switching representations. Canvas arrangement remains in-session presentation unless an explicit persistence capability is separately added.
+
+The consolidated prototype's definition rehearsal does not change its Work schema. Production integration must use the native authoritative schema for both Model and Work, so a successful schema change affects available types/fields/links consistently. Do not ship the rehearsal's split definitions as application behavior.
+
+## Scope and draft continuity
+
+Retain origin, active representation, selected identity/link, explicit family/recipe settings, temporal context and return history as presentation state. There is one draft owner per canonical object/task; reuse existing guards/controllers, not copies of editable data in each representation.
+
+- Selecting a neighbor changes inspection. “Use as starting scope” changes origin explicitly; Return restores the previous scope/recipe.
+- Returning from a primary task stage may pause and retain its draft for context inspection. Its Return to draft entry appears only when that draft is not already the primary surface.
+- Before replacing an incompatible dirty item/link/schema/review draft, require deliberate discard or keep it retained; cancellation preserves the current selection/scope. Model and Work can retain independent drafts across area navigation without silently adopting new versions.
+- A failed/pending read or selected identity outside the loaded scope retains known content/draft and pauses affected writes. It does not convert the view into an empty result or permit saving against an unverified snapshot.
+- Reviews pin the existing receipt/comparison token. Relevant drift requires deliberate adoption; changing receipt cannot transfer the rationale silently. Return from a paused review restores that draft.
+- Failed/unknown writes use existing mutation recovery and no automatic replay. Page reload does not promise draft recovery: current native drafts are in-session, unlike the prototype's preview storage.
+
+## Delivery and verification boundary
+
+Integrate in complete small tasks using isolated fixtures: Aster contextual CMP-06 create then explicit allocation; Gatherline newly authored diagnostic test connected to STORY-12/WORK-10 without a run; Orbit existing EVAL-R04 candidate reuse without changing its old capture; each project's changed-input review and return; current Model → Configure Visual/Text → native Save/Cancel → retained Work.
+
+Verify actual save/reload, dirty navigation/return, schema/object conflicts, failed/unknown mutation recovery, historical read-only treatment, complete-input review, and desktop/narrow composition. Test any new query/presentation extensions separately for bounds, direction, cycles and version compatibility. Keep original passing evidence where behavior is unchanged; tests and simulated reviewers are technical/design evidence, not representative human acceptance.
+
+Explicit non-goals: automatic relevance/impact/readiness, mandatory industry lifecycle, gates/execution, inferred hierarchy or implementation, source-code import, new approval policy, complete historical build graphs, baseline export/restoration, persistent graph arrangement, guaranteed draft recovery across reload, multi-project/team governance, production deployment or owner-database migration. Existing supported capability must not be silently removed to satisfy the new shell.

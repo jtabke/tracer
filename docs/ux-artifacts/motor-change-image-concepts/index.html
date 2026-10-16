@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracer — motor-change concept exploration</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+        color: #20252b;
+        background: #f6f7f8;
+      }
+      body {
+        max-width: 1600px;
+        margin: auto;
+        padding: 24px;
+        line-height: 1.5;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      a {
+        color: #174c91;
+      }
+      a:focus-visible {
+        outline: 3px solid #174c91;
+        outline-offset: 4px;
+      }
+      .notice {
+        border-left: 4px solid #a36712;
+        background: #fff4df;
+        padding: 12px 16px;
+      }
+      section {
+        margin: 36px 0;
+        padding: 20px;
+        border: 1px solid #ccd0d5;
+        background: white;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      figure {
+        margin: 16px 0;
+      }
+      figcaption {
+        margin-top: 12px;
+      }
+      @media (max-width: 700px) {
+        body {
+          padding: 12px;
+        }
+        section {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>One motor-change task, three different starting points</h1>
+      <p class="notice">
+        <strong>Static concept images, not a working app or engineering assessment.</strong> Drawn
+        controls do not respond. All relationships, statuses and proposal text are illustrative.
+      </p>
+      <p>
+        For each concept: where would you start, what would you inspect next, and what would help
+        explain whether an unchanged system requirement still needs assessment?
+      </p>
+      <nav aria-label="Concepts">
+        <a href="#a">A · Change-first</a>
+        <a href="#b">B · System-first</a>
+        <a href="#c">C · Comparison-first</a>
+        <a href="README.md">Assumptions and generation receipt</a>
+      </nav>
+    </header>
+    <main>
+      <section id="a" aria-labelledby="title-a">
+        <h2 id="title-a">A · Start with a change</h2>
+        <p>
+          A proposal and investigation list keep the next assessment question close to the edit.
+        </p>
+        <figure>
+          <a href="a-change-first.png" aria-label="Open full-size change-first concept image"
+            ><img
+              src="a-change-first.png"
+              width="1586"
+              height="992"
+              alt="Change-first concept: software proposal, an illustrative investigation list, and a mechanical-design assessment question. System intent is unchanged and evidence applicability is unknown."
+          /></a>
+          <figcaption>
+            Challenge: does this explain why something needs attention, or imply that the tool has
+            already computed complete impact? Proposal wording is generated filler.
+          </figcaption>
+        </figure>
+      </section>
+      <section id="b" aria-labelledby="title-b">
+        <h2 id="title-b">B · Start with system intent</h2>
+        <p>
+          An unchanged system requirement remains the anchor while you inspect contributing work.
+        </p>
+        <figure>
+          <a href="b-system-first.png" aria-label="Open full-size system-first concept image"
+            ><img
+              src="b-system-first.png"
+              width="1586"
+              height="992"
+              alt="System-first concept: a central unchanged system delivery requirement surrounded by software, motor, mechanics and evidence cards, with a selected software proposal panel."
+          /></a>
+          <figcaption>
+            Challenge: does this preserve the bigger picture?
+            <strong
+              >The generated connections and arrow directions are not established device
+              relationships.</strong
+            >
+          </figcaption>
+        </figure>
+      </section>
+      <section id="c" aria-labelledby="title-c">
+        <h2 id="title-c">C · Compare before deciding</h2>
+        <p>
+          Current and proposed information sit side by side, with unresolved assessment questions.
+        </p>
+        <figure>
+          <a
+            href="c-comparison-first.png"
+            aria-label="Open full-size comparison-first concept image"
+            ><img
+              src="c-comparison-first.png"
+              width="1586"
+              height="992"
+              alt="Comparison-first concept: aligned current and proposed rows highlight a placeholder software change, unchanged system intent, potential impact questions and unknown evidence applicability."
+          /></a>
+          <figcaption>
+            Challenge: can you tell a direct edit from a possible consequence? This shows
+            placeholder wording, not a real motor-limit value difference.
+          </figcaption>
+        </figure>
+      </section>
+    </main>
+    <footer>
+      <p>
+        No concept selected. No usability validation claimed. These raster images are not editable
+        Excalidraw scenes.
+      </p>
+    </footer>
+  </body>
+</html>

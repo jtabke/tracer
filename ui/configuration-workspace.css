@@ -1,0 +1,185 @@
+.configuration-workspace {
+  container-type: inline-size;
+  min-width: 0;
+  padding: 1.5rem;
+}
+.configuration-workspace-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.configuration-workspace-header > div {
+  margin-right: auto;
+}
+.configuration-workspace-header h2,
+.configuration-workspace-header p {
+  margin: 0 0 0.35rem;
+}
+.configuration-workspace-header p {
+  color: var(--color-muted);
+}
+.configuration-catalog-layout.has-selection {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.75fr) minmax(0, 2fr);
+  gap: 2rem;
+  align-items: start;
+}
+.configuration-catalog,
+.configuration-selected,
+.configuration-details,
+.configuration-member-layout > section {
+  min-width: 0;
+}
+.configuration-catalog-rows,
+.configuration-member-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+}
+.configuration-catalog-rows {
+  display: grid;
+  gap: 0.5rem;
+  max-height: min(65vh, 650px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.configuration-member-list ul {
+  max-height: min(65vh, 650px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.configuration-catalog-rows button,
+.configuration-member-list button {
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+}
+.configuration-catalog-rows button > *,
+.configuration-member-list button > * {
+  display: block;
+}
+.configuration-catalog-rows span,
+.configuration-catalog-rows small,
+.configuration-member-list span {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.configuration-catalog-rows button[aria-pressed="true"],
+.configuration-member-list button[aria-pressed="true"] {
+  background: var(--color-emphasis);
+  border-color: var(--color-accent);
+}
+.configuration-catalog-return {
+  display: none;
+}
+.configuration-details > header h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+.configuration-details > header p {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+.configuration-member-layout {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.4fr);
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+.configuration-member-list h4 {
+  margin: 0 0 0.5rem;
+}
+.configuration-member-list li + li {
+  margin-top: 0.35rem;
+}
+.configuration-member-list button {
+  padding: 0.55rem 0.75rem;
+}
+.configuration-member-list button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.configuration-member-reading {
+  background: var(--color-panel);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  align-self: start;
+}
+.configuration-member-reading h4 {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+}
+.configuration-pinned-statement {
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+.configuration-pin-version,
+.configuration-identity,
+.configuration-boundary {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+.configuration-boundary {
+  display: block;
+  margin-top: 1rem;
+}
+.configuration-task {
+  max-width: 65rem;
+}
+.configuration-task > h2 {
+  margin: 0.75rem 0 1.25rem;
+}
+.configuration-task > fieldset {
+  border: 0;
+  padding: 0;
+}
+.configuration-task > fieldset > legend {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+.configuration-task label {
+  display: grid;
+  gap: 0.4rem;
+  margin: 1rem 0;
+}
+.configuration-task input,
+.configuration-task select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+@container (max-width: 800px) {
+  .configuration-workspace-header.has-selection > div {
+    display: none;
+  }
+  .configuration-workspace-header.has-selection {
+    margin-bottom: 0.75rem;
+  }
+  .configuration-catalog-layout.has-selection {
+    display: block;
+  }
+  .has-selection > .configuration-catalog {
+    display: none;
+  }
+  .configuration-catalog-return {
+    display: inline-flex;
+    margin-bottom: 1rem;
+  }
+  .configuration-member-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .configuration-member-reading {
+    order: -1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 650px) {
+  .configuration-workspace {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,25 @@
+node_modules/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+coverage/
+dist/
+playwright-report/
+test-results/
+.fallow/
+/tracer-demo/
+
+# Local tooling and operating-system artifacts
+.DS_Store
+.pi/
+.playwright-cli/
+
+# Generated review output (keep selected documentation images in docs/images/)
+/output/
+/docs/output/
+
+# Local environment settings; commit only deliberately authored examples
+.env
+.env.*
+!.env.example
+*.log

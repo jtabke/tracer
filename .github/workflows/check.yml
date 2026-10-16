@@ -1,0 +1,55 @@
+name: Check
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - LICENSE
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - LICENSE
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Run browser coverage and Fallow gates as well
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "24.15.0"
+          cache: npm
+      - run: npm ci
+      - name: Formatting, types, hooks, unit tests and production build
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.full) }}
+        run: |
+          npm run format:check
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+      - name: Install Chromium
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full }}
+        run: npx playwright install --with-deps chromium
+      - name: Full browser coverage and quality checks
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full }}
+        run: npm run check

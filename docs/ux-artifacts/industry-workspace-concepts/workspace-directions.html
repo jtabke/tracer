@@ -1,0 +1,813 @@
+<div class="viz-carousel" aria-label="Tracer workspace directions">
+  <section data-variant="Family and trace" aria-label="Family and trace workspace">
+    <div id="tracer-family-concept" class="tw-app" data-direction="family" data-placement="below">
+      <header class="tw-header">
+        <strong>Tracer</strong><span>Orbit R1 robotic vacuum</span
+        ><span class="tw-secondary">Proposed workspace · illustrative records</span>
+      </header>
+      <div class="tw-toolbar">
+        <div>
+          <span class="tw-secondary">Product → Cleaning → Suction</span>
+          <h2>Blower-control design</h2>
+        </div>
+        <div class="tw-actions">
+          <button class="cursor-interaction" type="button" data-task="trace" aria-pressed="true">
+            Follow the trace</button
+          ><button class="cursor-interaction" type="button" data-task="change" aria-pressed="false">
+            Investigate change
+          </button>
+        </div>
+      </div>
+      <div class="tw-family-layout">
+        <nav class="tw-family-nav" aria-label="Cleaning responsibilities">
+          <span class="tw-secondary">Sibling responsibilities</span
+          ><button class="cursor-interaction" type="button" data-record="pickup">
+            Debris pickup</button
+          ><button class="cursor-interaction" type="button" data-record="energy">
+            Energy allocation</button
+          ><button class="cursor-interaction" type="button" data-record="thermal">
+            Thermal response</button
+          ><button class="cursor-interaction" type="button" data-record="timing">
+            Command timing</button
+          ><button class="cursor-interaction" type="button" data-record="acoustic">
+            Acoustic behavior</button
+          ><span class="tw-secondary">Shared design</span
+          ><button
+            class="cursor-interaction"
+            type="button"
+            data-record="firmware"
+            aria-pressed="true"
+          >
+            DES-01 · firmware v2
+          </button>
+        </nav>
+        <div class="tw-family-work">
+          <div class="tw-scope">
+            <span data-scope>Recorded requirement → design → evaluation paths</span
+            ><span class="tw-secondary">Selection stays in context</span>
+          </div>
+          <div
+            class="tw-family-table"
+            role="table"
+            aria-label="Engineering responsibilities and traces"
+          >
+            <div class="tw-table-head" role="row">
+              <span role="columnheader">Responsibility</span
+              ><span role="columnheader">Contributing design</span
+              ><span role="columnheader">Evaluation scope</span>
+            </div>
+            <div class="tw-table-row" role="row">
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="pickup">
+                  REQ-R01 · blower envelope
+                </button>
+                <p class="tw-statement">Provide the flow used by the defined pickup profile.</p>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="firmware">
+                  DES-01 · firmware v2
+                </button>
+                <p class="tw-statement">Shared with energy, heat, timing and sound.</p>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="pickupResult">
+                  EVAL-R01 · pickup</button
+                ><span class="tw-status">Simulated target not met</span>
+              </div>
+            </div>
+            <div class="tw-table-row" role="row">
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="energy">
+                  REQ-R03 · energy allocation
+                </button>
+                <p class="tw-statement">Draft 60 W whole-product duty allocation.</p>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="firmware">
+                  DES-01 · firmware v2</button
+                ><button class="cursor-interaction" type="button" data-record="power">
+                  DES-04 · power design
+                </button>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="energyResult">
+                  EVAL-R02 · energy</button
+                ><span class="tw-status" data-energy-label>Captured firmware v1</span>
+              </div>
+            </div>
+            <div class="tw-table-row" role="row">
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="thermal">
+                  REQ-R04 · driver temperature
+                </button>
+                <p class="tw-statement">Monitor and derate at the selected limit.</p>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="firmware">
+                  DES-01 · firmware v2</button
+                ><span>DES-05 · driver board</span>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="thermal">
+                  EVAL-R03 · thermal</button
+                ><span class="tw-status">Simulated partial scope</span>
+              </div>
+            </div>
+            <div class="tw-table-row" role="row">
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="timing">
+                  REQ-R05 · command timing
+                </button>
+                <p class="tw-statement">Coordinate actuation with navigation.</p>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="firmware">
+                  DES-01 · firmware v2</button
+                ><span>DES-06 · navigation</span>
+              </div>
+              <div role="cell"><span class="tw-status">No recorded timing evaluation</span></div>
+            </div>
+            <div class="tw-table-row" role="row">
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="acoustic">
+                  REQ-R10 · acoustic profile
+                </button>
+                <p class="tw-statement">Evaluate motor, mounting and speed together.</p>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="firmware">
+                  DES-01 · firmware v2</button
+                ><span>DES-08 · mounting</span>
+              </div>
+              <div role="cell">
+                <button class="cursor-interaction" type="button" data-record="acoustic">
+                  EVAL-R05 · acoustics</button
+                ><span class="tw-status">Defined · no result</span>
+              </div>
+            </div>
+          </div>
+          <div class="tw-investigation" hidden>
+            <strong>CHG-R01 · explicit assessment scope</strong
+            ><span>Pickup · runtime · heat · sound · command interface</span
+            ><span class="tw-secondary"
+              >Recorded dependencies · technical dispositions remain open</span
+            >
+          </div>
+          <aside class="tw-detail" aria-label="Selected record">
+            <div class="tw-detail-heading">
+              <span class="tw-secondary" data-selected-key>DES-01 · design · current v2</span
+              ><span class="tw-status" data-selected-status>Assessment open</span>
+            </div>
+            <h3 data-selected-title>Blower-control firmware design</h3>
+            <p data-selected-statement>
+              Proposed duty-profile increase contributes to several product constraints. Earlier
+              evaluations captured v1.
+            </p>
+            <div class="tw-detail-links" data-selected-paths>
+              REQ-R01 · REQ-R03 · REQ-R04 · REQ-R05 · REQ-R10
+            </div>
+            <div class="tw-actions">
+              <button class="cursor-interaction" type="button" data-record="build">
+                Inspect recorded configuration</button
+              ><button class="cursor-interaction" type="button" data-record="energyResult">
+                Compare evaluation inputs
+              </button>
+            </div>
+            <div data-comparison hidden>
+              <div class="tw-comparison">
+                <span>Recorded input</span><strong>DES-01 v1</strong><span>Current identity</span
+                ><strong>DES-01 v2</strong>
+              </div>
+              <span class="tw-secondary">Input changed · outcome and review are separate</span>
+            </div>
+            <div class="tw-selection-live" aria-live="polite"></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section data-variant="System and evidence" aria-label="System and evidence workspace" hidden>
+    <div id="tracer-system-concept" class="tw-app" data-direction="map" data-placement="below">
+      <header class="tw-header">
+        <strong>Tracer</strong><span>Orbit R1 robotic vacuum</span
+        ><span class="tw-secondary">Proposed workspace · illustrative records</span>
+      </header>
+      <div class="tw-toolbar">
+        <div>
+          <span class="tw-secondary">Cleaning → Shared blower control</span>
+          <h2>Design in its system context</h2>
+        </div>
+        <div class="tw-actions">
+          <button class="cursor-interaction" type="button" data-task="trace" aria-pressed="true">
+            Follow the trace</button
+          ><button class="cursor-interaction" type="button" data-task="change" aria-pressed="false">
+            Investigate change
+          </button>
+        </div>
+      </div>
+      <div class="tw-scope">
+        <span data-scope>Selected design · recorded constraints and evaluations</span
+        ><span class="tw-secondary">Bounded dependency neighborhood</span>
+      </div>
+      <div class="tw-map" aria-label="Recorded paths around blower firmware">
+        <svg
+          class="tw-map-lines"
+          viewBox="0 0 900 360"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M180 55 L450 180 M180 180 L450 180 M180 305 L450 180 M450 180 L720 55 M450 180 L720 180 M450 180 L720 305"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+          />
+        </svg>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="pickup"
+          style="grid-column: 1; grid-row: 1"
+        >
+          <span class="tw-secondary">Allocated requirement</span><strong>Blower envelope</strong
+          ><span>REQ-R01</span>
+        </button>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="energy"
+          style="grid-column: 1; grid-row: 2"
+        >
+          <span class="tw-secondary">Allocated requirement</span><strong>Energy allocation</strong
+          ><span>REQ-R03</span>
+        </button>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="acoustic"
+          style="grid-column: 1; grid-row: 3"
+        >
+          <span class="tw-secondary">Allocated requirement</span><strong>Acoustic profile</strong
+          ><span>REQ-R10</span>
+        </button>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="firmware"
+          aria-pressed="true"
+          style="grid-column: 2; grid-row: 2"
+        >
+          <span class="tw-secondary">Shared implementation</span><strong>Blower control</strong
+          ><span>DES-01 · current v2</span><span class="tw-status">CHG-R01 · open</span>
+        </button>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="pickupResult"
+          style="grid-column: 3; grid-row: 1"
+        >
+          <span class="tw-secondary">Evaluation</span><strong>Pickup shortfall</strong
+          ><span>EVAL-R01 · simulated</span>
+        </button>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="energyResult"
+          style="grid-column: 3; grid-row: 2"
+        >
+          <span class="tw-secondary">Evaluation</span><strong>Energy evidence</strong
+          ><span>EVAL-R02 · simulated</span
+          ><span class="tw-status" data-energy-label>Captured firmware v1</span>
+        </button>
+        <button
+          class="tw-node cursor-interaction"
+          type="button"
+          data-record="acoustic"
+          style="grid-column: 3; grid-row: 3"
+        >
+          <span class="tw-secondary">Evaluation definition</span><strong>Acoustic setup</strong
+          ><span>EVAL-R05 · no result</span>
+        </button>
+      </div>
+      <div class="tw-investigation" hidden>
+        <strong>CHG-R01 · explicit assessment scope</strong
+        ><span>Pickup · runtime · heat · sound · command interface</span
+        ><span class="tw-secondary"
+          >Recorded dependencies · technical dispositions remain open</span
+        >
+      </div>
+      <aside class="tw-detail" aria-label="Selected record">
+        <div class="tw-detail-heading">
+          <span class="tw-secondary" data-selected-key>DES-01 · design · current v2</span
+          ><span class="tw-status" data-selected-status>Assessment open</span>
+        </div>
+        <h3 data-selected-title>Blower-control firmware design</h3>
+        <p data-selected-statement>
+          Proposed duty-profile increase contributes to several product constraints. Earlier
+          evaluations captured v1.
+        </p>
+        <div class="tw-detail-links" data-selected-paths>
+          REQ-R01 · REQ-R03 · REQ-R04 · REQ-R05 · REQ-R10
+        </div>
+        <div class="tw-actions">
+          <button class="cursor-interaction" type="button" data-record="build">
+            Inspect recorded configuration</button
+          ><button class="cursor-interaction" type="button" data-record="energyResult">
+            Compare evaluation inputs
+          </button>
+        </div>
+        <div data-comparison hidden>
+          <div class="tw-comparison">
+            <span>Recorded input</span><strong>DES-01 v1</strong><span>Current identity</span
+            ><strong>DES-01 v2</strong>
+          </div>
+          <span class="tw-secondary">Input changed · outcome and review are separate</span>
+        </div>
+        <div class="tw-selection-live" aria-live="polite"></div>
+      </aside>
+    </div>
+  </section>
+</div>
+<style>
+  .tw-app {
+    --tw-bg: light-dark(#fafafa, #111210);
+    --tw-panel: light-dark(#f2f3f1, #191a17);
+    --tw-text: light-dark(#22251f, #deded4);
+    --tw-muted: light-dark(#596052, #aeb2a4);
+    --tw-border: light-dark(#d4d8ce, #393c33);
+    --tw-accent: light-dark(#006f86, #00c7ec);
+    --tw-warn: light-dark(#8a4a00, #dfb27b);
+    background: var(--tw-bg);
+    color: var(--tw-text);
+    font:
+      14px/1.5 -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    min-height: 850px;
+    padding-bottom: 20px;
+  }
+  .tw-app * {
+    box-sizing: border-box;
+  }
+  .tw-app strong {
+    font-weight: 500;
+  }
+  .tw-app h2 {
+    font-size: 21px;
+    font-weight: 500;
+    margin: 4px 0;
+  }
+  .tw-app h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 10px 0;
+  }
+  .tw-app p {
+    margin: 8px 0;
+  }
+  .tw-app button {
+    font: inherit;
+    color: var(--tw-text);
+    background: var(--tw-panel);
+    border: 1px solid var(--tw-border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    white-space: normal;
+    text-align: left;
+  }
+  .tw-app button:hover {
+    border-color: var(--tw-accent);
+  }
+  .tw-app button[aria-pressed="true"] {
+    border-color: var(--tw-accent);
+    background: light-dark(#e3f4f7, #102a2d);
+  }
+  .tw-secondary {
+    color: var(--tw-muted);
+    font-size: 12px;
+  }
+  .tw-header {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--tw-border);
+    padding-right: 105px;
+  }
+  .tw-header > strong {
+    font-size: 19px;
+  }
+  .tw-header > .tw-secondary {
+    margin-left: auto;
+  }
+  .tw-toolbar {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .tw-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tw-family-layout {
+    display: grid;
+    grid-template-columns: 175px minmax(0, 1fr);
+    gap: 0;
+  }
+  .tw-family-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 0 14px;
+    border-right: 1px solid var(--tw-border);
+  }
+  .tw-family-nav > .tw-secondary {
+    margin-top: 12px;
+  }
+  .tw-family-nav button {
+    background: transparent;
+  }
+  .tw-family-work {
+    min-width: 0;
+    padding: 0 20px;
+  }
+  .tw-scope {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+  }
+  .tw-app[data-direction="map"] > .tw-scope {
+    margin: 0 20px 14px;
+  }
+  .tw-table-head,
+  .tw-table-row {
+    display: grid;
+    grid-template-columns: 1.12fr 1fr 1fr;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--tw-border);
+  }
+  .tw-table-head {
+    background: var(--tw-panel);
+    padding: 10px;
+  }
+  .tw-table-row > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    min-width: 0;
+  }
+  .tw-table-row button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--tw-accent);
+  }
+  .tw-statement {
+    font-size: 13px;
+  }
+  .tw-status {
+    color: var(--tw-warn);
+    font-size: 12px;
+  }
+  .tw-detail {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--tw-panel);
+    border-left: 2px solid var(--tw-accent);
+  }
+  .tw-detail-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .tw-detail-links {
+    margin: 10px 0 14px;
+    color: var(--tw-accent);
+  }
+  .tw-comparison {
+    margin: 15px 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 18px;
+  }
+  .tw-investigation {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--tw-border);
+  }
+  .tw-investigation[hidden] {
+    display: none;
+  }
+  .tw-map {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: repeat(3, minmax(90px, auto));
+    gap: 26px 45px;
+    padding: 12px 20px;
+  }
+  .tw-map-lines {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    color: var(--tw-border);
+    pointer-events: none;
+  }
+  .tw-map .tw-node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 12px;
+    min-width: 0;
+    background: var(--tw-panel);
+  }
+  .tw-app[data-direction="map"] > .tw-detail,
+  .tw-app[data-direction="map"] > .tw-investigation {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .tw-app[data-compact="true"] .tw-statement {
+    display: none;
+  }
+  .tw-app[data-placement="side"] .tw-family-work {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 245px;
+    gap: 18px;
+  }
+  .tw-app[data-placement="side"] .tw-family-work > .tw-scope {
+    grid-column: 1/-1;
+  }
+  .tw-app[data-placement="side"] .tw-family-work > .tw-detail {
+    grid-column: 2;
+    grid-row: 2/4;
+    margin-top: 0;
+  }
+  .tw-selection-live {
+    height: 0;
+    overflow: hidden;
+  }
+  @media (max-width: 850px) {
+    .tw-family-layout {
+      grid-template-columns: 1fr;
+    }
+    .tw-family-nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+      border: 0;
+      padding: 0 20px 16px;
+    }
+    .tw-family-nav > .tw-secondary {
+      width: 100%;
+    }
+    .tw-app[data-placement="side"] .tw-family-work {
+      display: block;
+    }
+  }
+  @media (max-width: 590px) {
+    .tw-table-head {
+      display: none;
+    }
+    .tw-table-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .tw-table-row > div:first-child {
+      font-weight: 500;
+    }
+    .tw-header {
+      gap: 10px;
+      padding-right: 20px;
+    }
+    .tw-header > .tw-secondary {
+      margin-left: 0;
+    }
+    .tw-map {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .tw-map .tw-node {
+      grid-column: auto !important;
+      grid-row: auto !important;
+    }
+    .tw-map-lines {
+      display: none;
+    }
+    .tw-app {
+      min-height: 850px;
+    }
+  }
+</style>
+<script>
+  (() => {
+    const records = {
+      firmware: {
+        key: "DES-01 · design · current v2",
+        title: "Blower-control firmware design",
+        statement:
+          "Proposed duty-profile increase contributes to several product constraints. Earlier evaluations captured v1.",
+        status: "Assessment open",
+        paths: "REQ-R01 · REQ-R03 · REQ-R04 · REQ-R05 · REQ-R10",
+      },
+      pickup: {
+        key: "REQ-R01 · allocated requirement",
+        title: "Blower operating envelope",
+        statement:
+          "Flow allocation contributes to pickup while interacting with energy and acoustic responsibilities. Brush and duct work remains a sibling contribution.",
+        status: "Scope unresolved",
+        paths: "TGT-01 → FUN-01 → REQ-R01 → DES-01 / DES-02",
+      },
+      energy: {
+        key: "REQ-R03 · allocated requirement",
+        title: "Whole-product energy allocation",
+        statement:
+          "The draft 60 W allocation uses the defined cleaning profile and usable-energy assumption. Firmware and power design both contribute.",
+        status: "Updated profile needs review",
+        paths: "FUN-03 → REQ-R03 → DES-01 / DES-04 → EVAL-R02",
+      },
+      thermal: {
+        key: "REQ-R04 · allocated requirement",
+        title: "Driver thermal response",
+        statement:
+          "Monitor and derate at the selected limit. The simulated evaluation has partial scope and predates the profile change.",
+        status: "Partial simulated scope",
+        paths: "REQ-R04 → DES-01 / DES-05 → EVAL-R03",
+      },
+      timing: {
+        key: "REQ-R05 · allocated requirement",
+        title: "Actuator command timing",
+        statement:
+          "Coordinate actuation with navigation timing. No recorded timing evaluation is shown in this illustrative scope.",
+        status: "No recorded evaluation",
+        paths: "REQ-R05 → DES-01 / DES-06",
+      },
+      acoustic: {
+        key: "EVAL-R05 · evaluation definition",
+        title: "Whole-robot acoustic evaluation",
+        statement:
+          "The evaluation setup is defined but unexecuted. The motor, mounting and speed profile must be considered together.",
+        status: "No result",
+        paths: "TGT-03 → REQ-R10 → DES-01 / DES-02 / DES-08 → EVAL-R05",
+      },
+      power: {
+        key: "DES-04 · design",
+        title: "Battery and shared power design",
+        statement:
+          "The shared power rail connects blower loading to controller behavior. EVAL-R04 records an invented reset under combined load.",
+        status: "Simulated failure open",
+        paths: "IF-01 · REQ-R06 · EVAL-R04",
+      },
+      pickupResult: {
+        key: "EVAL-R01 · simulated evaluation",
+        title: "Baseline pickup shortfall",
+        statement:
+          "Invented baseline pickup was 84% against the draft 90% target. The result does not select a corrective design.",
+        status: "Simulated target not met",
+        paths: "BUILD-R01 · TGT-01 · DES-01 v1 · FIND-R01",
+      },
+      energyResult: {
+        key: "EVAL-R02 · simulated evaluation",
+        title: "Earlier energy evidence",
+        statement:
+          "The receipt captured DES-01 v1 and the selected baseline build. The current identity is v2. Freshness reports a changed input; technical disposition remains open.",
+        status: "Changed input · unreviewed",
+        paths: "Recorded DES-01 v1 · Current DES-01 v2 · BUILD-R01",
+      },
+      build: {
+        key: "BUILD-R01 · recorded configuration",
+        title: "Prototype A input manifest",
+        statement:
+          "Selected native revisions: blower control v1, baseline installation v1, power design v1 and driver design v1. These descriptive pins are retained while the current blower-control identity advances.",
+        status: "Descriptive pins · not an enforced baseline",
+        paths: "DES-01 v1 · DES-02 v1 · DES-04 v1 · DES-05 v1",
+      },
+    };
+    const apps = [
+      document.getElementById("tracer-family-concept"),
+      document.getElementById("tracer-system-concept"),
+    ];
+    const states = apps.map(() => ({
+      task: "trace",
+      selected: "firmware",
+      fullStatements: true,
+      placement: "below",
+    }));
+    function render(app, state) {
+      const selected = records[state.selected] || records.firmware;
+      app.dataset.compact = String(!state.fullStatements);
+      app.dataset.placement = state.placement;
+      app
+        .querySelectorAll("[data-task]")
+        .forEach((button) =>
+          button.setAttribute("aria-pressed", String(button.dataset.task === state.task)),
+        );
+      app
+        .querySelectorAll("[data-record]")
+        .forEach((button) =>
+          button.setAttribute("aria-pressed", String(button.dataset.record === state.selected)),
+        );
+      app.querySelector("[data-selected-key]").textContent = selected.key;
+      app.querySelector("[data-selected-title]").textContent = selected.title;
+      app.querySelector("[data-selected-statement]").textContent = selected.statement;
+      app.querySelector("[data-selected-status]").textContent = selected.status;
+      app.querySelector("[data-selected-paths]").textContent = selected.paths;
+      app.querySelector("[data-comparison]").hidden = state.selected !== "energyResult";
+      app.querySelector(".tw-investigation").hidden = state.task !== "change";
+      app.querySelector("[data-scope]").textContent =
+        state.task === "change"
+          ? "DES-01 v1 → v2 · recorded review scope"
+          : "Recorded constraints, designs and evaluation paths";
+      app
+        .querySelectorAll("[data-energy-label]")
+        .forEach(
+          (label) =>
+            (label.textContent =
+              state.task === "change" ? "Changed input · unreviewed" : "Captured firmware v1"),
+        );
+    }
+    function restore(value) {
+      const remembered = value?.privateContent?.directions;
+      if (!Array.isArray(remembered)) return;
+      states.forEach((state, index) => {
+        const saved = remembered[index];
+        if (!saved) return;
+        if (saved.task === "trace" || saved.task === "change") state.task = saved.task;
+        if (records[saved.selected]) state.selected = saved.selected;
+        if (typeof saved.fullStatements === "boolean") state.fullStatements = saved.fullStatements;
+        if (saved.placement === "below" || saved.placement === "side")
+          state.placement = saved.placement;
+        render(apps[index], state);
+      });
+    }
+    function save() {
+      if (window.openai?.setWidgetState)
+        window.openai
+          .setWidgetState({
+            modelContent: {
+              directions: states.map((state, index) => ({
+                design: index === 0 ? "Family and trace" : "System and evidence",
+                task: state.task,
+                selectedRecord: records[state.selected].key,
+              })),
+            },
+            privateContent: { directions: states },
+          })
+          .catch(() => {});
+    }
+    apps.forEach((app, index) => {
+      const state = states[index];
+      render(app, state);
+      app.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button || !app.contains(button)) return;
+        if (button.dataset.task) {
+          state.task = button.dataset.task;
+          if (state.task === "change") state.selected = "energyResult";
+        }
+        if (button.dataset.record) state.selected = button.dataset.record;
+        render(app, state);
+        app.querySelector(".tw-selection-live").textContent =
+          records[state.selected].title + ". " + records[state.selected].status;
+        save();
+      });
+      if (globalThis.Tweak) {
+        const tweak = new Tweak({
+          container: app,
+          onChange: () => {
+            render(app, state);
+            save();
+          },
+        });
+        tweak.addToggle(state, "fullStatements", { label: "Full sibling statements" });
+        if (index === 0)
+          tweak.addSelect(state, "placement", {
+            label: "Record detail placement",
+            options: [
+              { label: "Below context", value: "below" },
+              { label: "Alongside context", value: "side" },
+            ],
+          });
+      }
+    });
+    restore(window.openai?.widgetState);
+    window.addEventListener("openai:set_globals", (event) =>
+      restore(event.detail?.globals?.widgetState),
+    );
+  })();
+</script>

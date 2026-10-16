@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracer — system neighborhood experiment</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="fixture.js"></script>
+    <script defer src="model.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a href="#workspace" class="brand">Tracer <span>interaction lab</span></a>
+      <div class="tools">
+        <button id="export">Download toy drafts</button>
+        <label class="file-button"
+          >Resume from file<input id="import" type="file" accept=".json,application/json"
+        /></label>
+        <button id="reset">Reset experiment</button>
+      </div>
+    </header>
+    <main id="workspace">
+      <div class="notice">
+        <strong>Fictional bench model. Not a medical-device specification.</strong> Edits and
+        relationships are local proposals, not Tracer records or engineering conclusions. No data
+        leaves this page.
+      </div>
+      <div class="intro">
+        <div>
+          <p class="eyebrow">A system neighborhood, not a record browser</p>
+          <h1>Keep the whole family in the conversation.</h1>
+          <p>
+            Read intent, compare sibling contributions, and work on shared information without
+            replacing the surrounding context.
+          </p>
+        </div>
+        <details class="task-guide" open>
+          <summary>Try a complete task</summary>
+          <ol>
+            <li>Compare the delivery family's contributions.</li>
+            <li>Edit the limit behavior; follow its other parent.</li>
+            <li>Author a missing contribution or connect existing information.</li>
+            <li>Explore the ramp-down proposal and the original evidence.</li>
+            <li>Capture a question. Download, reset, then resume your drafts.</li>
+          </ol>
+        </details>
+      </div>
+      <section aria-labelledby="intent-heading" class="intent-section">
+        <h2 id="intent-heading">System intent stays visible</h2>
+        <div id="intents" class="intents"></div>
+      </section>
+      <div class="workspace-heading">
+        <div>
+          <p class="eyebrow" id="scope-label"></p>
+          <h2 id="family-heading" tabindex="-1"></h2>
+          <p id="scope-detail"></p>
+        </div>
+        <div class="lens" aria-label="Presentation">
+          <button id="family-lens" aria-pressed="true">Work with the family</button
+          ><button id="change-lens" aria-pressed="false">Explore the change</button>
+        </div>
+      </div>
+      <section id="proposal" class="proposal" hidden aria-labelledby="proposal-heading">
+        <h3 id="proposal-heading">One behavioral change, not a cascade of edits</h3>
+        <p>
+          Fictional reason: explore whether a ramp-down sequence changes the bench vibration
+          behavior. Its consequences for displacement, drive assumptions and stopping remain
+          questions.
+        </p>
+        <p>
+          Compare immediate stop with ramp-down before reporting a limit event. The configuration,
+          mechanical information and system intent are not automatically rewritten.
+        </p>
+        <button id="seed-proposal">Use the illustrative ramp-down wording</button
+        ><span>This fills a local draft only.</span>
+      </section>
+      <div id="status" class="status" role="status" aria-live="polite">
+        Drafts live only in this tab. Download a toy workspace to preserve them before closing or
+        reloading.
+      </div>
+      <section aria-label="Sibling contributions"><div id="family" class="family"></div></section>
+      <section id="related-section" aria-labelledby="related-heading" hidden>
+        <h2 id="related-heading">Cross-cutting context</h2>
+        <p>
+          Related information outside the selected family. Inclusion explains context, not proven
+          impact.
+        </p>
+        <div id="related" class="family"></div>
+      </section>
+      <section class="authoring" aria-labelledby="author-heading">
+        <div>
+          <p class="eyebrow">Keep authoring in context</p>
+          <h2 id="author-heading">What contribution is missing?</h2>
+          <p>
+            The fixture has no explicit contribution describing limit-event recovery under delivery
+            intent. That is a prompt to investigate, not a universal completeness rule.
+          </p>
+        </div>
+        <form id="author">
+          <p id="author-context" class="subtle"></p>
+          <label
+            >Contribution title<input
+              id="new-title"
+              required
+              maxlength="200"
+              placeholder="Name the missing contribution" /></label
+          ><label for="new-kind">Discipline</label
+          ><select id="new-kind">
+            <option>Software</option>
+            <option>Mechanical</option>
+            <option>Drive / interface</option></select
+          ><label
+            >Full statement<textarea
+              id="new-statement"
+              required
+              maxlength="6000"
+              rows="4"
+              placeholder="Write the intent and conditions; leave unknowns explicit."
+            ></textarea></label
+          ><button type="submit">Add a local contribution</button>
+        </form>
+        <form id="connect">
+          <h3>Or connect information that already exists</h3>
+          <p>
+            Do not create a duplicate just to put it in another family. This proposes a
+            relationship, not a validity conclusion.
+          </p>
+          <label for="existing">Existing information</label
+          ><select id="existing"></select
+          ><button type="submit">Propose this connection</button>
+          <p class="subtle">
+            MECH-BACKLASH is intentionally unlinked. Determine whether it is relevant before
+            connecting it.
+          </p>
+        </form>
+      </section>
+      <section aria-labelledby="evidence-heading">
+        <p class="eyebrow">Read the inputs, not a green status</p>
+        <h2 id="evidence-heading">Original observations, present questions</h2>
+        <p>
+          Original observation text and input versions stay unchanged. A local wording change
+          identifies an input difference; it does not prove the observation is invalid.
+        </p>
+        <div id="evidence" class="evidence"></div>
+      </section>
+      <aside class="unknown">
+        <h3>What this neighborhood does not establish</h3>
+        <p id="unknown"></p>
+        <p>
+          This is a bounded, authored fictional model—not a complete impact census. Unlinked
+          information and unmodeled relationships may matter. No assessment or approval is
+          automatic.
+        </p>
+      </aside>
+      <footer>
+        <a href="README.md">Scenario, limitations and walkthrough notes</a>
+        <p>
+          No server, MCP, account or Tracer database. Downloaded drafts are toy files, not product
+          baselines.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+# Native evidence task implementation — QA handoff
+
+Status: implemented and checked within the adopted [Studio contract](../studio-design-first/implementation-contract.md). This is technical evidence from isolated native fixtures, not representative-user acceptance or full Studio delivery.
+
+[EvidenceReviewStage](../../../ui/evidence-review-stage.tsx) is the reusable mounted owner for catalogue, item and graph activation. It reads the exact native receipt and complete comparison, separates outcome/configuration from input freshness and review judgment, and preserves captured comparison token, decision and rationale while paused. App controls `active`, named Return, `onDraftChange`, defensive blocked-receipt recovery and explicit `discardRevision`. The catalogue supplies `onOpenReceipt` and creates no competing review owner under App routing.
+
+Desktop keeps the complete input selector beside the selected exact comparison. Narrow layout reads selected difference → all declared inputs → review action/form. The list remains present during judgment. Original native fields, relationship records, observations, pins and immutable receipt remain reachable. Unknown current content retains captured content. Changed and unknown facts can coexist without being collapsed into a passing result.
+
+Verification: 15 focused Node evidence/input/path tests; three new native browser scenarios; four existing configuration/seed scenarios; two existing offline/narrow evidence cases passed. Typecheck and build passed. Native screenshots at 1024/390 were visually inspected. The focused browser scenarios cover exact input selection, complete list/order, return/draft recovery, canceled and deliberate receipt switching, true backend token rejection followed by explicit adoption, unknown-input acceptance prohibition, failed comparison retention/write pause, and one aborted review POST with no automatic replay. Original receipts remain equal after review.
+
+The broader realistic-example suite reached/passed evidence checks but failed later at obsolete Model node labels; workload cases failed before evidence at the obsolete `All items` primary tab assertion. These are left to their respective UI/test owners. At this handoff Fallow had no evidence-owned issue; aggregate findings remained in concurrent App/model/schema/workspace work. No owner database was changed.

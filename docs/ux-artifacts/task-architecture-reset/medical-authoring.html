@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracer task architecture A — Aster authoring stress test</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="medical-authoring.css" />
+  </head>
+  <body data-prototype="medical-authoring">
+    <div class="app-shell medical-shell">
+      <aside class="project-rail">
+        <div class="brand"><span class="brand-mark">↗</span> Tracer</div>
+        <div class="project-name">
+          <span>A</span>
+          <div><strong>Aster Home BP</strong><small>Fictional medical fixture</small></div>
+        </div>
+        <nav class="rail-nav" aria-label="Project">
+          <button disabled>Project · not wired</button>
+          <button aria-current="page" data-go-board>Work</button>
+          <button disabled>Find · not wired</button>
+          <button disabled>Project model · not wired</button>
+        </nav>
+        <div class="rail-foot">ISOLATED UX STUDY<br />Client memory only</div>
+      </aside>
+
+      <main class="app-main">
+        <header class="topbar">
+          <div class="breadcrumb">
+            <span>Aster Home BP</span><span>/</span><strong data-crumb>Work</strong>
+          </div>
+          <div class="top-actions"><span class="study-disabled">No production writes</span></div>
+        </header>
+
+        <section class="work-page medical-page" data-page="board">
+          <header class="work-heading medical-heading">
+            <div>
+              <p class="eyebrow">Contribution board · authoring stress test</p>
+              <h1 data-question>What subsystem requirements are recorded for PRS-14?</h1>
+              <p data-question-detail>
+                A complete read of recorded <strong>decomposes into</strong> connections. It does
+                not judge whether decomposition is required or clinically sufficient.
+              </p>
+            </div>
+            <div class="toolbar medical-actions">
+              <button data-revise-existing disabled hidden>Revise SYS-02 · outside study</button>
+              <button data-connect-existing>Connect existing subsystem requirement</button>
+              <button class="primary" data-create>Create subsystem requirement</button>
+            </div>
+          </header>
+
+          <div class="case-switch" aria-label="Stress-test case">
+            <button data-case="zero" aria-pressed="true">
+              <strong>Truthful zero</strong><small>PRS-14 · current v1</small>
+            </button>
+            <button data-case="next" aria-pressed="false">
+              <strong>Add requirement</strong><small>PRS-02 · current v2</small>
+            </button>
+          </div>
+
+          <div class="resume-stack" aria-live="polite">
+            <div class="resume-banner" data-draft-resume hidden>
+              <div>
+                <span class="record-key">SUBSYSTEM REQUIREMENT DRAFT · CLIENT MEMORY ONLY</span
+                ><strong data-resume-title>Draft retained</strong
+                ><small>No item or connection was written.</small>
+              </div>
+              <button class="text-action" data-resume>Return to draft →</button>
+            </div>
+            <div class="resume-banner" data-link-resume hidden>
+              <div>
+                <span class="record-key">CONNECTION PROPOSAL · CLIENT MEMORY ONLY</span
+                ><strong data-link-resume-title>Connection draft retained</strong
+                ><small>No relationship was written.</small>
+              </div>
+              <button class="text-action" data-resume-link>Return to connection draft →</button>
+            </div>
+            <div class="resume-banner" data-saved-resume hidden>
+              <div>
+                <span class="record-key">SAVED UNLINKED ITEM · CLIENT MEMORY ONLY</span
+                ><strong data-saved-resume-title>Saved SYS retained without connections</strong
+                ><small
+                  >The item is saved in this study session; its connection is still optional.</small
+                >
+              </div>
+              <button class="text-action" data-resume-saved>Continue from saved item →</button>
+            </div>
+          </div>
+
+          <article class="parent-intent">
+            <div class="parent-intent-head">
+              <div>
+                <span class="record-key" data-parent-key>PRS-14 · CURRENT V1</span>
+                <h2 data-parent-title>Establish clinical measurement performance</h2>
+              </div>
+              <span class="chip none" data-parent-status>planned; protocol missing</span>
+            </div>
+            <div class="intent-grid">
+              <div>
+                <span class="field-label">Statement</span>
+                <p data-parent-statement></p>
+              </div>
+              <div>
+                <span class="field-label">Acceptance</span>
+                <p data-parent-acceptance></p>
+              </div>
+            </div>
+          </article>
+
+          <div class="board-scope-line">
+            <div>
+              <strong data-canonical-count>No recorded subsystem requirements</strong
+              ><span>Complete outgoing read · PRS → decomposes into → SYS</span>
+            </div>
+            <span class="chip result">Complete scope</span>
+          </div>
+
+          <section class="zero-state" data-zero-state>
+            <span class="zero-glyph">0</span>
+            <div>
+              <h2>No recorded subsystem requirements in this scope</h2>
+              <p>
+                This says only that PRS-14 has no outgoing
+                <strong>decomposes into</strong> connection to a subsystem requirement. It does not
+                mean the project is empty, a child is required, or clinical readiness has been
+                established.
+              </p>
+            </div>
+          </section>
+
+          <section class="canonical-board" data-next-state hidden>
+            <div class="canonical-head">
+              <span>Canonical allocations</span><span>Recorded connection metadata</span>
+            </div>
+            <article class="canonical-row">
+              <div>
+                <span class="record-key">SYS-02 · V1</span>
+                <h3>Allocate pressure error</h3>
+                <p>
+                  At 15–35 °C, sensor calibration residual shall be within ±1.5 mmHg and
+                  conversion/compensation contribution within ±1.0 mmHg; retain 0.5 mmHg integration
+                  margin.
+                </p>
+              </div>
+              <div class="metadata-list">
+                <span
+                  ><b>scope</b> Illustrative recorded trace; assess the connected statements for its
+                  extent.</span
+                ><span><b>source_version</b> 1 <em>· recorded value; current parent v2</em></span
+                ><span><b>review</b> unreviewed example annotation</span>
+              </div>
+            </article>
+            <article class="canonical-row">
+              <div>
+                <span class="record-key">SYS-01 · V1</span>
+                <h3>Acquire calibrated pressure samples</h3>
+                <p>
+                  The pressure acquisition subsystem shall provide calibrated cuff-pressure samples
+                  to the estimator at 100 samples per second.
+                </p>
+              </div>
+              <div class="metadata-list">
+                <span
+                  ><b>scope</b> Illustrative recorded trace; assess the connected statements for its
+                  extent.</span
+                ><span><b>source_version</b> 1 <em>· recorded value; current parent v2</em></span
+                ><span><b>review</b> unreviewed example annotation</span>
+              </div>
+            </article>
+          </section>
+
+          <section class="proposal-board" data-proposal-board hidden>
+            <div>
+              <span class="record-key">STUDY PROPOSAL · OUTSIDE CANONICAL FIXTURE</span>
+              <h2 data-proposal-title></h2>
+              <p data-proposal-statement></p>
+            </div>
+            <div class="proposal-route">
+              <span data-proposal-route></span
+              ><small>Recorded during this client-memory study only</small>
+            </div>
+          </section>
+
+          <section class="unlinked-board" data-unlinked-board hidden>
+            <header>
+              <div>
+                <span class="record-key">SAVED UNLINKED · OUTSIDE CANONICAL FIXTURE</span>
+                <h2>Unlinked subsystem requirements kept in this study session</h2>
+              </div>
+              <span class="chip none">No connection recorded</span>
+            </header>
+            <div data-unlinked-list></div>
+          </section>
+        </section>
+
+        <section class="task-stage" data-page="author" hidden>
+          <div class="task-stage-head">
+            <button class="quiet back-control" data-pause>← Pause and return to board</button
+            ><span class="chip definition">Step 1 of 2 · item</span>
+          </div>
+          <div class="task-grid">
+            <article class="task-main">
+              <p class="eyebrow">Create subsystem requirement</p>
+              <h1>Create an unlinked subsystem requirement</h1>
+              <p class="lede">
+                Save the record first. You can inspect and record the exact connection in a separate
+                step.
+              </p>
+              <form class="author-form" data-author-form>
+                <label
+                  >Title <span>required</span><input name="title" required autocomplete="off"
+                /></label>
+                <label
+                  >Statement <span>required</span
+                  ><textarea name="statement" rows="5" required></textarea>
+                </label>
+                <div class="form-pair">
+                  <label>Status <span>optional</span><input name="status" /></label
+                  ><label>Owner <span>optional</span><input name="owner" /></label>
+                </div>
+                <label
+                  >Notes <span>optional</span><textarea name="notes" rows="3"></textarea>
+                </label>
+                <div class="schema-note">
+                  <strong>Captured subsystem_requirement schema</strong
+                  ><span
+                    >title + statement required · status, owner + notes optional · no acceptance
+                    field</span
+                  >
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="quiet" data-cancel>Cancel draft</button
+                  ><button class="primary" type="submit">Save unlinked requirement</button>
+                </div>
+              </form>
+            </article>
+            <aside class="task-context">
+              <p class="eyebrow">Parent intent remains visible</p>
+              <span class="record-key" data-context-key></span>
+              <h2 data-context-title></h2>
+              <section>
+                <span class="field-label">Statement</span>
+                <p data-context-statement></p>
+              </section>
+              <section>
+                <span class="field-label">Acceptance</span>
+                <p data-context-acceptance></p>
+              </section>
+              <section data-sibling-context hidden>
+                <span class="field-label">Existing siblings</span>
+                <p>
+                  <strong>SYS-02</strong> · Allocate pressure error<br /><strong>SYS-01</strong> ·
+                  Acquire calibrated pressure samples
+                </p>
+              </section>
+              <div class="scope-caution" data-zero-caution>
+                This is an optional, user-chosen mechanics probe. The zero row does not establish
+                that PRS-14 needs a subsystem child; its stated gap concerns an applicable clinical
+                evaluation plan.
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="task-stage" data-page="saved" hidden>
+          <div class="task-stage-head">
+            <button class="quiet back-control" data-go-board>← Return to board</button
+            ><span class="chip result">Item saved · no connection</span>
+          </div>
+          <div class="saved-panel">
+            <p class="eyebrow">Deliberate save boundary</p>
+            <h1>Saved without connections</h1>
+            <p class="lede">
+              The subsystem requirement is retained in this client-memory study as
+              <strong><span data-saved-key>STUDY ITEM</span> · subsystem_requirement v1</strong>.
+              This study identity is not a project key. The parent and canonical allocation rows are
+              unchanged.
+            </p>
+            <article class="saved-record">
+              <span class="record-key" data-saved-record-key
+                >STUDY ITEM · subsystem_requirement v1</span
+              >
+              <h2 data-saved-title></h2>
+              <p data-saved-statement></p>
+              <div class="chip-row">
+                <span class="chip none" data-saved-status></span
+                ><span class="chip none" data-saved-owner></span>
+              </div>
+              <p class="saved-notes" data-saved-notes></p>
+            </article>
+            <div class="saved-actions">
+              <button data-finish-unlinked>Finish and leave unlinked</button
+              ><button class="primary" data-review-connection>Review proposed connection →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="task-stage" data-page="connection" hidden>
+          <div class="task-stage-head">
+            <button class="quiet back-control" data-back-connection>← Discard and go back</button
+            ><span class="chip definition">Step 2 of 2 · connection</span>
+          </div>
+          <div class="connection-stage">
+            <p class="eyebrow">Review exact stored direction</p>
+            <h1>Record one connection</h1>
+            <p class="lede">
+              The endpoints and required project-owned fields are explicit. Saving this link does
+              not establish adequacy, satisfaction, or readiness.
+            </p>
+            <div class="route-diagram">
+              <div>
+                <span class="record-key" data-route-source></span
+                ><strong data-route-source-title></strong>
+                <p data-route-source-statement></p>
+              </div>
+              <span class="route-arrow"
+                ><span class="route-wide">→ <b>decomposes_into</b> →</span
+                ><span class="route-narrow">↓ <b>decomposes_into</b> ↓</span></span
+              >
+              <div>
+                <span class="record-key" data-route-target></span
+                ><strong data-route-target-title></strong>
+                <p data-route-target-statement></p>
+                <div class="route-target-details" data-route-target-details hidden>
+                  <span data-route-target-status></span><span data-route-target-owner></span
+                  ><span data-route-target-notes></span>
+                </div>
+              </div>
+            </div>
+            <form class="connection-form" data-connection-form>
+              <label
+                >scope <span>required</span
+                ><textarea name="scope" rows="3" required>
+Study proposal; assess the connected statements for its extent.</textarea>
+              </label>
+              <div class="source-version-field">
+                <label
+                  >source_version <span>required · project-owned number</span
+                  ><input name="source_version" type="number" step="any" required
+                /></label>
+                <div>
+                  <b data-current-parent></b
+                  ><small
+                    >This adjacent revision is descriptive context. Tracer does not infer link
+                    validity from a number difference.</small
+                  >
+                </div>
+              </div>
+              <label
+                >review <span>required</span
+                ><input name="review" required value="unreviewed study proposal"
+              /></label>
+              <div class="form-actions">
+                <button type="button" class="quiet" data-back-connection>Discard connection</button
+                ><button class="primary" type="submit">Record connection</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="task-stage" data-page="connected" hidden>
+          <div class="connected-panel">
+            <span class="connected-mark">✓</span>
+            <p class="eyebrow">Client-memory study state</p>
+            <h1>Connection recorded</h1>
+            <p class="lede" data-connected-summary></p>
+            <div class="connection-receipt">
+              <span data-connected-route></span><span data-connected-fields></span>
+            </div>
+            <button class="primary" data-return-connected></button>
+          </div>
+        </section>
+
+        <section class="task-stage" data-page="candidates" hidden>
+          <div class="task-stage-head">
+            <button class="quiet back-control" data-go-board>← Return to board</button
+            ><span class="chip definition">5 loaded of 15 compatible</span>
+          </div>
+          <div class="candidate-stage">
+            <p class="eyebrow">Connect existing subsystem requirement</p>
+            <h1>Inspect before selecting</h1>
+            <p class="lede">
+              This representative page comes from a bounded whole-project search. Schema-compatible
+              records are candidates, not suitability recommendations. Exact existing pairs are
+              disabled.
+            </p>
+            <label class="search-label"
+              >Search key or content<input
+                data-candidate-search
+                placeholder="Search the loaded candidates"
+            /></label>
+            <p class="candidate-boundary">
+              Representative study page · 5 loaded of 15 schema-compatible SYS records · search
+              filters loaded records only
+            </p>
+            <div class="candidate-layout">
+              <div class="candidate-list" data-candidate-list></div>
+              <aside class="candidate-inspector" data-candidate-inspector>
+                <p class="eyebrow">Candidate statement</p>
+                <span class="record-key" data-candidate-key></span>
+                <h2 data-candidate-title></h2>
+                <p data-candidate-statement></p>
+                <dl class="candidate-facts">
+                  <div>
+                    <dt>status</dt>
+                    <dd>illustrative draft</dd>
+                  </div>
+                  <div>
+                    <dt>owner</dt>
+                    <dd>fictional example team</dd>
+                  </div>
+                  <div>
+                    <dt>context</dt>
+                    <dd data-candidate-context>Inspect recorded connections before saving.</dd>
+                  </div>
+                </dl>
+                <div class="scope-caution">
+                  Selection only prepares a proposal. The connection is saved separately with the
+                  exact endpoints and required fields.
+                </div>
+                <button class="primary" data-select-candidate disabled>Use this candidate</button>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="medical-authoring.js"></script>
+  </body>
+</html>

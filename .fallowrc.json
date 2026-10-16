@@ -1,0 +1,157 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "entry": [
+    "src/index.ts",
+    "src/interfaces/cli.ts",
+    "src/interfaces/serve.ts",
+    "ui/main.tsx",
+    "examples/*.ts",
+    "test/*.test.ts",
+    "test/*.spec.ts",
+    "test/map/*.test.mjs",
+    "test/legacy-entry.tsx"
+  ],
+  "rules": {
+    "complexity-cyclomatic": "error",
+    "complexity-cognitive": "error",
+    "complexity-crap": "error",
+    "policy-violation": "error"
+  },
+  "boundaries": {
+    "zones": [
+      {
+        "name": "public-api",
+        "patterns": ["src/index.ts"]
+      },
+      {
+        "name": "core",
+        "patterns": ["src/core/**"]
+      },
+      {
+        "name": "application",
+        "patterns": ["src/application/**"]
+      },
+      {
+        "name": "repository-contract",
+        "patterns": ["src/persistence/contracts.ts"]
+      },
+      {
+        "name": "persistence",
+        "patterns": ["src/persistence/**"]
+      },
+      {
+        "name": "api-contract",
+        "patterns": [
+          "src/interfaces/api-contract.ts",
+          "src/interfaces/api-decoders.ts",
+          "src/interfaces/coverage-decoders.ts",
+          "src/interfaces/working-context-decoders.ts",
+          "src/interfaces/decode.ts"
+        ]
+      },
+      {
+        "name": "launcher",
+        "patterns": ["src/interfaces/serve.ts"]
+      },
+      {
+        "name": "interfaces",
+        "patterns": ["src/interfaces/**"]
+      },
+      {
+        "name": "http-transport",
+        "patterns": ["ui/http-transport.ts", "ui/write-transport.ts"]
+      },
+      {
+        "name": "api-client",
+        "patterns": ["ui/api.ts"]
+      },
+      {
+        "name": "mutation-owner",
+        "patterns": ["ui/use-mutation.ts"]
+      },
+      {
+        "name": "ui",
+        "patterns": ["ui/**"]
+      },
+      {
+        "name": "examples",
+        "patterns": ["examples/**"]
+      },
+      {
+        "name": "tests",
+        "patterns": ["test/**"]
+      },
+      {
+        "name": "tooling",
+        "patterns": ["eslint.config.js", "vite.config.ts", "playwright.config.ts"]
+      }
+    ],
+    "rules": [
+      {
+        "from": "public-api",
+        "allow": ["core", "application"],
+        "allowTypeOnly": ["repository-contract"]
+      },
+      {
+        "from": "core",
+        "allow": ["core"]
+      },
+      {
+        "from": "application",
+        "allow": ["core", "application"],
+        "allowTypeOnly": ["repository-contract"]
+      },
+      {
+        "from": "repository-contract",
+        "allow": [],
+        "allowTypeOnly": ["core"]
+      },
+      {
+        "from": "persistence",
+        "allow": ["core", "persistence"],
+        "allowTypeOnly": ["repository-contract"]
+      },
+      {
+        "from": "api-contract",
+        "allow": ["core", "api-contract"],
+        "allowTypeOnly": ["application", "interfaces"]
+      },
+      {
+        "from": "interfaces",
+        "allow": ["core", "application", "persistence", "interfaces", "api-contract"],
+        "allowTypeOnly": ["repository-contract"]
+      },
+      {
+        "from": "ui",
+        "allow": ["core", "api-contract", "ui", "api-client", "mutation-owner"],
+        "allowTypeOnly": ["application", "interfaces"]
+      },
+      {
+        "from": "launcher",
+        "allow": ["core", "application", "persistence", "interfaces", "examples"],
+        "allowTypeOnly": ["repository-contract"]
+      },
+      {
+        "from": "http-transport",
+        "allow": ["core", "api-contract", "http-transport"]
+      },
+      {
+        "from": "api-client",
+        "allow": ["core", "api-contract", "http-transport"]
+      },
+      {
+        "from": "mutation-owner",
+        "allow": ["ui", "http-transport"]
+      }
+    ],
+    "coverage": {
+      "requireAllFiles": true,
+      "allowUnmatched": []
+    }
+  },
+  "rulePacks": ["config/fallow-policy.json"],
+  "ignorePatterns": ["docs/ux-artifacts/**"],
+  "health": {
+    "coverage": ".fallow/coverage/raw"
+  }
+}

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900"><defs>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#343431" stroke-width="1" opacity=".28"/></pattern>
+  <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#D9D3C1" opacity=".11"/></pattern>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#000" flood-opacity=".45"/></filter>
+  <marker id="arrow-cyan" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth"><path d="M1 1L9 5.5L1 10" fill="none" stroke="#29CDF2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="arrow-cream" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth"><path d="M1 1L9 5.5L1 10" fill="none" stroke="#D9D3C1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="arrow-muted" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth"><path d="M1 1L9 5.5L1 10" fill="none" stroke="#77756D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs><style>
+  svg{background:#0D0D0D;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-rendering:geometricPrecision}
+  text{fill:#D9D3C1} .display{font-size:38px;font-weight:650;letter-spacing:-1.25px}.displayWide{font-size:52px;font-weight:650;letter-spacing:-1.7px}
+  .h1{font-size:28px;font-weight:650;letter-spacing:-.6px}.h2{font-size:20px;font-weight:650;letter-spacing:-.25px}.h3{font-size:16px;font-weight:650}
+  .body{font-size:14px;font-weight:440}.body2{font-size:13px;font-weight:440}.small{font-size:12px;font-weight:500}.tiny{font-size:10px;font-weight:600;letter-spacing:.7px}.caps{font-size:11px;font-weight:700;letter-spacing:1.6px}.mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:11px;font-weight:550;letter-spacing:.25px}
+  .muted{fill:#99968C} .cyanText{fill:#29CDF2} .tealText{fill:#72C4D5}.blackText{fill:#080808} .dim{opacity:.42}
+  .panel{fill:#151515;stroke:#3A3A36;stroke-width:1}.raised{fill:#1B1B1B;stroke:#42423E;stroke-width:1}.quiet{fill:#121212;stroke:#31312E;stroke-width:1}.selected{fill:#17343B;stroke:#29CDF2;stroke-width:1.5}.button{fill:#29CDF2;stroke:none}.button2{fill:#262626;stroke:#53534D;stroke-width:1}.pill{fill:#22221F;stroke:#464641;stroke-width:1}.pillActive{fill:#29CDF2;stroke:#29CDF2;stroke-width:1}
+  .hair{stroke:#3A3A36;stroke-width:1}.route{fill:none;stroke:#268EA6;stroke-width:3;stroke-linecap:round}.routeCyan{fill:none;stroke:#29CDF2;stroke-width:3;stroke-linecap:round}.routeCream{fill:none;stroke:#D9D3C1;stroke-width:2;stroke-linecap:round}.routeMuted{fill:none;stroke:#696861;stroke-width:2;stroke-linecap:round}.routeGhost{fill:none;stroke:#343431;stroke-width:9;stroke-linecap:round}
+  .node{fill:#1B1B1B;stroke:#5A5952;stroke-width:1.2}.nodeBright{fill:#12323A;stroke:#29CDF2;stroke-width:2}.nodeCore{fill:#182C30;stroke:#6CBFD1;stroke-width:1.5}.station{fill:#0D0D0D;stroke:#D9D3C1;stroke-width:3}.stationCyan{fill:#0D0D0D;stroke:#29CDF2;stroke-width:4}.stationSmall{fill:#0D0D0D;stroke:#8B8980;stroke-width:2}
+</style><rect width="1440" height="900" fill="#0D0D0D"/><rect x="0" y="0" width="1440" height="72" rx="0" class="quiet" /><rect x="0" y="0" width="8" height="72" fill="#29CDF2"/>
+  <text x="28" y="30" class="h2" text-anchor="start" >tracer</text><text x="28" y="50" class="tiny" text-anchor="start" fill="#29CDF2">CONNECTED MODEL</text>
+  <line x1="166" y1="20" x2="166" y2="52" class="hair" /><text x="190" y="31" class="h3" text-anchor="start" >Project model</text><text x="190" y="51" class="tiny" text-anchor="start" fill="#99968C">MODEL MAP</text>
+  <rect x="1178" y="18" width="126" height="36" rx="18" class="pill" /><text x="1241" y="41" class="small" text-anchor="middle" >Find work  /</text>
+  <rect x="1316" y="18" width="92" height="36" rx="18" class="button2" /><text x="1362" y="41" class="small" text-anchor="middle" >Configure</text>
+    <text x="72" y="140" class="display" text-anchor="start" >See how your work can connect</text>
+    <text x="72" y="174" class="body muted" text-anchor="start" >A four-type model with two explicit, directed relationships. Select a type to enter its work.</text>
+    <rect x="72" y="198" width="228" height="34" rx="17" class="pill" /><text x="186" y="220" class="tiny" text-anchor="middle" >Permitted model  •  schema v1</text>
+    <rect x="62" y="218" width="1316" height="588" rx="24" fill="url(#dots)" stroke="#2F2F2C"/>
+    <text x="88" y="252" class="caps" text-anchor="start" >TYPE CONSTELLATION</text><text x="1352" y="252" class="small muted" text-anchor="end" >Arrowheads follow stored relationship direction</text>
+    <path d="M605 485 C500 485, 493 358, 348 358" class="routeGhost"/>
+    <path d="M605 485 C500 485, 493 358, 348 358" class="routeCyan" marker-end="url(#arrow-cyan)"/>
+    <path d="M833 489 C955 440, 850 343, 1010 343" class="routeGhost"/>
+    <path d="M833 489 C955 440, 850 343, 1010 343" class="route" marker-end="url(#arrow-cyan)"/>
+    <path d="M823 563 C955 620, 890 715, 1040 715" class="routeGhost"/>
+    <path d="M823 563 C955 620, 890 715, 1040 715" class="route" marker-end="url(#arrow-cyan)"/>
+    <rect x="342" y="353" width="156" height="38" rx="19" class="pill" /><text x="420" y="371" class="mono cyanText" text-anchor="middle" >contributes_to</text><text x="420" y="416" class="small muted" text-anchor="middle" >Requirement → Intent</text>
+    <rect x="847" y="343" width="156" height="38" rx="19" class="pill" /><text x="925" y="361" class="mono cyanText" text-anchor="middle" >mapped_to</text><text x="925" y="406" class="small muted" text-anchor="middle" >Requirement → Design</text>
+    <rect x="864" y="654" width="156" height="38" rx="19" class="pill" /><text x="942" y="672" class="mono cyanText" text-anchor="middle" >mapped_to</text><text x="942" y="717" class="small muted" text-anchor="middle" >Requirement → Test</text>
+    <g><circle cx="254" cy="358" r="68" class="node" filter="url(#shadow)"/><text x="254" y="345" class="caps" text-anchor="middle" >INTENT</text><text x="254" y="372" class="h2" text-anchor="middle" >Why it matters</text><text x="254" y="396" class="small muted" text-anchor="middle" >3 fields</text></g>
+    <g><path d="M605 457H815L833 475V565L815 583H605L587 565V475Z" class="nodeBright" filter="url(#shadow)"/><text x="710" y="507" class="caps" text-anchor="middle" fill="#29CDF2">REQUIREMENT</text><text x="710" y="534" class="h2" text-anchor="middle" >What must hold</text><text x="710" y="558" class="small muted" text-anchor="middle" >3 fields</text></g>
+    <g><rect x="1010" y="280" width="190" height="126" rx="16" class="node" filter="url(#shadow)"/><text x="1105" y="330" class="caps" text-anchor="middle" >DESIGN</text><text x="1105" y="357" class="h2" text-anchor="middle" >How it is shaped</text><text x="1105" y="381" class="small muted" text-anchor="middle" >3 fields</text></g>
+    <g><circle cx="1125" cy="715" r="85" class="node" filter="url(#shadow)"/><text x="1125" y="702" class="caps" text-anchor="middle" >TEST</text><text x="1125" y="729" class="h2" text-anchor="middle" >How it is checked</text><text x="1125" y="753" class="small muted" text-anchor="middle" >3 fields</text></g>
+    <rect x="627" y="601" width="166" height="36" rx="18" class="button" /><text x="710" y="624" class="small blackText" text-anchor="middle" >Browse requirements  →</text>
+
+    <line x1="0" y1="842" x2="1440" y2="842" class="hair" /><text x="36" y="876" class="small muted" text-anchor="start" >Illustrative starter schema  ·  configuration remains secondary</text><text x="1404" y="876" class="small muted" text-anchor="end" >No item counts, coverage or approval inferred</text>
+  </svg>

@@ -1,0 +1,276 @@
+.studio-app .schema-editor {
+  max-width: 1800px;
+}
+.schema-mode-switch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 18px 0;
+}
+.schema-mode-switch button[aria-pressed="true"] {
+  background: var(--color-emphasis);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.schema-mode-switch > span {
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-left: 14px;
+}
+.schema-editing-surface.has-properties {
+  display: block;
+}
+.schema-editing-surface > div {
+  min-width: 0;
+}
+.schema-properties-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.schema-properties-heading > button {
+  font-size: 11px;
+}
+.is-visual .schema-properties {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  max-width: 75rem;
+}
+.schema-guided.is-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.schema-guided.is-compact form {
+  border-top: 1px solid var(--color-divider);
+  padding-top: 12px;
+  margin-top: 16px;
+}
+.schema-guided.is-compact > section > p {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+.schema-guided.is-compact .model-field {
+  gap: 0;
+}
+.schema-guided.is-compact fieldset {
+  padding: 12px;
+}
+.schema-endpoint-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+.schema-endpoint-types {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  gap: 0.5rem 1rem;
+}
+.schema-editor .schema-endpoint-types label,
+.schema-editor .schema-endpoint-modes label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  min-height: 2rem;
+}
+.schema-endpoint-types label > span {
+  min-width: 0;
+}
+.schema-canvas-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.schema-canvas-toolbar > span {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+.schema-canvas-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.schema-canvas-controls > span {
+  min-width: 43px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-muted);
+}
+.schema-canvas-controls button {
+  padding: 6px 9px;
+  font-size: 11px;
+}
+.schema-layout-note {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-bottom: 0;
+}
+.schema-canvas-empty {
+  color: var(--color-muted);
+}
+.schema-visual-canvas .model-flow-scroll {
+  max-height: 660px;
+}
+.studio-app .model-flow-types button.model-flow-port {
+  position: absolute;
+  top: 28px;
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  border: 2px solid var(--color-accent);
+  padding: 0;
+  border-radius: 50%;
+  background: var(--color-panel);
+  box-shadow: none;
+}
+.model-flow-types .model-flow-port.is-input {
+  left: -8px;
+}
+.model-flow-types .model-flow-port.is-output {
+  right: -8px;
+}
+.studio-app .model-flow-types button.model-flow-port[aria-pressed="true"] {
+  background: var(--color-accent);
+}
+.schema-visual-canvas .model-flow-types button[draggable="true"] {
+  cursor: grab;
+}
+.schema-visual-canvas .model-flow-types button[draggable="true"]:active {
+  cursor: grabbing;
+}
+.studio-app .schema-editor > fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.studio-app .schema-editor > fieldset > legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.studio-app .schema-editor > .toolbar {
+  margin: 0 0 18px;
+}
+.studio-app .schema-editor > .toolbar h2 {
+  margin: 0 auto 0 0;
+  font-size: 26px;
+}
+@media (max-width: 1000px) {
+  .schema-editing-surface.has-properties {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .schema-mode-switch {
+    flex-wrap: wrap;
+  }
+  .schema-mode-switch > span {
+    margin: 8px 0 0;
+    width: 100%;
+  }
+  .schema-canvas-controls {
+    margin-left: 0;
+  }
+}
+.schema-editing-notes {
+  color: var(--color-muted);
+  font-size: 12px;
+  margin: 10px 0;
+}
+.schema-editing-notes > p {
+  max-width: 80ch;
+}
+.studio-app .model-flow-types button.model-flow-port.is-input {
+  border-radius: 4px;
+}
+.schema-fields {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.schema-fields th,
+.schema-fields td {
+  border-bottom: 1px solid var(--color-divider);
+  padding: 8px 4px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.schema-fields thead th {
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+.schema-fields tbody th {
+  font-weight: 500;
+}
+.schema-fields select {
+  width: 100%;
+  min-width: 74px;
+  padding: 5px;
+  font-size: 12px;
+}
+.schema-fields td:last-child {
+  text-align: center;
+}
+@media (min-width: 1001px) {
+  .schema-editing-surface.is-visual .schema-properties {
+    max-height: none;
+    overflow: visible;
+    position: static;
+  }
+}
+.schema-workflow-form {
+  border-bottom: 1px solid var(--color-divider);
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+}
+.schema-workflow-form > p {
+  font-size: 11px;
+}
+.studio-app .schema-properties .schema-guided.is-compact > section,
+.studio-app .schema-properties .schema-workflow-form {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  margin: 0 0 1rem;
+}
+.studio-app .schema-guided.is-compact > section > h3 {
+  display: none;
+}
+.schema-properties-heading {
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.schema-properties-heading h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+.schema-properties-heading > button {
+  font-size: 0.85rem;
+}
+.schema-mode-switch > span {
+  width: auto;
+}
+@media (max-width: 1000px) {
+  .schema-mode-switch > span {
+    width: auto;
+    margin: 0 0 0 0.5rem;
+  }
+}
+.schema-workflow-path {
+  margin-bottom: 10px;
+}
+.schema-flow-proposal {
+  font-size: 12px;
+  color: var(--color-accent);
+}
