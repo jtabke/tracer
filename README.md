@@ -34,6 +34,8 @@ _The map reads native records and versions from the core, rather than a separate
 
 Each demo launch creates two fresh isolated projects. Edits persist in their printed databases; the terminal prints a command to reopen **both**. Switching projects reloads the session and asks before discarding unsaved drafts and temporary organization. Saved records stay in their respective databases.
 
+For the reviewed Graph / Matrix / History authoring and assessment candidate, run `npm run workbench`. It seeds separate fictional Aster/Gatherline databases and remains isolated from the production map. Its [guide](docs/ux-artifacts/product-identity/README.md) covers setup, regression checks and regenerating desktop/680px screenshots.
+
 ## Three realistic examples
 
 | Command                        | Fictional project            | What to explore                                                                               |

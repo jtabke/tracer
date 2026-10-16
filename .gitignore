@@ -18,6 +18,9 @@ test-results/
 /output/
 /docs/output/
 
+# Regenerated fictional snapshot; source and verification stay versioned
+/docs/ux-artifacts/product-identity/data.json
+
 # Local environment settings; commit only deliberately authored examples
 .env
 .env.*
