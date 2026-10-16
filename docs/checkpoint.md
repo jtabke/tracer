@@ -1,5 +1,11 @@
 # Tracer verification checkpoint
 
+## README screenshot refresh — 2026-10-16
+
+Replaced the README’s older map illustrations with four intentionally selected original Graph, Matrix, History and recorded-assessment screenshots from the verified native-backed walkthrough. The preview documents its `npm run workbench` entry point, fictional/simulated provenance and separation from the production map. Captured assets and regeneration guidance live under `docs/images/`; temporary review packs remain ignored. Removed the superseded requirement-trace image, while retaining the development-map asset used by the production documentation renderer.
+
+Formatting and browser checks pass at 1440px and 680px: the wordmark and all four selected screenshots load without horizontal overflow. No application behavior changed.
+
 ## Workbench cleanup and reproducible verification — 2026-10-16
 
 Consolidated native/exported presentation conversion in a strict typed snapshot adapter, preserving historical endpoint identities and avoiding mutation of native objects or revision arrays. Removed the superseded Explore force calculations/cache and Temporal/Explore styling. Corrected New artifact so its floating editor anchors to the initiating toolbar/row button without scrolling the matrix; cancel returns focus without moving the table.

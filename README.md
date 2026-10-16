@@ -24,17 +24,29 @@ Open the printed URL. The project picker switches between **Orbit R1** (a fictio
 
 Start at the **Development map**. Expand a type, find an item by ID or text, and follow its recorded connections. **Graph** and **Items table** show the same working scope. The inspector opens item editing and connection authoring; **Evaluations**, **Configurations**, and **Configure model** open retained tasks in the same application. **Return to map** keeps the in-session task draft. The [walkthrough](docs/getting-started.md) explains this flow.
 
-![Tracer's shared interface over the Aster database: scoped development map and project picker.](docs/images/aster-development-map.jpg)
-
-_Actual integrated UI using fictional Aster data; Orbit uses this same interface with its own database._
-
-![A native Aster requirement, its actual recorded connections and contextual item details in the shared interface.](docs/images/aster-requirement-trace.jpg)
-
-_The map reads native records and versions from the core, rather than a separate UI fixture._
-
 Each demo launch creates two fresh isolated projects. Edits persist in their printed databases; the terminal prints a command to reopen **both**. Switching projects reloads the session and asks before discarding unsaved drafts and temporary organization. Saved records stay in their respective databases.
 
-For the reviewed Graph / Matrix / History authoring and assessment candidate, run `npm run workbench`. It seeds separate fictional Aster/Gatherline databases and remains isolated from the production map. Its [guide](docs/ux-artifacts/product-identity/README.md) covers setup, regression checks and regenerating desktop/680px screenshots.
+## Workbench preview
+
+Run `npm run workbench` for the current Graph / Matrix / History authoring and assessment candidate. It seeds separate fictional Aster/Gatherline databases and remains isolated from the production map launched above. Its [guide](docs/ux-artifacts/product-identity/README.md) covers setup, regression checks and regenerating desktop/680px screenshots.
+
+**Graph — investigate a change through its recorded dependency paths.**
+
+![Tracer workbench Graph showing the changed Aster requirement, recorded dependency paths and artifact inspector.](docs/images/aster-workbench-graph.png)
+
+**Matrix — edit engineering information without leaving the traceability context.**
+
+![Tracer workbench Matrix with grouped requirement-to-verification paths and a floating statement editor.](docs/images/aster-workbench-matrix.png)
+
+**History — inspect the saved change and connected engineering work.**
+
+![Tracer workbench History showing the saved operating-temperature change at revision 400 and its field-level diff.](docs/images/aster-workbench-history.png)
+
+**Assessments — compare captured inputs and record an engineering decision.**
+
+![Tracer workbench assessment showing captured versus current requirement statements and a recorded Needs reevaluation decision.](docs/images/aster-workbench-assessment.png)
+
+_Actual native-backed candidate at 1440×1000 using fictional Aster data. The walkthrough saves an edit at r400 and an immutable review; evaluation outcomes are explicitly simulated._
 
 ## Three realistic examples
 
