@@ -90,7 +90,7 @@ export function MapSidebar({ controller }: { controller: MapController }) {
           className="tracer-wordmark"
           src="/tracer-wordmark-light.svg"
           alt="Tracer"
-          width="110"
+          width="94"
           height="30"
         />
         <select
