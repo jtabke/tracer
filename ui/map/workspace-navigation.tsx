@@ -86,7 +86,13 @@ export function MapSidebar({ controller }: { controller: MapController }) {
   return (
     <aside className="rail">
       <label className="project-picker">
-        <span>Tracer</span>
+        <img
+          className="tracer-wordmark"
+          src="/tracer-wordmark-light.svg"
+          alt="Tracer"
+          width="110"
+          height="30"
+        />
         <select
           aria-label="Project"
           value={dataset}

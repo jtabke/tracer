@@ -81,10 +81,10 @@ button[aria-expanded="true"] {
   display: grid;
   gap: 8px;
 }
-.project-picker > span {
-  padding-left: 3px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.tracer-wordmark {
+  display: block;
+  flex-shrink: 0;
+  margin-left: 3px;
 }
 .project-picker select {
   width: 100%;

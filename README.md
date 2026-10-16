@@ -1,4 +1,9 @@
-# Tracer 🌽
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="ui/public/tracer-wordmark-light.svg" />
+    <img src="ui/public/tracer-wordmark.svg" alt="Tracer" width="264" height="72" />
+  </picture>
+</h1>
 
 Follow engineering intent through requirements, implementation and evidence—and see what changed.
 
