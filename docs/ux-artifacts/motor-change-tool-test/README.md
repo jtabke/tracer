@@ -33,7 +33,7 @@ Use only toy/sanitized material in the hosted editor. The drawing import is hand
 
 ## Next
 
-The file import/edit/export and click-path proof is complete. Follow [ux-plan.md](../../ux-plan.md#7-immediate-next-step) for current source-grounded walkthroughs and collaborative visual decisions; do not refine this first layout into the product by default.
+The file import/edit/export and click-path proof is complete. Follow [ux-plan.md](../../ux-plan.md#evaluation-plan) for current source-grounded walkthroughs and collaborative visual decisions; do not refine this first layout into the product by default.
 
 ## Verification
 
@@ -43,4 +43,4 @@ Run the native-scene metadata check from the repository root:
 node --test test/prototype-artifacts.test.ts
 ```
 
-The native-editor import/edit/download round-trip and offline companion navigation checks passed; see [checkpoint.md](../../checkpoint.md) for evidence and limitations. Native download testing used the browser fallback with OS picker APIs disabled. No Excalidraw MCP was used. These checks do not prove user usability.
+The native-editor import/edit/download round-trip and offline companion navigation checks passed; see [checkpoint.md](../../checkpoint.md) for evidence and limitations. Native download testing used the browser fallback with OS picker APIs disabled. These checks do not prove user usability.

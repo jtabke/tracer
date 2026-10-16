@@ -427,7 +427,7 @@ Document resulting observations as OB evidence only after recording context, art
 - I inspected the pixels of all requested images: `precision.png`, `precision-picker.png`, `precision-relationships.png`, `precision-inspected-picker.png`, and `mobile-picker.png`.
 - I read the working-tree `index.html`, `app.js`, relevant `style.css`, prototype README, source needs/journeys/UX plan, and vision sections 1–3.
 - I do **not** have browser or shell access and did not perform hands-on interaction.
-- I did not run tests.  reports a focused PASS for functional behaviors, but that is not user acceptance or independent usability evidence.
+- I did not run tests. Existing functional checks were not independently reproduced and do not establish usability.
 - The freeze manifest was readable, but I could not independently recalculate hashes. It does not list `mobile-picker.png`, so that screenshot’s freeze provenance is not attested by the supplied manifest.
 - The screenshots cover only three fictional requirements and three candidates. Density, search behavior, and context retention at realistic scale remain untested.
 - No findings here should be promoted to observed user behavior. Consequences labeled as inference or hypothesis require task validation.

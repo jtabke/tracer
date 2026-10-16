@@ -24,9 +24,3 @@ These folders preserve design exploration and its evidence. They are separate fr
 | [motor-change-image-concepts](motor-change-image-concepts/README.md)                 | Historical generated image hypotheses                                                               |
 | [motor-change-tool-test](motor-change-tool-test/README.md)                           | Historical storyboard/tool experiment                                                               |
 | [team-review](team-review/README.md)                                                 | Simulated review and technical evidence                                                             |
-
-## Keep source and output distinct
-
-Retain authored prototypes, fictional fixtures, selected design images and study notes here so their links and tests remain reproducible. Dependency folders and build output are ignored at every depth. Browser scripts write replaceable captures and logs to the repository-root `output/` folder, which is also ignored. The separate `/docs/output/` ignore protects against older scripts' output paths.
-
-Do not add personal project data or credentials to fictional fixtures.

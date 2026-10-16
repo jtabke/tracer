@@ -10,7 +10,7 @@ Open [index.html](index.html) directly in your browser. On macOS, from the repos
 open docs/ux-artifacts/system-neighborhood/index.html
 ```
 
-Keep the whole folder together: HTML, CSS, fixture and scripts. No server, MCP, container, account, network or build is required to use it. Controls really change the **toy workspace**, not Tracer data. This is not the earlier static image gallery or an editable Excalidraw drawing.
+Keep the whole folder together: HTML, CSS, fixture and scripts. It runs offline in a browser without an account or build. Controls really change the **toy workspace**, not Tracer data. This is not the earlier static image gallery or an editable Excalidraw drawing.
 
 **Saving is explicit:** drafts are held in this tab's memory, not automatically stored. Before closing/reloading, use **Download toy drafts**, verify the JSON file saved, and later select it using **Resume from file**. Download includes local wording, authored items, proposed relationships, questions, selected family/lens and an unfinished author form with its captured parent. The original fixture is never overwritten. Import/reset replacement requires confirmation when there is local work. Invalid imports retain the current workspace. Browser unload prompts are best-effort; downloading is the preservation path. Use toy/sanitized text only.
 
@@ -23,7 +23,7 @@ Keep the whole folder together: HTML, CSS, fixture and scripts. No server, MCP, 
 - Author a contribution where its parent intent is visible, or propose a relationship to existing information. An unfinished author draft retains its captured parent even when you browse another family.
 - The change lens uses the same family, with original/proposed wording and assessment questions. No downstream rewrite, mathematical propagation, validity status or approval occurs.
 
-This is one **interaction hypothesis**, not proof that cards, a board or this layout should be the product default. It still has long vertical scrolling, separate evidence below authoring, and limited simultaneous comparison. These were friction candidates for the original walkthrough, not issues solved by styling; the owner subsequently rejected the overall direction. Current next steps are in [ux-plan.md](../../ux-plan.md#7-immediate-next-step).
+This is one **interaction hypothesis**, not proof that cards, a board or this layout should be the product default. It still has long vertical scrolling, separate evidence below authoring, and limited simultaneous comparison. These were friction candidates for the original walkthrough, not issues solved by styling; the owner subsequently rejected the overall direction. Current next steps are in [ux-plan.md](../../ux-plan.md#evaluation-plan).
 
 ## The fictional starting material
 

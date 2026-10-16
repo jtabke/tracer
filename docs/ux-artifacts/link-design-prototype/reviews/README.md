@@ -1,6 +1,6 @@
 # Selected Precision UI — independent review synthesis
 
-**Status:** review recommendations, not implementation approval or user validation. The owner requested deep independent Sol 5.6 and Astra perspectives grounded in product goals and user needs. Both inspected current workspace/picker/relationship/narrow screenshots and source, read the needs and journeys, and distinguished the thin prototype from the broader product. Neither performed hands-on browser or user testing.
+**Status:** review recommendations, not implementation approval or user validation. Two AI-assisted reviews examined product goals and user needs. Both inspected current workspace/picker/relationship/narrow screenshots and source, read the needs and journeys, and distinguished the thin prototype from the broader product. Neither performed hands-on browser or user testing.
 
 Reports: [Sol 5.6](selected-ui-sol56.md) · [Astra](selected-ui-astra.md).
 
@@ -42,5 +42,3 @@ For the proposed next slice, test whether a participant can:
 - Complete the flow with keyboard, readable zoom/reflow and understandable dynamic announcements.
 
 Use a small formative round with authors/contributors and reviewers across formal engineering and lighter software work, with sanitized real artifacts where possible. Observe interpretation errors, assistance, context reconstruction and recovery—not only preference or speed. Owner-only walkthroughs remain provisional. No observed-user findings or claims of “best UI” follow from these model reviews.
-
-## Evidence and candidate

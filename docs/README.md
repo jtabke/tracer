@@ -32,4 +32,4 @@ These documents explain decisions and remaining questions; they are not a list o
 - [Engineering workspace slice](industry-workspace-slice.md): gaps exposed by cross-industry examples and two workspace proposals.
 - [Reference review](ux-competitive-review.md): original visual references and design critique.
 - [Design studies and research artifacts](ux-artifacts/README.md): isolated prototypes, reference assets and their status.
-- [Checkpoint](checkpoint.md): current progress, passing checks and historical receipts.
+- [Checkpoint](checkpoint.md): implemented behavior, verification and remaining work.

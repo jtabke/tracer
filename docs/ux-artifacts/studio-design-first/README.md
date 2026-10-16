@@ -57,7 +57,7 @@ The revised study repairs those bounded issues. It remains a proposal. AI task s
 
 The fresh [independent product-manager gate](../team-review/product-design-gate.md) explicitly rejects treating inspector-placement alternatives as a settled whole-app design. It identifies missing author/connect entry, project/library/search context, advanced representations, full workflow vocabulary and interrupted/failed evidence states. Those findings are acceptance boundaries, not suggestions to add more controls immediately.
 
-Fresh QA checks both variants after revision: native-hop excerpt scope and complete Table references, keyed preview edits/versions, judgment retained beside unchanged outcome, one shared model-label draft with Cancel, pointer navigation, and narrow capture return. The initial unhandled-input/state-echo defect was repaired before those distinct-value checks passed. The final parent pointer/review check is; screenshot inspection includes  and. These validate the limited study's interactions and pixels, not the missing whole-product journeys.
+Fresh QA checks both variants after revision: native-hop excerpt scope and complete Table references, keyed preview edits/versions, judgment retained beside unchanged outcome, one shared model-label draft with Cancel, pointer navigation, and narrow capture return. The initial unhandled-input/state-echo defect was repaired before those distinct-value checks passed. The final parent pointer/review check is; screenshot inspection includes and. These validate the limited study's interactions and pixels, not the missing whole-product journeys.
 
 ## Design still to settle
 

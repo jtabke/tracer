@@ -2,7 +2,7 @@
 
 **Status:** historical static, generated visual hypotheses; the owner found them insufficiently realistic/impactful (UR-8). None is a selected design, implemented feature, validated device model or complete concept sequence. They are not the current design direction.
 
-Open [index.html](index.html) directly in a browser to browse the images locally; no server or MCP is required. The images are also shown in the generation conversation. Illustrated buttons are not interactive. Original tool outputs are retained; these named copies are the project artifacts.
+Open [index.html](index.html) to browse the three AI-generated static concepts. Illustrated buttons are not interactive.
 
 ## Same task, different entry points
 
@@ -26,8 +26,8 @@ These entry-point experiments do not replace the broader working-set/document/sp
 - Text labels and control shapes are readable in the inspected outputs, but are pixels, not accessible controls or editable entities. Interaction, narrow-layout behavior, conflict/recovery, evidence semantics and user usability have not been tested by these images.
 - All images include a concept/illustrative/not-assessment banner. No medical values, passing test results, automatic requirement rewriting or approval outcome are presented. No real artifacts were uploaded.
 
-## Generation receipt
+## Provenance
 
-## Next
+The three AI-generated images are illustrative design hypotheses, each 1586×992 pixels. Their invented labels, relationships and layout do not describe a validated engineering model or implemented application.
 
-Do not refine these images as the default successor. Follow [ux-plan.md](../../ux-plan.md#7-immediate-next-step): source-grounded formal/lightweight workflows, collaborative task/information decisions, then rough editable layouts and interaction states. No new coded prototype, production implementation or MCP/container setup is authorized by this image exploration.
+Current direction and evaluation tasks are in the [UX plan](../../ux-plan.md#evaluation-plan).

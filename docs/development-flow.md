@@ -30,9 +30,9 @@ The [industry workflow guides](industry-workflows/README.md) provide sourced ref
 | Validate          | Does it help representative users accomplish the intended task? | Task observations and outcome evidence in realistic context          | Understandable, useful behavior; remaining gaps explicitly recorded                  |
 | Deliver and learn | Is it ready for its intended use, and what happens next?        | Release decision, known limits and follow-up observations            | Appropriate operational checks and explicit release authority; no exaggerated claims |
 
-For current UX discovery, use the collaborative sequence owned by [ux-plan.md](ux-plan.md): task → information hierarchy → rough layout alternatives → interaction states → component selection → visual treatment/testing. Discuss meaningful decisions with the owner instead of delivering a complete UI in one shot. Source realistic workflows independently, understand why the coordination exists, and label illustrative adaptations separately from observed work.
+For UX discovery, follow the sequence in [ux-plan.md](ux-plan.md): task → information hierarchy → layout alternatives → interaction states → components → visual evaluation. Review significant decisions iteratively, use sourced workflows and distinguish illustrative examples from observed work.
 
-For UI changes, visual composition and information hierarchy are part of the behavior, not cosmetic enrichment after functional work. Before product implementation, show materially different overview and task-state alternatives at representative sizes and obtain the owner's direction. Preserve proven data/command invariants rather than treating existing screens or implementation cost as constraints on design. A reviewer may reject the whole composition; repeating local fixes after concept rejection is not iteration toward acceptance. Do not replace a requested visual relationship map with a text register solely because it is easier to implement or test. Separate technical verification, simulated critique and owner visual acceptance in completion claims; use [the current UX direction](ux-plan.md#current-direction--visual-reset-after-owner-rejection) for this project.
+Visual composition and information hierarchy are part of behavior. Compare overview and task states at representative widths before implementation, preserve the native data/command contracts and evaluate each composition against the task. Separate technical verification, simulated critique and representative-user validation. The [design principles](ux-plan.md#design-principles) describe the selected direction.
 
 This is not a requirement to create nine standalone reports. Reuse a short specification/issue for a selected slice, link stable need/story IDs and record the evidence. Documentation depth should match uncertainty, risk and coordination needs. Formal governance may require more, but that must be established separately.
 
@@ -103,7 +103,7 @@ After a sustaining change, reconsider affected specs, checks and user scenarios;
 
 ## 6. Foundational reading and deliberate synthesis
 
-The goal is not to reproduce one author's methodology or speculate about what Steve Jobs would read. Study complementary ideas, identify their context, form a coherent product point of view and test it against actual work.
+The reading below combines interaction design, continuous discovery, modularity and delivery research. Apply each idea in context and evaluate it against actual engineering tasks.
 
 This initial selection uses author/publisher material and primary guidance linked below; it is **not a claim that the complete books have been read or their advice independently validated for Tracer**. Further reading should target unresolved decisions rather than become a prerequisite for all progress.
 
@@ -155,7 +155,7 @@ For the current uncertainty, begin with Norman/Cooper and Torres: mental models,
 
 Tracer has one shared map-led browser workspace over its headless core, with separate native example databases. The [UX plan](ux-plan.md) owns the selected interface direction; [architecture](architecture.md) describes implemented boundaries, and the [checkpoint](checkpoint.md) records verification and remaining limitations. Earlier concept proposals and rejected Studio compositions remain historical evidence, not alternate product interfaces.
 
-Prepare the source preview for GitHub using the repository checks and file-review guidance in [Contributing](../CONTRIBUTING.md). Continue product evaluation through concrete tasks in both example projects. Automated correctness checks do not establish usefulness or replace representative user feedback. Scope future feature work from those findings and the owner's current request rather than treating every candidate story as approved.
+Use the repository checks and contribution guidance in [Contributing](../CONTRIBUTING.md). Continue product evaluation through concrete tasks in both example projects. Automated correctness checks do not establish usefulness or replace representative user feedback. Scope future feature work from those findings and the owner's current request rather than treating every candidate story as approved.
 
 ## Validation milestones
 

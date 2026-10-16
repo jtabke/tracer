@@ -1,6 +1,6 @@
 # Contribution-context read feasibility
 
-**Status: historical feasibility audit with a subsequently selected native read slice.** The owner authorized the working-context contract and two task specifications after the model cleanups. The implemented [working-context contract](../../architecture.md#consistent-working-context-read) and [selected tasks](../../ux-plan.md#selected-slice--mounted-working-context-for-authoring-and-change-review) now own its exact scope and limits. This does not select the rejected Alternative A composition or claim a mounted UI replacement.
+**Status: historical feasibility audit with a subsequently selected native read slice.** The owner authorized the working-context contract and two task specifications after the model cleanups. The implemented [working-context contract](../../architecture.md#consistent-working-context-read) and [selected tasks](../../ux-plan.md#history-and-assessment) now own its exact scope and limits. This does not select the rejected Alternative A composition or claim a mounted UI replacement.
 
 The native slice uses explicit request recipes, distinct row pages, up to four routes/four steps, independently paged traces and a focus-plus-loaded-rows receipt union. It selects one deterministic path per identity rather than enumerating every path. Full receipt comparison is bounded separately; an unloaded comparison is explicitly unavailable. Existing saved Family/Chain definitions are unchanged. A richer durable recipe editor and mounted task adapter remain follow-up work.
 
