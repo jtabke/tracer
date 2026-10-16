@@ -27,9 +27,13 @@ export function useWorkspaceReader(identity: string | undefined, leaveEditing: (
       return;
     }
     if (!restore.current) return;
-    restore.current = false;
     const saved = origin.current;
-    const frame = requestAnimationFrame(() => restoreReadingOrigin(saved, surface.current));
+    const frame = requestAnimationFrame(() => {
+      // Leaving for the project browser may happen before this frame runs.
+      if (!restore.current) return;
+      restore.current = false;
+      restoreReadingOrigin(saved, surface.current);
+    });
     return () => cancelAnimationFrame(frame);
   }, [active, identity]);
   const open = () => {

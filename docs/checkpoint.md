@@ -10,6 +10,8 @@ The full isolated candidate suite passes: immutable snapshot projection, authori
 
 The broader browser suite exposed an intermittent focus restoration race in the historical test harness: a queued reader-return frame could run after navigating to the project browser. The callback now checks whether restoration is still requested. The existing keyboard regression explicitly holds that frame until after browser return; it fails against the original callback and passes repeatedly with the fix. This is a harness correction, not a new production workflow.
 
+Final repository verification passes: `npm run check` completes formatting, strict types, lint, 335 unit tests, 130 browser tests, production/harness builds and dead-code/duplication/health gates. `npm run workbench:check` separately passes the candidate TypeScript and complete disposable-fixture suite, including refreshed desktop/680px captures. No quality thresholds or production architecture boundaries were relaxed.
+
 Temporary iteration previews were moved into ignored local output; the generated fictional snapshot is ignored and regenerated from its seed. Maintained source, regression tools and owning documentation are versioned. Production adoption, user validation, broader receipt authoring and large-project candidate performance remain open.
 
 ## Branched-T SVG wordmark — 2026-10-16

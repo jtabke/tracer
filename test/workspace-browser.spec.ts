@@ -1031,8 +1031,27 @@ test("stacked keyboard selection reaches context and returns without losing filt
       await editableField(page, "Workspace statement");
       const statement = inspector.getByLabel("Workspace statement", { exact: true });
       await statement.fill("Keyboard draft retained while returning to the list.");
+      // Hold application frames so a delayed reader restoration runs after the
+      // user has returned to the browser, rather than relying on race timing.
+      await page.evaluate(() => {
+        const original = window.requestAnimationFrame;
+        const pending: FrameRequestCallback[] = [];
+        window.requestAnimationFrame = (callback) => {
+          pending.push(callback);
+          return 0;
+        };
+        Object.assign(window, {
+          flushReadingFrames: () => {
+            window.requestAnimationFrame = original;
+            for (const callback of pending) callback(performance.now());
+          },
+        });
+      });
       await inspector.getByRole("button", { name: "Return to scope", exact: true }).click();
       await back.click();
+      await page.evaluate(() => {
+        (window as unknown as { flushReadingFrames(): void }).flushReadingFrames();
+      });
       await expect(card).toBeFocused();
       await page.keyboard.press("Tab");
       await page.keyboard.press("Enter");
