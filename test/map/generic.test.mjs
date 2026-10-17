@@ -1,6 +1,7 @@
+import { studyOrganization } from "../../ui/map/study-organization.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { studyOrganization } from "../../ui/map/organization.ts";
+
 import { asterFolders } from "../../examples/map-organization.mjs";
 import { indexFixture, typeNames } from "../../ui/map/model.ts";
 test("native data never receives study folder assignments from matching keys", () => {

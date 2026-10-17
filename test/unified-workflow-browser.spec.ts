@@ -24,7 +24,7 @@ for (const domain of ["integrated", "medical"] as const) {
       const snapshot = await core.getProjectSnapshot();
       const subject = snapshot.entities.find((item) => item.id === receipt.inputs[0].entity.id)!;
       const link = missingConnection(snapshot, subject);
-      await page.goto(server.origin);
+      await page.goto(server.origin + "/?workspace=map");
       await findItem(page, subject.key!);
       await page.getByRole("button", { name: "Edit item and connections", exact: true }).click();
       const task = page.getByRole("dialog", { name: "Project task" });

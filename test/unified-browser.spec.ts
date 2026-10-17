@@ -26,7 +26,7 @@ for (const domain of ["integrated", "medical", "technology"] as const) {
           item.key ===
           (domain === "medical" ? "PRS-01" : domain === "integrated" ? "REQ-R01" : "CAP-01"),
       )!;
-      await page.goto(server.origin);
+      await page.goto(server.origin + "/?workspace=map");
       await expect(page.getByRole("heading", { name: "Data model", exact: true })).toBeVisible();
       await expect(page.getByRole("navigation", { name: "Project navigation" })).toContainText(
         "Development map",
@@ -89,7 +89,7 @@ test("project picker isolates databases and cancels switching without losing the
     { id: "second", title: "Aster Home BP", tracer: other },
   ]);
   try {
-    await page.goto(server.origin);
+    await page.goto(server.origin + "/?workspace=map");
     await expect(page.getByLabel("Project", { exact: true })).toHaveValue("default");
     page.once("dialog", (dialog) => dialog.dismiss());
     await page.getByLabel("Project", { exact: true }).selectOption("second");
@@ -121,7 +121,7 @@ test("failed native reads retain the map and disable writes; empty projects conf
   const repository = new SQLiteRepository(join(parent, "empty.sqlite"));
   const server = await startLocalServer(new Tracer(repository), resolve("dist"), 0);
   try {
-    await page.goto(server.origin);
+    await page.goto(server.origin + "/?workspace=map");
     await expect(page.getByRole("button", { name: "Configure model", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Configure model", exact: true }).click();
     await expect(page.getByRole("dialog")).toContainText("Configure model");
@@ -149,7 +149,7 @@ test("a lost save response retains the proposal and pauses all native editing un
     core = new Tracer(repository);
   const server = await startLocalServer(core, resolve("dist"), 0);
   try {
-    await page.goto(server.origin);
+    await page.goto(server.origin + "/?workspace=map");
     await page.getByRole("searchbox", { name: "Find an item" }).fill("REQ-R01");
     await page
       .getByRole("button")
@@ -201,7 +201,7 @@ for (const width of [390, 1440])
     const server = await startLocalServer(new Tracer(repository), resolve("dist"), 0);
     try {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(server.origin);
+      await page.goto(server.origin + "/?workspace=map");
       await page.getByRole("searchbox", { name: "Find an item" }).fill("PRS-01");
       await page
         .getByRole("button")
@@ -253,7 +253,7 @@ test("native creation retains a stale-schema proposal, adopts explicitly, and sa
   await core.setSchema(schema, 0, { actor: "test" });
   const server = await startLocalServer(core, resolve("dist"), 0);
   try {
-    await page.goto(server.origin);
+    await page.goto(server.origin + "/?workspace=map");
     await page.getByRole("button", { name: "New item", exact: true }).click();
     const dialog = page.getByRole("dialog");
     await dialog.getByLabel("New item title", { exact: true }).fill("New native item");

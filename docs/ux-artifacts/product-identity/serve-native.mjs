@@ -1,3 +1,4 @@
+import productionConfig from "../../../vite.config.ts";
 import { mkdtemp, writeFile, readFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -26,6 +27,7 @@ const assets = process.env.TRACER_STUDY_ASSETS ?? join(directory, "preview");
 if (!process.env.TRACER_STUDY_ASSETS)
   await build({
     configFile: false,
+    plugins: productionConfig.plugins,
     root,
     logLevel: "warn",
     build: { outDir: assets, emptyOutDir: true },

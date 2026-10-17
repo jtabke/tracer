@@ -1,9 +1,8 @@
 import { disposableOrigin } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 const origin = disposableOrigin();
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 1440, height: 1000 });
 page.setDefaultTimeout(10000);
 const errors = [];
 const run = String(Date.now());
@@ -13,6 +12,10 @@ page.on("pageerror", (error) => errors.push(error.message));
 const snapshot = async () => (await page.request.get(origin + "/api/project-snapshot")).json();
 const open = async (view = "matrix", project = "default") => {
   await page.goto(`${origin}/?native=1&presentation=1&view=${view}&project=${project}`);
+  await page.locator('[data-action="reset"]').click();
+  const latest = page.locator('[data-action="latest"]').first();
+  if (await latest.isVisible()) await latest.click();
+  await page.locator(`[data-view="${view}"]`).click();
   await page
     .locator(view === "matrix" ? '[role="grid"]' : ".node")
     .first()
@@ -147,6 +150,8 @@ try {
   await page.keyboard.press("Escape");
   await page.locator('.edgehit[aria-label="PRS-01 verified by VER-03"]').focus();
   await page.keyboard.press("Enter");
+  // Reload now preserves a collapsed inspector; opening details is an explicit task step.
+  await page.locator('[data-action="details"]').click();
   await page.locator("[data-edit-relationship-scope]").click();
   await page.locator("#relationship-scope-form textarea").fill(scopeProposal);
   await page.locator('[data-view="matrix"]').click();

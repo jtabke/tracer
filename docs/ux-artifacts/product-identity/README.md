@@ -1,6 +1,6 @@
-# Tracer engineering workbench candidate
+# Tracer engineering workbench review launcher
 
-This is the maintained, native-backed workflow candidate for the selected dark Atlas shell, organized graph and temporal navigation. It remains separate from the production map in `ui/map/`. Both use the same native API, changesets, evidence comparison, immutable reviews and mutation recovery. Scripted verification is not representative-user acceptance or scale validation.
+The normal application now opens the Graph / Matrix / History workbench from `ui/workbench/`. This directory retains its isolated review launcher, static-export fallback and regression scripts; runtime modules re-export production owners. The earlier `ui/map/` experience remains available through Project tools → Development map. Both use the native API, changesets, evidence comparison, immutable reviews and mutation recovery. Scripted verification is not representative-user acceptance or scale validation.
 
 ## Run
 
@@ -45,21 +45,27 @@ The end-to-end capture starts from an explicitly simulated evaluation matching P
 
 | Module                                                                   | Responsibility                                                                                                     |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `study.js`, `study.css`, `workspace.css`                                 | Candidate shell, interaction owners and responsive rendering                                                       |
+| `ui/workbench/app.js`, `study.css`, `workspace.css`                      | Production shell, interaction owners and responsive rendering                                                      |
 | `workspace-snapshot.ts`                                                  | Shared immutable presentation conversion for native and exported snapshots, including deleted historical endpoints |
 | `native-client.ts`                                                       | Typed native reads, existing mutation controller and reconciliation                                                |
-| `matrix-editor.mjs`, `trace-table.mjs`                                   | Stable editors and bounded grouped/flat path projection                                                            |
-| `workspace-model.mjs`, `workspace-journeys.mjs`, `trace-context.mjs`     | Revision projection, neighborhood/path policies and contextual labels                                              |
-| `authoring-policy.mjs`, `canvas-input.mjs`                               | Schema-required progression, key suggestions, literal changed spans and deterministic wheel intent                 |
+| `matrix-editor.mjs`, `trace-table.mjs`                                   | Matrix rendering/draft capture and bounded grouped/flat path projection                                            |
+| `workspace-history.ts`, `presentation.ts`, `relationship-policy.ts`      | Typed revision reconstruction/diffs, presentation labels and native permission policy                              |
+| `graph-geometry.ts`, `graph-layout.ts`                                   | Pure geometry/camera policies and measured layout over one workspace position map                                  |
+| `graph-input.ts`, `selection-delay.ts`, `workspace-events.ts`            | Abortable canvas gestures, guarded delayed selection and keyboard/resize/page lifetimes                            |
+| `matrix-input.ts`, `matrix-form-input.ts`, `matrix-selection.ts`         | Scoped grid/form bindings, picker keyboard input, logical ranges and exact row paths                               |
+| `matrix-placement.ts`, `matrix-proposal.ts`, `matrix-types.ts`           | Popover lifetime, pure guarded native operation building and typed draft contracts                                 |
+| `matrix-recipes.ts`                                                      | Typed saved-recipe dialog/controller and scope reset through current write authority                               |
+| `workspace-journeys.mjs`, `trace-context.mjs`                            | Neighborhood and recorded path policies                                                                            |
+| `authoring-policy.ts`, `canvas-input.ts`                                 | Schema-required progression, key suggestions, literal changed spans and deterministic wheel intent                 |
 | `evidence-workspace.tsx`, `evidence-workspace.css`                       | Retained assessment host around the production review owner; no parallel judgment model                            |
 | `serve-native.mjs`, `build-data.mjs`                                     | Isolated native runner and regenerable fictional static export                                                     |
 | `verification-fixtures.mjs`, `check-workbench.mjs`, `package-review.mjs` | Owned disposable servers, regression orchestration and ignored review output                                       |
 | `verify-*.mjs`, `verify-snapshot.ts`                                     | Interaction, policy, native persistence, conflict/recovery and screenshot assertions                               |
 
-The root strict configuration applies to candidate TypeScript through its local `tsconfig.json`. The vanilla JavaScript candidate remains browser-verified; production dependency/coverage gates do not include design studies. Production source must not import this candidate.
+The root strict configuration covers production TypeScript; the review harness also uses its local `tsconfig.json`. Production JavaScript is browser-verified and included in production dependency, complexity and measured coverage gates. `npm run check` includes native workbench regressions against the production build. Production source must not import this review directory.
 
 ## Limits
 
-Graph drawing is bounded to 50 artifacts; traceability projection to 500 rows and 100 terminal links per grouped cell, with omissions disclosed. No virtualization, bulk mutation, spreadsheet paste, durable recipes/positions or arbitrary two-revision comparison is claimed. Assessment discovery is focus-only, not every reachable dependency or baseline impact analysis. Review drafts survive view switches but not reload; saved decisions persist. Receipt authoring here is explicit fixture preparation. Production adoption and larger-project/representative-user validation remain separate work.
+Graph drawing is bounded to 50 artifacts; traceability projection to 500 rows and 100 terminal links per grouped cell, with omissions disclosed. No virtualization, bulk mutation, spreadsheet paste, portable workspace context or arbitrary two-revision comparison is claimed. Assessment discovery is focus-only, not every reachable dependency or baseline impact analysis. Review drafts survive view switches but not reload; saved decisions persist. Project tools supports ordinary receipt authoring without fixtures. `prepare-assessment.mjs` remains optional simulated capture setup for review screenshots. Named Matrix configurations persist in SQLite; graph positions, view settings and investigations recover in the same browser/origin. Larger-project and representative-user validation remain separate work.
 
 The current behavior supersedes the earlier three-direction studies, Trace/Explore switch, Mouse/Trackpad preference and collapsed relationship groups. Old review galleries remain local under `output/`; they are not alternate product implementations.

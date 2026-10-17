@@ -22,7 +22,7 @@
     "workspace:large": "npm run demo -- --demo-size large",
     "test": "node test/run-unit.ts",
     "typecheck": "tsc --noEmit",
-    "check": "npm run format:check && npm run typecheck && npm run lint && npm test && npm run test:ui && npm run quality",
+    "check": "npm run format:check && npm run typecheck && npm run lint && npm test && npm run test:ui && npm run workbench:check && npm run quality",
     "benchmark": "node examples/benchmark.ts",
     "build": "vite build",
     "start": "npm run build && node src/interfaces/serve.ts",
@@ -38,6 +38,7 @@
     "workbench:screenshots": "node docs/ux-artifacts/product-identity/check-workbench.mjs --screenshots-only"
   },
   "devDependencies": {
+    "@bcoe/v8-coverage": "1.0.2",
     "@playwright/test": "^1.63.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.3.0",

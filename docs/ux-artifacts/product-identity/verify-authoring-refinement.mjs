@@ -1,10 +1,9 @@
 import { disposableOrigin } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 // Mutates only the caller's disposable fixture, including optional-field schema variants.
 const origin = disposableOrigin();
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 680, height: 900 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 680, height: 900 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const read = async () => (await page.request.get(origin + "/api/project-snapshot")).json();

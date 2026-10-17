@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { wheelIntent } from "./canvas-input.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 import { snapshotAt, diffAt, allowedTypes } from "./workspace-model.mjs";
 import {
   relationshipLabel,
@@ -47,7 +47,7 @@ const data = JSON.parse(readFileSync(new URL("./data.json", import.meta.url))),
 const output = new URL("../../../output/product-identity/", import.meta.url).pathname;
 mkdirSync(output, { recursive: true });
 const origin = process.env.TRACER_STUDY_ORIGIN ?? "http://127.0.0.1:8173",
-  url = `${origin}/docs/ux-artifacts/product-identity/?presentation=1`;
+  url = `${origin}${process.env.TRACER_STUDY_PATH ?? "/docs/ux-artifacts/product-identity/"}?presentation=1`;
 assert.equal(latest.records.size, 113);
 assert.equal(latest.links.length, 282);
 assert.equal(relationshipLabel("decomposes_into", false), "Decomposed from");
@@ -94,8 +94,7 @@ const potential = potentialPaths(data, 399);
 assert.ok(potential.keys.includes("SYS-02"));
 assert.ok(potential.keys.includes("VER-01"));
 assert.ok(potential.links.every((link) => latest.links.some((native) => native.id === link.id)));
-const browser = await chromium.launch(),
-  page = await browser.newPage({ viewport: { width: 1440, height: 1000 } }),
+const { browser, page } = await launchVerifiedBrowser({ width: 1440, height: 1000 }),
   errors = [];
 page.setDefaultTimeout(10000);
 page.on("pageerror", (error) => errors.push(error.message));
@@ -576,6 +575,14 @@ try {
   // Inspector supplements the workspace. Full artifact editing is an explicit transition.
   await page.setViewportSize({ width: 1000, height: 900 });
   await page.waitForFunction(() => document.body.dataset.panel === "drawer");
+  const drawerControls = page.locator(
+    '.inspector button:not(:disabled), .inspector input, .inspector textarea, .inspector select, .inspector [tabindex="0"]',
+  );
+  await drawerControls.last().focus();
+  await page.keyboard.press("Tab");
+  assert.equal(await drawerControls.first().evaluate((el) => document.activeElement === el), true);
+  await page.keyboard.press("Shift+Tab");
+  assert.equal(await drawerControls.last().evaluate((el) => document.activeElement === el), true);
   assert.equal(await page.locator(".inspector").getAttribute("aria-modal"), "true");
   await page.getByRole("button", { name: "Close inspector", exact: true }).click();
   await page.setViewportSize({ width: 680, height: 900 });
@@ -626,6 +633,22 @@ try {
   await page.locator('[data-action="frame"]').click();
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   await capture("workflow-phone");
+  await page.keyboard.press("/");
+  await page.locator("#search").fill("SYS-03");
+  await page.locator('[data-result="SYS-03"]').click();
+  await page.locator("#timeline-scope").selectOption("selected");
+  await page.keyboard.press("/");
+  await page.locator("#search").fill("Show traceability");
+  await page.locator("[data-command]").click();
+  assert.equal(await page.locator("#trace-root-type").inputValue(), "subsystem_requirement");
+  await page.locator('[data-matrix-mode="relationships"]').click();
+  const adjacency = page.locator(".matrix table:not([role=grid]) td button").first();
+  await adjacency.focus();
+  await adjacency.press("ArrowRight");
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowUp");
+  assert.ok(await page.evaluate(() => !!document.activeElement.closest(".matrix td")));
   assert.deepEqual(errors, []);
   console.log(
     "Passed Discover / Modify / Assess: exact canonical trace; control hierarchy; anchor-preserving expand/collapse/focus; cursor-anchored wheel zoom and organized expansion; pin/drag; selected matrix/relationship history; direct statement/acceptance editing and validation; full editor/back; shared drafts/filters; local link edit/remove/create; native diffs and unassessed connected work; changed-only graph marks; keyboard/revision locks; responsive peek/full editor, drawer, 390px/680px overflow; reduced motion; reload isolation; zero page errors.",

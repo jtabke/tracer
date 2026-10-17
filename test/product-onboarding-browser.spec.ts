@@ -23,7 +23,7 @@ test("worked product guide creates a native model, items and links from an empty
     const server = await startLocalServer(tracer, resolve("dist"), 0);
     let snapshot: Awaited<ReturnType<Tracer["getProjectSnapshot"]>>;
     try {
-      await page.goto(server.origin);
+      await page.goto(server.origin + "/?workspace=map");
       await page.getByRole("button", { name: "Configure model", exact: true }).click();
       const task = page.getByRole("dialog", { name: "Project task", exact: true });
       await task.getByRole("button", { name: "Text", exact: true }).click();

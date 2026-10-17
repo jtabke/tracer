@@ -23,7 +23,7 @@ async function nativeProject(
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   try {
-    await page.goto(server.origin);
+    await page.goto(server.origin + "/?workspace=map");
     await ready(page);
     await run(core, project);
     expect(errors).toEqual([]);

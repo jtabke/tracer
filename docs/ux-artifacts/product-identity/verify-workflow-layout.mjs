@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 const origin = process.env.TRACER_NATIVE_ORIGIN ?? "http://127.0.0.1:8176";
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 1440, height: 1000 });
 page.setDefaultTimeout(10000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
@@ -66,6 +65,7 @@ try {
   for (const width of [1440, 680]) {
     await page.setViewportSize({ width, height: width === 680 ? 900 : 1000 });
     await page.goto(origin + "/?native=1&presentation=1&view=matrix");
+    await page.locator('[data-matrix-mode="traceability"]').click();
     await page.locator('[role="grid"]').waitFor();
     await page.locator('[data-action="search"]').click();
     await page.locator("#search").fill(key);
@@ -140,6 +140,7 @@ try {
   // Inspect the sticky row identity in actual horizontal overflow, with/without selection.
   await page.setViewportSize({ width: 680, height: 900 });
   await page.goto(origin + "/?native=1&presentation=1&view=matrix");
+  await page.locator('[data-matrix-mode="traceability"]').click();
   await page.locator('[role="grid"]').waitFor();
   const scroll = page.locator(".matrix-scroll");
   await scroll.evaluate((el) => (el.scrollLeft = el.scrollWidth - el.clientWidth));

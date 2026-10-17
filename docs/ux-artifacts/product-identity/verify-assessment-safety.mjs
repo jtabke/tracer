@@ -1,10 +1,10 @@
 import { disposableOrigin } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
-import { chromium, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 const origin = disposableOrigin();
 assert.notEqual(new URL(origin).port, "8174", "Use a disposable prepared fixture.");
-const browser = await chromium.launch(),
-  page = await browser.newPage({ viewport: { width: 680, height: 900 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 680, height: 900 });
 page.setDefaultTimeout(10000);
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));

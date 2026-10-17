@@ -15,7 +15,7 @@ const test = base.extend<{ project: Awaited<ReturnType<typeof seedRealisticProje
     const repository = new SQLiteRepository(project.database);
     const server = await startLocalServer(new Tracer(repository), resolve("dist"), 0);
     try {
-      await page.goto(server.origin);
+      await page.goto(server.origin + "/?workspace=map");
       await use(project);
     } finally {
       await closeTestPage(page);

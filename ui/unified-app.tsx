@@ -130,7 +130,13 @@ export function UnifiedApp() {
       mutation={mutation}
       refresh={refresh}
       changed={changed}
-      tools={<ProjectActions hasSchema={!!snapshot?.schema} onTask={setTask} />}
+      tools={
+        <ProjectActions
+          hasSchema={!!snapshot?.schema}
+          onTask={setTask}
+          blocked={!ready || mutation.blocked}
+        />
+      }
     />
   );
   const data = useMemo(
@@ -154,7 +160,13 @@ export function UnifiedApp() {
         onProject={(id) => switchProject(id, projectId, mutation.blocked)}
         status={`Saved project · revision ${snapshot.projectRevision}`}
         notice={status}
-        actions={<ProjectActions hasSchema={!!snapshot.schema} onTask={setTask} />}
+        actions={
+          <ProjectActions
+            hasSchema={!!snapshot.schema}
+            onTask={setTask}
+            blocked={!ready || mutation.blocked}
+          />
+        }
         inspectorActions={(selected) => (
           <button
             className="primary"
@@ -230,7 +242,7 @@ function switchProject(id: string, current: string, blocked: boolean) {
       "Switch projects? Unsaved drafts and session organization will be discarded. Saved records remain in their own project.",
     )
   )
-    window.location.assign("/?project=" + encodeURIComponent(id));
+    window.location.assign("/?workspace=map&project=" + encodeURIComponent(id));
 }
 
 function retainedReadNotice(loaded: boolean) {
@@ -242,12 +254,30 @@ function retainedReadNotice(loaded: boolean) {
 function ProjectActions({
   hasSchema,
   onTask,
+  blocked,
 }: {
   hasSchema: boolean;
+  blocked: boolean;
   onTask(task: NativeTask): void;
 }) {
   return (
     <div className="project-actions">
+      <button
+        disabled={blocked}
+        onClick={() => {
+          if (
+            window.confirm(
+              "Open Graph / Matrix / History? Unsaved map drafts will be discarded; saved records remain in this project.",
+            )
+          ) {
+            const url = new URL(location.href);
+            url.searchParams.set("workspace", "workbench");
+            location.assign(url);
+          }
+        }}
+      >
+        Graph / Matrix / History
+      </button>
       <button disabled={!hasSchema} onClick={() => onTask("create")}>
         New item
       </button>

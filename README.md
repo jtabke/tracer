@@ -20,15 +20,17 @@ npm ci
 npm run demo
 ```
 
-Open the printed URL. The project picker switches between **Orbit R1** (a fictional robot vacuum) and **Aster Home BP** (a fictional blood-pressure monitor). Each project has its own SQLite database. Both use the same map-led interface built over the headless core; switching projects never combines their records.
+Open the printed URL. The project picker switches between **Orbit R1** (a fictional robot vacuum) and **Aster Home BP** (a fictional blood-pressure monitor). Each project has its own SQLite database. Both use the same Graph / Matrix / History workspace built over the headless core; switching projects never combines their records.
 
-Start at the **Development map**. Expand a type, find an item by ID or text, and follow its recorded connections. **Graph** and **Items table** show the same working scope. The inspector opens item editing and connection authoring; **Evaluations**, **Configurations**, and **Configure model** open retained tasks in the same application. **Return to map** keeps the in-session task draft. The [walkthrough](docs/getting-started.md) explains this flow.
+Start in **Graph**, switch to **Matrix** to author records and direct connections, and use **History** to inspect saved changes and investigate their recorded paths. **Assess evidence** compares captured inputs and records a separate decision. **Project tools** retains model configuration, complete item editing, evaluation receipt authoring, configurations and documentation. The earlier **Development map** remains available there. The [walkthrough](docs/getting-started.md) explains both routes.
 
-Each demo launch creates two fresh isolated projects. Edits persist in their printed databases; the terminal prints a command to reopen **both**. Switching projects reloads the session and asks before discarding unsaved drafts and temporary organization. Saved records stay in their respective databases.
+Graph positions, Matrix settings, selected revision and investigation context recover after reload in the same browser and local origin. Named **Save Matrix configuration** recipes persist in the project database. Unsaved drafts remain tab-local: leaving or reloading warns before discarding them. An unconfirmed save blocks new writes until its saved result has been inspected; proposals are never replayed automatically.
 
-## Workbench preview
+Each demo launch creates two fresh isolated projects. Edits persist in their printed databases; the terminal prints a command to reopen **both**. Switching projects reloads the document to bind transport to the chosen database and asks before discarding unsaved drafts. Saved records and recovered working scopes stay project-specific.
 
-Run `npm run workbench` for the current Graph / Matrix / History authoring and assessment candidate. It seeds separate fictional Aster/Gatherline databases and remains isolated from the production map launched above. Its [guide](docs/ux-artifacts/product-identity/README.md) covers setup, regression checks and regenerating desktop/680px screenshots.
+## Engineering workbench
+
+The normal `npm start` and demo commands open Graph / Matrix / History. `npm run workbench` remains an isolated Aster/Gatherline review launcher using the same production sources. Its [guide](docs/ux-artifacts/product-identity/README.md) covers regression checks and regenerating desktop/680px screenshots.
 
 **Graph — investigate a change through its recorded dependency paths.**
 
@@ -46,7 +48,7 @@ Run `npm run workbench` for the current Graph / Matrix / History authoring and a
 
 ![Tracer workbench assessment showing captured versus current requirement statements and a recorded Needs reevaluation decision.](docs/images/aster-workbench-assessment.png)
 
-_Actual native-backed candidate at 1440×1000 using fictional Aster data. The walkthrough saves an edit at r400 and an immutable review; evaluation outcomes are explicitly simulated._
+_Native-backed workbench at 1440×1000 using fictional Aster data. The walkthrough saves an edit at r400 and an immutable review; evaluation outcomes are explicitly simulated._
 
 ## Three realistic examples
 
@@ -68,7 +70,7 @@ npm start -- --db my-project.sqlite
 
 Follow the [worked example](docs/getting-started.md#worked-example-start-a-product-from-an-empty-database) to build a desk-light model from an empty database, add three items, connect them and reopen saved work.
 
-Define types, fields and relationships with **Configure model**, then use **New item** to populate the project. Find records on the map, select one, and choose **Edit item and connections**. Project terms and schemas remain configurable. Evaluation receipts and exact native configurations are available from the same shell.
+Open **Project tools → Configure model** to define types, fields and relationships, then **New item** to populate the project. Use Matrix for contextual authoring, or **Project tools → Edit item and connections** for the complete schema-defined form. Project terms and schemas remain configurable. Evaluation receipts and exact native configurations are available from the same shell.
 
 To open two existing databases in the project picker:
 
@@ -95,11 +97,11 @@ Seeding refuses an existing directory. Omit `--guide` for an ordinary project. U
 - Optional configuration connection pins preserve explicitly selected topology. Named native baselines reconstruct schema, items and relationships at one complete committed project revision.
 - Versioned project coverage expectations evaluate exact structural links against current data or captured baselines through service, CLI and typed local API. The three realistic seeds include example policies; use `coverage list` and `coverage evaluate JSON`. Structural coverage does not imply successful testing or release readiness.
 - `impact get JSON` compares selected native context against a named baseline and separately investigates captured-input drift. Native/evidence guards keep pages consistent; no automatic causation or readiness judgment is inferred.
-- `working-context get JSON` reads an explicitly authored branch and ordered routes with related receipts, actual captured-input facts and snapshot-bound pages. It requires no baseline; see the [working-context contract](docs/architecture.md#consistent-working-context-read). The workbench candidate uses this service for evaluation discovery; production-map integration remains future work.
+- `working-context get JSON` reads an explicitly authored branch and ordered routes with related receipts, actual captured-input facts and snapshot-bound pages. It requires no baseline; see the [working-context contract](docs/architecture.md#consistent-working-context-read). The main workbench uses this service for evaluation discovery.
 - Queries are bounded or paged and disclose incomplete context. Directed links and shared identities stay explicit.
 - Projects use their own terminology; medical-device, software and integrated-product examples use the same core.
 
-The map reads a complete transactional native snapshot, bounded to **10,000 records and 100,000 connections**. It rejects larger projects explicitly instead of displaying a silently incomplete snapshot. Drawing and trace bounds remain disclosed independently. Folder/category edits and map view recipes are currently **session-only**; they do not modify engineering links or claim durable organization. Existing headless saved-view contracts remain available through the API/CLI.
+The browser reads a complete transactional native snapshot, bounded to **10,000 records and 100,000 connections**. It rejects larger projects explicitly instead of displaying a silently incomplete snapshot. Drawing and trace bounds remain disclosed independently. Folder/category edits and unnamed views in the retained Development map are **session-only**; they do not modify engineering links or claim durable organization. Named Matrix path recipes use the existing saved-view contracts. Browser-local workspace recovery does not travel with the SQLite file or to another origin; saved recipes and evidence records do.
 
 A recorded link does not establish satisfaction. A changed input calls for review; it does not automatically invalidate an engineering result. Schema permissions are not completeness rules or release criteria.
 

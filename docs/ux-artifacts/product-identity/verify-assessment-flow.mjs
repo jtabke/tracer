@@ -82,7 +82,7 @@ for (const [label, port, width, height] of [
     await page.goto(origin + "/?native=1&presentation=1&view=matrix");
     await page.locator('[role="grid"]').waitFor();
     await choose();
-    await page.locator('[data-action="assess-evidence"]').click();
+    await page.getByRole("button", { name: /^Assess evidence/ }).click();
     await page
       .locator(`[data-receipt="${receipt.id}"][aria-pressed="true"]`)
       .waitFor({ state: "attached" });
@@ -192,7 +192,7 @@ for (const [label, port, width, height] of [
     await page.reload();
     await page.locator('[role="grid"]').waitFor();
     await choose();
-    await page.locator('[data-action="assess-evidence"]').click();
+    await page.getByRole("button", { name: /^Assess evidence/ }).click();
     await page.getByLabel("Recorded decision", { exact: true }).waitFor();
     assert.equal(
       await page.getByLabel("Recorded decision", { exact: true }).getAttribute("data-review-id"),

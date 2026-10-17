@@ -1,6 +1,6 @@
 import { disposableOrigin } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 import { mkdirSync } from "node:fs";
 import { traceRows } from "./trace-table.mjs";
 const output = new URL("../../../output/product-identity/", import.meta.url).pathname;
@@ -31,8 +31,7 @@ assert.equal(
   true,
 );
 const origin = disposableOrigin();
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 1440, height: 1000 });
 page.setDefaultTimeout(15000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
@@ -113,6 +112,7 @@ try {
   );
   await capture("workbench-history-saved");
   await page.reload();
+  await page.locator('[data-view="graph"]').click();
   await page.locator(".node").first().waitFor();
   const persisted = await snapshot();
   assert.ok(persisted.entities.some((record) => record.id === entity.id));
@@ -174,6 +174,7 @@ try {
   // Artifact fields also use canonical mutations and produce a real native diff.
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.reload();
+  await page.locator('[data-view="graph"]').click();
   await page.locator(".node").first().waitFor();
   await page.keyboard.press("/");
   await page.locator("#search").fill(key);
@@ -192,6 +193,7 @@ try {
   // A committed write with a lost response stays locked until explicit inspection.
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.reload();
+  await page.locator('[data-view="graph"]').click();
   await page.locator(".node").first().waitFor();
   await page.keyboard.press("/");
   await page.locator("#search").fill(key);

@@ -1,9 +1,10 @@
+import { studyOrganization } from "../../ui/map/study-organization.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { indexFixture } from "../../ui/map/model.ts";
 import { projectMap } from "../../ui/map/map-projection.ts";
-import { studyOrganization, folderKey, revealInDirectory } from "../../ui/map/organization.ts";
+import { folderKey, revealInDirectory } from "../../ui/map/organization.ts";
 
 const fixture = JSON.parse(
   readFileSync(

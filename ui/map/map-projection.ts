@@ -4,7 +4,7 @@ import {
   itemTraceProjection,
 } from "./detail-projection.ts";
 import { modelProjection } from "./model.ts";
-import { directoryProjection } from "./organization.ts";
+import { directoryProjection } from "./directory-projection.ts";
 import type {
   MapIndex,
   Organization,

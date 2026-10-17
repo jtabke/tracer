@@ -1,6 +1,20 @@
 # Getting started with Tracer
 
-Run `npm ci` and `npm run demo` from the repository root with Node.js 24.15 or newer. Open the printed URL. The picker contains two separate databases: fictional Orbit R1 and Aster Home BP. Both use one map-led interface. All example targets and results are invented.
+Run `npm ci` and `npm run demo` from the repository root with Node.js 24.15 or newer. Open the printed URL. The picker contains two separate databases: fictional Orbit R1 and Aster Home BP. Both open the same Graph / Matrix / History workspace. All example targets and results are invented.
+
+## Complete a workflow in the main workspace
+
+The normal launch opens **Graph**. Search for an artifact, use **Matrix** for title-first creation and direct connections, then edit a statement and open **History** to read its saved diff. **Explore potential impact** follows exact recorded paths; connectivity alone does not establish an assessed effect.
+
+For a project without seeded evidence, open **Project tools → Evaluations → Record native-input receipt**. Choose the output, write the actual outcome and declare the exact input items and field scope. Historical native versions and configuration pins are available when needed. Record the receipt before changing an input, then return to that input and choose **Assess evidence**. Compare the captured and current values, select **Review receipt**, choose a decision and record its rationale. The receipt, freshness comparison and review remain separate facts.
+
+**Project tools** also opens **Configure model**, **New item**, complete **Edit item and connections**, **Configurations**, and **Documentation**. Returning from a task retains its in-session draft. These tools use the selected database and existing version guards.
+
+Reload recovers selection, graph positions, Matrix settings, revision and investigation scope in the same browser and origin. Use **Save Matrix configuration** for a named database-backed row-type/path/search recipe; loading one applies it across the project. Unsaved edits and review rationales are not recovered after reload or close: the browser warns, and reopening explains that policy. An unconfirmed save requires inspection and acknowledgment before new writes; it is never automatically resubmitted.
+
+## Use the retained Development map
+
+The remaining map walkthrough and desk-light example use **Project tools → Development map**. It retains the overview, Items table and guided connection controls; **Graph / Matrix / History** returns to the main workspace. Finish or deliberately discard unsaved drafts before changing workspaces.
 
 ## Follow a shared design
 

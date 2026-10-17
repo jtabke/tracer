@@ -19,7 +19,7 @@ const result = spawnSync(
     resolve("node_modules/c8/bin/c8.js"),
     "--reporter=json",
     "--reports-dir=.fallow/coverage/unit",
-    "--temp-directory=.fallow/coverage/raw",
+    "--temp-directory=.fallow/coverage/captures",
     "--include=src/**",
     "--include=ui/**",
     "--include=test/**",

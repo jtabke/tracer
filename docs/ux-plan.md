@@ -6,7 +6,7 @@ The [user needs](user-needs.md), [journeys](user-journeys.md), [architecture](ar
 
 ## Shared workspace
 
-The selected direction is the medical-device map experience shared across all examples (UR-55). Projects use one interaction system rather than separate domain-specific applications. The default application lives in `ui/map/`; the native-backed [workbench candidate](ux-artifacts/product-identity/README.md) evaluates the next authoring and assessment workflows.
+The selected direction is the medical-device map experience shared across all examples (UR-55). Projects use one interaction system rather than separate domain-specific applications. The default Graph / Matrix / History application lives in `ui/workbench/`; the earlier `ui/map/` experience remains a retained Development map task. The [review launcher](ux-artifacts/product-identity/README.md) uses the same production workbench sources.
 
 The workbench combines the Atlas layout and inspector, organized Precision dependency paths and compact temporal navigation. Its shell is dark, restrained and information-led. Light/Dark/System appearance preferences remain future work.
 
@@ -72,7 +72,7 @@ Assessment keeps three concepts independent:
 
 A decision does not clear input drift or rewrite the original receipt. Stale comparison tokens retain the proposal and require explicit adoption of refreshed inputs. Unknown inputs cannot be accepted. Uncertain writes require inspection and acknowledgment without automatic replay.
 
-The current workbench discovers evaluations in declared input/captured-output scope, not every reachable artifact or a baseline-wide impact census. Broader baseline investigation, receipt authoring and temporal comparison remain separate work.
+The current workbench discovers evaluations in declared input/captured-output scope, not every reachable artifact or a baseline-wide impact census. Project tools exposes the existing receipt authoring owner for exact input capture and recorded outcomes in ordinary projects. Broader baseline investigation and arbitrary temporal comparison remain separate work.
 
 ## Model configuration
 
@@ -94,6 +94,12 @@ Measure assistance, errors, context loss, unnecessary transitions and task compl
 
 ## Open design work
 
-The remaining priorities are efficient spreadsheet interaction, unified temporal/selection context, contextual relationship operations, explainable change investigation and stable graph navigation. Durable recipes/positions, semantic zoom, bulk operations and richer comparison should follow demonstrated task needs.
+The remaining priorities are efficient spreadsheet interaction, unified temporal/selection context, contextual relationship operations, explainable change investigation and stable graph navigation. Named Matrix recipes now persist in the database; positions and investigation scope recover in the same browser/origin. Semantic zoom, bulk operations, portable workspace recovery and richer comparison should follow demonstrated task needs.
 
 The [study index](ux-artifacts/README.md), [iteration summary](ux-iterations.md) and [quality review](qa-quality-review.md) retain the useful findings from earlier explorations. Earlier Studio layouts, image concepts and Trace/Explore variants are historical alternatives, not independent product directions.
+
+## Main workflow milestone
+
+The selected delivery slice is a fresh project completing create → connect → modify → investigate → assess → record decision through the normal launch, then reloading to recover the recorded decision and investigation context. Preserve database selection, historical read-only state, guarded saves and retained task drafts. Unsaved drafts are tab-local and deliberately excluded from reload recovery; warn before leaving, retain known-unsaved context in-session and never replay an uncertain proposal.
+
+Automated verification includes an empty database with a small custom schema, UI-authored input receipt, changed field, recorded review, exact links and positions after reload, at desktop and 680px. This establishes implementation behavior. The unfamiliar-user session remains unrun: recruit someone new to Tracer, give the workflow goal without naming controls, and observe next-action choices, assistance, errors, context loss and completion time. Use Aster and a contrasting domain, then larger datasets and keyboard-only tasks. Do not count scripted completion or response timings as participant evidence.

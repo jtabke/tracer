@@ -1,0 +1,185 @@
+import { createRoot } from "react-dom/client";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { MutationControllerContext } from "../use-mutation.ts";
+import { NativeTasks, type NativeTask } from "../native-task.tsx";
+import type * as Native from "./native-client.ts";
+import type { Editing } from "../editing.ts";
+import type { Schema } from "../../src/core/model.ts";
+
+type Options = {
+  changed(): Promise<void>;
+  current(): boolean;
+  selected(): string;
+  settled(): void;
+  onMap(): void;
+};
+export function createProjectTools(native: typeof Native, options: Options) {
+  const host = document.createElement("div");
+  document.body.append(host);
+  const root = createRoot(host);
+  let dirty = false;
+  let open: (() => void) | undefined;
+  return {
+    open: () => open?.(),
+    hasDrafts: () => dirty,
+    update: (epoch: number) =>
+      root.render(
+        <ProjectTools
+          native={native}
+          options={options}
+          epoch={epoch}
+          onDirty={() => {
+            dirty = true;
+          }}
+          register={(show) => {
+            open = show;
+          }}
+        />,
+      ),
+  };
+}
+function ProjectTools({
+  native,
+  options,
+  epoch,
+  register,
+  onDirty,
+}: {
+  native: typeof Native;
+  options: Options;
+  epoch: number;
+  register(show: () => void): void;
+  onDirty(): void;
+}) {
+  const [activated, setActivated] = useState(false);
+  const [task, setTask] = useState<NativeTask | null>(null);
+  const [menu, setMenu] = useState(false);
+  const [error, setError] = useState("");
+  const mutation = useSyncExternalStore(native.mutations.subscribe, native.mutations.snapshot);
+  register(() => setMenu(true));
+  const busy = !options.current() || ["saving", "unknown"].includes(mutation.status);
+  const editing: Editing = {
+    busy,
+    epoch,
+    error,
+    report: (failure) => setError(String(failure)),
+    mutate: async (path, input) => {
+      if (busy) return undefined;
+      const result = await native.mutations.run(path, input);
+      if (result === undefined) {
+        const resultState = native.mutations.snapshot();
+        setError(
+          resultState.status === "rejected"
+            ? String(resultState.error)
+            : "Save not confirmed. Return to the workspace to inspect the result before continuing.",
+        );
+      } else setError("");
+      return result;
+    },
+    commit: async (operations, version) => {
+      const result = await editing.mutate("/api/changesets", {
+        operations,
+        expectedSchemaVersion: version,
+      });
+      if (!result) return false;
+      await options.changed();
+      return true;
+    },
+  };
+  async function saveSchema(schema: Schema, expectedVersion: number) {
+    if (!(await editing.mutate("/api/schema", { schema, expectedVersion }))) return false;
+    await options.changed();
+    return true;
+  }
+  return (
+    <div onInputCapture={onDirty}>
+      {menu && (
+        <ProjectMenu onClose={() => setMenu(false)}>
+          <h2>Project tools</h2>
+          <p>
+            Drafts stay in this tab until reload or close. Saved records persist. Reload recovers
+            the workspace scope, not unsaved drafts.
+          </p>
+          {(
+            [
+              ["item", "Edit item and connections"],
+              ["create", "New item"],
+              ["schema", "Configure model"],
+              ["evaluations", "Evaluations"],
+              ["configurations", "Configurations"],
+              ["docs", "Documentation"],
+            ] as const
+          ).map(([name, title]) => (
+            <button
+              key={name}
+              disabled={
+                name === "item" &&
+                !native.projectSnapshot.entities.some(
+                  (entity) => (entity.key ?? entity.id) === options.selected(),
+                )
+              }
+              onClick={() => {
+                setMenu(false);
+                setActivated(true);
+                setTask(name);
+              }}
+            >
+              {title}
+            </button>
+          ))}
+          <button
+            disabled={["saving", "unknown"].includes(mutation.status)}
+            onClick={() => {
+              setMenu(false);
+              void options.changed();
+            }}
+          >
+            Refresh project
+          </button>
+          <button onClick={options.onMap}>Development map</button>
+          <button onClick={() => setMenu(false)}>Close project tools</button>
+        </ProjectMenu>
+      )}
+      {activated && (
+        <MutationControllerContext value={native.mutations}>
+          <NativeTasks
+            task={task}
+            schema={native.projectSnapshot.schema}
+            entity={native.projectSnapshot.entities.find(
+              (entity) => (entity.key ?? entity.id) === options.selected(),
+            )}
+            editing={editing}
+            onClose={() => {
+              setTask(null);
+              options.settled();
+              requestAnimationFrame(() =>
+                document.querySelector<HTMLButtonElement>('[data-action="project-tools"]')?.focus(),
+              );
+            }}
+            changed={() => {
+              void options.changed();
+            }}
+            onSchema={saveSchema}
+          />
+        </MutationControllerContext>
+      )}
+    </div>
+  );
+}
+
+function ProjectMenu({ children, onClose }: { children: React.ReactNode; onClose(): void }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    dialog.current?.showModal();
+  }, []);
+  return (
+    <dialog
+      ref={dialog}
+      className="project-tool-menu"
+      aria-label="Project tools"
+      onCancel={onClose}
+    >
+      {children}
+    </dialog>
+  );
+}

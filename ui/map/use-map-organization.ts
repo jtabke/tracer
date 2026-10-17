@@ -1,5 +1,6 @@
+import { studyOrganization } from "./study-organization.ts";
 import { useMemo, useState } from "react";
-import { areaChoices, buildDirectory, matchesArea, studyOrganization } from "./organization.ts";
+import { areaChoices, buildDirectory, matchesArea } from "./organization.ts";
 import type { Fixture, MapIndex, Organization } from "./types.ts";
 export function useMapOrganization(data: Fixture, index: MapIndex, area: string) {
   const initialOrganization = useMemo(() => studyOrganization(data), [data]);

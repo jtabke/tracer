@@ -1,7 +1,7 @@
 import { disposableOrigin } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
 import { diffAt } from "./workspace-model.mjs";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 import { traceRows, groupedTraceRows, ancestorSpans } from "./trace-table.mjs";
 // The 10 × 5 × 4 example must not expand to 200 grouped rows or invent transitions.
 const records = new Map([["R", { type: "root" }]]),
@@ -77,8 +77,7 @@ assert.equal(
   "C",
 );
 const origin = disposableOrigin();
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 1440, height: 1000 });
 page.setDefaultTimeout(10000);
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));

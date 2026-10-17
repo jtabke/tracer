@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
-import { chromium } from "@playwright/test";
+import { launchVerifiedBrowser } from "./verification-browser.mjs";
 const origin = process.env.TRACER_NATIVE_ORIGIN ?? "http://127.0.0.1:8174";
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const { browser, page } = await launchVerifiedBrowser({ width: 1440, height: 1000 });
 page.setDefaultTimeout(10000);
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
