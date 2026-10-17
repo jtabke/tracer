@@ -1,8 +1,6 @@
 # Tracer developer reference
 
-**UI integration:** all examples now enter the shared development map in `ui/map/`. Use the [current walkthrough](getting-started.md) for browser navigation. Earlier Studio and standalone query-view names below describe retained contracts/components and historical workflows; they are not separate product/demo interfaces. The CLI/API behavior remains available over the same core.
-
-Commands below run from the repository root. For first use, start with the [README](../README.md) and [guided walkthrough](getting-started.md). This reference covers the shared UI, CLI, transactions, queries and persistence contracts, with historical query-controller notes labeled separately.
+Commands run from the repository root. Start with the [README](../README.md) and [walkthrough](getting-started.md); this reference owns API/CLI usage. [Architecture](architecture.md) owns detailed invariants and [checkpoint](checkpoint.md) owns verification.
 
 ## Shared browser workspace
 
@@ -10,11 +8,9 @@ Commands below run from the repository root. For first use, start with the [READ
 npm start -- --db project.sqlite
 ```
 
-Open the printed local URL (default `http://127.0.0.1:4317`). Every example uses the same **Development map**, with **Graph** and **Items table** representations of its working scope. Expand types, search for a record, inspect its recorded connections, and open **Edit item and connections** to change native data. **New item**, **Configure model**, **Evaluations**, **Configurations** and **Documentation** open retained tasks. **Return to map** restores the map while retaining the task's in-session draft. The [walkthrough](getting-started.md) covers the current interface.
+Open the printed loopback URL (default `http://127.0.0.1:4317`; override with `--port NUMBER`). The default **Graph / Matrix / History** workbench shares one selected project across perspectives. **Project tools** opens full editing, model configuration, evaluations, configurations, documentation and the retained **Development map**. See the [walkthrough](getting-started.md) for navigation.
 
-The map reads one transactional native snapshot, limited to 10,000 records and 100,000 connections. Larger snapshots fail explicitly. Rendering and trace limits are disclosed separately. Folder/category organization, undo and map recipes are session presentation state; they do not change engineering relationships and reset on reload. Durable native records, receipts, configurations and headless saved views remain database-owned.
-
-The server binds to `127.0.0.1`. Use the exact printed URL; `--port NUMBER` changes the port. This is a trusted local interface without organizational authentication. The project picker exposes only the configured databases, and switching projects reloads the session after confirming loss of temporary organization and unsaved drafts.
+The complete native snapshot rejects beyond 10,000 records / 100,000 links; rendering bounds are separate. Named Matrix recipes persist in SQLite. Spatial/investigation recovery is browser/origin-local; unsaved drafts remain tab-local. Development-map organization/unnamed recipes are session-only. Project switching confirms draft disposal and reloads against an explicitly configured database. The local server has no organizational authentication.
 
 ## Use the headless core
 
@@ -189,11 +185,11 @@ The browser supplies its same-origin `Origin` header for this POST; a Node/other
 
 ## Historical query controllers
 
-The following details document retained CLI/API semantics and components exercised by the test-only harness in `test/legacy-ui/`. Their navigation, keyboard controls and drawing limits describe that harness. They do not describe additional interfaces shipped with the application.
+These CLI/API components run in the test-only `test/legacy-ui/` harness. Controls and drawing limits below describe that harness, not additional shipped product interfaces. Detailed query contracts remain in [architecture](architecture.md#5-shared-queries-and-editing-semantics).
 
 ### Earlier working views
 
-The retained Studio harness has five primary areas: Project, Work, Evaluations, Configurations and Model. Work owns the item library and scoped Graph/Table/Trace/Reading/Matrix representations. Direct editor, Graph query, Trace query and Matrix query are visible secondary query tools with their native controllers. Empty projects offer starter structures; Model supports Visual/Text configuration over one captured schema draft.
+The harness retains Project, Work, Evaluations, Configurations and Model, plus direct editor and Graph/Trace/Matrix query tools. Visited owners stay mounted to retain drafts; invalid Visual/Text model drafts share one captured schema state.
 
 ```mermaid
 flowchart LR
@@ -209,31 +205,20 @@ flowchart LR
     compare --> review["Record immutable review"]
 ```
 
-**Direct editor** retains the supporting scoped-query controller. Search keys and text values across all pages, browse counted types, scope an exact text-field value, and optionally find items missing a compatible outgoing relationship. Coverage counts ordinary connections only. Click a field to edit; open Connect an existing item when needed. Inspect an item, edit its fields, search for an existing compatible target, or page/filter its incident connections without loading a giant graph. Result filtering does not discard focused drafts; selecting another item requires explicit discard. Read failures pause edits. Query views and Evaluations load when first opened and retain drafts when revisited.
+| Surface                   | Controls and scope                                                                                                                                                                                                                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Direct editor             | Paged text/type/field/gap search, captured field edits, compatible-target search and incident links. Gap checks count ordinary links.                                                                                                                                                                               |
+| Graph query               | Background pan, scroll/+− zoom, node dragging, Fit, Expand/Focus selected and inspector. Manual scope: 60 nodes/200 links/20 expansions; depth 1–6: 200 nodes/600 links. Both allow 50 evaluations/200 inputs and reject overflow. Root browser pages 50 with page-local filtering.                                 |
+| Graph keyboard            | Tab/Enter/Space inspects nodes/links; arrows move focused nodes. Canvas focus enables arrow pan and +− zoom. Touch drags. Positions/camera reset on focus/reload and never create native revisions.                                                                                                                 |
+| Evaluation overlay        | Solid native arrows and selected receipt's dashed input arrows remain distinct. Inspect paths/versions, observe local source again, or record Evidence still applies/Reevaluate/Acknowledge only with rationale. Badges count visible evaluations, not project-wide impact. Deleted inputs remain evidence context. |
+| Native timeline           | Native revision/Earlier revisions and Compare from select complete native commits. Relinks show both routes; positions/camera persist within a focus. Historical graphs exclude evidence/freshness and disable UI writes until Return to current; supporting views remain current.                                  |
+| Relationship-column Table | Up to eight directed columns; 20 roots, 300 paths, 1,000 examined links. Parents span prefixes; shared appearances retain one identity. Show siblings counts distinct identities in the loaded root page; Show all chains restores context. Reset columns adopts current schema.                                    |
+| Editable rows             | 50 entities/page with page-local filtering. Enter saves; Escape discards and adopts current object/schema values. Selected-row bulk edits are atomic; layout switches retain drafts.                                                                                                                                |
+| Matrix query              | 20 items/axis. Click or Tab+Space toggles links; JSON attributes supply required link fields. Gap checks include off-page targets.                                                                                                                                                                                  |
 
-**Graph query** is a bounded neighborhood workspace. Starting-item and native-history controls are visible query tools. Pan the canvas by dragging its background, scroll or use +/− to zoom, and drag nodes to arrange them. **Fit view** brings the visible neighborhood back into frame. Click a node to open the inspector and reveal nearby **Expand selected node** / **Focus selected node** actions. Optional help explains keyboard controls. **Trace query** keeps parent/search and ordered relationship-column controls visible, using a local scrolling strip when needed; incoming steps never reverse stored links.
+Shared selection reveals off-page Table/Matrix items through indexed anchors. Bulk selection stays independent. Dirty drafts defer navigation; refresh retains original object/schema guards. Failed reads retain the view and pause writes. Review drafts pin comparison tokens and require explicit adoption after relevant drift; acceptance leaves drift visible. Successful edits refresh views.
 
-Solid arrows are ordinary relationships; their names alone do not propagate freshness. Purple dashed arrows appear when you select an evaluation and represent its explicitly declared inputs. Current/changed/unknown badges and review counts are scoped to the visible evaluations—not a project-wide dashboard. Click an evaluation’s inspector entry to read named dependency paths, inspect concrete versions, and record **Evidence still applies**, **Reevaluate**, or **Acknowledge only** with rationale. Accepted reviews leave drift visible. External nodes offer **Observe local source again** using their last locator; initial bindings and new receipts still use Evidence.
-
-Node fields and connection attributes save through the same version-checked changesets as Table/Matrix. Unsaved inspector drafts require explicit discard before selection changes; refresh keeps their original version checks. Assessment drafts also pin compared inputs: relevant drift requires explicitly adopting the refreshed comparison. Failed graph reads retain the previous view/drafts and pause editing. Technical IDs and source versions are tucked into details.
-
-Keyboard: Tab to nodes/connections and Enter/Space to inspect; arrow keys move a focused node. Focus the canvas itself for arrow-key panning and +/− zoom. Touch supports dragging. Node positions and camera state are local session presentation only; switching focus or reloading resets layout, and moving nodes never creates domain revisions. No collaboration or diagram designer is implied.
-
-Manual Graph reads are bounded to 60 nodes, 200 ordinary connections and at most 20 explicit expansions. Configurable depth follows 1–6 ordinary connection levels with a 200-node / 600-connection bound. Both retain 50-evaluation / 200-declared-input bounds and reject overflow rather than silently hiding data. Receipt-only inputs are included even without ordinary links. Deleted inputs remain explained in evidence rather than becoming editable ghost nodes. Root browsing is paginated at 50 entities, with page-local name/title filtering.
-
-**Shared selection:** selecting a graph node or a Table/Matrix **Focus** button highlights the same entity across views. Supporting views reveal off-page selections using indexed ID anchors, not a first-page fallback. Table drafts defer navigation until saved/discarded; bulk-selection checkboxes remain independent.
-
-**Native timeline:** choose **Native revision**, scrub the loaded revision window, or load **Earlier revisions**. **Compare from** compares two complete committed changesets in a bounded neighborhood, with added/removed/modified/unchanged native objects and before/after snapshots. Relinked edges show both routes. Node positions (including temporarily absent nodes) and camera remain stable for the same focus. Historical graphs include their native schema, never receipts, observations, reviews or current freshness. Every UI mutation is disabled until **Return to current**; Work/Table/Matrix/Evidence explicitly remain current-data supporting views. Reads allocate no revisions. The focus browser lists current entities, not a whole historical project.
-
-**Table:** The default **Relationship columns** layout follows configurable incoming or outgoing relationships between working levels, left to right (up to eight columns). Parents span their branching rows; a shared child appears under each parent without duplicating its identity. Missing children remain explicit gaps. Click any item to edit its fields, connect an existing child or browse incident links using the same detail editor as Work. **Show siblings** narrows to the clicked parent/column relationship; **Show all chains** restores the wider table without discarding drafts. Sibling counts cover the current root page, not a project-wide family census.
-
-Search parents across pages, select each column's meaning/target type, and add/remove columns. Root pages contain 20 items; chains reject overflow above 300 paths or 1,000 examined links rather than silently hiding branches. **Reset columns to current schema** recovers a configuration after schema changes. Views show current data and respect the global historical mutation lock.
-
-**Editable rows** remains available within Table for creation and bulk editing; switching layouts preserves drafts. Enter saves a row; Escape discards its draft and explicitly adopts current object/schema values. Selected-row bulk edits commit atomically. **Matrix:** click or Tab + Space toggles links. Gap badges include off-page targets. Successful edits refresh all views.
-
-Conflicts never overwrite silently: attempted edits stay visible, and **Refresh current data** exposes the current row state for review. Escape adopts current values; retry explicitly. For typed links with required attributes, fill the matrix's JSON attributes control before creating a link.
-
-The table shows 50 entities per page with page-local filtering; the matrix shows 20 per axis. This prototype has no undo, restoration or whole-project historical table/matrix. Saved family/chain scopes persist; supporting controller layouts remain in-session. It binds only to `127.0.0.1`; use the exact printed URL, not a hostname alias. `--port NUMBER` changes the port. This is a trusted-local-user interface, not an authenticated organizational server.
+Family/chain recipes persist as presentation metadata; controller layouts are session-local. Undo/restoration and whole-project historical Table/Matrix are absent. The loopback interface uses the printed origin and no organizational authentication.
 
 ## Offline evaluation workflow
 
@@ -309,7 +294,7 @@ node src/interfaces/cli.ts --db project.sqlite relationship list '{"source":"REQ
 node src/interfaces/cli.ts --db project.sqlite --schema-version 1 relationship remove RELATIONSHIP_UUID 1
 ```
 
-All individual data writes require `--schema-version` from the schema you observed; no automatic refresh silently bypasses stale-schema protection. Existing-object edits also require its object version. Updates replace all fields; entity type/key remain unchanged unless a new key is supplied. Relationship updates explicitly provide type, endpoints, and fields.
+Individual native writes require the observed `--schema-version`; edits also require object versions. Updates replace fields, retaining entity type/key unless a new key is supplied. Relationship updates provide type, endpoints and fields. See [versions/errors](#versions-errors-and-paging).
 
 Keys are unique across active project entities, case-sensitive. Lowercase UUID identity is permanent, even after deletion. Entity removal rejects active links unless the optional `cascade` argument is explicitly supplied; cascade records every incident link and entity tombstone together.
 
@@ -327,7 +312,7 @@ Either every ordered operation commits or none do. Each changeset has one projec
 
 Object/history queries return `{items, nextAfter?}`. Pass `nextAfter` as `after` for the next page. Default page limit is 100, maximum 1000. Entity filters are exact `type`/`key`, plus literal case-insensitive substring `search` across keys and text attribute values; relationship filters are exact `type`/`source`/`target`/`incident`. Filters combine with AND. Object order is binary stable ID; history order is project revision then ordinal. Each page is consistent, but separate page requests do not pin a historical snapshot. Traversal supports direction, type, depth, and a programmatic result cap; exceeding the cap errors rather than truncating silently.
 
-Options precede the command. Commands emit JSON; errors emit `{error,message}` on stderr and exit nonzero. Local actors are provenance labels, not authenticated credentials. Stable codes include `validation`, `conflict`, `schema_conflict`, `not_found`, `referential_integrity`, `busy`, `storage`, `unsupported_storage`, and CLI `usage`. Review conflicts; retry a complete busy command, never part of a batch. Node warnings, if emitted, also use stderr.
+Options precede commands. Results use stdout JSON; errors use stderr JSON and nonzero exit (Node warnings may also use stderr). See [versions/errors](#versions-errors-and-paging) for codes/recovery. Actor labels are local provenance.
 
 ## Working-context query
 
@@ -351,19 +336,17 @@ Work and Trace query expose **Saved view** and **Save view…** for current-data
 
 ## Direct application input ownership
 
-For library/headless callers, commands and queries capture their payload at invocation. Subsequent edits to the original object do not change submitted fields, selected paths, expected guards, names or query scopes. Database guards still compare that captured intent against actual execution-time state; queued writes can cause an ordinary conflict. HTTP/CLI use the same application boundary.
+Commands/queries capture plain data at invocation; later caller edits cannot change fields, paths, guards or scope. Execution-time database checks still apply. Use ordinary objects/dense arrays; accessors, cycles, symbols, custom prototypes, functions/bigints, nonfinite numbers, unpaired Unicode and nesting beyond 256 reject. Optional undefined query properties remain present; stored JSON validation still applies. Provenance uses own enumerable actor/reason data; observer arguments/results are separately copied. See [call-time ownership](architecture.md#call-time-request-ownership).
 
-Use ordinary data objects and dense arrays. Optional undefined query properties remain present; stored fields/schema still obey their JSON validators. Accessors, cycles, symbol keys, custom prototypes, functions/bigints/nonfinite numbers and unpaired Unicode reject with validation errors; nesting is bounded to 256 levels. Provenance requires own enumerable data actor/reason properties; getters are not invoked and unrelated metadata is ignored. Observer locator arguments and returned data are separately copied before use. This does not change local actors into authenticated identities.
-
-Malformed coverage/impact continuation envelopes reject validation before stale-context checks, including a stale explicit native guard. A valid stale continuation still returns conflict/restart before resolving a removed rule or current-only relationship type. Existing page bounds/encodings and successful response shapes remain unchanged.
+Malformed coverage/impact cursors fail validation before stale checks. Valid stale cursors conflict before removed policy/type lookup; restart rather than merging snapshots.
 
 ## Storage and migration
 
-Entity identity/type/key/version and link endpoints/type/version are relational columns with uniqueness, foreign keys, and indexes. Configurable attributes and immutable historical snapshots use JSON. A permanent identity registry prevents accidental reuse. Foreign keys prohibit dangling active links independently of service validation.
+Identity/type/key/version and link endpoints are indexed relational columns; configurable fields and immutable snapshots use JSON. Permanent identities prevent reuse; foreign keys prevent dangling active links.
 
-Physical database format **8** is separate from a project's user-defined schema version. Existing format-1 prototype databases migrate transactionally on open: each old object mutation becomes one changeset with preserved snapshots and provenance. Format 2 upgrades by adding an append-only evidence table (identity bindings, observations, receipts and reviews), with update/delete-blocking triggers and independent sequence ordering. Format 3 upgrades by adding the mutable project presentation catalogue described above. Format 4 upgrades by adding immutable native configuration captures. Format 5 upgrades by adding immutable native baseline metadata and a historical paging index. Native revisions are unchanged; evidence, configurations, baselines and saved views do not pretend to be native changesets. Format 6 upgrades add covering endpoint indexes for structural coverage; coverage policy lives in versioned schema JSON. Format 7 upgrades add an indexed derived lookup over captured receipt dependencies and supersession. Existing receipt JSON remains authoritative; the migration preserves native/evidence history. Builds accepting only formats through 7 cannot reopen an upgraded format 8 file. Unknown formats fail; failed migrations roll back. **Back up a closed database before migration**, or use SQLite-aware backup tooling; copying only a live WAL-mode main file is unsafe.
+Physical format **8** is independent of user-schema version. Supported formats 1–7 migrate transactionally on open, preserving native/evidence history, configurations, baselines and saved views. Unknown formats reject; failures roll back. Older builds cannot reopen unsupported upgraded formats. See [operational boundaries](architecture.md#7-operational-boundaries) and the feature-specific migration contracts.
 
-The adapter serializes one repository's transactions. Competing connections can return `busy`; returning promises does not make SQLite driver work nonblocking. Close repositories only after outstanding work completes.
+Back up a closed database or use SQLite-aware tooling; copying only a live WAL main file is unsafe. Await outstanding work before closing. Transactions serialize per repository; competing connections may return `busy`, and the synchronous driver blocks the event loop.
 
 </details>
 
@@ -465,4 +448,4 @@ The native baseline does not contain evidence. These evaluations use current evi
 
 Continue with exact `evaluations.nextAfter` and the same baseline/root/direction/type-set/depth. Page size may change. Any native write or evidence append—including observation/review writes without a native revision—invalidates continuation with `conflict`; restart from the first page. Optional `expectedProjectRevision` guards the initial native head. The query reads all context in one transaction and creates no engineering/evidence history.
 
-The service is `tracer.getChangeImpact(query)`. Typed local HTTP is GET `/api/impact?baselineId=...&rootId=...&direction=incoming&relationshipTypes=%5B%22depends_on%22%5D&depth=2&limit=10`; encode relationship types as a JSON string array using `URLSearchParams`, and include opaque `after` unchanged when continuing. Unknown/duplicate parameters reject; malformed/bounds/type errors 400, stale contexts 409 and missing baseline/root 404. No dedicated production investigation UI is implemented yet.
+The service is `tracer.getChangeImpact(query)`. Typed local HTTP is GET `/api/impact?baselineId=...&rootId=...&direction=incoming&relationshipTypes=%5B%22depends_on%22%5D&depth=2&limit=10`; encode relationship types as a JSON string array using `URLSearchParams`, and include opaque `after` unchanged when continuing. Unknown/duplicate parameters reject; malformed/bounds/type errors 400, stale contexts 409 and missing baseline/root 404. A dedicated UI for this baseline-scoped impact query remains unimplemented.

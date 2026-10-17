@@ -2,7 +2,7 @@
 
 Tracer should make engineering information easy to create, connect, inspect and assess. The product is a configurable engineering knowledge workspace: project schemas supply domain terminology, while identity, relationship direction, revisions and evidence semantics remain consistent.
 
-The [user needs](user-needs.md), [journeys](user-journeys.md), [architecture](architecture.md) and [implementation status](checkpoint.md) distinguish product goals, candidate tasks and delivered behavior.
+See [needs](user-needs.md) for goals/evidence, [journeys](user-journeys.md) for candidate tasks, [architecture](architecture.md) for contracts and [checkpoint](checkpoint.md) for progress.
 
 ## Shared workspace
 
@@ -72,7 +72,7 @@ Assessment keeps three concepts independent:
 
 A decision does not clear input drift or rewrite the original receipt. Stale comparison tokens retain the proposal and require explicit adoption of refreshed inputs. Unknown inputs cannot be accepted. Uncertain writes require inspection and acknowledgment without automatic replay.
 
-The current workbench discovers evaluations in declared input/captured-output scope, not every reachable artifact or a baseline-wide impact census. Project tools exposes the existing receipt authoring owner for exact input capture and recorded outcomes in ordinary projects. Broader baseline investigation and arbitrary temporal comparison remain separate work.
+Evaluation discovery uses declared input/captured-output scope. Project tools supports exact receipt authoring in ordinary projects. Broader baseline investigation and arbitrary temporal comparison remain separate work.
 
 ## Model configuration
 
@@ -82,15 +82,14 @@ Visual, guided Text and JSON configuration share one captured draft and existing
 
 ## Evaluation plan
 
-Use realistic tasks in Aster and a contrasting domain such as Gatherline:
+Use Aster and a contrasting domain such as Gatherline to test:
 
-- Create a source artifact, connect design/evidence work and find a missing link in the configured view.
-- Edit an artifact and relationship, then inspect the saved revision.
-- Follow a historical change through Graph and Matrix, compare captured inputs, record a decision and return with context intact.
-- Repeat navigation and editing at 680px, with keyboard-only operation and readable zoom.
-- Exercise large projects through search, filtering, bounded expansion and paged evidence rather than loading every object into one scene.
+- Create/connect artifacts, find a configured trace gap, edit fields/links and inspect the saved revision.
+- Follow a historical change across Graph/Matrix, compare captured inputs, record a decision and return with context intact.
+- Repeat at 680px, keyboard-only and readable zoom.
+- Explore larger projects through search, filtering, bounded expansion and paged evidence.
 
-Measure assistance, errors, context loss, unnecessary transitions and task completion. Scripted browser checks establish behavior; representative-user observations establish usefulness. AI-assisted critiques are design input, not participant evidence.
+Observe completion, assistance, errors, context loss and unnecessary transitions. Browser checks establish behavior; representative-user observations establish usefulness. AI critique is design input, not participant evidence.
 
 ## Open design work
 
@@ -100,6 +99,8 @@ The [study index](ux-artifacts/README.md), [iteration summary](ux-iterations.md)
 
 ## Main workflow milestone
 
-The selected delivery slice is a fresh project completing create → connect → modify → investigate → assess → record decision through the normal launch, then reloading to recover the recorded decision and investigation context. Preserve database selection, historical read-only state, guarded saves and retained task drafts. Unsaved drafts are tab-local and deliberately excluded from reload recovery; warn before leaving, retain known-unsaved context in-session and never replay an uncertain proposal.
+Complete create → connect → modify → investigate → assess → record decision from a fresh project's normal launch, then reload the decision and investigation context. Preserve database selection, historical read-only state, guarded saves and in-session drafts. Reload recovery excludes unsaved drafts; leaving warns and uncertain proposals are never replayed.
 
-Automated verification includes an empty database with a small custom schema, UI-authored input receipt, changed field, recorded review, exact links and positions after reload, at desktop and 680px. This establishes implementation behavior. The unfamiliar-user session remains unrun: recruit someone new to Tracer, give the workflow goal without naming controls, and observe next-action choices, assistance, errors, context loss and completion time. Use Aster and a contrasting domain, then larger datasets and keyboard-only tasks. Do not count scripted completion or response timings as participant evidence.
+The fresh-project journey passes automated desktop/680px checks with a custom schema, UI-authored receipt, changed field, review and exact links/positions after reload; details belong in [checkpoint](checkpoint.md#integrated-workflow).
+
+The unfamiliar-user session remains unrun. Give someone new to Tracer the workflow goal without naming controls, then observe next-action choices, assistance, errors, context loss and completion time. Extend to both domains, larger datasets and keyboard tasks. Scripted completion/timings are not participant evidence.

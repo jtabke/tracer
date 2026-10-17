@@ -1,151 +1,124 @@
 # Tracer development flow and design principles
 
-**Status:** a proposed lightweight working method, not a compliance procedure, chosen UI architecture or authorization to implement/release features.
+**Status:** proposed working method; not a compliance procedure or feature/release authorization.
 
-The purpose is to connect real work to deliberate design, testable behavior and evidence of usefulness. Use this alongside [user needs](user-needs.md), [journeys/stories](user-journeys.md), [UX exploration](ux-plan.md) and the existing [architecture](architecture.md).
+Use [needs](user-needs.md), [journeys](user-journeys.md), [UX direction](ux-plan.md) and [architecture](architecture.md) to connect real tasks to testable behavior and usefulness.
 
 ## 1. The flow: a feedback loop, not a one-way document chain
 
-**Users/context → needs → journeys → alternative solutions → selected thin-slice specification → implementation → verification → user validation → learning.**
+**Context → needs → journeys → alternatives → selected slice/specification → implementation → verification → user validation → learning.**
 
-Return to earlier decisions whenever evidence challenges them. Validation begins with task understanding and prototypes; verification planning begins while specifying behavior. Do not write a complete product specification before testing the central assumptions, and do not treat running code as proof of product fit.
+Revisit decisions when evidence challenges them. Validate assumptions through tasks/prototypes before specifying the whole product; plan checks while defining behavior. Discovery and delivery inform each other.
 
-Discovery asks whether a solution is useful, understandable, feasible and sustainable. Delivery produces a reliable implementation of the selected solution. These activities inform one another; they are not separate products or rigid team silos.
-
-For Tracer, medical-device engineering is a familiar reference, not the default process model. Compare documentation-heavy medical-device/aerospace and lighter software/technology tasks from the outset; rigor varies by team, task, risk and applicable obligations rather than industry alone. Shared engineering context comes first, with appropriate process depth rather than mandatory approval ceremony. This guidance does not assert that Tracer is a medical device or that a generic software process meets regulated obligations.
-
-The [industry workflow guides](industry-workflows/README.md) provide sourced reference contexts for medical devices, software, hardware and integrated products, automotive, and aerospace, including selected public company practices. Their [shared development model](industry-workflows/common-development-model.md) compares terminology, failure consequences, change costs and demonstration obligations. They explain the engineering artifacts and coordination behind possible Tracer examples. This document continues to own Tracer's development process; reference workflows do not impose a project schema or authorize features.
+Compare formal medical/aerospace and lighter software tasks from the outset. Rigor follows task, risk and obligations. [Industry guides](industry-workflows/README.md) supply reference contexts; they do not impose Tracer's process, schema or backlog.
 
 ## 2. Practical stages and outputs
 
-| Stage             | Main question                                                   | Smallest useful output                                               | Evidence needed to advance                                                           |
-| ----------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Understand work   | Who is doing what, under which constraints, and why?            | A concrete task/artifact and observed or user-reported needs         | Sources and assumptions are distinguishable; important unknowns identified           |
-| Frame outcomes    | What problem should the product solve?                          | A need and end-to-end journey with success conditions                | Outcome is recognizable to the user and not phrased as a favorite screen             |
-| Explore concepts  | What are genuinely different ways to help?                      | Competing low-fidelity task sequences and assumption tests           | Major value/usability questions investigated, not just polished mockups              |
-| Select a slice    | What complete task should we deliver first?                     | One bounded scope with alternatives considered, risks and exclusions | Intentional selection; critical safety/comprehension issues addressed                |
-| Specify behavior  | Exactly what must the chosen solution do?                       | A thin functional/interaction spec with acceptance examples          | Ambiguous semantics resolved sufficiently for implementation and checks              |
-| Implement         | How can we deliver that behavior safely?                        | End-to-end change through existing application boundaries            | Focused code, preserved invariants, no speculative framework expansion               |
-| Verify            | Does this candidate satisfy the specification?                  | Automated/manual check results bound to the candidate                | Relevant functional, integration, safety and accessibility checks pass               |
-| Validate          | Does it help representative users accomplish the intended task? | Task observations and outcome evidence in realistic context          | Understandable, useful behavior; remaining gaps explicitly recorded                  |
-| Deliver and learn | Is it ready for its intended use, and what happens next?        | Release decision, known limits and follow-up observations            | Appropriate operational checks and explicit release authority; no exaggerated claims |
+| Stage            | Useful output                                   | Advance when                                      |
+| ---------------- | ----------------------------------------------- | ------------------------------------------------- |
+| Understand work  | Concrete task/artifact and sourced needs        | Assumptions and unknowns are visible              |
+| Frame outcomes   | Need, journey and success conditions            | User recognizes the outcome                       |
+| Explore concepts | Alternative task sequences and assumption tests | Major value/usability risks are investigated      |
+| Select a slice   | Complete bounded task, risks and exclusions     | Selection is deliberate; critical risks addressed |
+| Specify          | Observable behavior and acceptance examples     | Semantics are precise enough to implement/check   |
+| Implement        | End-to-end change within existing boundaries    | Invariants are preserved                          |
+| Verify           | Candidate-specific automated/manual results     | Relevant checks pass                              |
+| Validate         | Representative task observations                | Usefulness and remaining gaps are evidenced       |
+| Deliver/learn    | Release decision, limits and follow-up          | Operational evidence and release authority exist  |
 
-For UX discovery, follow the sequence in [ux-plan.md](ux-plan.md): task → information hierarchy → layout alternatives → interaction states → components → visual evaluation. Review significant decisions iteratively, use sourced workflows and distinguish illustrative examples from observed work.
+For UX: task → information hierarchy → layout alternatives → interaction states → components → visual evaluation. Compare realistic task states at representative widths and preserve native contracts. See [design principles](ux-plan.md#design-principles).
 
-Visual composition and information hierarchy are part of behavior. Compare overview and task states at representative widths before implementation, preserve the native data/command contracts and evaluate each composition against the task. Separate technical verification, simulated critique and representative-user validation. The [design principles](ux-plan.md#design-principles) describe the selected direction.
-
-This is not a requirement to create nine standalone reports. Reuse a short specification/issue for a selected slice, link stable need/story IDs and record the evidence. Documentation depth should match uncertainty, risk and coordination needs. Formal governance may require more, but that must be established separately.
+Use one short specification or issue per slice, linking need/story IDs and evidence. Documentation depth should match uncertainty, risk and coordination needs.
 
 ## 3. Needs, stories and specifications are different
 
-- **Need:** the problem/outcome, such as understanding unresolved design obligations. It should survive a change of UI concept.
-- **Story/scenario:** the user's intent in context, such as resolving one missing verification relationship without losing the working branch.
-- **Specification:** chosen observable behavior, exact semantics, constraints, failure handling and applicable interaction design.
-- **Design:** how the software and interaction will realize that behavior; it can change while preserving the outcome/specification.
-- **Verification:** evidence that the implemented candidate meets the specification.
-- **Validation:** evidence that it solves the intended problem for the intended users/context.
+- **Need:** problem/outcome that survives UI changes.
+- **Story:** user intent in a concrete context.
+- **Specification:** selected observable behavior, semantics, constraints and failures.
+- **Design:** how the implementation realizes that behavior.
+- **Verification:** evidence of conformance to the specification.
+- **Validation:** evidence of usefulness for intended users/context.
 
-A sentence beginning “As a user…” is not automatically a researched need or a sufficient specification. A list of pages is not a journey. Test counts are not usability evidence.
+A story template is not research, a page list is not a journey, and test counts are not usability evidence.
 
 ### Thin-slice specification outline
 
-Once a concept/story has been selected, use one short document or existing issue containing:
+Record:
 
-1. Need/story references and evidence; intended user, task and outcome.
-2. Scope, boundaries and explicit non-goals.
-3. Input/context and the expected end-to-end interaction.
-4. Observable functional behavior and acceptance examples, including exceptions.
-5. Precise data/relationship/coverage/evidence semantics where relevant.
-6. Constraints: performance workload, accessibility, safety/security, compatibility and preservation of drafts/history.
-7. Implementation approach using existing boundaries; unresolved risks/decisions.
-8. Verification checks and a realistic user-validation plan, chosen before coding.
-9. Completion evidence, known gaps and follow-up learning.
+1. Need/story evidence, user, task and outcome.
+2. Scope, exclusions, inputs and end-to-end interaction.
+3. Observable behavior, exceptions and precise data/evidence semantics.
+4. Performance, accessibility, safety/security, compatibility and draft/history constraints.
+5. Implementation boundaries, risks and unresolved decisions.
+6. Verification and realistic user-validation plans, defined before coding.
+7. Completion evidence, limitations and follow-up.
 
-Use quantitative thresholds when justified by task/environment evidence or an explicit engineering budget. Do not fabricate benchmark targets or treat a synthetic fixture as a real user's workload. Scope constraints may be practical project decisions but must be labeled as such.
+Quantitative thresholds need task evidence or an explicit engineering budget. Synthetic fixtures are not real-user workloads.
 
 ### Example trace, not an approved feature specification
 
-`PN-04 meaningful gaps → ND-04 resolve a gap → selected slice/spec → implementation → checks → observed task result`.
+`PN-04 meaningful gaps → ND-04 resolve a gap → selected spec → implementation → checks → observed task result`.
 
-A candidate specification might state: under a chosen source/relationship/target expectation, an active source is a structural gap when no qualifying active target connection exists. Specify applicability, filters, pagination scope and failure behavior; test off-page connections. Validate separately whether this definition helps the engineer choose the right next action. It cannot assert correct verification simply because a connection exists.
-
-Maintain this trace using links/IDs in existing documents or issues. Do not build a new traceability administration system merely to manage our own development.
+For a chosen source/link/target expectation, a structural gap could mean no qualifying active connection. Specify applicability, filters, paging and failures; test off-page links. Separately validate whether the gap helps users choose next work. A connection does not prove verification. Maintain trace through existing links/IDs rather than building internal administration tooling.
 
 ## 4. Verification and validation: both, throughout
 
-NASA distinguishes product verification as proof of compliance with requirements and validation as accomplishing the intended purpose in the intended environment. It also describes validation during development, not only at delivery. Borrow the distinction, not NASA's project governance.
+Pair specification checks with task evidence:
 
-For Tracer:
+| Verification                                   | Validation                                 |
+| ---------------------------------------------- | ------------------------------------------ |
+| Shared-child edit updates one identity         | User recognizes shared identity            |
+| Coverage includes off-page links               | Gap represents unfinished work             |
+| Stale comparison cannot silently adopt a token | Reviewer understands the change            |
+| Quantitative rule respects units/assumptions   | Rule reflects actual engineering reasoning |
+| Keyboard/focus behavior is correct             | Task works with users' access needs        |
 
-| Verification question                                                                  | Validation question                                                           |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Does a shared-child edit update the single underlying identity?                        | Can the engineer recognize that the repeated child is shared, not duplicated? |
-| Does a coverage query include qualifying links beyond the current page?                | Does the gap definition actually represent unfinished work in this project?   |
-| Does a stale comparison block silently adopting a new review token?                    | Can the reviewer understand what changed and make an informed assessment?     |
-| Does an explicit quantitative rule calculate correctly with defined units/assumptions? | Is that model appropriate to the actual engineering reasoning?                |
-| Are keyboard interactions and focus behavior technically correct?                      | Can users complete the task with their access needs and working environment?  |
-
-Verification can include unit, integration, browser, security, accessibility, performance, analysis and manual inspection checks as appropriate. User validation includes observed task performance, comprehension, assistance/errors and recovery. Separate functional defects from concept failures; changing the concept may be the correct repair.
-
-A useful V-model idea is to pair lower-level specifications with verification and higher-level user intent with validation. It does not require freezing every requirement upfront or deferring user feedback until the end.
+Use unit, integration, browser, accessibility, security, performance or inspection checks as relevant. Observe completion, comprehension, assistance, errors and recovery. Distinguish implementation defects from concept failures. NASA's verification/validation distinction is useful; its governance is not adopted.
 
 ## 5. Small readiness/completion decisions
 
-**Ready enough to implement:** selected task and concept, explicit scope, adequate evidence, understandable behavior, safety/failure cases, checks and a validation plan. Unknowns can remain if bounded and noncritical; solve risky unknowns with targeted experiments rather than pretend certainty.
+- **Ready to implement:** selected task/concept, bounded scope, sufficient evidence, failure handling, checks and validation plan. Experiment on risky unknowns.
+- **Implemented/verified:** agreed behavior passes checks; candidate and limits are reviewable.
+- **Validated:** representative task evidence supports a stated use/context. Owner walkthroughs remain provisional.
+- **Release-ready:** appropriate usefulness, correctness and operational evidence, resolved critical dependencies and explicit authority.
 
-**Implemented and verified:** code meets its agreed behavior and checks, with a reviewable candidate and documented limitations. This is not automatically user-validated or release-ready.
-
-**Validated for a stated task/context:** representative task evidence supports usefulness/comprehension; who participated and what was tested are stated. A product-owner walkthrough is provisional evidence, not population-wide validation.
-
-**Ready for release:** appropriate usefulness, correctness and operational evidence, with no unresolved critical dependencies and explicit owner authority. Delivery work does not automatically authorize a release, deployment or regulated sign-off.
-
-After a sustaining change, reconsider affected specs, checks and user scenarios; retain unchanged passing evidence when its coverage remains applicable. Discovery remains active instead of treating the first design decision as permanent.
+After sustaining changes, reassess affected specs, checks and scenarios. Retain passing evidence where its coverage remains applicable.
 
 ## 6. Foundational reading and deliberate synthesis
 
-The reading below combines interaction design, continuous discovery, modularity and delivery research. Apply each idea in context and evaluate it against actual engineering tasks.
+This selection draws on author/publisher material, not complete-book review or proven Tracer results. Use reading to resolve decisions alongside task studies.
 
-This initial selection uses author/publisher material and primary guidance linked below; it is **not a claim that the complete books have been read or their advice independently validated for Tracer**. Further reading should target unresolved decisions rather than become a prerequisite for all progress.
+| Source                                  | Application                                                |
+| --------------------------------------- | ---------------------------------------------------------- |
+| Norman, _The Design of Everyday Things_ | Conceptual models, discoverability and feedback            |
+| Cooper et al., _About Face_             | Goal-directed tasks; evidence-based roles                  |
+| Torres, _Continuous Discovery Habits_   | Outcomes, opportunities, alternatives and assumption tests |
+| Brooks, _The Mythical Man-Month_        | Coherent interaction model                                 |
+| Parnas, module decomposition paper      | Hide changeable decisions behind boundaries                |
+| Martin, _Clean Code/Architecture/Agile_ | Implementation discipline and separation of concerns       |
+| Thomas/Hunt, _The Pragmatic Programmer_ | Adaptable, understandable changes and feedback             |
+| Forsgren/Humble/Kim, _Accelerate_       | Small changes, reliable delivery and feedback              |
 
-| Source / authors                                                                | Principle worth investigating                                                   | Tracer application / limit                                                                                                                                                            |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Don Norman, _The Design of Everyday Things_                                     | Understandable conceptual models, discoverability, signifiers and feedback      | Users should understand selection, scope, available actions and consequences. A clean-looking screen alone does not accomplish this.                                                  |
-| Alan Cooper, Robert Reimann, David Cronin and Christopher Noessel, _About Face_ | Goal-directed interaction design                                                | Design for authoring/change/review scenarios, not a tab inventory. Roles/personas must come from evidence, not fiction.                                                               |
-| Teresa Torres, _Continuous Discovery Habits_                                    | Connect desired outcomes, user opportunities, alternatives and assumption tests | Keep needs separate from solutions and compare concepts. A framework diagram is not discovery evidence.                                                                               |
-| Frederick Brooks, _The Mythical Man-Month_                                      | Conceptual integrity                                                            | Choose a coherent interaction model rather than accumulate unrelated pages. Coherence does not justify ignoring contradictory user evidence.                                          |
-| David Parnas, “On the Criteria To Be Used in Decomposing Systems into Modules”  | Hide changeable decisions behind appropriate module boundaries                  | Preserve the canonical engine while UI concepts evolve. Do not translate the principle into needless abstractions.                                                                    |
-| Robert C. Martin, _Clean Code_, _Clean Architecture_, _Clean Agile_             | Code/design discipline, separation of concerns and iterative development        | Useful for reliable implementation and evolvable boundaries; not a substitute for deciding the right product. Evaluate specific prescriptions rather than applying them mechanically. |
-| David Thomas and Andrew Hunt, _The Pragmatic Programmer_                        | Practical, adaptable software craftsmanship                                     | Favor feedback and changes that remain understandable/reversible. Pragmatism does not mean skipping safety or correctness.                                                            |
-| Nicole Forsgren, Jez Humble and Gene Kim, _Accelerate_                          | Delivery capabilities, feedback and empirical delivery-performance research     | Small changes and automated checks help learning/reliability. Delivery metrics do not establish UX quality; reported relationships are not proof of effects in this project.          |
-
-Marty Cagan's value/usability/feasibility/viability risk framing is another useful question set: will users choose it, can they use it, can we build it, and can it work within product/operational constraints? Test those questions; do not assume a particular company/team structure is mandatory.
+SVPG's value/usability/feasibility/viability questions complement these ideas. None substitutes for task evidence or mandates a team structure.
 
 ### Our provisional synthesis
 
-1. **Organize around engineering intent, not data-model terminology or inherited tabs.**
-2. **Make one coherent working model legible across levels and representations.** Same identity, scope and safety; different contextual exposure of actions.
-3. **Make complexity explicit only when it helps.** Ordinary prose is valid; quantitative structure, schema detail and dense network context are optional depth.
-4. **Provide direct action with visible consequences and recovery.** Simplicity is not hiding uncertainty, scope or save state.
-5. **Treat change as normal.** Parent/child relationships and evidence are not frozen; proposed changes need explainable consequences and retained judgment.
-6. **Choose by task evidence, not polish, author reputation, implemented code or popularity.**
-7. **Build small, check deliberately, learn early.** Passing specifications and usefulness are separate claims, both important.
-
-These are design hypotheses and engineering commitments, not a proof of the “best UX.” Test them in the ND/SC journeys, including a contrasting domain and accessibility needs. Conflicting advice should be resolved by the task, risk and evidence—not by counting how many books endorse it.
+Organize around engineering intent; retain one coherent identity/scope model across views; expose complexity when useful; provide direct actions with visible consequences and recovery; expect change; choose by task evidence; build and learn in small slices. Test these commitments across ND/SC journeys, domains and access needs.
 
 ### Reading priority
 
-For the current uncertainty, begin with Norman/Cooper and Torres: mental models, actual work, goal-directed interaction and discovery. Use Brooks/Parnas/Martin when selecting a coherent design and implementing it without locking the engine to a UI. Use _Accelerate_ for delivery improvement, not as a feature-prioritization or page-design guide. Deep reading and synthesis can proceed alongside a bounded real-task study.
+Start with Norman/Cooper/Torres for current UX uncertainty. Use Brooks/Parnas/Martin for coherent implementation boundaries and _Accelerate_ for delivery improvement. Resolve conflicting advice through task, risk and evidence.
 
 ## 7. Reference material and its scope
 
-- [GOV.UK: user research in discovery](https://www.gov.uk/service-manual/user-research/user-research-in-discovery): likely users, current work, frustrations and needs before solution planning.
-- [GOV.UK: how alpha works](https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works): alternative prototypes, risky assumptions and disposable experiments. Its governance/timelines are context-specific, not Tracer requirements.
-- [NASA: fundamentals of systems engineering](https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/): iterative/recursive development and distinct verification/validation objectives. No NASA process mandate adopted.
+- [GOV.UK: user research in discovery](https://www.gov.uk/service-manual/user-research/user-research-in-discovery).
+- [GOV.UK: how alpha works](https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works).
+- [NASA: fundamentals of systems engineering](https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/).
 - [Don Norman: _The Design of Everyday Things_](https://jnd.org/books/the-design-of-everyday-things-revised-and-expanded-edition/) and [conceptual models/feedback discussion](https://jnd.org/opportunities-and-challenges-for-touch-and-gesture-based-systems/).
-- [Wiley: _About Face_, fourth edition](https://newsroom.wiley.com/press-releases/press-release-details/2014/About-Face-The-Essentials-of-Interaction-Design-4th-Edition/default.aspx): publisher description of Goal-Directed Design.
-- [Teresa Torres: opportunity solution trees](https://www.producttalk.org/opportunity-solution-trees/): author explanation of outcomes, opportunities, solutions and tests.
-- [Brooks: publisher sample](https://www.informit.com/content/images/9780201835953/samplepages/0201835959.pdf): conceptual integrity.
-- [Parnas: original paper DOI](https://doi.org/10.1145/361598.361623): module decomposition/information hiding.
+- [Wiley: _About Face_, fourth edition](https://newsroom.wiley.com/press-releases/press-release-details/2014/About-Face-The-Essentials-of-Interaction-Design-4th-Edition/default.aspx).
+- [Teresa Torres: opportunity solution trees](https://www.producttalk.org/opportunity-solution-trees/).
+- [Brooks: publisher sample](https://www.informit.com/content/images/9780201835953/samplepages/0201835959.pdf).
+- [Parnas: original paper DOI](https://doi.org/10.1145/361598.361623).
 - [Pearson: _Clean Architecture_](https://www.pearson.com/en-us/subject-catalog/p/clean-architecture-a-craftsmans-guide-to-software-structure-and-design/P200000009528/9780134494166), [_Clean Agile_](https://www.pearson.com/en-us/subject-catalog/p/clean-agile-back-to-basics/P200000009530/9780135781869), and [InformIT: _Clean Code_, second edition](https://www.informit.com/store/clean-code-a-handbook-of-agile-software-craftsmanship-9780135398579).
 - [Pragmatic Bookshelf: _The Pragmatic Programmer_, twentieth-anniversary edition](https://pragprog.com/titles/tpp20/).
 - [IT Revolution: _Accelerate_ capabilities](https://itrevolution.com/articles/24-key-capabilities-to-drive-improvement-in-software-delivery/).
@@ -153,13 +126,11 @@ For the current uncertainty, begin with Norman/Cooper and Torres: mental models,
 
 ## 8. Current implementation and next decisions
 
-Tracer has one shared map-led browser workspace over its headless core, with separate native example databases. The [UX plan](ux-plan.md) owns the selected interface direction; [architecture](architecture.md) describes implemented boundaries, and the [checkpoint](checkpoint.md) records verification and remaining limitations. Earlier concept proposals and rejected Studio compositions remain historical evidence, not alternate product interfaces.
-
-Use the repository checks and contribution guidance in [Contributing](../CONTRIBUTING.md). Continue product evaluation through concrete tasks in both example projects. Automated correctness checks do not establish usefulness or replace representative user feedback. Scope future feature work from those findings and the owner's current request rather than treating every candidate story as approved.
+[Architecture](architecture.md) owns implemented contracts, [UX planning](ux-plan.md) owns interface decisions and [checkpoint](checkpoint.md) owns progress/check results. Scope future work from concrete tasks, evidence and the current owner request; candidate stories and historical concepts are not an approved backlog. Use [Contributing](../CONTRIBUTING.md) for repository checks.
 
 ## Validation milestones
 
-**Vision-derived proof obligations, not a fixed phase schedule or automatic feature authorization.** The initial brief proposed core → interactive views → change management → backend/team validation → extended interfaces. Current delivery is incremental and not ordered by that historical list. Select the next task using current owner priorities, user evidence and the checkpoint; preserve these acceptance questions when choosing scope.
+**Vision-derived proof obligations, not a delivery schedule or feature authorization.** Choose work using owner priorities, evidence and the checkpoint.
 
 | Milestone                      | Evidence needed                                                                                                                                                                             | Current limit                                                                                                           |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -169,4 +140,4 @@ Use the repository checks and contribution guidance in [Contributing](../CONTRIB
 | Backend and team portability   | Run the same operation/failure/concurrency suite against SQLite and PostgreSQL, then demonstrate authenticated permitted work from concurrent clients without rewriting domain/UI semantics | PostgreSQL and organizational server proof are outstanding; do not defer proof until after claiming multiuser readiness |
 | Extended interfaces            | Demonstrate a useful document, agent/MCP, hosted-source integration or review workflow over existing contracts                                                                              | Select only when its task value is evidenced; no plugin/enterprise feature-parity program is implied                    |
 
-The engineering deliverables are reviewable architecture decisions, working core and interaction slices, reproducible history/change examples and eventual adapter-parity evidence. Keep important irreversible tradeoffs and technology rationale in architecture, concrete tasks in journeys, interface decisions in the UX plan and execution receipts in the checkpoint. Test the product against genuinely different workflows rather than manufacturing separate domain implementations.
+Keep tradeoffs in architecture, tasks in journeys, interface decisions in the UX plan and execution evidence in the checkpoint. Test different workflows through the same core.

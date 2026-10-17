@@ -26,11 +26,11 @@ Start in **Graph**, switch to **Matrix** to author records and direct connection
 
 Graph positions, Matrix settings, selected revision and investigation context recover after reload in the same browser and local origin. Named **Save Matrix configuration** recipes persist in the project database. Unsaved drafts remain tab-local: leaving or reloading warns before discarding them. An unconfirmed save blocks new writes until its saved result has been inspected; proposals are never replayed automatically.
 
-Each demo launch creates two fresh isolated projects. Edits persist in their printed databases; the terminal prints a command to reopen **both**. Switching projects reloads the document to bind transport to the chosen database and asks before discarding unsaved drafts. Saved records and recovered working scopes stay project-specific.
+Each launch creates two fresh projects. Edits persist in their printed databases; the terminal prints a command to reopen **both**. Project switching confirms draft disposal and reloads; saved records and recovery stay project-specific.
 
 ## Engineering workbench
 
-The normal `npm start` and demo commands open Graph / Matrix / History. `npm run workbench` remains an isolated Aster/Gatherline review launcher using the same production sources. Its [guide](docs/ux-artifacts/product-identity/README.md) covers regression checks and regenerating desktop/680px screenshots.
+`npm run workbench` launches isolated Aster/Gatherline review databases using production sources. Its [guide](docs/ux-artifacts/product-identity/README.md) covers regressions and desktop/680px screenshots.
 
 **Graph — investigate a change through its recorded dependency paths.**
 
@@ -91,27 +91,18 @@ Seeding refuses an existing directory. Omit `--guide` for an ordinary project. U
 
 ## Core contracts and current UI limits
 
-- Native entities and relationships retain versioned history. Writes check captured versions, and failed saves preserve working drafts.
-- Evaluation receipts retain explicitly declared input snapshots, including selected historical native revisions. Reviews are separate immutable records.
-- Immutable configurations pin selected native member revisions; their receipts keep the evaluated build separate from current drift.
-- Optional configuration connection pins preserve explicitly selected topology. Named native baselines reconstruct schema, items and relationships at one complete committed project revision.
-- Versioned project coverage expectations evaluate exact structural links against current data or captured baselines through service, CLI and typed local API. The three realistic seeds include example policies; use `coverage list` and `coverage evaluate JSON`. Structural coverage does not imply successful testing or release readiness.
-- `impact get JSON` compares selected native context against a named baseline and separately investigates captured-input drift. Native/evidence guards keep pages consistent; no automatic causation or readiness judgment is inferred.
-- `working-context get JSON` reads an explicitly authored branch and ordered routes with related receipts, actual captured-input facts and snapshot-bound pages. It requires no baseline; see the [working-context contract](docs/architecture.md#consistent-working-context-read). The main workbench uses this service for evaluation discovery.
-- Queries are bounded or paged and disclose incomplete context. Directed links and shared identities stay explicit.
-- Projects use their own terminology; medical-device, software and integrated-product examples use the same core.
+- Versioned entities/links share captured-version checks and immutable history; failed saves retain drafts.
+- Receipts capture declared inputs, including historical pins. Reviews are separate immutable decisions; freshness does not rewrite outcomes.
+- Configurations pin selected members and optional links; baselines pin one complete native project revision. Neither ordinary membership links nor manifests establish a complete BOM or readiness.
+- Headless `coverage list` / `coverage evaluate JSON`, `impact get JSON` and `working-context get JSON` provide structural gap checks, baseline-scoped investigation and branch/receipt reads. See the [API guide](docs/developer-reference.md) for commands and guarded paging.
 
-The browser reads a complete transactional native snapshot, bounded to **10,000 records and 100,000 connections**. It rejects larger projects explicitly instead of displaying a silently incomplete snapshot. Drawing and trace bounds remain disclosed independently. Folder/category edits and unnamed views in the retained Development map are **session-only**; they do not modify engineering links or claim durable organization. Named Matrix path recipes use the existing saved-view contracts. Browser-local workspace recovery does not travel with the SQLite file or to another origin; saved recipes and evidence records do.
+The browser's complete transactional snapshot is bounded to **10,000 records / 100,000 connections**; larger reads reject. Rendering/trace bounds are disclosed separately. Development-map folder/category edits and unnamed views are session-only. Named Matrix recipes and evidence persist in SQLite; browser-local spatial/investigation recovery stays with its origin.
 
-A recorded link does not establish satisfaction. A changed input calls for review; it does not automatically invalidate an engineering result. Schema permissions are not completeness rules or release criteria.
-
-The examples include immutable native configuration captures. Ordinary member links and JSON manifests remain navigation annotations. Captures pin selected records; they do not establish a complete BOM, release readiness or a whole-project baseline. There is no engineering calculation engine, certification evaluator, hosted collaboration or CI/CAD/PLM synchronization. Local file/Git observations are explicit actions.
+Links do not establish satisfaction; changed inputs do not automatically invalidate results; schema permissions do not define completeness or release criteria. Engineering calculations, certification evaluation, hosted collaboration and CI/CAD/PLM synchronization are not implemented. File/Git observations require explicit actions.
 
 ## Documentation
 
-Start with the [documentation index](docs/README.md). Useful entry points:
-
-Choose **Documentation** in the running application to read the walkthrough, examples and industry guides, then return to the map.
+Use the [documentation index](docs/README.md) or **Documentation** in the application. Entry points:
 
 - [First-use walkthrough](docs/getting-started.md)
 - [Realistic example structures](docs/realistic-examples.md)
@@ -123,7 +114,7 @@ The [product vision](docs/user-needs.md#product-vision) describes the broader di
 
 ## Use the headless core
 
-Import `Tracer` from `@tracer-local/core` and `SQLiteRepository` from `@tracer-local/core/sqlite` to embed the core directly in TypeScript, use JSON CLI commands, or call the typed local HTTP API. Start with the [core API guide](docs/developer-reference.md#use-the-headless-core), including named commands, exact-ID reads, model previews, version guards, paging, structured errors and HTTP session setup. Run `node examples/product-model.ts` for a disposable end-to-end example without the UI. The API currently ships as source in this checkout, with no published npm SDK.
+Import `Tracer` from `@tracer-local/core` and `SQLiteRepository` from `@tracer-local/core/sqlite`, or use the CLI/local HTTP API. The [API guide](docs/developer-reference.md#use-the-headless-core) covers commands, guards, paging, errors and sessions. Run `node examples/product-model.ts` for a disposable headless example. The API ships as source; no npm SDK is published.
 
 ## Development
 
@@ -134,7 +125,7 @@ npm test            # focused unit/service/projection checks
 npm run build
 ```
 
-Install Chromium with `npx playwright install chromium` before the first browser check. Linux runners may also need system dependencies; see [contributing](CONTRIBUTING.md).
+Linux runners may need additional Chromium system dependencies; see [contributing](CONTRIBUTING.md).
 
 See the [repository map](CONTRIBUTING.md#repository-map) for source boundaries and the [design study index](docs/ux-artifacts/README.md) for isolated prototypes.
 

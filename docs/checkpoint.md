@@ -1,16 +1,16 @@
 # Tracer implementation status
 
-Updated 2026-10-16. This page summarizes implemented behavior, verification and remaining work. Design rationale belongs in the [UX plan](ux-plan.md); storage and API contracts belong in [architecture](architecture.md).
+Updated 2026-10-17. Implementation checks below were run on 2026-10-16. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
 
 ## Native application
 
-The normal launch now opens the shared Graph / Matrix / History workbench from `ui/workbench/`, using the explicitly selected database. Project tools retains complete item/connection editing, schema configuration, native receipt authoring, configurations, documentation and the earlier Development map. Separate fictional Orbit and Aster databases and ordinary empty projects use the same application and core contracts.
+Normal launch opens `ui/workbench/` Graph / Matrix / History over the selected database. Orbit, Aster and empty projects share this UI/core. Project tools retains full item/link editing, model configuration, receipt authoring, configurations, documentation and the Development map.
 
-The headless core provides version-guarded atomic changesets, immutable native history, directed relationships, saved views, exact configurations, native baselines, structural coverage and scoped change investigation. SQLite is the implemented storage adapter. Captured evaluation inputs, current input freshness and recorded review decisions remain separate facts.
+SQLite supports version-guarded atomic writes, immutable history, directed links, saved views, exact configurations, baselines, structural coverage and scoped change investigation. Captured inputs, current freshness and review decisions remain separate.
 
 ## Integrated workflow
 
-`npm start` and the demo commands open the workbench directly. `npm run workbench` remains a disposable Aster/Gatherline review launcher using the same production sources. The [review guide](ux-artifacts/product-identity/README.md) documents its interaction contract and regression orchestration. Design-study runtime modules now re-export production owners; production does not import studies.
+`npm start`/demo use production sources; `npm run workbench` launches disposable Aster/Gatherline review databases. The [review guide](ux-artifacts/product-identity/README.md) owns regression orchestration. Studies re-export production modules; production cannot import studies.
 
 Implemented workflows include:
 
@@ -30,19 +30,11 @@ The established Aster assessment scenario modifies PRS-02 from 10–40°C to 5�
 
 ## Maintenance round
 
-The first post-integration cleanup separates typed workbench history, relationship permissions and Matrix recipe ownership from the rendering closure. Historical diffs index the preceding state once rather than repeatedly scanning history per changed object; directory area counts also use one identity pass. The snapshot adapter now exposes a discriminated revision union. Trivial action wrappers no longer introduce unnecessary async boundaries or unused arguments.
+Three post-integration cleanups separated workbench history/permissions/Matrix recipes, graph geometry/layout/input/lifecycle, and Matrix input/selection/placement/proposal construction. History diffs index prior state once; directory counts use one identity pass. The main controller fell from 3,276 to 2,751 lines; the Matrix renderer/draft owner is 410 lines. Module contracts belong in [architecture](architecture.md#workbench-ownership).
 
-The retained map separates directory structure/areas/reveal paging (`organization.ts`, 136 lines), graph projection (`directory-projection.ts`) and fictional assignments (`study-organization.ts`). Production consumers import these owners directly. The first cleanup reduced the workbench rendering file from 3,276 to 3,164 lines. Fallow's advisory high-fan-in suggestions for small cohesive helpers are not automatic split requirements. No thresholds, baselines or exclusions changed.
+Added 22 unit/policy cases covering history identity/deletion, recipe scope, area counts, geometry, selection cancellation, Matrix paths/placement and captured mutation authority. Browser regressions exercise detached canvases/cells/forms, delayed callbacks, blur/dialog cancellation, view return, resize and retained drafts/focus at 680px. Existing conflict/recovery, keyboard/copy, fit, expansion, investigation and reload journeys pass without unintended native revisions.
 
-Five additional unit cases cover historical deletion/recreation and colliding entity/link IDs, prior-changeset comparisons and endpoint ordering, Matrix scope reset and unsupported incoming recipes, and deduplicated area counts with empty authored choices. Full verification passed after this round.
-
-The graph follow-up reduces that controller to 2,751 lines. Strict TypeScript owners now separate pure geometry, measured layout, canvas gestures, delayed selection and document keyboard/resize lifetimes. Positions use one workspace map. Replacing a canvas aborts its listeners and cancels pending selection; blur and dialogs cancel delayed selection, and page suspension cancels gestures and resize work. Cached-page restoration resumes one listener lifetime. The remaining rendering/navigation controller is still a future cleanup candidate; Matrix binding is addressed by the follow-up below.
-
-Eight new unit cases cover anchored zoom bounds, drag/projection scales, measured-card fitting, pinned investigation packing, dense-placement bounds, delayed-selection invalidation and page/resize cancellation. A browser regression retains detached node references, replaces the canvas before a delayed click fires, opens a dialog, cycles views and cancels an active pan on blur; selection remains scoped and the native revision is unchanged. Existing desktop/680px fit, expansion, pinning, investigation and recovery journeys pass. No quality thresholds, baselines or exclusions changed.
-
-The Matrix follow-up leaves a 410-line renderer and captured-draft lifecycle, backed by typed owners for grid/form input, placement, selection/navigation, draft contracts and native proposal construction. Each workspace now owns its listeners, observer and delayed selection render; teardown and page suspension cancel stale work while preserving the draft. Graph and Matrix share the generation-guarded scheduler with separate delays. Native proposals are pure and retain captured endpoint versions, exact relationship IDs, schema guards and atomic create-and-link operations. New-artifact focus now reaches its actual title input.
-
-Nine new policy tests cover merged cells/ranges, parallel paths, placement, captured authority, replacement and duplicate guards, atomic target creation, preserved fields and delayed Matrix selection. A 680px browser regression leaves and quickly returns to Matrix, exercises detached cells/forms and resize, verifies retained drafts/focus, and confirms the native revision is unchanged. Full workbench conflict/recovery, keyboard/range copy and responsive authoring journeys pass. No quality gates were weakened.
+Full verification passed. No thresholds, baselines or exclusions changed. The rendering/navigation controller remains a cleanup candidate; advisory fan-in findings alone do not require splitting cohesive helpers.
 
 ## Verification
 
@@ -57,11 +49,11 @@ Integration and maintenance verification, 2026-10-16:
 
 The new main-app scale journeys exercise 1,000 artifacts / 5,000 relationships and 10,000 / 100,000 at 680px. One clean local run measured 156ms / 2,077ms from navigation to the first graph node and 13ms / 41ms for keyboard search and selection. Both retained the selected Matrix scope after reload without horizontal overflow. These synthetic timings are observations, not a service target or human task-completion measurement.
 
-Coverage merges measured V8 ranges across processes before the health gate; a zero-count capture cannot hide a handler exercised in a different journey. Complexity thresholds and exclusions are unchanged.
+Measured V8 ranges merge across processes before health checks; later zero-count captures cannot hide earlier exercised handlers.
 
 Regression coverage includes immutable snapshot conversion, deleted historical endpoints, editor/table stability, keyboard and range copy, exact cross-view identities, schema-optional shortcuts, comparison-token drift, unknown inputs, failed reads, lost responses, database switching and historical write locks. The keyboard reader-return regression also verifies that a delayed focus callback cannot steal focus after returning to the item list.
 
-These are technical checks using fictional fixtures. They do not establish representative-user efficiency, broad accessibility certification or engineering validity.
+These fictional-fixture checks establish technical behavior, not representative-user efficiency, accessibility certification or engineering validity.
 
 ## Current limits
 
@@ -75,3 +67,7 @@ These are technical checks using fictional fixtures. They do not establish repre
 ## Open work
 
 Evaluate complete create → connect → modify → investigate → assess tasks with representative users in more than one domain. An unfamiliar-user session has not been run. Use observed next-action choices, completion time, assistance, errors and context loss to prioritize larger-dataset interaction, clearer review context and remaining authoring friction. Automated checks and visual consistency are supporting evidence, not substitutes for task validation.
+
+## Documentation maintenance
+
+2026-10-17: condensed the main guidance in three passes—prose, cross-document repetition, then consistency/link checks. Retained need/story IDs, source labels, technical bounds and historical study records. Verified 115 local links, all original heading anchors and stable IDs, and unchanged runnable code blocks. Formatting/diff checks, production/harness builds, the executable API example test and all three documentation browser tests passed (1440px, 390px and direct-link navigation).
