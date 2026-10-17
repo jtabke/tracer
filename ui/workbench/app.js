@@ -1,3 +1,4 @@
+import { createNavigationState, createWorkspaceNavigation } from "./workspace-navigation.ts";
 import { rowPath } from "./matrix-selection.ts";
 import { createGraphLayout } from "./graph-layout.ts";
 import { createGraphInput } from "./graph-input.ts";
@@ -54,38 +55,23 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   let databases = native ? native.projects.map((project) => ({ ...project, url: null })) : [];
   if (!native && staticDatabases) databases = await staticDatabases();
   const state = {
-    selected: data.trace.root,
-    visible: new Set(data.trace.keys),
-    baseScope: new Set(data.trace.keys),
-    perspective: ["graph", "matrix", "history"].includes(params.get("view"))
-      ? params.get("view")
-      : "graph",
+    ...createNavigationState(
+      data.trace.root,
+      data.trace.keys,
+      head,
+      params.get("view"),
+      innerWidth > 1050,
+    ),
     density: "compact",
-    revision: head,
-    inspector: params.get("view") === "matrix" ? false : innerWidth > 1050,
-    inspectorPrefs: { graph: innerWidth > 1050, matrix: false, history: innerWidth > 1050 },
-    sheetState: "collapsed",
-    pathLinkIds: null,
-    pathRoot: null,
-    pathRevision: null,
     timelineScope: "project",
-    investigation: null,
-    editing: false,
     width: 340,
-    filter: "all",
-    timelineFilter: "selected",
-    historySubject: null,
-    matrixScope: "selected",
-    matrixSubject: null,
     matrixPresentation: "grouped",
     matrixDensity: "comfortable",
     matrixCell: null,
     matrixAnchor: null,
     matrixScroll: { top: 0, left: 0 },
     relationshipDrafts: new Map(),
-    matrixDraft: null,
     matrixPath: null,
-    pathPreview: null,
     matrixMode: native ? "traceability" : "relationships",
     matrixRootType: "product_requirement",
     matrixSteps: [
@@ -97,10 +83,6 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     matrixConfigOpen: false,
     saving: false,
     readBlocked: false,
-    artifactFull: false,
-    inlineField: null,
-    assessment: null,
-    evidenceOpen: false,
     evidenceDirty: false,
     evidenceSubject: null,
     evidenceReturnView: "graph",
@@ -108,24 +90,14 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     evidenceDiscard: 0,
     historyLimit: 30,
     focusConfig: { direction: "downstream", depth: 1, verification: true },
-    focusReturn: null,
-    expansions: new Map(),
     pinned: new Set(),
-    event: head,
-    layout: new Map(),
     scene: null,
-    expandedLayout: false,
     projectedHeight: null,
-    camera: { zoom: 1, x: 0, y: 0 },
     fittedTitles: false,
-    pendingInvestigationLayout: null,
     localEntities: new Map(),
     localLinks: new Map(),
     removed: new Set(),
     drafts: new Map(),
-    edge: null,
-    more: false,
-    notice: "",
     fade: true,
   };
   initializeMatrixColumns();
@@ -222,6 +194,64 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   }
   const cache = new Map();
   let model;
+  const {
+    pickEvent,
+    stepEvent,
+    select,
+    showDetails,
+    closeDetails,
+    changePerspective,
+    visitRevision,
+    openArtifactAction,
+    backWorkspaceAction,
+    artifactHistoryAction,
+    relationshipHistoryAction,
+    returnFocusAction,
+    resetAction,
+    focusAction,
+    returnChangeAction,
+    expandSheetAction,
+    collapseSheetAction,
+    inspectRevisionAction,
+  } = createWorkspaceNavigation({
+    state,
+    head: () => head,
+    trace: () => data.trace,
+    relevantFeed,
+    paths: (revision) => potentialPaths(data, revision),
+    neighborhood: () => focusedNeighborhood(model, state.selected, state.focusConfig),
+    selection: {
+      clear: () => graphInput.clearSelection(),
+      flush: () => graphInput.flushSelection(),
+    },
+    rememberDraft,
+    beginDraft,
+    render,
+    notify,
+    panelMode,
+    focus: (target) => {
+      if (typeof target === "object") {
+        document
+          .querySelector(`[data-key="${CSS.escape(target.key)}"]`)
+          ?.focus({ preventScroll: true });
+        return;
+      }
+      const selectors = {
+        "inspector-close": '.inspector [data-action="close-inspector"]',
+        "draft-title": "#draft-title",
+        details: '[data-action="details"]',
+        "artifact-heading": ".inspector h2",
+        graph: '[data-view="graph"]',
+        matrix: '[data-view="matrix"]',
+        history: '[data-view="history"]',
+      };
+      document.querySelector(selectors[target])?.focus();
+    },
+    revealMatrixRelationship: () =>
+      app
+        .querySelector(".matrix .selected-link")
+        ?.scrollIntoView({ block: "nearest", inline: "nearest" }),
+  });
   const graphLayout = createGraphLayout({
     state,
     app,
@@ -477,90 +507,6 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       key: state.historySubject?.key ?? state.selected,
       linkId: state.historySubject ? state.historySubject.linkId : state.edge,
     });
-  }
-  function pickEvent(revision, { showHistory = false } = {}) {
-    state.evidenceOpen = false;
-    rememberDraft();
-    if (showHistory && !state.historySubject)
-      state.historySubject = { key: state.selected, linkId: state.edge };
-    state.event = Number(revision);
-    state.revision = state.event;
-    state.assessment = state.event;
-    state.inlineField = null;
-    state.editing = false;
-    if (showHistory && state.perspective !== "history") {
-      changePerspective("history");
-      return;
-    }
-    render();
-  }
-  function stepEvent(delta) {
-    const feed = relevantFeed().sort((a, b) => a.revision - b.revision),
-      index = feed.findIndex((event) => event.revision === state.event);
-    const next =
-      index < 0
-        ? delta < 0
-          ? feed.filter((event) => event.revision < state.event).at(-1)
-          : feed.find((event) => event.revision > state.event)
-        : feed[index + delta];
-    if (next) pickEvent(next.revision);
-  }
-  function select(key, open = false) {
-    state.evidenceOpen = false;
-    graphInput.clearSelection();
-    rememberDraft();
-    state.selected = key;
-    if (!state.pathPreview && !state.matrixDraft) state.matrixSubject = null;
-    state.historySubject = null;
-    state.edge = null;
-    state.more = false;
-    state.editing = false;
-    state.inlineField = null;
-    if (open) state.inspector = true;
-    render();
-    if (state.inspector && panelMode() === "drawer" && !state.artifactFull)
-      document.querySelector('.inspector [data-action="close-inspector"]')?.focus();
-    else document.querySelector(`[data-key="${CSS.escape(key)}"]`)?.focus({ preventScroll: true });
-  }
-  function showDetails(edit = false) {
-    rememberDraft();
-    state.inspector = true;
-    state.editing = edit && state.revision === head;
-    state.inlineField = null;
-    if (state.editing) {
-      beginDraft();
-      state.sheetState = "partial";
-    }
-    render();
-    if (panelMode() === "drawer")
-      document.querySelector('.inspector [data-action="close-inspector"]')?.focus();
-    else if (edit) document.querySelector("#draft-title")?.focus();
-  }
-  function closeDetails() {
-    rememberDraft();
-    state.inspector = false;
-    state.artifactFull = false;
-    state.inlineField = null;
-    state.editing = false;
-    render();
-    document.querySelector('[data-action="details"]')?.focus();
-  }
-  function changePerspective(view) {
-    state.evidenceOpen = false;
-    graphInput.flushSelection();
-    rememberDraft();
-    if (view === "history" && !state.historySubject)
-      state.historySubject = { key: state.selected, linkId: state.edge };
-    if (!state.artifactFull) state.inspectorPrefs[state.perspective] = state.inspector;
-    state.perspective = view;
-    state.inspector = state.inspectorPrefs[view];
-    state.artifactFull = false;
-    render();
-    if (view === "matrix" && state.edge)
-      app
-        .querySelector(".matrix .selected-link")
-        ?.scrollIntoView({ block: "nearest", inline: "nearest" });
-    document.querySelector(`[data-view="${view}"]`)?.focus();
   }
   function applyGeometry(root) {
     for (const element of root.querySelectorAll("[data-style]")) {
@@ -1641,21 +1587,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
           }));
     return `<footer class="historybar continuous-history"><label class="sr-only" for="timeline-scope">Timeline scope</label><select id="timeline-scope"><option value="project">Project</option><option value="selected" ${state.timelineScope === "selected" ? "selected" : ""}>Selection</option></select><span class="timeline-scale">Revisions 1–${head}</span><div class="revision-axis"><div class="axis-ticks">${events.map((event) => `<button data-axis-event="${event.revision}" data-style="left:${((event.revision - 1) / (head - 1)) * 100}%" title="r${event.revision} · ${e(event.title)}" aria-label="Revision ${event.revision}: ${e(event.title)}"></button>`).join("")}</div><label class="sr-only" for="revision-range">Project revision</label><input id="revision-range" type="range" min="1" max="${head}" step="1" value="${state.revision}" aria-valuetext="Revision ${state.revision} of ${head}"></div><div class="revision-controls"><button data-action="previous-event" aria-label="Previous changeset">‹</button><span class="mono">r${state.revision}</span><button data-action="next-event" aria-label="Next changeset">›</button></div></footer>`;
   }
-  function visitRevision(revision) {
-    state.evidenceOpen = false;
-    rememberDraft();
-    state.revision = Math.max(1, Math.min(head, Number(revision)));
-    state.event = state.revision;
-    state.editing = false;
-    state.inlineField = null;
-    state.assessment = state.revision;
-    notify(
-      state.revision === head
-        ? "Latest revision · local edits restored"
-        : `Revision ${state.revision} · read-only`,
-    );
-    render();
-  }
   const workspaceActions = {
     "assess-evidence": assessEvidenceAction,
     details: () => showDetails(),
@@ -1724,34 +1655,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     state.inlineField = null;
     render();
   }
-  function openArtifactAction() {
-    state.inspectorPrefs[state.perspective] = state.inspector;
-    state.artifactFull = true;
-    state.inspector = true;
-    render();
-    document.querySelector(".inspector h2")?.focus();
-    return;
-  }
-  function backWorkspaceAction() {
-    state.inspector = state.inspectorPrefs[state.perspective];
-    state.artifactFull = false;
-    state.editing = false;
-    state.inlineField = null;
-    render();
-  }
-  function artifactHistoryAction() {
-    state.edge = null;
-    state.historySubject = { key: state.selected, linkId: null };
-    state.timelineFilter = "selected";
-    changePerspective("history");
-    return;
-  }
-  function relationshipHistoryAction() {
-    state.historySubject = { key: state.selected, linkId: state.edge };
-    state.timelineFilter = "selected";
-    changePerspective("history");
-    return;
-  }
   function moreHistoryAction() {
     state.historyLimit += 30;
     render();
@@ -1763,38 +1666,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     notify(state.pinned.has(state.selected) ? "Position pinned in this tab" : "Position unpinned");
     render();
   }
-  function returnFocusAction() {
-    if (state.focusReturn) {
-      state.visible = new Set(state.focusReturn.visible);
-      state.baseScope = new Set(state.focusReturn.baseScope ?? state.focusReturn.visible);
-      state.filter = state.focusReturn.filter;
-      state.pathLinkIds = state.focusReturn.pathIds ? new Set(state.focusReturn.pathIds) : null;
-      state.matrixScope = state.focusReturn.matrixScope ?? state.matrixScope;
-      if (state.focusReturn.layout) state.layout = new Map(state.focusReturn.layout);
-      state.focusReturn = null;
-      state.expansions.clear();
-    }
-    render();
-  }
-
-  function resetAction() {
-    state.expandedLayout = false;
-    state.visible = new Set(data.trace.keys);
-    state.baseScope = new Set(data.trace.keys);
-    state.expansions.clear();
-    state.pathLinkIds = null;
-    state.investigation = null;
-    state.focusReturn = null;
-    state.historySubject = null;
-    state.selected = data.trace.root;
-    state.pathPreview = null;
-    state.matrixSubject = null;
-    state.filter = "all";
-    state.edge = null;
-    state.camera = { zoom: 1, x: 0, y: 0 };
-    render();
-  }
-
   function zoomInAction(name) {
     const canvas = document.querySelector(".canvas");
     zoomAt(
@@ -1817,23 +1688,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     state.focusConfig.verification = !state.focusConfig.verification;
     render();
     return;
-  }
-  function focusAction() {
-    if (!state.focusReturn)
-      state.focusReturn = {
-        visible: [...state.visible],
-        filter: state.filter,
-        pathIds: state.pathLinkIds ? [...state.pathLinkIds] : null,
-        matrixScope: state.matrixScope,
-      };
-    const result = focusedNeighborhood(model, state.selected, state.focusConfig);
-    state.visible = new Set(result.keys);
-    state.baseScope = new Set(result.keys);
-    state.expansions.clear();
-    notify(
-      `Focused ${state.selected}${result.omitted ? `; ${result.omitted} beyond the 50-artifact limit` : ""}`,
-    );
-    render();
   }
   function closeEdgeAction() {
     state.edge = null;
@@ -1869,62 +1723,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     render();
   }
 
-  function returnChangeAction() {
-    if (state.investigation) {
-      state.historySubject = { ...state.investigation.subject };
-      state.event = state.investigation.event;
-      state.revision = state.investigation.revision;
-      changePerspective("history");
-    }
-    return;
-  }
-  function expandSheetAction() {
-    state.sheetState = "partial";
-    state.inspector = true;
-    render();
-  }
-  function collapseSheetAction() {
-    rememberDraft();
-    state.sheetState = "collapsed";
-    state.editing = false;
-    state.inlineField = null;
-    render();
-  }
-  function inspectRevisionAction() {
-    rememberDraft();
-    const paths = potentialPaths(data, state.event);
-    state.investigation = {
-      subject: state.historySubject
-        ? { ...state.historySubject }
-        : { key: state.selected, linkId: state.edge },
-      event: state.event,
-      revision: state.event,
-    };
-    if (!state.focusReturn)
-      state.focusReturn = {
-        visible: [...state.visible],
-        filter: state.filter,
-        pathIds: state.pathLinkIds ? [...state.pathLinkIds] : null,
-        matrixScope: state.matrixScope,
-      };
-    if (!state.focusReturn.layout)
-      state.focusReturn.layout = [...state.layout].map(([key, point]) => [key, { ...point }]);
-    state.pendingInvestigationLayout = paths;
-    state.pathPreview = null;
-    state.visible = new Set(paths.keys);
-    state.baseScope = new Set(paths.keys);
-    state.pathLinkIds = new Set(paths.links.map((link) => link.id));
-    state.pathRoot = paths.roots[0];
-    state.pathRevision = state.event;
-    state.matrixScope = "neighborhood";
-    if (paths.roots.length && !paths.keys.includes(state.selected)) state.selected = paths.roots[0];
-    state.edge = null;
-    state.filter = "all";
-    visitRevision(state.event);
-    state.notice = "";
-    changePerspective("graph");
-    return;
-  }
   async function action(name) {
     if (name === "acknowledge-reload") {
       recoveredUncertain = false;

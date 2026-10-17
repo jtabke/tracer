@@ -1,6 +1,6 @@
 # Tracer implementation status
 
-Updated 2026-10-17. Implementation checks below were run on 2026-10-16. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
+Updated 2026-10-17. Verification dates appear with each maintenance round. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
 
 ## Native application
 
@@ -34,7 +34,13 @@ Three post-integration cleanups separated workbench history/permissions/Matrix r
 
 Added 22 unit/policy cases covering history identity/deletion, recipe scope, area counts, geometry, selection cancellation, Matrix paths/placement and captured mutation authority. Browser regressions exercise detached canvases/cells/forms, delayed callbacks, blur/dialog cancellation, view return, resize and retained drafts/focus at 680px. Existing conflict/recovery, keyboard/copy, fit, expansion, investigation and reload journeys pass without unintended native revisions.
 
-Full verification passed. No thresholds, baselines or exclusions changed. The rendering/navigation controller remains a cleanup candidate; advisory fan-in findings alone do not require splitting cohesive helpers.
+Full verification passed. No thresholds, baselines or exclusions changed. The rendering controller remains a cleanup candidate; advisory fan-in findings alone do not require splitting cohesive helpers.
+
+## Navigation cleanup
+
+2026-10-17: extracted typed selection, perspective, revision, inspector and investigation-return transitions into `workspace-navigation.ts`. The renderer uses explicit draft/render/focus callbacks and the same state object; current head/scope providers avoid capturing stale context. Mutation guards, recovery format and draft ownership are unchanged. The main rendering controller is now 2,546 lines, down from 2,748 before this round.
+
+Seven focused tests cover transition ordering, queued selection, historical edit locks, current-head changes, exact investigation links/return geometry, view preferences and draft-owned Matrix context. `npm run check` passed: formatting, strict types, lint, 372 unit tests, 136 browser tests, production/harness builds, workbench regressions and dependency/architecture/duplication/health gates. No thresholds, baselines or exclusions changed.
 
 ## Verification
 
