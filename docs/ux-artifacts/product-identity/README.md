@@ -48,7 +48,7 @@ The end-to-end capture starts from an explicitly simulated evaluation matching P
 | `ui/workbench/app.js`, `workspace.css`, `styles/`                        | Production shell, interaction owners and responsive rendering                                                      |
 | `workspace-snapshot.ts`                                                  | Shared immutable presentation conversion for native and exported snapshots, including deleted historical endpoints |
 | `native-client.ts`                                                       | Typed native reads, existing mutation controller and reconciliation                                                |
-| `matrix-editor.mjs`, `trace-table.mjs`                                   | Matrix rendering/draft capture and bounded grouped/flat path projection                                            |
+| `matrix-editor.mjs`, `trace-table.mjs`                                   | Review shims over the typed production Matrix renderer/editor/span policy and bounded grouped/flat path projection |
 | `workspace-history.ts`, `presentation.ts`, `relationship-policy.ts`      | Typed revision reconstruction/diffs, presentation labels and native permission policy                              |
 | `graph-geometry.ts`, `graph-layout.ts`                                   | Pure geometry/camera policies and measured layout over one workspace position map                                  |
 | `graph-input.ts`, `selection-delay.ts`, `workspace-events.ts`            | Abortable canvas gestures, guarded delayed selection and keyboard/resize/page lifetimes                            |

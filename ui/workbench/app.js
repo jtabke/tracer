@@ -22,7 +22,8 @@ import "./workspace.css";
 import { changedText } from "./authoring-policy.ts";
 import { reachableTrace, recordedRoute } from "./trace-context.mjs";
 import { traceRows, groupedTraceRows } from "./trace-table.mjs";
-import { renderGrid, renderGridEditor, createGridEditor } from "./matrix-editor.mjs";
+import { createGridEditor } from "./matrix-editor.ts";
+import { renderGrid, renderGridEditor } from "./matrix-renderer.ts";
 import {
   relationshipLabel,
   historyFeed,

@@ -1,3 +1,5 @@
+import type { MutationController } from "../mutation-controller.ts";
+import type { EditingContext } from "./editing-context.ts";
 import type { Fields, SchemaObject } from "../../src/core/model.ts";
 import type { WorkspaceEntity, WorkspaceRelationship } from "./workspace-snapshot.ts";
 export type MatrixCell = { row: number; column: number };
@@ -80,4 +82,19 @@ export type MatrixActions = {
   ): void;
   save(form: HTMLFormElement): Promise<void>;
   cancel(): void;
+};
+
+// Current providers feed this context on each editor action; commit remains workspace-owned.
+export type MatrixEditorContext = MatrixContext & {
+  state: MatrixState & {
+    revision: number;
+    saving: boolean;
+    readBlocked: boolean;
+    visible: Set<string>;
+    matrixRootType: string;
+    matrixSubject: string | null;
+  };
+  head: number;
+  native: { mutations: Pick<MutationController, "snapshot"> } | null;
+  commit: EditingContext["commit"];
 };
