@@ -1,9 +1,21 @@
 # Documentation images
 
-The four `aster-workbench-*.png` images illustrate the current native-backed workbench candidate in the root README.
+The selected `aster-workbench-*.png` images illustrate the current shared Graph / Matrix / History workspace in the [workspace reference](../workspace-guide.md) and in-app documentation. Refreshed on 2026-10-17 (America/Los_Angeles) from disposable, fictional Aster projects; evaluation outcomes are explicitly simulated.
 
-Captured on 2026-10-16 at 1440×1000 from the verified modify → investigate → assess → record decision walkthrough. Graph, History and assessment show the saved r400 state; Matrix shows the edit before commit at r399. The fixture is fictional Aster, with explicitly simulated evaluation outcomes. Production-map adoption is separate.
+| Image                                   | Viewport  | Captured state                                                                                                               |
+| --------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `aster-workbench-graph.png`             | 1440×1000 | Saved operating-temperature edit at r400 and twenty exact recorded dependency paths; connectivity is not an assessed impact. |
+| `aster-workbench-matrix.png`            | 1440×1000 | Floating statement editor with an unsaved operating-temperature proposal at r399.                                            |
+| `aster-workbench-history.png`           | 1440×1000 | Saved r400 change and field-level diff.                                                                                      |
+| `aster-workbench-assessment.png`        | 1440×1000 | Recorded Needs reevaluation decision; captured/current inputs remain changed.                                                |
+| `aster-workbench-search.png`            | 1440×1000 | Identifier/title/statement search for pressure at r399, with match count and active suggestion.                              |
+| `aster-workbench-editor.png`            | 1440×1000 | Unsaved inline statement proposal at r399; other draft fields are retained in the same tab.                                  |
+| `aster-workbench-connection-mobile.png` | 390×844   | Prepared connection from PRS-01 to SYS-01, exact endpoint summaries and required scope; not yet submitted.                   |
 
-Regenerate a walkthrough with `npm run workbench:screenshots`, inspect the original PNGs in the generated review folder, then replace only deliberately selected documentation images. Captions distinguish a draft, saved change and recorded review.
+Regenerate the first four with `npm run workbench:screenshots`. Select, respectively, `03-desktop-investigate-dependencies.png`, `01-desktop-modify-operating-range.png`, `02-desktop-inspect-saved-change.png` and `06-desktop-recorded-decision.png` from `output/product-identity/workbench-review/`. The generated gallery and manifest preserve the complete paired desktop/680px walkthrough locally.
 
-The older `aster-development-map.jpg` remains available for the production documentation renderer; it is not the workbench preview.
+Regenerate the last three with `npm run build` followed by `npx playwright test test/inspector-polish-browser.spec.ts`. Select the 1440px draft-retention case's `search.png` and `statement-editor.png`, and the 390px relationship-search case's `connection.png`, from `test-results/`.
+
+Inspect original PNGs before replacing deliberately selected illustrations. Keep the captions' distinction between a proposal, saved change and recorded review. Full galleries, databases, coverage and other captures remain ignored local review material.
+
+The older `aster-development-map.jpg` remains available for the retained Development map documentation; it is not the shared workbench preview. The original [capture notes](../ux-artifacts/product-identity/README.md#verify-and-capture) describe fixture isolation and the simulated assessment.

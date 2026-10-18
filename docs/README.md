@@ -1,16 +1,21 @@
 # Tracer documentation
 
-For a new user, start with the [README](../README.md), run the default demo, then follow [getting started](getting-started.md).
+Choose one of the two [getting-started paths](getting-started.md):
 
-In the application, choose **Documentation** in the project navigation. It opens these same getting-started, example, industry and developer guides without leaving the project or replacing an in-session draft. Internal guide links and named Return preserve reading context; citations open separately. Workflow diagrams open at readable size with **Fit diagram** available for orientation.
+- [Explore an example](getting-started.md#explore-an-example): inspect and edit the populated Orbit project.
+- [Start your own project](getting-started.md#start-your-own-project): use the editable Engineering starter and reopen saved work.
 
-## Use Tracer
+In the application, **Project tools → Documentation** opens these guides without replacing an in-session draft. Internal links and named Return preserve reading context; citations open separately.
 
-- [Getting started](getting-started.md): follow a shared design, inspect a build, review changed inputs and save an edit.
-- [Realistic examples](realistic-examples.md): medical-device, software and integrated-product structures, tasks and modeling limits.
-- [Worked product example](getting-started.md#worked-example-start-a-product-from-an-empty-database): start an empty database, define types and routes, create and connect items, then reopen saved work.
-- [Core API guide](developer-reference.md#use-the-headless-core): direct TypeScript integration, runnable example, version checks, errors, paging and local HTTP setup.
-- [Developer reference](developer-reference.md): working views, CLI commands, query limits and persistence contracts.
+## After getting started
+
+- [Workspace reference](workspace-guide.md): editing, evidence, configurations, multiple projects and the retained Development map.
+- [CSV import](csv-import.md): map columns, resolve links by exact keys, preview errors and commit one atomic batch.
+- [Next work](next-work.md): separate statement/allocation/plan gaps, changed evidence and unresolved reviews with direct editing/review actions.
+- [Project export](project-export.md): deterministic JSON with exact versions, recorded provenance and external evidence references.
+- [Define a custom model](custom-model.md): advanced desk-light exercise with types, fields and directed relationships defined from scratch.
+- [Additional realistic examples](realistic-examples.md): medical-device, software and integrated-product datasets, tasks and modeling limits.
+- [Developer reference](developer-reference.md): API/CLI usage, query limits, persistence and [development fixtures](developer-reference.md#development-fixtures).
 
 ## Understand development workflows
 

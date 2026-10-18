@@ -12,6 +12,36 @@ Open the printed loopback URL (default `http://127.0.0.1:4317`; override with `-
 
 The complete native snapshot rejects beyond 10,000 records / 100,000 links; rendering bounds are separate. Named Matrix recipes persist in SQLite. Spatial/investigation recovery is browser/origin-local; unsaved drafts remain tab-local. Development-map organization/unnamed recipes are session-only. Project switching confirms draft disposal and reloads against an explicitly configured database. The local server has no organizational authentication.
 
+## CSV import planning
+
+The public `parseCsv` and `previewCsvImport` helpers provide bounded, read-only parsing and create-only planning over a complete native project snapshot. The resulting explicit-ID operations use `applyChangeset` and its schema, key, endpoint and duplicate-link guards. Supply the preview's head as optional `expectedProjectRevision` to require the exact reviewed native project revision; a mismatch rejects before any write. See the [CSV import guide](csv-import.md#use-the-planner-from-a-script) for mappings and a script. There is no dedicated CSV CLI command.
+
+## Next-work queries
+
+`Tracer.getNextWork(query?)`, `next-work get [QUERY_JSON]` and typed `GET /api/next-work` share five read-only queues and one native/evidence snapshot. Optional `requirementType`, `statementField`, `allocationExpectationId` and `verificationExpectationId` select current schema fields/policies; empty strings explicitly leave choices unconfigured. Complete counts are separate from local UI paging. See the [next-work guide](next-work.md) for membership, bounds and review semantics.
+
+## Deterministic project export
+
+`Tracer.exportProject()` reads all current records/links, schema/history, changesets, evidence, captures and saved views in one repository transaction. `serializeProjectExport()` returns canonical JSON with one final LF. Browser download, `GET /api/project-export` (no filters) and `project export` CLI output use the same bytes. Native/evidence boundaries remain separate. See the [export guide](project-export.md) for scope, external-file preservation, format and budgets.
+
+## Development fixtures
+
+These launchers support development and regression work. For onboarding, use [Explore an example](getting-started.md#explore-an-example) or [Start your own project](getting-started.md#start-your-own-project). Domain datasets have their own [example reference](realistic-examples.md).
+
+| Command                         | Purpose                                                             |
+| ------------------------------- | ------------------------------------------------------------------- |
+| `npm run demo:working`          | 1,000 synthetic items                                               |
+| `npm run demo:large`            | 10,000 synthetic items; `workspace:large` is a compatibility alias  |
+| `npm run demo:small`            | Local file and Git observations; requires Git                       |
+| `npm run workspace`             | Older populated Software workspace fixture                          |
+| `npm run workspace:engineering` | Older populated Engineering workspace fixture                       |
+| `npm run workspace:empty`       | Fresh disposable empty database                                     |
+| `npm run workbench`             | Isolated Aster/Gatherline review databases using production sources |
+
+Seeded fixture launches create fresh databases and retain them after shutdown. Use the printed resume command to reopen saved edits. Synthetic counts are test inputs, not capacity guarantees. For an enduring empty project use `npm start -- --db project.sqlite`, rather than a fixture launcher. Existing scripts remain available for automation.
+
+The [workbench review guide](ux-artifacts/product-identity/README.md) owns its regression orchestration and desktop/680px screenshots. The [design study index](ux-artifacts/README.md) distinguishes current compatibility launchers from historical research.
+
 ## Use the headless core
 
 The public application entry point is [src/index.ts](../src/index.ts), exposed as `@tracer-local/core`. It exports the typed `Tracer` facade, public contracts and `TracerError`. The SQLite adapter is exposed separately as `@tracer-local/core/sqlite` so importing the portable API does not load Node SQLite. It supports direct use without React, Vite or an HTTP server. `src/core/` contains domain types and validation; instantiate `Tracer` with a repository to run transactions and queries. The UI, CLI and local HTTP adapter call these same services.
@@ -34,7 +64,7 @@ Run the complete [product-model example](../examples/product-model.ts) from the 
 node examples/product-model.ts
 ```
 
-It creates the [worked product model](getting-started.md#worked-example-start-a-product-from-an-empty-database), three records and two links, updates a requirement, verifies rejection of a stale edit, reads a trace, closes/reopens the database and checks the saved result. It uses a temporary directory and removes that database on completion; it does not create your persistent browser project.
+It creates the [worked product model](custom-model.md), three records and two links, updates a requirement, verifies rejection of a stale edit, reads a trace, closes/reopens the database and checks the saved result. It uses a temporary directory and removes that database on completion; it does not create your persistent browser project.
 
 To embed the same API, the following TypeScript can be saved as `core-quickstart.ts` at the repository root and run with `node core-quickstart.ts`. Choose a new database filename before running; this setup expects a new project and will conflict if the schema already exists.
 
@@ -358,7 +388,7 @@ npm run benchmark
 
 This disposable workload creates 10,000 entities and 100,000 links, measures ingestion, entity/incident pages, a depth-2 traversal, and file size, then cleans up. Results are observations on one machine, not portable guarantees or arbitrary release gates. See [verification checkpoint](../docs/checkpoint.md).
 
-Historical neighborhood graphs, exact historical receipt inputs and named native baselines are implemented. Whole-project exports/diffs, baseline-backed working-view selection, restoration/undo, a readiness policy engine, authenticated collaboration, PostgreSQL and standalone packaging remain future capabilities. See [the capability audit](../docs/industry-workspace-slice.md#gaps-exposed-by-the-tasks) for the distinctions between stored annotations and guaranteed semantics.
+Historical neighborhood graphs, exact historical receipt inputs, named native baselines and deterministic recorded-project JSON export are implemented. Whole-project diffs, selected-baseline review packages, baseline-backed working-view selection, restoration/undo, a readiness policy engine, authenticated collaboration, PostgreSQL and standalone packaging remain future capabilities. See [the capability audit](../docs/industry-workspace-slice.md#gaps-exposed-by-the-tasks) for the distinctions between stored annotations and guaranteed semantics.
 
 See the repository README for the current distribution and license status.
 

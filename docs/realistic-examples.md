@@ -1,12 +1,37 @@
 # Realistic example projects
 
-All examples now use the shared native map UI. Launch `npm run demo` to open Orbit and Aster as separate databases in the same project picker. Search the IDs below from **Find an item**, then use Graph/Items table and contextual task panels. Earlier prepared Studio task URLs remain seed metadata; they no longer launch a separate UI. See the [current walkthrough](getting-started.md).
+This reference keeps the additional datasets available after [getting started](getting-started.md). The main example path opens Orbit alone; all datasets use the same Graph / Matrix / History workspace. Search the IDs below in Graph, then use Matrix and Project tools to inspect their traces, records and evidence. Earlier Studio task URLs remain historical seed metadata.
 
 **Status:** owner-requested illustrative datasets for exploring hierarchy, siblings, shared dependencies and change consequences. Workflow sources ground the organization; project details, people, thresholds, artifact paths, incidents and results are fictional. These are not observed customer artifacts or validated product specifications.
 
 The [industry workflow guides](industry-workflows/README.md) explain the broader development contexts, including integrated hardware/software products, aerospace and selected public company practices. This walkthrough owns the three delivered seeds. The [engineering workspace slice](industry-workspace-slice.md) distinguishes represented records, guaranteed semantics and proposed UI work; aerospace remains a documented comparison direction.
 
-`npm run demo` opens Orbit by default. Run `npm run workspace:medical`, `npm run workspace:technology` or `npm run workspace:integrated`; add `-- --port 4320` or another free port if a server is already running. The printed URL opens the first family directly. Every launch creates a fresh isolated database. Resume using the printed `--db` and `--guide` command. For persistent directories, use `npm run seed -- NEW_DIRECTORY --size medical|technology|integrated`. Existing directories are refused.
+## Choose another example
+
+| Command                        | Fictional project            | Focus                                                         |
+| ------------------------------ | ---------------------------- | ------------------------------------------------------------- |
+| `npm run workspace:integrated` | Orbit R1 robot vacuum        | Shared hardware/software designs, configurations and evidence |
+| `npm run workspace:medical`    | Aster Home BP monitor        | Allocations, risk controls and design verification            |
+| `npm run workspace:technology` | Gatherline offline event app | Software delivery, architecture and operational findings      |
+
+Each command opens only the chosen example in a fresh database. Add `-- --port 4320` if needed. To keep edits, stop with Ctrl+C and use the printed **Resume saved setup** command; relaunching the example command creates a new database.
+
+To seed an example in a chosen new directory:
+
+```sh
+npm run seed -- my-example --size integrated
+npm start -- --db my-example/project.sqlite --guide my-example/tasks.json
+```
+
+Replace `integrated` with `medical` or `technology` for another domain. Existing directories are refused. To compare two saved example databases, supply both explicitly:
+
+```sh
+npm start -- --db orbit/project.sqlite --guide orbit/tasks.json --secondary-db aster/project.sqlite --secondary-guide aster/tasks.json
+```
+
+See the [workspace reference](workspace-guide.md#open-multiple-projects) for project switching. Scale, file/Git, older workspace and review fixtures live in the [developer reference](developer-reference.md#development-fixtures).
+
+## Prepared task metadata
 
 Each fixture includes `GUIDE.md` and `tasks.json`. The latter holds family task URLs, canonical key/UUID mappings, receipt IDs, sources and an eight-column chain query. Medical/software examples have eight tasks; Orbit has seven. Task URLs use the current local origin, so the same database can be resumed on another port. In **Project**, the **Explore the example** cards open prepared family scopes in **Work**. The three shared-record tasks include aligned connection columns; **Multi-level traces** opens the prepared eight-column path. Selected items expose **Recorded evaluations** for opening exact results and returning to the retained family. **Saved view** and **Save view** retain a family or trace; saved scopes appear on Project home.
 

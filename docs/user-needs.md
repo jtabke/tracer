@@ -62,67 +62,81 @@ Author, connector and reviewer are working roles, not researched personas; one e
 
 Source records for this baseline:
 
-| Source | What was supplied                                                                                                                               |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| UR-56  | Integrate that UI over the headless core with two distinct project databases.                                                                   |
-| UR-55  | Use the selected medical-device map UI across projects; reject cluttered Orbit/Studio and separate demo experiences.                            |
-| UR-1   | Parent/child columns, clickable information and visible siblings.                                                                               |
-| UR-2   | Work at high and low levels across representations.                                                                                             |
-| UR-3   | Investigate actual use; current screens feel unintentional.                                                                                     |
-| UR-4   | Medical-device reference: new-design authoring/coverage and sustaining-change impact.                                                           |
-| UR-5   | Show derived numerical meaning while preserving free text and avoiding overconstraint.                                                          |
-| UR-6   | A medication-delivery motor/software-limit change can affect mechanical design and system requirements.                                         |
-| UR-7   | Jama feels record-at-a-time; show parents, siblings, children and shared system context.                                                        |
-| UR-8   | Use realistic concepts and critique PLM/traceability references, including Carbon, without copying legacy patterns.                             |
-| UR-9   | Reject system-neighborhood prototype: text walls, weak hierarchy, unclear actions and screen purpose.                                           |
-| UR-10  | Choose task, hierarchy, layout, interaction and visual options together before another coded prototype.                                         |
-| UR-11  | A motor-load increase should expose the already-related maximum move-time requirement.                                                          |
-| UR-12  | Independently research engineering workflows and their coordination purposes.                                                                   |
-| UR-13  | Support formal medical/aerospace and lighter tech work with task-appropriate rigor.                                                             |
-| UR-14  | Use sibling EventSculpt to trace needs → requirements → actual code → tests without imposed regulated process.                                  |
-| UR-15  | Approval is not implementation: show absent realization links while allowing existing-but-unlinked code.                                        |
-| UR-16  | Reconsider incoherent home and illegible model links; preserve useful Graph/Table interactions.                                                 |
-| UR-17  | Show development inputs/outputs, branches and loops visually; text rules alone are insufficient.                                                |
-| UR-18  | Visual and text model configuration should share a draft; consider n8n linking/context.                                                         |
-| UR-19  | Tests evaluate design against requirements; native trace direction must not reverse displayed intent.                                           |
-| UR-20  | Keep useful view/scope controls visible; avoid indiscriminate collapsibles.                                                                     |
-| UR-21  | Expose multiple hierarchy/trace levels with configurable depth and shared identities.                                                           |
-| UR-22  | Challenge assumptions through independent product/UX, design-engineering, customer-task and QA perspectives.                                    |
-| UR-23  | Review coherent composition and flows before production layout refinement.                                                                      |
-| UR-24  | Default dark mode; define navigation/tool placement, reduce duplication and use actual Excalidraw references.                                   |
-| UR-25  | Project switching belongs top left; medical model needs user needs, PRS, verification and validation.                                           |
-| UR-26  | Start with project counts, connected model graph and genuinely recorded recent updates.                                                         |
-| UR-27  | Edit definitions in the model graph rather than separate read-only lanes/selectors.                                                             |
-| UR-28  | Clean example types, relationship meanings, constraints and duplicated records.                                                                 |
-| UR-29  | Remove redundant cross-links; distinguish direct contributions, calculated hierarchy paths and criterion-specific verification; retain history. |
-| UR-30  | Review Orbit R1 model quality after medical cleanup.                                                                                            |
-| UR-31  | Center model establishment, optional requirement levels, V&V outputs and proposed-change investigation; align incrementally.                    |
-| UR-32  | Redesign destinations and flows; retain linking/graph/table inspiration, not the current execution.                                             |
-| UR-33  | Select Map entry: visual data model, double-click expansion, filtering and deliberate granularity at scale.                                     |
-| UR-34  | Restore organized layout after manual dragging.                                                                                                 |
-| UR-35  | Show record traces in expanded groups; investigate validation hierarchy against FDA/DHF guidance.                                               |
-| UR-36  | Offer horizontal and vertical graph layout.                                                                                                     |
-| UR-37  | Categorize related items within any type and isolate them; research comparable applications.                                                    |
-| UR-38  | Explore categories and Jama folder hierarchy without adopting its limiting sidebar.                                                             |
-| UR-39  | Demonstrate dense multi-granularity item/trace work; research open-source network mapping.                                                      |
-| UR-40  | Consider Blender nodes and n8n flows as references; n8n scale and grouping remain unproven.                                                     |
-| UR-41  | Filter panel mixes thirteen types and fifteen connection kinds without clear organization/explanation.                                          |
-| UR-42  | Apply discussed category, folder, dense-network and node-editor findings to selected Map entry.                                                 |
-| UR-43  | Expansion should retain working place; offer simpler context when fewer links/items suffice.                                                    |
-| UR-44  | Remove Aster's redundant singleton nesting (User needs → Measurement → Acquisition → UN-01).                                                    |
-| UR-45  | Enlarge Aster with realistic distinct items and branches for drilling, paging and tracing.                                                      |
-| UR-46  | Follow traces across folders without expanding everything or losing place.                                                                      |
-| UR-47  | Default drilled scope to direct downstream item traces; expose depth and retain return context.                                                 |
-| UR-48  | Reveal a linked item's next level while retaining origin, positions and camera.                                                                 |
-| UR-49  | Consider editing/history/baselines together and inspect core primitives before authoring; full change control is not authorized.                |
-| UR-50  | Prioritize viewing: find, follow/branch, understand shown/filtered/omitted data and return before adding authoring.                             |
-| UR-51  | Replace empty-looking Product → Unfiled singleton with meaningful product context.                                                              |
-| UR-52  | Unassigned items should be directly accessible, not placed behind an artificial Unfiled folder.                                                 |
-| UR-53  | Remove redundant presentation layers while preserving useful organization and trace meaning.                                                    |
-| UR-54  | Emphasize the followed trace, quiet surrounding links and allow line isolation without losing layout.                                           |
-| VI-1   | Owner-authored [product vision](#product-vision): UN-001–005, interactive views and progressive complexity                                      |
+| Source | What was supplied                                                                                                                                                                               |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UR-60  | Practical CSV import with column mapping, links resolved by stable keys, an error preview and atomic commit (owner request, 2026-10-17).                                                        |
+| UR-61  | Deterministic export of records, links, schema and evidence references with exact versions and provenance (owner request, 2026-10-17).                                                          |
+| UR-62  | Separate next-work queues for missing requirement statements, unallocated requirements, missing verification plans, changed evidence inputs and unresolved reviews (owner request, 2026-10-17). |
+| UR-59  | Simplify onboarding to explore an example or start a project; retain other examples and fixtures in secondary reference (owner request, 2026-10-17).                                            |
+| UR-58  | Make the Engineering starter useful out of the box and keep fresh-project setup persistent (owner request, 2026-10-17).                                                                         |
+| UR-57  | Reported fresh-project trust failures and workflow priorities; [evaluation details](#reported-fresh-project-evaluation).                                                                        |
+| UR-56  | Integrate that UI over the headless core with two distinct project databases.                                                                                                                   |
+| UR-55  | Use the selected medical-device map UI across projects; reject cluttered Orbit/Studio and separate demo experiences.                                                                            |
+| UR-1   | Parent/child columns, clickable information and visible siblings.                                                                                                                               |
+| UR-2   | Work at high and low levels across representations.                                                                                                                                             |
+| UR-3   | Investigate actual use; current screens feel unintentional.                                                                                                                                     |
+| UR-4   | Medical-device reference: new-design authoring/coverage and sustaining-change impact.                                                                                                           |
+| UR-5   | Show derived numerical meaning while preserving free text and avoiding overconstraint.                                                                                                          |
+| UR-6   | A medication-delivery motor/software-limit change can affect mechanical design and system requirements.                                                                                         |
+| UR-7   | Jama feels record-at-a-time; show parents, siblings, children and shared system context.                                                                                                        |
+| UR-8   | Use realistic concepts and critique PLM/traceability references, including Carbon, without copying legacy patterns.                                                                             |
+| UR-9   | Reject system-neighborhood prototype: text walls, weak hierarchy, unclear actions and screen purpose.                                                                                           |
+| UR-10  | Choose task, hierarchy, layout, interaction and visual options together before another coded prototype.                                                                                         |
+| UR-11  | A motor-load increase should expose the already-related maximum move-time requirement.                                                                                                          |
+| UR-12  | Independently research engineering workflows and their coordination purposes.                                                                                                                   |
+| UR-13  | Support formal medical/aerospace and lighter tech work with task-appropriate rigor.                                                                                                             |
+| UR-14  | Use sibling EventSculpt to trace needs → requirements → actual code → tests without imposed regulated process.                                                                                  |
+| UR-15  | Approval is not implementation: show absent realization links while allowing existing-but-unlinked code.                                                                                        |
+| UR-16  | Reconsider incoherent home and illegible model links; preserve useful Graph/Table interactions.                                                                                                 |
+| UR-17  | Show development inputs/outputs, branches and loops visually; text rules alone are insufficient.                                                                                                |
+| UR-18  | Visual and text model configuration should share a draft; consider n8n linking/context.                                                                                                         |
+| UR-19  | Tests evaluate design against requirements; native trace direction must not reverse displayed intent.                                                                                           |
+| UR-20  | Keep useful view/scope controls visible; avoid indiscriminate collapsibles.                                                                                                                     |
+| UR-21  | Expose multiple hierarchy/trace levels with configurable depth and shared identities.                                                                                                           |
+| UR-22  | Challenge assumptions through independent product/UX, design-engineering, customer-task and QA perspectives.                                                                                    |
+| UR-23  | Review coherent composition and flows before production layout refinement.                                                                                                                      |
+| UR-24  | Default dark mode; define navigation/tool placement, reduce duplication and use actual Excalidraw references.                                                                                   |
+| UR-25  | Project switching belongs top left; medical model needs user needs, PRS, verification and validation.                                                                                           |
+| UR-26  | Start with project counts, connected model graph and genuinely recorded recent updates.                                                                                                         |
+| UR-27  | Edit definitions in the model graph rather than separate read-only lanes/selectors.                                                                                                             |
+| UR-28  | Clean example types, relationship meanings, constraints and duplicated records.                                                                                                                 |
+| UR-29  | Remove redundant cross-links; distinguish direct contributions, calculated hierarchy paths and criterion-specific verification; retain history.                                                 |
+| UR-30  | Review Orbit R1 model quality after medical cleanup.                                                                                                                                            |
+| UR-31  | Center model establishment, optional requirement levels, V&V outputs and proposed-change investigation; align incrementally.                                                                    |
+| UR-32  | Redesign destinations and flows; retain linking/graph/table inspiration, not the current execution.                                                                                             |
+| UR-33  | Select Map entry: visual data model, double-click expansion, filtering and deliberate granularity at scale.                                                                                     |
+| UR-34  | Restore organized layout after manual dragging.                                                                                                                                                 |
+| UR-35  | Show record traces in expanded groups; investigate validation hierarchy against FDA/DHF guidance.                                                                                               |
+| UR-36  | Offer horizontal and vertical graph layout.                                                                                                                                                     |
+| UR-37  | Categorize related items within any type and isolate them; research comparable applications.                                                                                                    |
+| UR-38  | Explore categories and Jama folder hierarchy without adopting its limiting sidebar.                                                                                                             |
+| UR-39  | Demonstrate dense multi-granularity item/trace work; research open-source network mapping.                                                                                                      |
+| UR-40  | Consider Blender nodes and n8n flows as references; n8n scale and grouping remain unproven.                                                                                                     |
+| UR-41  | Filter panel mixes thirteen types and fifteen connection kinds without clear organization/explanation.                                                                                          |
+| UR-42  | Apply discussed category, folder, dense-network and node-editor findings to selected Map entry.                                                                                                 |
+| UR-43  | Expansion should retain working place; offer simpler context when fewer links/items suffice.                                                                                                    |
+| UR-44  | Remove Aster's redundant singleton nesting (User needs → Measurement → Acquisition → UN-01).                                                                                                    |
+| UR-45  | Enlarge Aster with realistic distinct items and branches for drilling, paging and tracing.                                                                                                      |
+| UR-46  | Follow traces across folders without expanding everything or losing place.                                                                                                                      |
+| UR-47  | Default drilled scope to direct downstream item traces; expose depth and retain return context.                                                                                                 |
+| UR-48  | Reveal a linked item's next level while retaining origin, positions and camera.                                                                                                                 |
+| UR-49  | Consider editing/history/baselines together and inspect core primitives before authoring; full change control is not authorized.                                                                |
+| UR-50  | Prioritize viewing: find, follow/branch, understand shown/filtered/omitted data and return before adding authoring.                                                                             |
+| UR-51  | Replace empty-looking Product → Unfiled singleton with meaningful product context.                                                                                                              |
+| UR-52  | Unassigned items should be directly accessible, not placed behind an artificial Unfiled folder.                                                                                                 |
+| UR-53  | Remove redundant presentation layers while preserving useful organization and trace meaning.                                                                                                    |
+| UR-54  | Emphasize the followed trace, quiet surrounding links and allow line isolation without losing layout.                                                                                           |
+| VI-1   | Owner-authored [product vision](#product-vision): UN-001–005, interactive views and progressive complexity                                                                                      |
 
 These are conversation-derived summaries, not interview transcripts, field observations or measured pain points. Append evidence references when actual work is observed; do not silently promote HY or UR to OB.
+
+### Reported fresh-project evaluation
+
+**UR-57 — user-supplied evaluation, 2026-10-17; reported execution on cloud Linux at `0b877505`, not independently observed here.** The evaluator started with empty databases, authored a portable CO₂-monitor need → requirement → design → verification trace, saved/reopened a two-hop Matrix, recorded explicitly simulated evidence with exact versions, tightened a requirement, reviewed stale inputs, captured a configuration and exercised CLI/browser consistency, conflicts and restart. Separately reported: 66 CLI calls, 15 HTTP requests, direct API/batch/backup/locking/forced-termination checks, 372 passing core tests, typecheck and lint. Full checks/Playwright were not run; no product source was changed during that evaluation.
+
+Reported trust failures: acceptance editing offered without a schema field discarded input after success feedback; fixed-name focus/impact traversal omitted starter links; successful first model save retained the old draft version; selection/row/path defaults produced unexplained empty Matrix results; schema typos and unsupported simple CLI properties were accepted. These strengthen PN-02/03/04/05/08/09 and require concrete regressions, while preserving immutable evidence, separate change/failure/review states, guarded concurrent writes and atomic history.
+
+Requested future capabilities remain candidate scope: mapped CSV/spreadsheet import with stable-key links and atomic preview/commit; deterministic record/link/schema/evidence-reference export; editable engineering starters with optional subsystem/build identity, acceptance, verification and explicit coverage policy; distinct actionable gap/review queues; review follow-up work with responsibility and closure criteria; portable provenance-rich review packages with external-file preservation instructions; spreadsheet paste, bulk guarded edits, keyboard navigation and reusable views. Proposed order: trust → fresh-project setup/tutorial → project-volume workflows → complete change review. None is implemented or authorized merely by this evidence record. The proposed value milestone is a small real engineering project completed without lost input, misleading dependency results or implementation knowledge needed for recovery.
 
 ## 3. Need catalog
 

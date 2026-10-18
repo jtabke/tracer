@@ -3,6 +3,18 @@ import architectureUrl from "../docs/architecture.md?url";
 import checkpointUrl from "../docs/checkpoint.md?url";
 import developer from "../docs/developer-reference.md?raw";
 import gettingStarted from "../docs/getting-started.md?raw";
+import workspaceGuide from "../docs/workspace-guide.md?raw";
+import csvImport from "../docs/csv-import.md?raw";
+import projectExport from "../docs/project-export.md?raw";
+import nextWork from "../docs/next-work.md?raw";
+import customModel from "../docs/custom-model.md?raw";
+import graphImage from "../docs/images/aster-workbench-graph.png?url";
+import matrixImage from "../docs/images/aster-workbench-matrix.png?url";
+import historyImage from "../docs/images/aster-workbench-history.png?url";
+import assessmentImage from "../docs/images/aster-workbench-assessment.png?url";
+import searchImage from "../docs/images/aster-workbench-search.png?url";
+import editorImage from "../docs/images/aster-workbench-editor.png?url";
+import connectionImage from "../docs/images/aster-workbench-connection-mobile.png?url";
 import orbitImage from "../docs/images/aster-development-map.jpg?url";
 import industry from "../docs/industry-workflows/README.md?raw";
 import aerospace from "../docs/industry-workflows/aerospace.md?raw";
@@ -31,10 +43,45 @@ export const documentationTopics: DocumentationTopic[] = [
     markdown: gettingStarted,
   },
   {
+    id: "workspace-guide",
+    title: "Workspace reference",
+    path: "docs/workspace-guide.md",
+    group: "Reference",
+    markdown: workspaceGuide,
+  },
+  {
+    id: "csv-import",
+    title: "CSV import",
+    path: "docs/csv-import.md",
+    group: "Reference",
+    markdown: csvImport,
+  },
+  {
+    id: "project-export",
+    title: "Project export",
+    path: "docs/project-export.md",
+    group: "Reference",
+    markdown: projectExport,
+  },
+  {
+    id: "next-work",
+    title: "Next work",
+    path: "docs/next-work.md",
+    group: "Reference",
+    markdown: nextWork,
+  },
+  {
+    id: "custom-model",
+    title: "Define a custom model",
+    path: "docs/custom-model.md",
+    group: "Reference",
+    markdown: customModel,
+  },
+  {
     id: "examples",
     title: "Realistic examples",
     path: "docs/realistic-examples.md",
-    group: "Use Tracer",
+    group: "Reference",
     markdown: examples,
   },
   {
@@ -107,7 +154,16 @@ const sourceUrls: Record<string, string> = {
   "docs/checkpoint.md": checkpointUrl,
   "README.md": readmeUrl,
 };
-const imageUrls: Record<string, string> = { "docs/images/aster-development-map.jpg": orbitImage };
+const imageUrls: Record<string, string> = {
+  "docs/images/aster-development-map.jpg": orbitImage,
+  "docs/images/aster-workbench-graph.png": graphImage,
+  "docs/images/aster-workbench-matrix.png": matrixImage,
+  "docs/images/aster-workbench-history.png": historyImage,
+  "docs/images/aster-workbench-assessment.png": assessmentImage,
+  "docs/images/aster-workbench-search.png": searchImage,
+  "docs/images/aster-workbench-editor.png": editorImage,
+  "docs/images/aster-workbench-connection-mobile.png": connectionImage,
+};
 export function documentationDestination(path: string, href: string) {
   const url = new URL(href, `https://documentation.tracer.local/${path}`);
   if (url.origin !== "https://documentation.tracer.local")

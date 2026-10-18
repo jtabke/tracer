@@ -100,6 +100,30 @@ for (const width of [1440, 390])
           .evaluate((element) => element.getBoundingClientRect().left),
       ).toBeGreaterThan(topics!.x + topics!.width);
     }
+    await expect(reader.getByRole("article").getByRole("heading", { level: 2 })).toHaveText([
+      "Explore an example",
+      "Start your own project",
+    ]);
+    await reader.getByRole("link", { name: "workspace reference", exact: true }).click();
+    await expect(reader.getByRole("heading", { level: 1 })).toHaveText("Workspace reference");
+    await expect(reader.getByRole("img")).toHaveCount(7);
+    await expect
+      .poll(() =>
+        reader
+          .getByRole("img")
+          .evaluateAll((images) =>
+            images.every(
+              (image) =>
+                image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0,
+            ),
+          ),
+      )
+      .toBe(true);
+    await reader.getByRole("link", { name: "custom model exercise", exact: true }).click();
+    await expect(reader.getByRole("heading", { level: 1 })).toHaveText(
+      "Define a custom project model",
+    );
+    await page.getByRole("button", { name: "Return to Workspace reference", exact: true }).click();
     await reader.getByRole("link", { name: "realistic examples", exact: true }).click();
     await expect(reader.getByRole("heading", { level: 1 })).toContainText("Realistic");
     await reader.getByRole("link", { name: "industry workflow guides", exact: true }).click();

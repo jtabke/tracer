@@ -9,7 +9,7 @@ npm ci
 npm run demo
 ```
 
-The project picker opens Orbit and Aster as separate SQLite databases. The terminal prints both paths and a command to resume them. Existing database pairs can be supplied with `--db` and `--secondary-db` (and optional `--guide` / `--secondary-guide`). Project routing uses a fixed configured registry; a request cannot name an arbitrary file.
+The default demo opens Orbit alone. The terminal prints its database path and a command to resume it. Additional examples are listed in the [example reference](../../realistic-examples.md). Existing database pairs can be supplied with `--db` and `--secondary-db` (and optional `--guide` / `--secondary-guide`). Project routing uses a fixed configured registry; a request cannot name an arbitrary file.
 
 `npm run dev --prefix docs/ux-artifacts/map-first` is a compatibility alias for the native medical example, not a second frontend. Root dependencies and the root build own the application. The previous standalone fixture renderer has been removed. Pure fixtures and historical verification scripts are retained here as research evidence; the old standalone browser scripts do not describe the current native task UI.
 
