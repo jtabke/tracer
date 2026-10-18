@@ -61,7 +61,7 @@ export function createInspectorInteractions(app: HTMLElement) {
         button.disabled = locked;
       });
   }
-  function bind(callbacks: EditorCallbacks) {
+  function bind(callbacks: EditorCallbacks, signal: AbortSignal) {
     const editor = app.querySelector<HTMLElement>(".inline-edit, .editor-fields");
     if (!editor) return;
     function updateStatus() {
@@ -89,8 +89,8 @@ export function createInspectorInteractions(app: HTMLElement) {
         saveEditing();
       }
     }
-    editor.oninput = updateStatus;
-    editor.onkeydown = handleEditorKey;
+    editor.addEventListener("input", updateStatus, { signal });
+    editor.addEventListener("keydown", handleEditorKey, { signal });
     updateStatus();
     busy(callbacks.locked(), callbacks.saving());
   }

@@ -43,10 +43,10 @@ export function createRelationshipScopeEditor(context: Options) {
       form.requestSubmit();
     }
   }
-  function bindRelationshipScope() {
+  function bindRelationshipScope(signal: AbortSignal) {
     app
       .querySelector("[data-edit-relationship-scope]")
-      ?.addEventListener("click", beginRelationshipScopeEdit);
+      ?.addEventListener("click", beginRelationshipScopeEdit, { signal });
     const form = app.querySelector<HTMLFormElement>("#relationship-scope-form");
     if (!form) return;
     const input = form.querySelector<HTMLTextAreaElement>("textarea")!,
@@ -56,18 +56,26 @@ export function createRelationshipScopeEditor(context: Options) {
     form
       .querySelectorAll<HTMLTextAreaElement | HTMLButtonElement>("textarea,button")
       .forEach((control) => (control.disabled = locked));
-    input.oninput = () => {
-      draft.scope = input.value;
-    };
+    input.addEventListener(
+      "input",
+      () => {
+        draft.scope = input.value;
+      },
+      { signal },
+    );
     const cancel = () => {
       if (state.saving || context.unknown()) return;
       state.relationshipDrafts.delete(draft.id);
       render();
       app.querySelector<HTMLButtonElement>("[data-edit-relationship-scope]")?.focus();
     };
-    form.querySelector<HTMLButtonElement>("[data-cancel-relationship-scope]")!.onclick = cancel;
+    form
+      .querySelector<HTMLButtonElement>("[data-cancel-relationship-scope]")!
+      .addEventListener("click", cancel, { signal });
 
-    form.onkeydown = (event) => handleRelationshipScopeKey(event, form, cancel);
+    form.addEventListener("keydown", (event) => handleRelationshipScopeKey(event, form, cancel), {
+      signal,
+    });
     const saveRelationshipScope = async (event: SubmitEvent) => {
       event.preventDefault();
       if (state.readBlocked || writesBlocked()) return;
@@ -116,7 +124,7 @@ export function createRelationshipScopeEditor(context: Options) {
       render();
       app.querySelector<HTMLButtonElement>("[data-edit-relationship-scope]")?.focus();
     };
-    form.onsubmit = saveRelationshipScope;
+    form.addEventListener("submit", saveRelationshipScope, { signal });
   }
 
   return { bindRelationshipScope };

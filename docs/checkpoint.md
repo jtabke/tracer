@@ -2,6 +2,14 @@
 
 Updated 2026-10-18. Verification dates appear with each maintenance round. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
 
+## Typed inspector rendering and bindings
+
+2026-10-18: extracted artifact and relationship inspector markup, inline field rendering, retained-draft notices, recent history, recorded paths and edge details into a strict TypeScript renderer. A read-only rendering contract reads the current model/schema/head through providers and exposes no mutation commands. Existing presentation and trace policies remain authoritative. The main controller falls from 2,258 to 2,054 lines; additional contracts and lifecycle handling make this an ownership/type-checking improvement, not a total-code reduction.
+
+Inspector actions, related/route/history navigation, field editing, scope editing and pointer/keyboard resizing now share one abortable binding lifetime. Rerender and cached-page suspension remove handlers, including handlers on detached controls; return binds the current DOM. Reading/caret recovery, keyboard ordering, drawer focus, field/scope save owners, captured versions, pending/unknown-write locks and commit/reconciliation retain their existing semantics. Listener cleanup does not cancel or replay an in-flight write.
+
+New browser checks at 1440/680/390px exercise detached artifact/scope inputs, save/cancel controls, related/history navigation, resize controls and cached-page suspension/return. Retained proposals survive replacement and the resumed editor saves exactly once. Paired production builds over the same disposable medical fixture match inspector markup and all 20 screenshot pairs byte-for-byte across artifact reading, inline/full editing, relationship inspection and scope editing at 1440/900/680/390px, without native writes. The drawer scope capture was visually inspected; published screenshots remain unchanged. The full `npm run check` passed formatting, strict types, UI lint, 411 unit tests, 173 browser tests, production/harness builds, all workbench scenarios and dependency/duplication/complexity gates. No quality thresholds or exclusions changed.
+
 ## CSS maintenance
 
 2026-10-18: split the 3,301-line workspace stylesheet into ordered files for layout, navigation, inspection, Matrix, controls, trace-grid authoring and narrow-screen overrides. Removed retired controls and declarations dominated by the same selector/property/condition without moving surviving rules across the cascade. Replaced unresolved historical theme references with their existing computed defaults and removed one invalid color. The styles directory falls from 4,645 to 4,143 lines; the largest file is 881 lines. Search, editing and save/draft owners keep their existing behavior.

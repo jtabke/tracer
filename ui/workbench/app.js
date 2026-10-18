@@ -1,3 +1,5 @@
+import { renderInspector, renderEdgeDetail } from "./inspector-renderer.ts";
+import { createInspectorBindings } from "./inspector-bindings.ts";
 import { createRelationshipScopeEditor } from "./relationship-scope-editor.ts";
 import { createArtifactEditor } from "./artifact-editor.ts";
 import { createAuthoringDialogs } from "./authoring-dialogs.ts";
@@ -17,7 +19,6 @@ import { createEvidenceWorkspace } from "./evidence-workspace.tsx";
 import { createProjectTools } from "./project-tools.tsx";
 import { createRecovery } from "./recovery.ts";
 import "./workspace.css";
-import { requiredField } from "./authoring-policy.ts";
 import { changedText } from "./authoring-policy.ts";
 import { reachableTrace, recordedRoute } from "./trace-context.mjs";
 import { traceRows, groupedTraceRows } from "./trace-table.mjs";
@@ -369,6 +370,39 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     );
   const e = escape;
   const mono = (text) => `<span class="mono">${e(text)}</span>`;
+  const inspectorContext = {
+    ...editingContext,
+    data: () => data,
+    panelMode,
+    supportsTextField,
+    mono,
+    icon,
+    relationshipLabel,
+    reachableTrace: (key) => reachableTrace(model, key, state.matrixSteps),
+    recordedRoute,
+  };
+  const inspectorBindings = createInspectorBindings({
+    app,
+    state,
+    interactions: inspectorInteractions,
+    model: () => model,
+    render,
+    notify,
+    rememberDraft,
+    beginInline,
+    applyDraft,
+    cancelInline: cancelInlineAction,
+    cancelEdit: cancelEditAction,
+    select,
+    pickEvent,
+    action,
+    bindRelationshipScope,
+    locked: () => state.readBlocked || writesBlocked(),
+    saving: () => state.saving,
+    panelMode,
+  });
+  const inspector = () => renderInspector(inspectorContext);
+  const edgeDetail = () => renderEdgeDetail(inspectorContext);
   function icon(type) {
     const paths = {
       graph:
@@ -716,6 +750,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   }
   function render() {
     inspectorInteractions.capture();
+    inspectorBindings.dispose();
     graphInput.unbind();
     function renderPendingSaveBanner() {
       return native && native.mutations.snapshot().status === "unknown"
@@ -1082,32 +1117,9 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     const parts = changedText(field.before, field.after);
     return `<section class="investigation-field-change field-diff" aria-label="Investigated change"><h4>${e(titleCase(field.key))} changed · r${state.pathRevision}</h4><div class="change-values"><span class="before">− <mark>${e(parts.before.change || "(empty)")}</mark></span><span aria-hidden="true"> → </span><span class="after">+ <mark>${e(parts.after.change || "(empty)")}</mark></span></div><p class="changed-statement" title="${e(String(field.after ?? ""))}">${e(parts.after.prefix)}<mark>${e(parts.after.change)}</mark>${e(parts.after.suffix)}</p></section>`;
   }
-  function routeExplanation(link) {
-    let route =
-      state.explainedRoute?.at(-1) === link.id
-        ? state.explainedRoute.map((id) => model.links.find((item) => item.id === id))
-        : [];
-    if (!route.length || route.some((item) => !item)) {
-      if (!state.investigation || !state.pathLinkIds?.has(link.id)) return "";
-      route = [...recordedRoute(model.links, state.pathRoot, link.source, state.pathLinkIds), link];
-    }
-    return `<section class="route-explanation"><h3>Recorded path</h3><p>${mono(route[0].source)}${route.map((item) => ` <span>→ ${e(relationshipLabel(item.type, true).toLowerCase())} →</span> ${mono(item.target)}`).join("")}</p><p>Included through ${route.length} recorded ${route.length === 1 ? "connection" : "connections"} at r${state.revision}. No technical assessment recorded here.</p></section>`;
-  }
-
   function pathSummary() {
     const links = visibleLinks();
     return `<details class="path-summary"><summary>Recorded dependency paths · ${links.length} links</summary><div><p>Potential impact exploration · all recorded relationship kinds · downstream, up to 2 steps. No technical assessment implied.</p>${links.map((link) => `<button data-path-link="${e(link.id)}">${mono(link.source)}<span>${e(titleCase(link.type))}</span>${mono(link.target)}</button>`).join("")}</div></details>`;
-  }
-  function relationshipInspector() {
-    const link = model.links.find((link) => link.id === state.edge),
-      mode = panelMode();
-    if (!link)
-      return `<aside class="inspector" aria-label="Relationship inspector"><p>The selected relationship is not present at r${state.revision}.</p><button data-action="close-inspector">Close</button></aside>`;
-    const draft = state.relationshipDrafts.get(link.id);
-    const editableScope =
-      data.schema.relationshipTypes[link.type]?.fields?.scope?.type === "string";
-    const editing = draft && state.revision === head;
-    return `<aside class="inspector relationship-inspector" aria-label="Relationship inspector" data-inspector-context="relationship:${e(link.id)}" data-sheet="partial" data-style="--inspector-width:${state.width}px" ${mode === "drawer" ? 'role="dialog" aria-modal="true"' : ""}><div class="inspector-state">Relationship at r${state.revision} · ${state.revision === head ? "Latest" : "Historical"} · v${link.version}</div><button class="relationship-return" data-action="back-artifact">← Back to artifact</button><div class="inspector-top"><strong>${e(titleCase(link.type))}</strong><button data-action="close-inspector" aria-label="Close inspector">×</button></div><div class="relationship-endpoints"><button data-related="${e(link.source)}" title="${e(model.records.get(link.source)?.title)}">${mono(link.source)}</button><span>→ ${e(titleCase(link.type))} →</span><button data-related="${e(link.target)}" title="${e(model.records.get(link.target)?.title)}">${mono(link.target)}</button></div><p class="endpoint-titles">${e(model.records.get(link.source)?.title)} → ${e(model.records.get(link.target)?.title)}</p>${routeExplanation(link)}<div class="section-label">Scope</div>${editing ? `<form id="relationship-scope-form"><textarea name="scope" aria-label="Relationship scope" ${requiredField(data.schema, "relationshipTypes", link.type, "scope") ? "required" : ""}>${e(draft.scope)}</textarea><p class="form-error" role="alert">${e(draft.error ?? "")}</p><div class="edge-actions"><button type="submit">Save</button><button type="button" data-cancel-relationship-scope>Cancel</button></div></form>` : native && state.revision === head && editableScope ? `<button class="editable-field criterion" data-edit-relationship-scope aria-label="Edit relationship scope">${e(link.scope) || "Add scope"}<span class="inline-pencil" aria-hidden="true">✎</span></button>` : `<p class="criterion">${e(link.scope)}</p>`}<div class="edge-actions"><button data-action="relationship-history">History</button><button data-action="edit-edge" ${state.revision !== head ? "disabled" : ""}>${native ? "Edit" : "Edit locally"}</button></div></aside>`;
   }
   async function inspectUnconfirmedSave(inspect, errorElement) {
     inspect.disabled = true;
@@ -1159,104 +1171,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       errorElement.append(document.createTextNode(error.message));
       inspect.disabled = false;
     }
-  }
-  function inlineFieldEditor(field, record, value) {
-    const draft = state.drafts.get(record.key) ?? {};
-    return `<div class="inline-edit"><label class="inline-edit-label" for="inline-value">${field === "acceptance" ? "Acceptance criterion" : titleCase(field)}</label><textarea id="inline-value">${e(draft[field] ?? value)}</textarea><p class="inspector-draft-status" data-inspector-draft-status role="status"></p><div><button data-apply-field="${field}">${native ? "Save" : "Apply locally"}</button><button data-action="cancel-inline">Cancel</button></div><p class="inspector-edit-help">⌘ / Ctrl + Enter to save · Esc to cancel</p></div>`;
-  }
-  function fieldContent(field, record) {
-    const value =
-      field === "title"
-        ? record.title
-        : field === "statement"
-          ? record.statement
-          : (record.fields[field] ?? "");
-    if (state.inlineField === field) return inlineFieldEditor(field, record, value);
-    if (state.revision !== head || !supportsTextField(record, field))
-      return `<p class="${field === "statement" ? "statement" : "criterion"}">${e(value)}</p>`;
-    return `<button class="editable-field ${field === "statement" ? "statement" : "criterion"}" data-edit-field="${field}" aria-label="Edit ${field === "acceptance" ? "acceptance criterion" : field}">${e(value) || (field === "acceptance" ? "Add acceptance criterion" : `Add ${e(field.replaceAll("_", " "))}`)}<span class="inline-pencil" aria-hidden="true">✎</span></button>`;
-  }
-  function inspector() {
-    function renderOwnHistory() {
-      return data.revisions
-        .filter(
-          (entry) => entry.snapshot?.key === record.key && entry.projectRevision <= state.revision,
-        )
-        .slice(-2)
-        .reverse();
-    }
-    function renderHeader() {
-      return `${mode === "docked" && !state.artifactFull ? `<div class="inspector-resize" role="separator" tabindex="0" aria-label="Resize artifact inspector" aria-orientation="vertical" aria-valuemin="300" aria-valuemax="460" aria-valuenow="${state.width}"></div>` : ""}<div class="inspector-state">${state.localEntities.has(record.key) && !historical ? `Local edit · based on r${head}` : `${state.perspective === "history" ? "Artifact state" : "Artifact"} · r${state.revision} · ${state.revision === head ? "Latest" : "Historical"}`}</div><div class="inspector-top"><div>${mono(record.key)}<span class="version">v${record.version}</span></div><div class="inspector-actions">${mode === "sheet" && !state.artifactFull ? '<button data-action="collapse-sheet" aria-label="Collapse artifact details">↓</button>' : ""}${!state.artifactFull ? '<button data-action="open-artifact" aria-label="Open artifact editor" title="Open artifact editor">↗</button>' : ""}<button data-action="edit" ${historical ? "disabled" : ""} aria-label="Edit artifact" title="Edit artifact">✎</button><button data-action="close-inspector" aria-label="${state.artifactFull ? "Close artifact editor" : "Close inspector"}">×</button></div></div><p class="type-label">${icon(record.type)}${e(typeName(record.type))}${state.localEntities.has(record.key) && !historical ? '<span class="local-dot">Local edit</span>' : ""}</p>`;
-    }
-    function renderFields() {
-      const names = ["title", "statement", "acceptance"].filter((field) =>
-        supportsTextField(record, field),
-      );
-      const label = (field) => (field === "acceptance" ? "Acceptance criterion" : titleCase(field));
-      return state.editing
-        ? `<h2 id="artifact-heading" tabindex="-1">Edit ${e(record.key)}</h2><div class="editor-fields">${names.map((field) => `<label>${label(field)}${field === "title" ? `<input id="draft-title" value="${e(draft.title)}">` : `<textarea id="draft-${field}">${e(draft[field] ?? record.fields[field] ?? "")}</textarea>`}</label>`).join("")}<p class="inspector-draft-status" data-inspector-draft-status role="status"></p><div class="edit-actions"><button data-action="apply-edit">${native ? "Save" : "Apply locally"}</button><button data-action="cancel-edit">Cancel</button></div><p class="inspector-edit-help">⌘ / Ctrl + Enter to save · Esc to cancel</p><p class="draft-note">${native ? "Changes stay in this tab until saved" : "This tab only · no database save"}</p></div>`
-        : `<h2 id="artifact-heading" tabindex="-1">${e(record.title)}</h2>${fieldContent("statement", record)}${supportsTextField(record, "acceptance") || record.fields.acceptance !== undefined ? `<div class="section-label">Acceptance criterion</div>${fieldContent("acceptance", record)}` : ""}`;
-    }
-    function renderRelationships() {
-      return `<section class="relationship-groups"><div class="inspector-section-heading"><h3>Direct connections <span>${links.length}</span></h3><button data-action="connect" ${historical ? "disabled" : ""} aria-label="Add relationship">＋</button></div>${[...groups].map(([label, items]) => `<section class="relationship-group"><h4>${e(label)} <span>${items.length}</span></h4>${items.map(({ link, key }) => `<div class="relationship-entry"><button class="connection-row" data-related="${e(key)}"><span>${mono(key)}<strong>${e(model.records.get(key)?.title ?? key)}</strong></span></button><button data-inspect-link="${e(link.id)}" aria-label="Inspect relationship ${e(link.source)} to ${e(link.target)}" title="Inspect relationship">↗</button></div>`).join("")}</section>`).join("")}</section>`;
-    }
-    function renderReachableSection() {
-      return `<section class="reachable-trace"><div class="inspector-section-heading"><h3>Reachable in trace <span>${reachable.entries.length}${reachable.truncated ? "+" : ""}</span></h3></div><p class="trace-scope-note">Current matrix path · up to ${state.matrixSteps.length} steps</p>${reachable.entries.map((item) => `<button class="reachable-entry" data-trace-route="${e(JSON.stringify(item.links))}">${mono(item.key)}<strong>${e(model.records.get(item.key)?.title ?? item.key)}</strong><small>${item.keys.map(e).join(" → ")}</small></button>`).join("")}${!reachable.entries.length ? '<p class="trace-scope-note">No indirect matches in this configured path.</p>' : ""}${reachable.truncated ? '<p class="trace-scope-note">Bounded path view; narrow the configured trace.</p>' : ""}</section>`;
-    }
-
-    if ((state.perspective === "matrix" || native) && state.edge && !state.artifactFull)
-      return relationshipInspector();
-    const record = model.records.get(state.selected),
-      mode = panelMode(),
-      historical = state.revision !== head;
-    const modal = mode === "drawer" && !state.artifactFull;
-    const shell = (content) =>
-      `<aside class="inspector ${state.artifactFull ? "full-artifact" : ""}" data-inspector-context="artifact:${e(state.selected)}:${state.editing ? "edit" : "read"}:${state.artifactFull ? "full" : "panel"}" data-sheet="${state.sheetState}" aria-label="${state.artifactFull ? "Artifact editor" : "Artifact inspector"}" data-style="--inspector-width:${state.width}px" ${modal ? 'role="dialog" aria-modal="true" aria-labelledby="artifact-heading"' : ""}>${content}</aside>`;
-    if (!record)
-      return shell(
-        `<div class="inspector-top">${mono(state.selected)}<button data-action="close-inspector" aria-label="Close inspector">×</button></div><p>This artifact does not exist at revision ${state.revision}.</p><button data-action="latest">Return to latest</button>`,
-      );
-    if (mode === "sheet" && !state.artifactFull && state.sheetState === "collapsed")
-      return shell(
-        `<div class="compact-inspector"><div>${mono(`${record.key} · r${state.revision}`)}<strong>${e(record.title)}</strong></div><button data-action="expand-sheet" aria-label="Expand artifact details">Details ↑</button><button data-action="open-artifact" aria-label="Open artifact editor" title="Open artifact editor">↗</button><button data-action="close-inspector" aria-label="Close inspector">×</button></div>`,
-      );
-    const draft = state.drafts.get(record.key) ?? record,
-      groups = new Map(),
-      links = model.links.filter(
-        (link) => link.source === record.key || link.target === record.key,
-      );
-    for (const link of links) {
-      const outgoing = link.source === record.key,
-        label = relationshipLabel(link.type, outgoing);
-      if (!groups.has(label)) groups.set(label, []);
-      groups.get(label).push({ link, key: outgoing ? link.target : link.source, outgoing });
-    }
-    const ownHistory = renderOwnHistory();
-    const header = renderHeader();
-    const fields = renderFields();
-    const relationships = renderRelationships();
-    const reachable = reachableTrace(model, record.key, state.matrixSteps);
-    const reachableSection = renderReachableSection();
-    const recent = `<section class="artifact-history"><div class="inspector-section-heading"><h3>Recent history</h3><button data-action="artifact-history" aria-label="View artifact history">↗</button></div>${ownHistory.map((entry) => `<button data-artifact-event="${entry.projectRevision}">${mono(`r${entry.projectRevision}`)}<span>${entry.version === 1 ? "Created" : `Updated to v${entry.version}`}</span></button>`).join("")}</section>`;
-    return shell(
-      header +
-        fields +
-        retainedArtifactDraft(record) +
-        (!state.editing ? relationships + reachableSection + recent : ""),
-    );
-  }
-  function retainedArtifactDraft(record) {
-    if (state.editing || state.inlineField || state.revision !== head) return "";
-    const draft = state.drafts.get(record.key);
-    if (!draft || !textDraftChanged(record, draft)) return "";
-    return '<div class="retained-artifact-draft"><span>Unsaved edits in this tab</span><div><button data-action="edit">Resume editing</button><button data-action="cancel-edit">Discard edits</button></div></div>';
-  }
-  function edgeDetail() {
-    const link =
-      model.links.find((link) => link.id === state.edge) ??
-      data.relationships.find((link) => link.id === state.edge);
-    if (!link) return "";
-    return `<section class="edge-detail" aria-label="Relationship details"><button data-action="close-edge" aria-label="Close relationship details">×</button><strong>${e(titleCase(link.type))}</strong>${mono(`${link.source} → ${link.target}`)}<p>${e(link.scope)}</p><div class="edge-actions"><button data-action="relationship-history">History</button><button data-action="edit-edge" ${state.revision !== head ? "disabled" : ""}>Edit</button><button data-action="remove-edge" ${state.revision !== head ? "disabled" : ""}>Remove</button></div></section>`;
   }
   function matrixHeader() {
     return `<div class="matrix-actions"><div class="matrix-lenses" role="group" aria-label="Matrix representation"><button data-matrix-mode="traceability" aria-pressed="${state.matrixMode === "traceability"}">Traceability</button><button data-matrix-mode="relationships" aria-pressed="${state.matrixMode === "relationships"}">Relationships</button></div><button data-action="create-artifact" ${state.revision !== head ? "disabled" : ""}>＋ New artifact</button></div>`;
@@ -1715,20 +1629,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   function bind() {
     const recipe = app.querySelector("#matrix-recipe");
     if (recipe) recipe.onchange = () => matrixRecipes.load(recipe.value);
-    bindRelationshipScope();
-    inspectorInteractions.bind({
-      save: applyDraft,
-      cancel: (inline) => (inline ? cancelInlineAction() : cancelEditAction()),
-      changed: () => {
-        rememberDraft();
-        return textDraftChanged(
-          model.records.get(state.selected),
-          state.drafts.get(state.selected) ?? {},
-        );
-      },
-      locked: () => state.readBlocked || writesBlocked(),
-      saving: () => state.saving,
-    });
+    inspectorBindings.bind();
     app
       .querySelector("#database-picker")
       ?.addEventListener("change", (event) => switchDatabase(event.target.value));
@@ -1843,9 +1744,9 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     app
       .querySelectorAll(".matrix table:not([role=grid]) button")
       .forEach((button) => button.addEventListener("keydown", handleAdjacencyKey));
-    app
-      .querySelectorAll("[data-action]")
-      .forEach((button) => (button.onclick = () => action(button.dataset.action)));
+    app.querySelectorAll("[data-action]").forEach((button) => {
+      if (!button.closest(".inspector")) button.onclick = () => action(button.dataset.action);
+    });
     app
       .querySelectorAll("[data-view]")
       .forEach((button) => (button.onclick = () => changePerspective(button.dataset.view)));
@@ -1854,18 +1755,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         (button.onclick = () => {
           state.density = button.dataset.density;
           render();
-        }),
-    );
-    app.querySelectorAll("[data-related]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          if (!state.visible.has(button.dataset.related) && state.visible.size >= MAX_VISIBLE) {
-            notify("50-artifact graph limit reached. Reset the trace to reveal another record.");
-            render();
-            return;
-          }
-          state.visible.add(button.dataset.related);
-          select(button.dataset.related, true);
         }),
     );
     app.querySelectorAll("[data-open-artifact]").forEach(
@@ -1917,31 +1806,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       state.historyLimit = 30;
       render();
     });
-    app
-      .querySelectorAll("[data-edit-field]")
-      .forEach((button) => (button.onclick = () => beginInline(button.dataset.editField)));
-    app
-      .querySelectorAll("[data-apply-field]")
-      .forEach((button) => (button.onclick = () => applyDraft(button.dataset.applyField)));
-    app.querySelectorAll("[data-trace-route]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          rememberDraft();
-          state.artifactFull = false;
-          state.explainedRoute = JSON.parse(button.dataset.traceRoute);
-          state.edge = state.explainedRoute.at(-1);
-          render();
-        }),
-    );
-    app.querySelectorAll("[data-inspect-link]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          rememberDraft();
-          state.edge = button.dataset.inspectLink;
-          state.historySubject = null;
-          render();
-        }),
-    );
     app.querySelectorAll("[data-review-artifact]").forEach(
       (button) =>
         (button.onclick = () => {
@@ -2000,15 +1864,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
           render();
         }),
     );
-    app.querySelectorAll("[data-artifact-event]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          state.historySubject = { key: state.selected, linkId: null };
-          state.timelineFilter = "selected";
-          pickEvent(button.dataset.artifactEvent, { showHistory: true });
-        }),
-    );
-    bindResize();
     if (state.perspective === "matrix" && state.matrixMode === "traceability") {
       if (state.matrixDraft)
         app
@@ -2020,42 +1875,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     }
   }
 
-  function bindResize() {
-    const handle = document.querySelector(".inspector-resize");
-    if (!handle) return;
-    let start;
-    handle.onpointerdown = (event) => {
-      start = { x: event.clientX, width: state.width };
-      handle.setPointerCapture(event.pointerId);
-    };
-    handle.onpointermove = (event) => {
-      if (!start) return;
-      const available = innerWidth - 68 - 22 - 640;
-      state.width = Math.round(
-        Math.max(300, Math.min(460, available, start.width + start.x - event.clientX)),
-      );
-      document
-        .querySelector(".inspector")
-        .style.setProperty("--inspector-width", state.width + "px");
-      handle.setAttribute("aria-valuenow", state.width);
-    };
-    handle.onpointerup = () => {
-      start = null;
-      render();
-    };
-    handle.onpointercancel = () => (start = null);
-    handle.onkeydown = (event) => {
-      if (["ArrowLeft", "ArrowRight"].includes(event.key)) {
-        event.preventDefault();
-        state.width = Math.max(
-          300,
-          Math.min(460, innerWidth - 730, state.width + (event.key === "ArrowLeft" ? 20 : -20)),
-        );
-        render();
-        document.querySelector(".inspector-resize")?.focus();
-      }
-    };
-  }
   function adoptTraceRoot(record) {
     if (state.matrixRootType === record.type) return;
     {
@@ -2173,30 +1992,6 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       } else if (state.inspector) closeDetails();
     }
   }
-  function trapInspectorFocus(event) {
-    if (
-      event.key === "Tab" &&
-      !state.evidenceOpen &&
-      state.inspector &&
-      panelMode() === "drawer" &&
-      !state.artifactFull
-    ) {
-      const elements = [
-        ...document
-          .querySelector(".inspector")
-          .querySelectorAll('button:not(:disabled),input,textarea,select,[tabindex="0"]'),
-      ];
-      const first = elements[0],
-        last = elements.at(-1);
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last?.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first?.focus();
-      }
-    }
-  }
   function searchShortcut(event, typing) {
     if (
       ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") ||
@@ -2237,11 +2032,12 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       escapeWorkspace(event);
       return;
     }
-    trapInspectorFocus(event);
+    inspectorBindings.trapFocus(event);
   }
   listenWorkbenchEvents({
     keydown: handleWorkspaceKey,
     suspend: () => {
+      inspectorBindings.dispose();
       graphInput.unbind();
       gridEditor.dispose();
     },

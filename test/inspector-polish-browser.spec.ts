@@ -435,3 +435,95 @@ test("dialog cancellation restores its logical opener after a workspace resize",
   await expect(page.locator("#connection-form")).toBeVisible();
   expect(app.errors).toEqual([]);
 });
+
+for (const width of [1440, 680, 390]) {
+  test(`inspector replacement and cached-page return discard detached bindings at ${width}px`, async ({
+    page,
+    app,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto(app.origin);
+    await selectArtifact(page, "PRS-01");
+    const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
+    const oldRelated = await page.locator(".inspector [data-related]").first().elementHandle();
+    const oldHistory = await page
+      .locator(".inspector [data-artifact-event]")
+      .first()
+      .elementHandle();
+    const oldResize = await page.$(".inspector-resize");
+    await page.getByRole("button", { name: "Edit statement", exact: true }).click();
+    const input = page.locator("#inline-value");
+    await input.fill("Draft survives inspector binding replacement.");
+    const oldInput = await input.elementHandle();
+    const oldSave = await page.locator("[data-apply-field]").elementHandle();
+    const oldCancel = await page.locator('[data-action="cancel-inline"]').elementHandle();
+    await page.setViewportSize({ width: width + 1, height: 1000 });
+    await expect.poll(() => oldInput!.evaluate((element) => element.isConnected)).toBe(false);
+    for (const element of [oldRelated, oldHistory, oldSave, oldCancel]) {
+      await element!.evaluate((node) =>
+        node.dispatchEvent(new MouseEvent("click", { bubbles: true })),
+      );
+    }
+    await oldInput!.evaluate((node) => {
+      if (!(node instanceof HTMLTextAreaElement)) throw new Error("Expected the statement editor");
+      node.value = "Detached input must not overwrite the retained draft.";
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+      node.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Enter", ctrlKey: true, bubbles: true }),
+      );
+    });
+    if (oldResize)
+      await oldResize.evaluate((node) =>
+        node.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })),
+      );
+    await expect(input).toHaveValue("Draft survives inspector binding replacement.");
+    await expect(page.locator(".inspector")).toHaveAttribute(
+      "data-inspector-context",
+      /artifact:PRS-01:/,
+    );
+    expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
+
+    await page.evaluate(() =>
+      window.dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true })),
+    );
+    await page.locator("[data-apply-field]").dispatchEvent("click");
+    await page.locator('[data-action="cancel-inline"]').dispatchEvent("click");
+    await input.dispatchEvent("keydown", { key: "Enter", ctrlKey: true });
+    expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
+    await expect(input).toHaveValue("Draft survives inspector binding replacement.");
+    await page.evaluate(() =>
+      window.dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true })),
+    );
+    await expect(input).toHaveValue("Draft survives inspector binding replacement.");
+    await input.press("Control+Enter");
+    await expect(page.getByRole("button", { name: "Edit statement", exact: true })).toContainText(
+      "Draft survives inspector binding replacement.",
+    );
+    expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision + 1);
+    await page.locator(".inspector [data-inspect-link]").first().click();
+    await page.locator("[data-edit-relationship-scope]").click();
+    const scope = page.locator("#relationship-scope-form textarea");
+    await scope.fill("Relationship draft survives binding replacement.");
+    const oldScope = await scope.elementHandle();
+    const oldForm = await page.locator("#relationship-scope-form").elementHandle();
+    const oldScopeCancel = await page.locator("[data-cancel-relationship-scope]").elementHandle();
+    await page.setViewportSize({ width: width + 2, height: 1000 });
+    await expect.poll(() => oldScope!.evaluate((element) => element.isConnected)).toBe(false);
+    await oldForm!.evaluate((form) =>
+      form.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true })),
+    );
+    await oldScopeCancel!.evaluate((button) =>
+      button.dispatchEvent(new MouseEvent("click", { bubbles: true })),
+    );
+    await oldScope!.evaluate((node) => {
+      if (!(node instanceof HTMLTextAreaElement)) throw new Error("Expected the scope editor");
+      node.value = "Detached scope must not overwrite the retained draft.";
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await expect(scope).toHaveValue("Relationship draft survives binding replacement.");
+    await scope.press("Escape");
+    await expect(page.locator("[data-edit-relationship-scope]")).toBeFocused();
+    expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision + 1);
+    expect(app.errors).toEqual([]);
+  });
+}
