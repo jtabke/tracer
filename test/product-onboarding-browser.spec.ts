@@ -11,7 +11,7 @@ import { productModel } from "../examples/product-model-schema.ts";
 test("worked product guide creates a native model, items and links from an empty database", async ({
   page,
 }) => {
-  const guide = readFileSync("docs/getting-started.md", "utf8");
+  const guide = readFileSync("docs/custom-model.md", "utf8");
   const json = guide.match(/```json\n([\s\S]*?)\n```/)?.[1];
   assert.ok(json, "Worked guide must include the complete model JSON");
   assert.deepEqual(JSON.parse(json), productModel);

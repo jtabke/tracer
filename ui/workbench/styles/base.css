@@ -104,9 +104,6 @@ body[data-direction="atlas"] {
   height: calc(100dvh - 40px);
   background: var(--paper);
 }
-.presentation #app {
-  height: 100dvh;
-}
 .shell {
   height: 100%;
   display: grid;
@@ -216,7 +213,6 @@ body[data-direction="atlas"] {
 }
 .topbar {
   height: 78px;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -236,7 +232,6 @@ body[data-direction="atlas"] {
 }
 .search-button {
   border: 1px solid var(--line);
-  padding: 8px 10px;
   border-radius: 6px;
   display: flex;
   gap: 32px;
@@ -314,7 +309,6 @@ body[data-direction="atlas"] {
   position: relative;
   flex: 1;
   min-width: 0;
-  overflow: auto;
 }
 .canvas {
   height: 100%;
@@ -340,7 +334,6 @@ body[data-direction="atlas"] {
 }
 .edge.focused {
   stroke: var(--accent);
-  stroke-width: 2;
 }
 .edge.dim {
   opacity: 0.25;
@@ -385,7 +378,6 @@ body[data-direction="atlas"] {
 .node .node-meta {
   display: flex;
   align-items: center;
-  gap: 7px;
   color: var(--muted);
   margin-bottom: 11px;
 }
@@ -485,7 +477,6 @@ body[data-direction="atlas"] {
 .inspector-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 32px;
 }
 .inspector-top button {
@@ -517,14 +508,12 @@ body[data-direction="atlas"] {
   margin: 0 0 27px;
 }
 .section-label {
-  font-size: 10px;
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--muted);
   margin: 27px 0 12px;
 }
 .criterion {
-  font-size: 12px;
   line-height: 1.7;
   color: var(--muted);
 }
@@ -738,7 +727,7 @@ body[data-direction="atlas"] {
 .snapshot .mono {
   color: var(--accent);
 }
-/* Atlas moves navigation out of the field and lets the trace become a spatial object. */
+/* Shared map navigation and spatial layout. */
 body[data-direction="atlas"] .shell {
   grid-template-columns: 68px minmax(0, 1fr);
 }
@@ -902,7 +891,6 @@ dialog input {
   white-space: nowrap;
 }
 .edge-detail {
-  position: absolute;
   bottom: 76px;
   left: 25px;
   max-width: 340px;
@@ -915,7 +903,6 @@ dialog input {
 }
 .edge-detail p {
   font-size: 12px;
-  line-height: 1.7;
   color: var(--muted);
 }
 .edge-detail button {

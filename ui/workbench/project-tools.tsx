@@ -1,3 +1,4 @@
+import type { InitialView } from "../../src/core/presentation.ts";
 import { createRoot } from "react-dom/client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MutationControllerContext } from "../use-mutation.ts";
@@ -17,19 +18,20 @@ export function createProjectTools(native: typeof Native, options: Options) {
   const host = document.createElement("div");
   document.body.append(host);
   const root = createRoot(host);
-  let dirty = false;
-  let open: (() => void) | undefined;
+  const dirty = new Set<string>();
+  let open: ((task?: NativeTask) => void) | undefined;
   return {
-    open: () => open?.(),
-    hasDrafts: () => dirty,
+    open: (task?: NativeTask) => open?.(task),
+    hasDrafts: () => dirty.size > 0,
     update: (epoch: number) =>
       root.render(
         <ProjectTools
           native={native}
           options={options}
           epoch={epoch}
-          onDirty={() => {
-            dirty = true;
+          onDirty={(task, value) => {
+            if (value) dirty.add(task);
+            else dirty.delete(task);
           }}
           register={(show) => {
             open = show;
@@ -48,15 +50,20 @@ function ProjectTools({
   native: typeof Native;
   options: Options;
   epoch: number;
-  register(show: () => void): void;
-  onDirty(): void;
+  register(show: (task?: NativeTask) => void): void;
+  onDirty(task: string, value: boolean): void;
 }) {
   const [activated, setActivated] = useState(false);
   const [task, setTask] = useState<NativeTask | null>(null);
   const [menu, setMenu] = useState(false);
   const [error, setError] = useState("");
   const mutation = useSyncExternalStore(native.mutations.subscribe, native.mutations.snapshot);
-  register(() => setMenu(true));
+  register((next) => {
+    if (next) {
+      setActivated(true);
+      setTask(next);
+    } else setMenu(true);
+  });
   const busy = !options.current() || ["saving", "unknown"].includes(mutation.status);
   const editing: Editing = {
     busy,
@@ -86,13 +93,23 @@ function ProjectTools({
       return true;
     },
   };
-  async function saveSchema(schema: Schema, expectedVersion: number) {
-    if (!(await editing.mutate("/api/schema", { schema, expectedVersion }))) return false;
+  async function saveSchema(schema: Schema, expectedVersion: number, initialViews?: InitialView[]) {
+    const saved = await editing.mutate("/api/schema", {
+      schema,
+      expectedVersion,
+      ...(initialViews ? { initialViews } : {}),
+    });
+    if (!saved) return false;
     await options.changed();
-    return true;
+    return saved;
   }
   return (
-    <div onInputCapture={onDirty}>
+    <div
+      onInputCapture={() => {
+        if (task && !["schema", "create", "item", "import", "export", "next-work"].includes(task))
+          onDirty(task, true);
+      }}
+    >
       {menu && (
         <ProjectMenu onClose={() => setMenu(false)}>
           <h2>Project tools</h2>
@@ -102,8 +119,11 @@ function ProjectTools({
           </p>
           {(
             [
+              ["next-work", "Next work"],
               ["item", "Edit item and connections"],
               ["create", "New item"],
+              ["import", "Import CSV"],
+              ["export", "Export project"],
               ["schema", "Configure model"],
               ["evaluations", "Evaluations"],
               ["configurations", "Configurations"],
@@ -160,6 +180,8 @@ function ProjectTools({
               void options.changed();
             }}
             onSchema={saveSchema}
+            onTaskDirty={onDirty}
+            onTask={setTask}
           />
         </MutationControllerContext>
       )}

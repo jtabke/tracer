@@ -1,4 +1,13 @@
-.studio-app .schema-editor {
+.schema-editor > fieldset {
+  min-width: 0;
+}
+.schema-editor .schema-starter-views {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+}
+:is(.studio-app, .native-task) .schema-editor {
   max-width: 1800px;
 }
 .schema-mode-switch {
@@ -118,7 +127,7 @@
 .schema-visual-canvas .model-flow-scroll {
   max-height: 660px;
 }
-.studio-app .model-flow-types button.model-flow-port {
+:is(.studio-app, .native-task) .model-flow-types button.model-flow-port {
   position: absolute;
   top: 28px;
   width: 16px;
@@ -136,7 +145,7 @@
 .model-flow-types .model-flow-port.is-output {
   right: -8px;
 }
-.studio-app .model-flow-types button.model-flow-port[aria-pressed="true"] {
+:is(.studio-app, .native-task) .model-flow-types button.model-flow-port[aria-pressed="true"] {
   background: var(--color-accent);
 }
 .schema-visual-canvas .model-flow-types button[draggable="true"] {
@@ -145,22 +154,22 @@
 .schema-visual-canvas .model-flow-types button[draggable="true"]:active {
   cursor: grabbing;
 }
-.studio-app .schema-editor > fieldset {
+:is(.studio-app, .native-task) .schema-editor > fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
-.studio-app .schema-editor > fieldset > legend {
+:is(.studio-app, .native-task) .schema-editor > fieldset > legend {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
 }
-.studio-app .schema-editor > .toolbar {
+:is(.studio-app, .native-task) .schema-editor > .toolbar {
   margin: 0 0 18px;
 }
-.studio-app .schema-editor > .toolbar h2 {
+:is(.studio-app, .native-task) .schema-editor > .toolbar h2 {
   margin: 0 auto 0 0;
   font-size: 26px;
 }
@@ -187,7 +196,7 @@
 .schema-editing-notes > p {
   max-width: 80ch;
 }
-.studio-app .model-flow-types button.model-flow-port.is-input {
+:is(.studio-app, .native-task) .model-flow-types button.model-flow-port.is-input {
   border-radius: 4px;
 }
 .schema-fields {
@@ -235,15 +244,15 @@
 .schema-workflow-form > p {
   font-size: 11px;
 }
-.studio-app .schema-properties .schema-guided.is-compact > section,
-.studio-app .schema-properties .schema-workflow-form {
+:is(.studio-app, .native-task) .schema-properties .schema-guided.is-compact > section,
+:is(.studio-app, .native-task) .schema-properties .schema-workflow-form {
   padding: 0;
   border: 0;
   background: transparent;
   border-radius: 0;
   margin: 0 0 1rem;
 }
-.studio-app .schema-guided.is-compact > section > h3 {
+:is(.studio-app, .native-task) .schema-guided.is-compact > section > h3 {
   display: none;
 }
 .schema-properties-heading {

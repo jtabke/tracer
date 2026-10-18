@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { focusedNeighborhood } from "../../ui/workbench/workspace-journeys.mjs";
 import { wheelIntent } from "../../ui/workbench/canvas-input.ts";
-test("neighborhood depth, stored direction and optional verification scope remain distinct", () => {
+test("neighborhood depth, stored direction and explicit relationship filter remain distinct", () => {
   const model = {
     records: new Map(["A", "B", "C", "V"].map((key) => [key, { key }])),
     links: [
@@ -12,10 +12,10 @@ test("neighborhood depth, stored direction and optional verification scope remai
     ],
   };
   assert.deepEqual(focusedNeighborhood(model, "A", { depth: 0 }).keys, ["A"]);
-  assert.deepEqual(focusedNeighborhood(model, "A", { depth: 1, verification: false }).keys, [
-    "A",
-    "B",
-  ]);
+  assert.deepEqual(
+    focusedNeighborhood(model, "A", { depth: 1, relationshipType: "decomposes_into" }).keys,
+    ["A", "B"],
+  );
   assert.deepEqual(focusedNeighborhood(model, "A", { depth: 2 }).keys, ["A", "B", "V", "C"]);
   assert.deepEqual(focusedNeighborhood(model, "C", { depth: 2, direction: "upstream" }).keys, [
     "C",

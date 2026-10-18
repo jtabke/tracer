@@ -150,3 +150,88 @@ test("Matrix teardown cancels delayed focus and detached form handlers while ret
   expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
   expect(app.errors).toEqual([]);
 });
+
+for (const width of [1440, 680, 390]) {
+  test(`search supports keyboard discovery, empty recovery and dismissal at ${width}px`, async ({
+    page,
+    app,
+  }, info) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(app.origin);
+    await expect(page.locator(".node").first()).toBeVisible();
+    const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
+    const trigger = page.locator('[data-action="search"]');
+    await trigger.click();
+    const input = page.getByRole("combobox", { name: "Search artifacts and commands" });
+    const options = page.locator('#search-results [role="option"]');
+    await expect(input).toBeFocused();
+    const searchTop = (await input.boundingBox())!.y;
+    await expect(page.locator("#search-status")).toContainText("12 artifacts");
+    const initial = await options.first().getAttribute("id");
+    await input.press("ArrowDown");
+    await expect(options.nth(1)).toHaveAttribute("aria-selected", "true");
+    await expect(input).toBeFocused();
+    await expect(input).toHaveAttribute(
+      "aria-activedescendant",
+      (await options.nth(1).getAttribute("id"))!,
+    );
+    await input.press("ArrowUp");
+    await expect(input).toHaveAttribute("aria-activedescendant", initial!);
+    await input.press("ArrowUp");
+    await expect(options.last()).toHaveAttribute("aria-selected", "true");
+    await input.fill("nothing matches this search 90352");
+    await expect(page.getByText("No matches found", { exact: true })).toBeVisible();
+    expect(Math.abs((await input.boundingBox())!.y - searchTop)).toBeLessThanOrEqual(1);
+    await expect(input).not.toHaveAttribute("aria-activedescendant");
+    await input.press("ArrowDown");
+    await input.press("Enter");
+    await expect(input).toBeVisible();
+    await page.locator("[data-clear-search]").click();
+    await expect(input).toHaveValue("");
+    await expect(input).toBeFocused();
+    await input.fill(app.fixture.requirements[0].key!.split("-")[0]);
+    await expect(options.first()).toHaveAttribute("data-result", app.fixture.requirements[0].key!);
+    await page.screenshot({ path: info.outputPath("search.png") });
+    await input.fill(`  ${app.fixture.requirements[0].key!.toLowerCase()}  `);
+    await expect(options.first()).toHaveAttribute("data-result", app.fixture.requirements[0].key!);
+    await input.dispatchEvent("keydown", { key: "Enter", isComposing: true });
+    await expect(input).toBeVisible();
+    await input.press("Enter");
+    await expect(page.locator("#workspace-dialog")).not.toBeVisible();
+    await expect(page.locator('.node[aria-pressed="true"]')).toHaveAttribute(
+      "data-key",
+      app.fixture.requirements[0].key!,
+    );
+    await trigger.click();
+    await input.fill("Project history");
+    await input.press("Enter");
+    await expect(page.locator('[data-view="history"]')).toHaveAttribute("aria-pressed", "true");
+    await trigger.click();
+    await input.fill("clear me");
+    await page
+      .locator(".search-input-row")
+      .getByRole("button", { name: "Clear search", exact: true })
+      .click();
+    await expect(input).toHaveValue("");
+    await expect(input).toBeFocused();
+    const dialog = page.locator("#workspace-dialog");
+    const bounds = (await dialog.boundingBox())!;
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    await expect(page.locator("#search-help")).toBeVisible();
+    await input.press("Escape");
+    await expect(dialog).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    // Resize replaces the opener. Dismissal must still return to a usable control.
+    await page.setViewportSize({ width, height: 860 });
+    await input.press("Escape");
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    await page.mouse.click(2, 2);
+    await expect(dialog).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+    expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
+    expect(app.errors).toEqual([]);
+  });
+}

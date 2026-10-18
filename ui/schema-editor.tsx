@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
+import type { InitialView } from "../src/core/presentation.ts";
 import type { Schema, SchemaObject } from "../src/core/model.ts";
 import { workflowProposal } from "../src/core/workflow-presets.ts";
 import { SchemaDraftRecovery } from "./schema-draft-recovery.tsx";
@@ -14,12 +15,18 @@ export function SchemaEditor({
   onSave,
   onCancel,
   initialSelection,
+  onDirty,
 }: {
   schema: SchemaObject | null;
   busy: boolean;
-  onSave(draft: Schema, version: number): Promise<boolean>;
+  onSave(
+    draft: Schema,
+    version: number,
+    initialViews?: InitialView[],
+  ): Promise<SchemaObject | false>;
   onCancel(): void;
   initialSelection?: DefinitionSelection;
+  onDirty?(value: boolean): void;
 }) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -29,10 +36,20 @@ export function SchemaEditor({
   const { base, version } = captured;
   const [draft, setDraft] = useState(() => workflowProposal(base));
   const [text, setText] = useState(JSON.stringify(workflowProposal(base), null, 2));
+  const [starter, setStarter] = useState({
+    views: [] as InitialView[],
+    includeViews: true,
+    generation: 0,
+  });
+  const { views: initialViews, includeViews } = starter;
+  const [notice, setNotice] = useState("");
   const [advanced, setAdvanced] = useState(false);
   const [invalid, setInvalid] = useState("");
+  const dirty = text !== JSON.stringify(base, null, 2);
+  useModelDirty(dirty, onDirty);
   const jsonInput = useRef<HTMLTextAreaElement>(null);
   const update = (next: Schema) => {
+    setNotice("");
     setDraft(next);
     setText(JSON.stringify(next, null, 2));
   };
@@ -41,6 +58,9 @@ export function SchemaEditor({
   const cancel = () => {
     if (text !== JSON.stringify(base, null, 2) && !window.confirm("Discard unsaved model changes?"))
       return;
+    update(base);
+    setInvalid("");
+    setStarter({ views: [], includeViews: true, generation: starter.generation + 1 });
     onCancel();
   };
   return (
@@ -52,10 +72,11 @@ export function SchemaEditor({
         <DraftActions
           busy={busy}
           disabled={Boolean(invalid.length + extensions.length)}
-          onSave={() => void onSave(draft, version)}
+          onSave={() => void save()}
           onCancel={cancel}
         />
       </div>
+      <ModelSaveNotice text={notice} />
       <DraftVersion version={version} schema={schema} />
       {workflowProposal(base) !== base && (
         <p className="schema-flow-proposal">
@@ -70,6 +91,7 @@ export function SchemaEditor({
         onRestart={() => {
           const next = captureDraft(schema);
           setCaptured(next);
+          setStarter({ views: [], includeViews: true, generation: starter.generation + 1 });
           update(next.base);
           setInvalid("");
           setAdvanced(false);
@@ -88,14 +110,21 @@ export function SchemaEditor({
         {version === 0 && (
           <SchemaStarter
             changed={!!changes.length}
-            onChange={(next) => {
+            onChange={(next, views) => {
+              setStarter({ views, includeViews: true, generation: starter.generation + 1 });
               update(next);
               setInvalid("");
             }}
           />
         )}
+        <StarterViewOption
+          version={version}
+          count={initialViews.length}
+          checked={includeViews}
+          onChange={(includeViews) => setStarter({ ...starter, includeViews })}
+        />
         <SchemaEditingSurface
-          key={version}
+          key={`${version}:${starter.generation}`}
           initialSelection={initialSelection}
           draft={draft}
           version={version}
@@ -106,6 +135,7 @@ export function SchemaEditor({
           onAdvanced={setAdvanced}
           onChange={update}
           onText={(value) => {
+            setNotice("");
             setText(value);
             try {
               setDraft(parseDraft(value));
@@ -118,6 +148,55 @@ export function SchemaEditor({
         <SchemaEditorNotices base={base} draft={draft} invalid={invalid} />
       </fieldset>
     </section>
+  );
+  async function save() {
+    setNotice("");
+    const views = version === 0 && includeViews && initialViews.length ? initialViews : undefined;
+    const saved = await onSave(draft, version, views);
+    if (!saved) return;
+    const next = captureDraft(saved);
+    setCaptured(next);
+    setStarter({ views: [], includeViews: true, generation: starter.generation + 1 });
+    update(next.base);
+    setNotice(
+      `Model saved as v${saved.version}${views ? ` with ${views.length} Matrix views` : ""}. Saved setup persists in this project database.`,
+    );
+    setInvalid("");
+  }
+}
+
+function useModelDirty(dirty: boolean, onDirty?: (value: boolean) => void) {
+  const notify = useEffectEvent((value: boolean) => onDirty?.(value));
+  useEffect(() => {
+    notify(dirty);
+    return () => notify(false);
+  }, [dirty]);
+}
+
+function ModelSaveNotice({ text }: { text: string }) {
+  return text ? <p role="status">{text}</p> : null;
+}
+function StarterViewOption({
+  version,
+  count,
+  checked,
+  onChange,
+}: {
+  version: number;
+  count: number;
+  checked: boolean;
+  onChange(value: boolean): void;
+}) {
+  if (version !== 0 || count === 0) return null;
+  return (
+    <label className="schema-starter-views">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+      />
+      <span>Save {count} starter Matrix views with this model</span>
+    </label>
   );
 }
 

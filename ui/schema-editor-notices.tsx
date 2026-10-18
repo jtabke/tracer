@@ -17,7 +17,8 @@ export function SchemaEditorNotices({
       {!!extensions.length && (
         <p role="alert">
           Root extensions ({extensions.join(", ")}) are not preserved by the native save service.
-          Remove them explicitly in Advanced JSON before saving; nested properties are preserved.
+          Remove them explicitly in Advanced JSON before saving. Unknown model properties are
+          rejected.
         </p>
       )}
       <h3>Pending changes</h3>

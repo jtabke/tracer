@@ -10,13 +10,12 @@ import {
   rootExtensions,
 } from "../ui/schema-draft.ts";
 
-test("native schema draft preserves omitted/empty constraints, duplicates and nested extras", () => {
+test("native schema draft preserves omitted/empty constraints and duplicate endpoints", () => {
   const native = parseDraft(
     JSON.stringify({
       entityTypes: {
         note: {
-          extra: { custom: true },
-          fields: { text: { type: "string", required: false, extra: 2 } },
+          fields: { text: { type: "string", required: false } },
         },
       },
       relationshipTypes: {
@@ -24,14 +23,13 @@ test("native schema draft preserves omitted/empty constraints, duplicates and ne
         none: { fields: {}, source: [] },
         several: { fields: {}, target: ["note", "note"] },
       },
-      rootExtra: true,
     }),
   );
   const draft = nativeDraft(native);
   assert.deepEqual(draft, native);
   assert.notEqual(draft, native);
   assert.deepEqual(pendingChanges(native, draft), []);
-  assert.deepEqual(rootExtensions(draft), ["rootExtra"]);
+  assert.deepEqual(rootExtensions(draft), []);
   assert.equal(endpointSummary(undefined, "source"), "Any configured type");
   assert.equal(endpointSummary([], "target"), "No target types allowed");
   assert.equal(endpointSummary(["note", "note"], "source"), "One of: note, note");

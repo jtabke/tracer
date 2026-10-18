@@ -1,0 +1,41 @@
+.native-task:has(> div:not([hidden]) > .next-work) {
+  width: min(1080px, calc(100vw - 32px));
+}
+.next-work {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.next-work-queue-choices,
+.next-work-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.next-work-queue-choices button {
+  text-align: left;
+}
+.next-work-queue-choices strong {
+  display: block;
+}
+.next-work-queue-choices [aria-pressed="true"] {
+  border-color: var(--color-accent);
+}
+.next-work-choice-grid select {
+  min-width: 0;
+  width: 100%;
+}
+.next-work-items {
+  padding-left: 24px;
+}
+.next-work-items li {
+  border-bottom: 1px solid var(--color-divider);
+  padding: 16px 0;
+}
+.next-work-items li > :is(strong, span, small) {
+  display: block;
+  margin-bottom: 8px;
+}
+.next-work-choices {
+  margin-bottom: 16px;
+}

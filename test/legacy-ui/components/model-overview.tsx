@@ -1,3 +1,4 @@
+import type { InitialView } from "../../../src/core/presentation.ts";
 import type { ComponentProps } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { Schema, SchemaObject } from "../../../src/core/model.ts";
@@ -26,7 +27,11 @@ export function ModelOverview({
   epoch: number;
   busy: boolean;
   report(error: unknown): void;
-  onSave(draft: Schema, version: number): Promise<boolean>;
+  onSave(
+    draft: Schema,
+    version: number,
+    initialViews?: InitialView[],
+  ): Promise<SchemaObject | false>;
   onCreate(): void;
   onBrowse(type: string): void;
   onInspect(id: string): void;
@@ -49,8 +54,8 @@ export function ModelOverview({
     focus.beforeClose();
     setConfiguring(false);
   };
-  const save = async (draft: Schema, version: number) => {
-    const saved = await onSave(draft, version);
+  const save = async (draft: Schema, version: number, initialViews?: InitialView[]) => {
+    const saved = await onSave(draft, version, initialViews);
     if (saved) close();
     return saved;
   };
@@ -84,7 +89,12 @@ export function ModelOverview({
         </div>
         <p>Development workflow · inputs, outputs and feedback connections between item types.</p>
         <NewProjectNotice schema={schema} />
-        <ModelDraft draft={link.draft} busy={busy} onSave={onSave} onCancel={link.close} />
+        <ModelDraft
+          draft={link.draft}
+          busy={busy}
+          onSave={async (schema, version) => Boolean(await onSave(schema, version))}
+          onCancel={link.close}
+        />
         <div hidden={!!relationship || !!link.draft}>
           <ModelRegister
             onCreate={onCreate}

@@ -104,7 +104,7 @@ function neighboringEndpoint(link, key, direction) {
 export function focusedNeighborhood(
   model,
   root,
-  { direction = "downstream", depth = 1, verification = true } = {},
+  { direction = "downstream", depth = 1, relationshipType = "all" } = {},
 ) {
   const reached = new Set([root]),
     queue = [{ key: root, level: 0 }];
@@ -112,11 +112,7 @@ export function focusedNeighborhood(
     const { key, level } = queue[i];
     if (level >= depth) continue;
     for (const link of model.links) {
-      if (
-        link.type !== "decomposes_into" &&
-        !(verification && ["verified_by", "executed_as", "examines_output"].includes(link.type))
-      )
-        continue;
+      if (relationshipType !== "all" && link.type !== relationshipType) continue;
       const next = neighboringEndpoint(link, key, direction);
       if (next && model.records.has(next) && !reached.has(next)) {
         reached.add(next);
@@ -148,14 +144,6 @@ export function potentialPaths(data, revision, depth = 2) {
         .filter((key) => model.records.has(key)),
     ),
   ];
-  const types = new Set([
-    "decomposes_into",
-    "realized_by",
-    "verified_by",
-    "executed_as",
-    "examines_output",
-    "depends_on",
-  ]);
   const levels = new Map(roots.map((key) => [key, 0])),
     queue = [...roots];
   for (let i = 0; i < queue.length; i++) {
@@ -163,7 +151,7 @@ export function potentialPaths(data, revision, depth = 2) {
       level = levels.get(key);
     if (level >= depth) continue;
     for (const link of model.links)
-      if (link.source === key && types.has(link.type) && !levels.has(link.target)) {
+      if (link.source === key && !levels.has(link.target)) {
         levels.set(link.target, level + 1);
         queue.push(link.target);
       }
@@ -171,7 +159,7 @@ export function potentialPaths(data, revision, depth = 2) {
   const keys = queue.slice(0, MAX_VISIBLE),
     included = new Set(keys);
   const links = model.links.filter(
-    (link) => included.has(link.source) && included.has(link.target) && types.has(link.type),
+    (link) => included.has(link.source) && included.has(link.target),
   );
   return { roots, keys, links, levels, omitted: Math.max(0, queue.length - keys.length) };
 }

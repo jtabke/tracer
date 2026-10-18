@@ -1,3 +1,4 @@
+import type { InitialView } from "../src/core/presentation.ts";
 // Superseded shell retained only for component and contract regressions.
 // Production mounts ui/unified-app.tsx; this file is never a product entry point.
 import { lazy, Suspense, useEffect, useState } from "react";
@@ -109,16 +110,24 @@ export function App() {
     return true;
   };
   useSetupNavigation(schema, tab, activate);
-  const saveSchema = async (draft: Schema, expectedVersion: number) => {
+  const saveSchema = async (
+    draft: Schema,
+    expectedVersion: number,
+    initialViews?: InitialView[],
+  ) => {
     if (schemaCommitBlocked) return false;
     setStatus("");
     setError(undefined);
-    const value = await mutation.run("/api/schema", { schema: draft, expectedVersion });
+    const value = await mutation.run("/api/schema", {
+      schema: draft,
+      expectedVersion,
+      ...(initialViews ? { initialViews } : {}),
+    });
     if (!value) return false;
     setSchema(value);
     setEpoch((value) => value + 1);
     setStatus(`Model saved as schema v${value.version}. Existing item drafts are retained.`);
-    return true;
+    return value;
   };
   const mutate = guardedProjectMutation(mutation, schemaCommitBlocked, () => {
     setStatus("");

@@ -1,3 +1,4 @@
+import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import type { Entity, Schema } from "../src/core/model.ts";
 import type { ProjectSnapshot } from "../src/core/project-snapshot.ts";
@@ -79,11 +80,15 @@ function useProjectWorkspace() {
       return true;
     },
   };
-  async function saveSchema(schema: Schema, expectedVersion: number) {
-    const result = await mutate("/api/schema", { schema, expectedVersion });
+  async function saveSchema(schema: Schema, expectedVersion: number, initialViews?: InitialView[]) {
+    const result = await mutate("/api/schema", {
+      schema,
+      expectedVersion,
+      ...(initialViews ? { initialViews } : {}),
+    });
     if (!result) return false;
     changed();
-    return true;
+    return result;
   }
   return {
     snapshot,
@@ -188,6 +193,7 @@ export function UnifiedApp() {
         onClose={() => setTask(null)}
         changed={changed}
         onSchema={saveSchema}
+        onTask={setTask}
       />
     </>
   );

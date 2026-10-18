@@ -27,14 +27,17 @@ for (const size of ["working", "large"] as const)
       const openMs = performance.now() - started;
       await page.keyboard.press("/");
       const searched = performance.now();
-      await page
-        .getByLabel("Search artifacts and commands", { exact: true })
-        .fill("Sensor cutoff changed");
+      const search = page.getByRole("combobox", { name: "Search artifacts and commands" });
+      await search.fill("Sensor cutoff changed");
       const match = page.locator("[data-result]").first();
       await expect(match).toContainText("Sensor cutoff changed to 80 degrees");
       const key = await match.getAttribute("data-result");
-      await page.keyboard.press("Tab");
-      await expect(match).toBeFocused();
+      await expect(search).toBeFocused();
+      await expect(search).toHaveAttribute(
+        "aria-activedescendant",
+        (await match.getAttribute("id"))!,
+      );
+      await expect(match).toHaveAttribute("aria-selected", "true");
       await page.keyboard.press("Enter");
       await expect(page.locator(`.node[data-key="${key}"]`)).toHaveAttribute(
         "aria-pressed",

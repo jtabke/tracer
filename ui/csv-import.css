@@ -1,0 +1,58 @@
+.native-task:has(> div:not([hidden]) > .csv-import) {
+  width: min(1180px, calc(100vw - 32px));
+}
+.csv-import {
+  min-width: 0;
+}
+.csv-import fieldset {
+  min-width: 0;
+}
+.csv-import select,
+.csv-import textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+.csv-field-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 8px 20px;
+}
+.csv-preview-table {
+  overflow: auto;
+  max-height: 45dvh;
+  max-width: 100%;
+}
+.csv-preview-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.csv-preview-table th,
+.csv-preview-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--color-divider);
+  text-align: left;
+  vertical-align: top;
+}
+.csv-preview-table pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  max-width: 32ch;
+}
+.csv-preview-table strong {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.csv-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+.csv-import [role="alert"] {
+  overflow-wrap: anywhere;
+}
+
+.csv-preview h3 {
+  scroll-margin-top: 16px;
+}

@@ -1,6 +1,10 @@
+import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
 import { ConfigurationWorkspace } from "./configuration-workspace.tsx";
+import { CsvImport } from "./csv-import.tsx";
+import { ProjectExport } from "./project-export.tsx";
+import { NextWork } from "./next-work.tsx";
 import { DocumentationView } from "./documentation.tsx";
 import type { Editing } from "./editing.ts";
 import { EvidenceView } from "./evidence.tsx";
@@ -10,7 +14,16 @@ import "./style.css";
 import { NativeTypeOptions } from "./type-options.tsx";
 import { WorkItem } from "./work-item.tsx";
 
-export type NativeTask = "item" | "create" | "schema" | "evaluations" | "configurations" | "docs";
+export type NativeTask =
+  | "item"
+  | "create"
+  | "schema"
+  | "evaluations"
+  | "configurations"
+  | "docs"
+  | "import"
+  | "export"
+  | "next-work";
 export function NativeTasks({
   task,
   entity,
@@ -19,14 +32,22 @@ export function NativeTasks({
   onClose,
   changed,
   onSchema,
+  onTaskDirty,
+  onTask,
 }: {
   task: NativeTask | null;
   entity?: Entity;
   schema: SchemaObject | null;
   editing: Editing;
+  onTaskDirty?(task: NativeTask, value: boolean): void;
+  onTask?(task: NativeTask): void;
   onClose(): void;
   changed(): void;
-  onSchema(draft: Schema, version: number): Promise<boolean>;
+  onSchema(
+    draft: Schema,
+    version: number,
+    initialViews?: InitialView[],
+  ): Promise<SchemaObject | false>;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [visited, setVisited] = useState<NativeTask[]>([]);
@@ -54,15 +75,31 @@ export function NativeTasks({
           entity={focused}
           schema={schema}
           editing={editing}
-          onDirty={setDirty}
+          onDirty={(value) => {
+            setDirty(value);
+            onTaskDirty?.("item", value);
+          }}
           onChoose={setFocused}
           onTable={onClose}
           returnLabel="Return to development map"
         />
       ) : null,
-    create: () => (schema ? <CreateItem schema={schema} editing={editing} /> : null),
+    create: () =>
+      schema ? (
+        <CreateItem
+          schema={schema}
+          editing={editing}
+          onDirty={(value) => onTaskDirty?.("create", value)}
+        />
+      ) : null,
     schema: () => (
-      <SchemaEditor schema={schema} busy={editing.busy} onSave={onSchema} onCancel={onClose} />
+      <SchemaEditor
+        schema={schema}
+        busy={editing.busy}
+        onSave={onSchema}
+        onCancel={onClose}
+        onDirty={(value) => onTaskDirty?.("schema", value)}
+      />
     ),
     evaluations: () => (
       <EvidenceView
@@ -80,7 +117,26 @@ export function NativeTasks({
         report={editing.report}
       />
     ),
+    import: () => (
+      <CsvImport
+        schema={schema}
+        editing={editing}
+        changed={changed}
+        onDirty={(value) => onTaskDirty?.("import", value)}
+      />
+    ),
     docs: () => <DocumentationView active={task === "docs"} />,
+    export: () => <ProjectExport />,
+    "next-work": () => (
+      <NextWork
+        schema={schema}
+        editing={editing}
+        active={task === "next-work"}
+        changed={changed}
+        onDirty={(value) => onTaskDirty?.("next-work", value)}
+        onConfigure={onTask ? () => onTask("schema") : undefined}
+      />
+    ),
   };
   return (
     <dialog
@@ -140,15 +196,32 @@ const taskTitles = {
   evaluations: "Evaluations",
   configurations: "Configurations",
   docs: "Documentation",
+  import: "Import CSV",
+  export: "Export project",
+  "next-work": "Next work",
 };
 
-function CreateItem({ schema, editing }: { schema: SchemaObject; editing: Editing }) {
+function CreateItem({
+  schema,
+  editing,
+  onDirty,
+}: {
+  schema: SchemaObject;
+  editing: Editing;
+  onDirty(value: boolean): void;
+}) {
   const [captured, setCaptured] = useState(schema);
   const [type, setType] = useState(Object.keys(schema.entityTypes)[0] ?? "");
   const [values, setValues] = useState<Record<string, string>>({});
   const [key, setKey] = useState("");
   const [id, setId] = useState(() => crypto.randomUUID());
   const [notice, setNotice] = useState("");
+  const dirty = Boolean(key || Object.values(values).some((value) => value.length > 0));
+  const notifyDirty = useEffectEvent(onDirty);
+  useEffect(() => {
+    notifyDirty(dirty);
+    return () => notifyDirty(false);
+  }, [dirty]);
   const stale = captured.version !== schema.version;
   const definitions = creationFields(captured, type);
   return (

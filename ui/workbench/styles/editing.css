@@ -1,0 +1,117 @@
+.inline-edit-label {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: capitalize;
+}
+.inspector-draft-status,
+.inspector-edit-help {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+.inspector-draft-status {
+  color: var(--accent);
+}
+.inline-edit > .inspector-edit-help {
+  margin-bottom: 18px;
+}
+.retained-artifact-draft {
+  margin: 14px 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.retained-artifact-draft > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.retained-artifact-draft button,
+.connection-form-actions button {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.retained-artifact-draft button:first-child,
+.connection-form-actions button[type="submit"] {
+  background: var(--soft);
+}
+.relationship-return {
+  padding: 6px 0;
+  margin: 8px 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.connection-endpoint-summary {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.connection-candidates {
+  max-height: 210px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.connection-candidates[hidden] {
+  display: none;
+}
+.connection-candidates button {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 10px;
+  overflow-wrap: anywhere;
+}
+.connection-candidates button[aria-selected="true"] {
+  background: var(--soft);
+}
+.connection-candidates button:hover {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.connection-candidates small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+.connection-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+body[data-panel="sheet"] .inspector .inline-edit textarea {
+  min-height: 96px;
+}
+body[data-panel="sheet"] .inline-edit > div,
+body[data-panel="sheet"] .editor-fields .edit-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 8px 0;
+  margin-bottom: 0;
+  background: var(--panel);
+}
+
+#workspace-dialog,
+.connection-candidates {
+  color-scheme: dark;
+}

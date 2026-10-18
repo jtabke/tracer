@@ -1,4 +1,4 @@
-.studio-app .model-flow-scroll {
+:is(.studio-app, .native-task) .model-flow-scroll {
   overflow: auto;
   max-width: 100%;
   border: 1px solid var(--color-divider);
@@ -13,7 +13,7 @@
 .model-flow-scaled {
   overflow: hidden;
 }
-.studio-app .model-read-canvas .model-flow-scroll {
+:is(.studio-app, .native-task) .model-read-canvas .model-flow-scroll {
   height: clamp(500px, calc(100dvh - 310px), 650px);
   max-height: none;
   overscroll-behavior: contain;
@@ -58,7 +58,7 @@
   position: absolute;
   width: 190px;
 }
-.studio-app .model-flow-types button {
+:is(.studio-app, .native-task) .model-flow-types button {
   width: 190px;
   min-height: 80px;
   border-radius: 10px;
@@ -87,7 +87,7 @@
   color: var(--color-accent);
   display: block;
 }
-.studio-app .model-flow-types button[aria-pressed="true"] {
+:is(.studio-app, .native-task) .model-flow-types button[aria-pressed="true"] {
   background: var(--color-emphasis);
   border: 2px solid var(--color-accent);
   padding: 13px 17px;
@@ -148,38 +148,38 @@
   color: var(--color-accent);
   margin-right: 5px;
 }
-.studio-app .model-connection-plan > .model-map-routes {
+:is(.studio-app, .native-task) .model-connection-plan > .model-map-routes {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
   margin: 0;
 }
-.studio-app .model-connection-plan > .model-map-routes li {
+:is(.studio-app, .native-task) .model-connection-plan > .model-map-routes li {
   max-width: 100%;
 }
-.studio-app .model-connection-plan > .model-map-routes button {
+:is(.studio-app, .native-task) .model-connection-plan > .model-map-routes button {
   padding: 8px 12px;
   width: auto;
 }
-.studio-app .model-connection-plan > .model-map-routes button small {
+:is(.studio-app, .native-task) .model-connection-plan > .model-map-routes button small {
   display: none;
 }
-.studio-app .model-map-workbench.has-model-selection {
+:is(.studio-app, .native-task) .model-map-workbench.has-model-selection {
   grid-template-columns: minmax(0, 1fr);
 }
-.studio-app .model-map-inspector {
+:is(.studio-app, .native-task) .model-map-inspector {
   display: grid;
   grid-template-columns: 1fr 1.5fr 1.5fr auto;
   align-items: start;
   gap: 18px;
 }
-.studio-app .model-map-inspector .model-selection-arrow {
+:is(.studio-app, .native-task) .model-map-inspector .model-selection-arrow {
   display: none;
 }
-.studio-app .model-map-inspector .primary {
+:is(.studio-app, .native-task) .model-map-inspector .primary {
   margin: 0;
 }
-.studio-app .model-map-inspector details {
+:is(.studio-app, .native-task) .model-map-inspector details {
   grid-column: 1 / -1;
 }
 .model-link-prompt {
@@ -211,22 +211,22 @@
   margin-top: 20px;
 }
 @media (max-width: 800px) {
-  .studio-app .model-map-inspector {
+  :is(.studio-app, .native-task) .model-map-inspector {
     grid-template-columns: 1fr;
   }
 }
-.studio-app .model-connection-plan > .model-map-routes {
+:is(.studio-app, .native-task) .model-connection-plan > .model-map-routes {
   margin-bottom: 16px;
 }
-.studio-app .model-route-select,
-.studio-app .model-pan-hint {
+:is(.studio-app, .native-task) .model-route-select,
+:is(.studio-app, .native-task) .model-pan-hint {
   display: none;
 }
 @media (max-width: 650px) {
-  .studio-app .model-connection-plan > .model-map-routes {
+  :is(.studio-app, .native-task) .model-connection-plan > .model-map-routes {
     display: none;
   }
-  .studio-app .model-route-select {
+  :is(.studio-app, .native-task) .model-route-select {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -238,24 +238,24 @@
     min-width: 0;
     flex: 1;
   }
-  .studio-app .model-pan-hint {
+  :is(.studio-app, .native-task) .model-pan-hint {
     display: block;
     color: var(--color-muted);
     font-size: 11px;
     margin: 8px 0;
   }
-  .studio-app .model-flow-scroll {
+  :is(.studio-app, .native-task) .model-flow-scroll {
     max-height: 480px;
   }
 }
-.studio-app .model-map-inspector > .primary {
+:is(.studio-app, .native-task) .model-map-inspector > .primary {
   grid-column: 4;
   grid-row: 1;
   max-width: 220px;
   white-space: normal;
 }
 @media (max-width: 800px) {
-  .studio-app .model-map-inspector > .primary {
+  :is(.studio-app, .native-task) .model-map-inspector > .primary {
     grid-column: auto;
     grid-row: auto;
   }
@@ -303,7 +303,7 @@
 .model-connection-plan[data-mode="workflow"] .model-map-routes {
   display: none;
 }
-.studio-app .model-connection-plan[data-mode="workflow"] .model-route-select {
+:is(.studio-app, .native-task) .model-connection-plan[data-mode="workflow"] .model-route-select {
   display: grid;
   grid-template-columns: auto minmax(160px, 320px);
   align-items: center;
@@ -311,7 +311,7 @@
   margin: 12px 0;
 }
 @media (max-width: 650px) {
-  .studio-app .model-read-canvas .model-flow-scroll {
+  :is(.studio-app, .native-task) .model-read-canvas .model-flow-scroll {
     height: clamp(320px, calc(100dvh - 330px), 500px);
   }
 }

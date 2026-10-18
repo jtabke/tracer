@@ -60,8 +60,9 @@ const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliatio
     };
   },
   "/api/baselines": baselineRecords,
-  "/api/schema": async () => {
+  "/api/schema": async (input) => {
     const schema = await read("/api/schema", {});
+    const views = input.initialViews ? await read("/api/saved-views", {}) : [];
     return {
       records: schema
         ? [
@@ -71,6 +72,12 @@ const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliatio
               description: `${Object.keys(schema.entityTypes).length} item types · ${Object.keys(schema.relationshipTypes).length} connection types`,
               value: schema,
             },
+            ...views.map((view) => ({
+              id: view.id,
+              heading: `Saved Matrix view · ${view.name}`,
+              description: `Recorded v${view.version}`,
+              value: view,
+            })),
           ]
         : [],
       incomplete: false,

@@ -1,0 +1,20 @@
+.project-export {
+  max-width: 70ch;
+  overflow-wrap: anywhere;
+}
+.project-export dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 8px 20px;
+}
+.project-export dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-divider);
+  padding: 4px 0;
+}
+.project-export dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}

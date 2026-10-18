@@ -227,3 +227,14 @@ test("focus return retains the first scope, supports saved base scopes and does 
   assert.equal(state.sheetState, "collapsed");
   assert.equal(state.inspector, true);
 });
+
+test("drawer editing focuses the editor while historical inspection keeps its read-only focus", () => {
+  const { state, calls, navigation } = fixture({ panelMode: () => "drawer" });
+  navigation.showDetails(true);
+  assert.equal(state.editing, true);
+  assert.deepEqual(calls.at(-1), ["focus", "draft-title"]);
+  navigation.visitRevision(3);
+  navigation.showDetails(true);
+  assert.equal(state.editing, false);
+  assert.deepEqual(calls.at(-1), ["focus", "inspector-close"]);
+});

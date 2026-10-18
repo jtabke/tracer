@@ -180,8 +180,8 @@ export function createWorkspaceNavigation(options: Options) {
       state.sheetState = "partial";
     }
     options.render();
-    if (options.panelMode() === "drawer") options.focus("inspector-close");
-    else if (edit) options.focus("draft-title");
+    if (state.editing) options.focus("draft-title");
+    else if (options.panelMode() === "drawer") options.focus("inspector-close");
   }
 
   function closeDetails() {

@@ -145,7 +145,8 @@ try {
   await page.locator("#connection-target").fill("UNKNOWN");
   assert.equal(await page.locator('#connection-form [type="submit"]').isDisabled(), true);
   await page.locator("#connection-target").fill("VER-03");
-  assert.ok(await page.locator('#connection-targets option[value="VER-03"]').count());
+  assert.ok((await page.locator("#connection-target-status").textContent()).includes("VER-03"));
+  assert.equal(await page.locator("#connection-target").getAttribute("aria-expanded"), "false");
   assert.equal(await page.locator("#connection-type").inputValue(), "verified_by");
   await page.keyboard.press("Escape");
   await page.locator('.edgehit[aria-label="PRS-01 verified by VER-03"]').focus();
