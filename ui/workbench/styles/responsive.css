@@ -1,0 +1,206 @@
+/* Simple entry remains anchored; longer narrow edits become an explicit sheet. */
+.matrix-create-row td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.matrix-create-row button {
+  padding: 8px 0;
+  color: var(--ink);
+}
+#matrix-cell-popover.cell-editor-sheet {
+  border-radius: 12px 12px 6px 6px;
+  padding: 20px;
+}
+#matrix-cell-popover.cell-editor-sheet input,
+#matrix-cell-popover.cell-editor-sheet select {
+  min-height: 40px;
+}
+#matrix-cell-popover.cell-editor-sheet textarea {
+  min-height: 120px;
+}
+#matrix-cell-popover.cell-editor-sheet .cell-edit-actions button {
+  min-height: 40px;
+}
+.connected-next {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0 12px;
+  font-size: 12px;
+}
+.connected-next button {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 5px 9px;
+  color: var(--ink);
+}
+.reachable-trace {
+  margin-top: 24px;
+}
+.trace-scope-note {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.reachable-entry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 10px;
+  width: 100%;
+  padding: 10px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.reachable-entry strong {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.reachable-entry small {
+  grid-column: 1/-1;
+  color: var(--muted);
+  font-size: 10px;
+}
+.route-explanation {
+  padding: 12px 0;
+  margin: 8px 0 20px;
+  border-block: 1px solid var(--line);
+}
+.route-explanation h3 {
+  font-size: 12px;
+  font-weight: 500;
+}
+.route-explanation p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.route-explanation p:last-child {
+  font-size: 11px;
+  color: var(--muted);
+}
+.field-diff mark {
+  background: #cee2ad24;
+  color: inherit;
+  box-shadow: 0 1px #b9caa2;
+  padding: 1px 0;
+}
+.field-diff .before mark {
+  background: #d79b9026;
+  box-shadow: 0 1px #cb9a90;
+}
+.investigation-field-change {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--accent);
+  background: var(--soft);
+}
+.investigation-field-change h4 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.investigation-field-change p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 4px 0;
+  display: block;
+}
+.investigation-field-change p > span {
+  margin-right: 8px;
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .connected-next {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .matrix-view-controls {
+    gap: 8px;
+  }
+}
+.change-values {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.investigation-field-change .changed-statement {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.canvas.fitted-titles:not(.density-overview) .node {
+  min-width: calc(96px / var(--camera-zoom));
+}
+.investigation-field-change .change-values {
+  display: flex;
+  gap: 8px;
+  align-items: start;
+}
+.change-values > .before,
+.change-values > .after {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  max-width: 46%;
+  margin: 0;
+}
+.investigation-field-change .changed-statement {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  margin: 4px 0 0;
+  min-height: 0;
+}
+.project-tool-menu {
+  position: fixed;
+  inset: 80px 20px auto auto;
+  z-index: 20;
+  max-width: min(400px, calc(100vw - 40px));
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.project-tool-menu button {
+  display: block;
+  margin-top: 8px;
+}
+.matrix-recipes {
+  display: flex;
+  gap: 12px;
+  padding: 8px 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.matrix-recipes label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+@media (max-width: 760px) {
+  body[data-direction="atlas"] .topbar {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+  }
+  .topbar [data-action="next-work"] {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 11px;
+    padding: 6px;
+  }
+  .topbar [data-action="project-tools"] {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 11px;
+    padding: 6px;
+  }
+  .topbar .search-button {
+    grid-column: 4;
+  }
+}
+.empty-workspace {
+  padding: 28px;
+  max-width: 640px;
+}

@@ -73,14 +73,12 @@ body[data-direction="atlas"] {
   --selected: #33493f;
 }
 .reviewbar {
-  height: 40px;
   background: #f0eee7;
   color: #515b57;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 22px;
-  font-size: 11px;
   letter-spacing: 0.05em;
 }
 .reviewbar nav {
@@ -101,7 +99,6 @@ body[data-direction="atlas"] {
   display: none;
 }
 #app {
-  height: calc(100dvh - 40px);
   background: var(--paper);
 }
 .shell {
@@ -172,13 +169,6 @@ body[data-direction="atlas"] {
   width: 15px;
   height: 15px;
 }
-.raillabel {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin: 36px 10px 14px;
-}
 .collection {
   padding: 8px 10px;
   font-size: 12px;
@@ -192,18 +182,6 @@ body[data-direction="atlas"] {
   height: 5px;
   border-radius: 50%;
   background: var(--muted);
-}
-.railbottom {
-  margin-top: auto;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.8;
-}
-.railbottom strong {
-  display: block;
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 500;
 }
 .workspace {
   display: flex;
@@ -234,9 +212,7 @@ body[data-direction="atlas"] {
   border: 1px solid var(--line);
   border-radius: 6px;
   display: flex;
-  gap: 32px;
   color: var(--muted);
-  font-size: 12px;
 }
 .search-button kbd {
   font-family: inherit;
@@ -265,7 +241,6 @@ body[data-direction="atlas"] {
 .context p {
   margin: 7px 0 0;
   color: var(--muted);
-  font-size: 12px;
 }
 .context p .mono {
   color: var(--ink);
@@ -283,8 +258,6 @@ body[data-direction="atlas"] {
   border-radius: 7px;
 }
 .view-switch button {
-  padding: 7px 12px;
-  font-size: 12px;
   border-radius: 4px;
   display: flex;
   gap: 7px;
@@ -335,9 +308,6 @@ body[data-direction="atlas"] {
 .edge.focused {
   stroke: var(--accent);
 }
-.edge.dim {
-  opacity: 0.25;
-}
 .edgehit {
   stroke: transparent;
   stroke-width: 18;
@@ -373,60 +343,26 @@ body[data-direction="atlas"] {
 .node.selected {
   border-color: var(--accent);
   background: var(--selected);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .node .node-meta {
   display: flex;
   align-items: center;
   color: var(--muted);
-  margin-bottom: 11px;
-}
-.node .node-meta svg {
-  width: 13px;
-  height: 13px;
 }
 .node strong {
-  display: block;
-  font-size: 14px;
-  line-height: 1.4;
-  font-weight: 550;
   letter-spacing: -0.15px;
 }
 .node .node-type {
-  font-size: 10px;
   color: var(--muted);
   display: block;
-  margin-top: 10px;
-}
-.node.dim {
-  opacity: 0.42;
-}
-.canvas-title {
-  position: absolute;
-  left: 28px;
-  top: 25px;
-  z-index: 1;
-  color: var(--muted);
-  font-size: 11px;
-}
-.canvas-title b {
-  color: var(--ink);
-  font-weight: 500;
 }
 .canvas-tools {
   position: absolute;
-  bottom: 25px;
-  left: 25px;
   display: flex;
-  gap: 1px;
   padding: 4px;
   border: 1px solid var(--line);
   background: var(--panel);
   border-radius: 6px;
-}
-.canvas-tools button {
-  padding: 8px 11px;
-  font-size: 12px;
 }
 .canvas-caption {
   position: absolute;
@@ -434,37 +370,6 @@ body[data-direction="atlas"] {
   right: 24px;
   color: var(--muted);
   font-size: 10px;
-}
-.floating-settings {
-  position: absolute;
-  right: 23px;
-  top: 20px;
-  z-index: 2;
-}
-.floating-settings summary {
-  cursor: pointer;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  padding: 8px 11px;
-  border-radius: 5px;
-  font-size: 11px;
-  list-style: none;
-}
-.floating-settings > div {
-  background: var(--panel);
-  padding: 15px;
-  border: 1px solid var(--line);
-  font-size: 12px;
-  width: 240px;
-  position: absolute;
-  right: 0;
-  top: 40px;
-  box-shadow: 0 12px 40px #0002;
-}
-.floating-settings p {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.6;
 }
 .inspector {
   width: 316px;
@@ -477,7 +382,6 @@ body[data-direction="atlas"] {
 .inspector-top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 32px;
 }
 .inspector-top button {
   font-size: 18px;
@@ -496,25 +400,15 @@ body[data-direction="atlas"] {
   height: 14px;
 }
 .inspector h2 {
-  font-size: 24px;
-  line-height: 1.26;
-  letter-spacing: -0.6px;
   font-weight: 550;
-  margin: 0 0 22px;
 }
 .statement {
-  font-size: 14px;
-  line-height: 1.8;
   margin: 0 0 27px;
 }
 .section-label {
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
   color: var(--muted);
-  margin: 27px 0 12px;
 }
 .criterion {
-  line-height: 1.7;
   color: var(--muted);
 }
 .inspector .separator {
@@ -526,36 +420,16 @@ body[data-direction="atlas"] {
   width: 100%;
   text-align: left;
   border-top: 1px solid var(--line);
-  padding: 12px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 .connection-row .mono {
   color: var(--muted);
-  font-size: 10px;
-  display: block;
   margin-bottom: 5px;
-}
-.connection-row strong {
-  font-size: 12px;
-  line-height: 1.5;
-  font-weight: 500;
 }
 .connection-row .arrow {
   margin-left: auto;
   color: var(--muted);
-}
-.editor-open {
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  font-size: 11px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-top: 25px;
 }
 .editor-fields label {
   display: block;
@@ -613,23 +487,6 @@ body[data-direction="atlas"] {
   width: 14px;
   height: 14px;
 }
-.historyline {
-  height: 1px;
-  background: var(--line);
-  position: relative;
-  flex: 1;
-  margin: 0 15px;
-}
-.historyline:after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -3px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-}
 .historybar .quiet {
   margin-left: auto;
 }
@@ -648,9 +505,6 @@ body[data-direction="atlas"] {
   z-index: 3;
   font-size: 11px;
 }
-.matrix {
-  padding: 30px 28px;
-}
 .matrix-intro {
   color: var(--muted);
   font-size: 12px;
@@ -660,19 +514,16 @@ body[data-direction="atlas"] {
 .matrix table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
 }
 .matrix th {
   font-weight: 500;
   color: var(--muted);
-  font-size: 10px;
   text-align: left;
   padding: 13px 10px;
   border-bottom: 1px solid var(--line);
 }
 .matrix td {
   border-bottom: 1px solid var(--line);
-  padding: 20px 10px;
   line-height: 1.5;
 }
 .matrix tr.selected {
@@ -690,17 +541,12 @@ body[data-direction="atlas"] {
 .matrix td.mark {
   text-align: center;
   color: var(--accent);
-  font-size: 18px;
 }
 .matrix .legend {
   font-size: 11px;
   color: var(--muted);
   margin-top: 24px;
   line-height: 1.9;
-}
-.history-view {
-  padding: 40px;
-  max-width: 800px;
 }
 .history-view h2 {
   font-weight: 500;
@@ -737,9 +583,7 @@ body[data-direction="atlas"] .rail {
 body[data-direction="atlas"] .brand span,
 body[data-direction="atlas"] .project,
 body[data-direction="atlas"] .project-subtitle,
-body[data-direction="atlas"] .raillabel,
-body[data-direction="atlas"] .collection,
-body[data-direction="atlas"] .railbottom {
+body[data-direction="atlas"] .collection {
   display: none;
 }
 body[data-direction="atlas"] .railnav {
@@ -759,7 +603,6 @@ body[data-direction="atlas"] .railnav svg {
 }
 body[data-direction="atlas"] .topbar {
   border: 0;
-  height: 74px;
 }
 body[data-direction="atlas"] .context {
   padding-top: 8px;
@@ -814,28 +657,6 @@ body[data-direction="atlas"] .historybar {
   border-color: #2d393f;
   background: #151c2180;
 }
-body[data-direction="atlas"] .historyline {
-  height: 16px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--line) 0,
-    var(--line) 2px,
-    transparent 2px,
-    transparent 12px
-  );
-}
-body[data-direction="atlas"] .historyline:after {
-  top: -3px;
-  height: 22px;
-  width: 2px;
-  border-radius: 0;
-}
-
-body[data-direction="atlas"] .canvas-title {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 dialog {
   width: min(590px, 90vw);
   border: 1px solid var(--line);
@@ -856,7 +677,6 @@ dialog::backdrop {
   margin-bottom: 20px;
 }
 .dialog-head button {
-  font-size: 11px;
   color: var(--muted);
 }
 dialog input {
@@ -874,7 +694,6 @@ dialog input {
   width: 100%;
   padding: 12px 8px;
   border-bottom: 1px solid var(--line);
-  font-size: 13px;
 }
 #search-results .mono {
   color: var(--muted);
@@ -891,10 +710,7 @@ dialog input {
   white-space: nowrap;
 }
 .edge-detail {
-  bottom: 76px;
   left: 25px;
-  max-width: 340px;
-  z-index: 4;
   padding: 18px;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -902,7 +718,6 @@ dialog input {
   box-shadow: 0 10px 30px #0002;
 }
 .edge-detail p {
-  font-size: 12px;
   color: var(--muted);
 }
 .edge-detail button {
@@ -916,12 +731,6 @@ dialog input {
   margin: 10px 0;
   color: var(--accent);
 }
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-    scroll-behavior: auto !important;
-  }
-}
 @media (max-width: 1100px) {
   .shell {
     grid-template-columns: 68px minmax(0, 1fr);
@@ -932,9 +741,7 @@ dialog input {
   .brand span,
   .project,
   .project-subtitle,
-  .raillabel,
-  .collection,
-  .railbottom {
+  .collection {
     display: none;
   }
   .railnav button span {
@@ -985,10 +792,6 @@ dialog input {
   .search-button {
     gap: 10px;
   }
-  .crumb {
-    font-size: 11px;
-    gap: 6px;
-  }
   .context,
   body[data-direction] .context {
     padding: 18px 16px;
@@ -1001,12 +804,6 @@ dialog input {
   }
   .eyebrow {
     font-size: 9px;
-  }
-  .context p {
-    font-size: 11px;
-  }
-  .view-switch {
-    margin-top: 6px;
   }
   .inspector,
   body[data-direction] .inspector {
@@ -1029,14 +826,6 @@ dialog input {
   .node strong {
     font-size: 12px;
   }
-  .canvas-title {
-    left: 16px;
-    top: 18px;
-  }
-  .floating-settings {
-    right: 12px;
-    top: 12px;
-  }
   .canvas-caption {
     display: none;
   }
@@ -1057,9 +846,6 @@ dialog input {
     width: 100%;
     justify-content: center;
   }
-  .matrix {
-    padding: 20px 14px;
-  }
   .matrix th,
   .matrix td {
     padding: 15px 6px;
@@ -1073,17 +859,7 @@ dialog input {
   .matrix table {
     min-width: 520px;
   }
-  .history-view {
-    padding: 24px;
-  }
   .history-view h2 {
     font-size: 23px;
-  }
-  .canvas-tools {
-    bottom: 16px;
-    left: 16px;
-  }
-  .historybar .historyline {
-    margin: 0 5px;
   }
 }

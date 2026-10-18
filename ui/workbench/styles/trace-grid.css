@@ -1,0 +1,464 @@
+/* The trace grid groups presentation prefixes, while every edit targets a real identity. */
+.matrix-view-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+  min-height: 34px;
+}
+.matrix-view-controls label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+}
+.matrix-view-controls select {
+  padding: 5px 7px;
+  font-size: 11px;
+}
+.matrix-cell-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+.matrix-cell-actions button {
+  font-size: 11px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.traceability-matrix .trace-cell {
+  height: auto;
+  padding: 12px;
+  position: relative;
+  vertical-align: top;
+  min-height: 68px;
+}
+.traceability-matrix tbody tr {
+  height: 72px;
+}
+.traceability-matrix .trace-cell[data-grid-col="0"] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.traceability-matrix thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+}
+.traceability-matrix .trace-cell .trace-artifact {
+  display: grid;
+  gap: 4px 8px;
+  align-items: baseline;
+  margin: 0 0 6px;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}
+.traceability-matrix .trace-artifact .mono {
+  display: inline;
+  white-space: nowrap;
+  font-size: 10px;
+}
+.traceability-matrix .trace-artifact strong {
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: normal;
+}
+.traceability-matrix .trace-cell.grid-cell-selected {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+  background: var(--soft);
+}
+.traceability-matrix .trace-cell.selected-link:not(.grid-cell-selected) {
+  outline: 0;
+  background: transparent;
+}
+.traceability-matrix .trace-cell .active-trace-link strong {
+  color: var(--accent);
+}
+.traceability-matrix .trace-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.shared-reference {
+  color: var(--muted);
+}
+.traceability-matrix .cell-add {
+  opacity: 0;
+  font-size: 10px;
+  padding: 4px 0;
+  color: var(--accent);
+}
+.trace-cell:hover .cell-add,
+.trace-cell:focus-within .cell-add,
+.grid-cell-selected .cell-add,
+.cell-empty-label ~ .cell-add {
+  opacity: 1;
+}
+.cell-empty-label {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  padding: 4px 0;
+}
+.matrix-compact tbody tr {
+  height: 44px;
+}
+.traceability-matrix.matrix-compact .trace-cell {
+  padding: 8px 10px;
+  min-height: 44px;
+}
+.matrix-compact .trace-artifact strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap !important;
+}
+.matrix-compact .cell-add {
+  display: none;
+}
+.matrix-compact .cell-empty-label ~ .cell-add,
+.matrix-compact .grid-cell-selected .cell-add {
+  display: inline-block;
+}
+.cell-editor {
+  min-width: 210px;
+  display: grid;
+  gap: 10px;
+  color: inherit;
+  margin: 0;
+}
+.cell-editor label {
+  display: grid;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.cell-editor input,
+.cell-editor textarea,
+.cell-editor select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: inherit;
+  font: inherit;
+}
+.cell-editor textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+.cell-editor-heading,
+.cell-edit-note {
+  margin: 0;
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.cell-matches {
+  display: grid;
+  gap: 3px;
+  max-height: 175px;
+  overflow: auto;
+}
+.cell-matches > button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-align: left;
+  padding: 7px;
+  font-size: 11px;
+}
+.cell-matches > button strong {
+  font-weight: 400;
+  line-height: 1.4;
+}
+.cell-matches > button[aria-selected="true"] {
+  background: var(--soft);
+}
+.cell-editor .cell-edit-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cell-editor .cell-edit-actions button,
+.cell-editor > button {
+  padding: 6px 8px;
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.cell-editor [type="submit"] {
+  background: var(--soft);
+  color: var(--accent);
+}
+.matrix-new-row .cell-editor {
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+}
+.matrix-new-row .cell-editor label:has(textarea),
+.matrix-new-row .form-error,
+.matrix-new-row .cell-edit-actions {
+  grid-column: 1 / -1;
+}
+.matrix-path-context {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  padding: 8px 24px;
+  color: var(--muted);
+}
+.matrix-path-context button {
+  padding: 6px 8px;
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+@media (max-width: 760px) {
+  .matrix-cell-actions {
+    margin-left: 0;
+  }
+  .matrix-new-row .cell-editor {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.traceability-matrix .trace-cell .trace-artifact {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+.shared-reference {
+  grid-column: 3;
+  font-size: 10px;
+  align-self: start;
+}
+.traceability-matrix .trace-cell[rowspan] > .trace-artifact:first-child {
+  position: sticky;
+  top: 72px;
+}
+.traceability-matrix .trace-cell {
+  min-width: 0;
+  max-width: none;
+}
+.pending-save {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 24px;
+  font-size: 12px;
+  background: var(--soft);
+}
+.pending-save button,
+[data-grid-recover] {
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  border-radius: 4px;
+}
+.cell-editor .cell-edit-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  padding: 8px 0;
+  background: var(--panel);
+}
+/* Matrix authoring stays above the projection so rows never become forms. */
+#matrix-cell-popover {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 14px 45px #0008;
+  background: var(--panel);
+  color: inherit;
+  box-sizing: border-box;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+#matrix-cell-popover::backdrop {
+  background: transparent;
+}
+#matrix-cell-popover .cell-editor {
+  min-width: 0;
+}
+#matrix-cell-popover .cell-edit-actions {
+  padding-bottom: 0;
+}
+#matrix-cell-popover .cell-matches > button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: start;
+}
+.cell-matches > button small {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 10px;
+}
+.cell-matches > button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+.traceability-matrix .trace-cell.grid-range-selected {
+  background: var(--soft);
+}
+.traceability-matrix .trace-cell[aria-selected="false"] {
+  background: transparent;
+}
+.range-selection-label {
+  color: inherit;
+  font-size: 11px;
+}
+.temporal-context,
+.shared-investigation-context {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 24px 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  border-left: 2px solid #d0b688;
+  background: #d0b6880b;
+}
+.temporal-context strong,
+.shared-investigation-context strong {
+  font-weight: 500;
+  color: inherit;
+}
+.temporal-context button {
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.shared-investigation-context {
+  border-left-color: var(--accent);
+  background: var(--soft);
+}
+.shared-investigation-context span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.relationship-inspector .relationship-endpoints {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0 8px;
+}
+.relationship-inspector .relationship-endpoints > button {
+  width: auto;
+  padding: 0;
+  border: 0;
+}
+.relationship-inspector .relationship-endpoints .mono {
+  margin: 0;
+  font-size: 12px;
+  color: inherit;
+}
+.relationship-inspector .relationship-endpoints > span {
+  padding: 0;
+  font-size: 11px;
+}
+.endpoint-titles {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+#relationship-scope-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 130px;
+  padding: 10px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+#relationship-scope-form .form-error {
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .temporal-context,
+  .shared-investigation-context {
+    margin: 0 16px 8px;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 11px;
+  }
+  .temporal-context button {
+    margin-left: 0;
+  }
+}
+.investigation-field-change {
+  font-size: 11px;
+  color: var(--muted);
+}
+.search-type {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.chosen-target {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 0;
+}
+.chosen-target strong {
+  font-weight: 500;
+}
+.cell-matches:empty {
+  display: none;
+}
+.matrix-scroll {
+  overscroll-behavior: contain;
+}
+#matrix-cell-popover .form-error:empty {
+  display: none;
+}
+#matrix-cell-popover .cell-editor input,
+#matrix-cell-popover .cell-editor textarea {
+  font-size: 13px;
+  line-height: 1.5;
+}
+/* Canvas controls reserve the actual sheet footprint; Fit keeps engineering titles. */
+.canvas-tools {
+  bottom: calc(var(--inspector-overlap, 0px) + 16px);
+}
+.canvas.fitted-titles:not(.density-overview) .node strong {
+  display: -webkit-box;
+  font-size: max(12px, calc(11px / var(--camera-zoom)));
+}
+.canvas.fitted-titles:not(.density-overview) .node {
+  min-height: calc(62px / var(--camera-zoom));
+}
+.canvas.fitted-titles:not(.density-overview) .node .node-meta .mono {
+  font-size: max(10px, calc(9px / var(--camera-zoom)));
+}
+/* A sticky identity must paint an opaque surface in every selection state. */
+.traceability-matrix .trace-cell[data-grid-col="0"] {
+  background: var(--paper);
+  isolation: isolate;
+  box-shadow: 1px 0 var(--line);
+}
+.traceability-matrix .trace-cell[data-grid-col="0"].grid-range-selected,
+.traceability-matrix .trace-cell[data-grid-col="0"].grid-cell-selected {
+  background: var(--soft);
+}
+.traceability-matrix .trace-artifact strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

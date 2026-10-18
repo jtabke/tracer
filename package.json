@@ -49,6 +49,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "fallow": "^3.31.0",
     "istanbul-lib-coverage": "3.2.2",
+    "postcss": "8.5.29",
     "prettier": "^3.9.9",
     "type-fest": "4.41.0",
     "typescript": "^5.9.0",

@@ -1,6 +1,12 @@
 # Tracer implementation status
 
-Updated 2026-10-17. Verification dates appear with each maintenance round. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
+Updated 2026-10-18. Verification dates appear with each maintenance round. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
+
+## CSS maintenance
+
+2026-10-18: split the 3,301-line workspace stylesheet into ordered files for layout, navigation, inspection, Matrix, controls, trace-grid authoring and narrow-screen overrides. Removed retired controls and declarations dominated by the same selector/property/condition without moving surviving rules across the cascade. Replaced unresolved historical theme references with their existing computed defaults and removed one invalid color. The styles directory falls from 4,645 to 4,143 lines; the largest file is 881 lines. Search, editing and save/draft owners keep their existing behavior.
+
+Added source checks for complete, unique imports, defined theme/runtime custom properties and valid hexadecimal color lengths. PostCSS, already supplied by Vite, is now an explicit pinned development dependency for these checks. Paired builds over the same disposable medical fixture match computed styles and all 55 screenshot pairs byte-for-byte across Graph, Matrix, History, search and statement editing at 1440/1100/1050/900/760/680/600/500/430/420/390px. Desktop Matrix and phone editing captures were visually inspected; published screenshots remain unchanged. The full `npm run check` passed formatting, strict types, UI lint, 411 unit tests, 170 browser tests, production/harness builds, all workbench scenarios and dependency/duplication/complexity gates. No quality thresholds or exclusions changed.
 
 ## Documentation capture and repository handoff
 

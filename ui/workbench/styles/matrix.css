@@ -1,0 +1,274 @@
+/* Engineering matrix: recorded paths remain editable canonical relationships. */
+.matrix-actions,
+.matrix-lenses {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.matrix-actions {
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.matrix-actions button {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.matrix-lenses button[aria-pressed="true"] {
+  background: var(--soft);
+  color: inherit;
+}
+.trace-config {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 12px;
+  padding-bottom: 16px;
+}
+.trace-config label {
+  display: grid;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.trace-config select {
+  width: 100%;
+  min-width: 0;
+  font-size: 11px;
+  padding: 7px;
+}
+.matrix-controls input {
+  width: 160px;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+.matrix-controls > span {
+  color: var(--muted);
+  font-size: 11px;
+  margin-left: auto;
+}
+.matrix-scroll {
+  overflow: auto;
+  max-height: calc(100vh - 430px);
+}
+.traceability-matrix table {
+  min-width: 760px;
+  width: 100%;
+  table-layout: fixed;
+}
+.matrix th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--panel);
+}
+.traceability-matrix th {
+  width: 25%;
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 12px;
+}
+.traceability-matrix th small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 5px;
+  font-weight: 400;
+}
+.traceability-matrix td {
+  vertical-align: top;
+  padding: 14px 12px;
+  text-align: left;
+  height: 105px;
+}
+.trace-artifact {
+  display: grid;
+  gap: 7px;
+  text-align: left;
+  width: 100%;
+  padding: 0;
+}
+.trace-artifact strong {
+  white-space: normal;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.trace-artifact .mono {
+  font-size: 10px;
+  color: var(--muted);
+}
+.traceability-matrix .trace-link {
+  font-size: 10px;
+  color: var(--accent);
+  margin-top: 10px;
+  padding: 3px 0;
+  text-align: left;
+}
+.trace-missing {
+  color: var(--muted);
+  font-size: 11px;
+}
+.trace-missing span {
+  display: block;
+  margin-bottom: 10px;
+}
+.trace-missing button {
+  font-size: 11px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.matrix td.selected-artifact,
+.matrix td.selected-link {
+  background: var(--soft);
+}
+.matrix td.selected-link {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+.matrix tr:hover td,
+.matrix td:focus-within {
+  background: #809d8e20;
+}
+.matrix .mark button {
+  min-width: 28px;
+  min-height: 30px;
+  font-size: 16px;
+}
+.matrix .mark button[data-cell-source] {
+  opacity: 0.35;
+}
+.matrix .mark:hover button,
+.matrix .mark:focus-within button {
+  opacity: 1;
+}
+.matrix-empty {
+  padding: 24px 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.stage-targets {
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  max-height: 60vh;
+  overflow: auto;
+}
+.stage-targets button {
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+}
+.node.dim {
+  opacity: 0.65;
+}
+.edge.dim {
+  opacity: 0.45;
+}
+.edge.focused {
+  stroke-width: 2;
+  opacity: 1;
+}
+.edge.implementation-edge {
+  stroke-width: 1.8;
+}
+.edge.evidence-edge {
+  stroke-dasharray: 6 4;
+}
+.edge.reference-edge {
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+.investigation-context {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.investigation-context strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.investigation-context p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+@media (max-width: 760px) {
+  .trace-config {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+  .matrix-controls {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .matrix-scroll {
+    max-height: calc(100vh - 510px);
+  }
+  .matrix-actions button {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+}
+.matrix-controls input {
+  background: var(--panel);
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.trace-config-toggle {
+  margin-bottom: 14px;
+}
+.trace-config-toggle > summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 8px 0;
+}
+.trace-config-toggle[open] > summary {
+  margin-bottom: 10px;
+}
+.traceability-matrix .trace-missing button {
+  padding: 6px 8px;
+  font-size: 11px;
+  border: 1px solid var(--line);
+}
+.matrix .trace-artifact .mono {
+  display: block;
+  margin: 0;
+}
+.trace-column-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.trace-column-count select {
+  padding: 6px;
+  font-size: 11px;
+}
+.investigation-context details {
+  font-size: 11px;
+  margin-top: 8px;
+}
+.investigation-context summary {
+  cursor: pointer;
+}
+.form-error > button {
+  display: block;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  margin-top: 10px;
+  font-size: 12px;
+}
+.workspace-notice.save-recovery {
+  display: block;
+  height: auto;
+  max-height: 35vh;
+  overflow: auto;
+}
+.save-recovery > button {
+  display: block;
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px solid var(--line);
+}

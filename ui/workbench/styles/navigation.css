@@ -1,0 +1,714 @@
+/* Workspace navigation, view configuration and selection actions. */
+body[data-direction="atlas"] .topbar {
+  gap: 22px;
+  height: 66px;
+}
+.workspace-perspectives {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  gap: 22px;
+  align-self: stretch;
+}
+.workspace-perspectives button {
+  border-radius: 0;
+  background: none !important;
+  border-bottom: 2px solid transparent;
+  padding: 0 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.workspace-perspectives button[aria-pressed="true"] {
+  border-bottom-color: var(--accent);
+  color: var(--ink);
+}
+.search-button {
+  margin-left: 20px;
+  gap: 25px;
+}
+.context-actions button {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.context,
+body[data-direction="atlas"] .context {
+  min-height: 74px;
+  padding-top: 10px;
+  padding-bottom: 14px;
+}
+.context h1,
+body[data-direction="atlas"] .context h1 {
+  font-size: 20px;
+}
+.graph-toolbar {
+  padding-top: 10px;
+  border-bottom: 1px solid #81999613;
+  margin: 0 22px 5px;
+  padding-left: 0;
+  padding-right: 0;
+}
+.graph-count {
+  font-size: 9px;
+}
+.canvas-tools {
+  gap: 2px !important;
+}
+.canvas-tools button {
+  padding: 6px 10px;
+}
+.node-actions {
+  box-shadow: 0 8px 25px #0004;
+  border-color: #62736e;
+}
+.node.changed {
+  border-left: 3px solid #d4bd85;
+}
+.change-mark {
+  margin-left: auto;
+  font-size: 10px;
+  color: #d4bd85;
+}
+.changed-edge {
+  stroke-width: 3;
+}
+.verification-edge {
+  stroke-dasharray: 3 4;
+  opacity: 0.65;
+}
+.verification-edge.focused {
+  stroke-width: 1.25;
+}
+.editable-field {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0 15px 0 0;
+  position: relative;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: text;
+  white-space: pre-wrap;
+}
+.editable-field:hover,
+.editable-field:focus-visible {
+  background: #bcd1b408;
+  border-color: #bcd1b421;
+}
+.editable-field .inline-pencil {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0;
+}
+.editable-field:hover .inline-pencil,
+.editable-field:focus-visible .inline-pencil {
+  opacity: 1;
+}
+.editable-field.criterion {
+  color: var(--muted);
+  padding-bottom: 3px;
+}
+.inline-edit textarea {
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.7;
+  padding: 10px;
+  border: 1px solid var(--accent);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 4px;
+  font-size: 13px;
+}
+.inline-edit > div {
+  display: flex;
+  gap: 10px;
+  margin: 9px 0 20px;
+}
+.inline-edit button {
+  font-size: 11px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.inline-edit button:first-child {
+  background: var(--soft);
+}
+.relationship-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.relationship-entry .connection-row {
+  flex: 1;
+  min-width: 0;
+}
+.relationship-entry > button:last-child {
+  font-size: 11px;
+  padding: 8px 2px;
+  color: var(--muted);
+}
+.relationship-entry > button:last-child:hover {
+  color: var(--accent);
+}
+.relationship-group summary {
+  font-size: 11px;
+}
+.artifact-focused .view {
+  visibility: hidden;
+  pointer-events: none;
+}
+.inspector.full-artifact,
+body[data-direction="atlas"] .inspector.full-artifact {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  z-index: 7;
+  padding: 26px max(32px, calc((100% - 850px) / 2));
+  overflow: auto;
+  border: 0;
+  box-shadow: none;
+}
+.full-artifact .inspector-top {
+  margin-bottom: 18px;
+}
+.full-artifact h2 {
+  font-size: 27px;
+  line-height: 1.3;
+  max-width: 800px;
+}
+.full-artifact .statement {
+  font-size: 16px;
+  line-height: 1.8;
+}
+.full-artifact .criterion {
+  font-size: 14px;
+}
+.full-artifact .type-label {
+  font-size: 11px;
+}
+.full-artifact .relationship-entry .connection-row strong {
+  font-size: 13px;
+}
+.full-artifact .relationship-groups {
+  max-width: 850px;
+}
+.full-artifact .artifact-history {
+  max-width: 850px;
+}
+.matrix-scope {
+  font-size: 11px;
+}
+.selected-link {
+  background: var(--soft);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.edge-detail {
+  position: absolute;
+  bottom: 65px;
+  max-width: 360px;
+}
+.history-workspace {
+  padding: 18px 24px 24px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.history-scope {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  gap: 15px;
+}
+.history-scope h2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+.history-scope h2 span {
+  font: 11px var(--mono);
+  color: var(--muted);
+}
+.history-columns {
+  display: grid;
+  grid-template-columns: 215px minmax(0, 1fr);
+  gap: 28px;
+  min-height: 0;
+  flex: 1;
+}
+.changeset-feed {
+  overflow: auto;
+  border-right: 1px solid var(--line);
+  padding-right: 14px;
+}
+.changeset-feed > button {
+  width: 100%;
+  display: block;
+  text-align: left;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  padding: 12px;
+  margin: 0 0 5px;
+  background: transparent;
+}
+.changeset-feed > button.selected {
+  background: var(--soft);
+  border-left-color: var(--accent);
+}
+.changeset-feed .mono {
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 7px;
+}
+.changeset-feed strong {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.changeset-feed button > span:last-child {
+  font-size: 9px;
+  display: block;
+  color: var(--muted);
+  margin-top: 7px;
+}
+.changeset-feed p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.change-detail {
+  overflow: auto;
+  padding-right: 3px;
+  min-width: 0;
+}
+.change-heading h3 {
+  margin-top: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.change-heading button {
+  white-space: nowrap;
+  font-size: 10px;
+}
+.change-detail .change-reason {
+  margin: 5px 0 25px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.change-detail article > h3 {
+  margin-bottom: 17px;
+}
+.field-diff p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.connected-work {
+  border-top: 1px solid var(--line);
+  margin-top: 28px;
+  padding-top: 10px;
+}
+.connected-work > h3 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 15px 0 6px;
+}
+.connected-work > h3 > span {
+  font-size: 10px;
+  margin-left: 6px;
+  color: var(--muted);
+}
+.connected-work > p {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0 0 15px;
+}
+.connected-work > button {
+  display: flex;
+  align-items: baseline;
+  gap: 13px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 0;
+  border-top: 1px solid #81999619;
+}
+.connected-work > button > .mono {
+  font-size: 10px;
+  min-width: 47px;
+  color: var(--muted);
+}
+.connected-work > button > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.connected-work strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.connected-work small {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.connected-work > button > span:last-child {
+  font-size: 12px;
+  color: var(--muted);
+}
+.continuous-history,
+body[data-direction="atlas"] .continuous-history {
+  height: 43px;
+  gap: 18px;
+  padding: 0 24px;
+}
+.timeline-end {
+  color: var(--muted);
+  font-size: 10px;
+}
+.revision-axis {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  height: 28px;
+}
+.revision-axis input {
+  display: block;
+  width: 100%;
+  margin: 0;
+  height: 28px;
+  background: transparent;
+  accent-color: var(--accent);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+.axis-ticks {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 6px;
+  height: 16px;
+}
+.axis-ticks > span {
+  position: absolute;
+  width: 1px;
+  height: 16px;
+  background: var(--edge);
+}
+.continuous-history .revision-controls {
+  gap: 10px;
+}
+.revision-controls button:disabled {
+  opacity: 0.3;
+}
+.continuous-history .revision-controls button {
+  font-size: 14px;
+}
+.continuous-history .revision-controls .mono {
+  font-size: 10px;
+}
+body[data-panel="sheet"] .inspector:not(.full-artifact) {
+  position: absolute;
+  top: auto;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  width: auto;
+  max-height: 48%;
+  padding: 18px 22px;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: 0 -10px 35px #0005;
+  z-index: 7;
+}
+body[data-panel="sheet"] .inspector:not(.full-artifact) h2 {
+  font-size: 18px;
+}
+body[data-panel="sheet"] .inspector:not(.full-artifact) .statement {
+  font-size: 13px;
+}
+body[data-panel="sheet"] .inspector:not(.full-artifact) .criterion {
+  font-size: 12px;
+}
+body[data-panel="sheet"] .inspector.full-artifact {
+  inset: 0;
+  width: 100%;
+  max-height: none;
+  padding: 22px;
+}
+.node-more button {
+  font-size: 10px;
+}
+.revision-axis input:focus-visible {
+  outline-offset: 0;
+}
+@media (max-width: 1100px) {
+  .history-columns {
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 18px;
+  }
+  .workspace-perspectives {
+    gap: 14px;
+  }
+  .search-button {
+    margin-left: 0;
+  }
+  .context-actions {
+    margin-left: auto;
+  }
+  .history-workspace {
+    padding: 16px 20px;
+  }
+  .history-scope h2 {
+    font-size: 18px;
+  }
+}
+@media (max-width: 760px) {
+  body[data-direction="atlas"] .topbar {
+    flex-wrap: wrap;
+  }
+  .topbar .crumb {
+    order: 1;
+    font-size: 11px;
+  }
+  .topbar .search-button {
+    order: 2;
+    margin-left: auto;
+    font-size: 0;
+  }
+  .topbar .workspace-perspectives {
+    order: 3;
+    margin: 0;
+    justify-content: flex-start;
+    align-self: auto;
+    height: 35px;
+    gap: 24px;
+  }
+  .workspace-perspectives button {
+    padding: 5px 2px 9px;
+    font-size: 11px;
+  }
+  .context,
+  body[data-direction="atlas"] .context {
+    min-height: 67px;
+    padding: 10px 16px 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .context h1,
+  body[data-direction="atlas"] .context h1,
+  .context.details-visible h1,
+  body[data-direction="atlas"] .context.details-visible h1 {
+    font-size: 18px;
+    margin: 0 0 5px;
+  }
+  .context-actions button {
+    font-size: 10px;
+    text-align: center;
+    padding: 7px 8px;
+  }
+  .context p {
+    font-size: 9px;
+  }
+  .graph-toolbar {
+    margin: 0 16px 4px;
+  }
+  .graph-toolbar select {
+    max-width: 145px;
+  }
+  .history-workspace {
+    padding: 14px 16px;
+  }
+  .history-scope {
+    padding-bottom: 12px;
+  }
+  .history-scope h2 {
+    font-size: 17px;
+  }
+  .history-scope select {
+    max-width: 175px;
+    font-size: 10px;
+  }
+  .history-columns {
+    grid-template-columns: 155px minmax(0, 1fr);
+    gap: 16px;
+  }
+  .changeset-feed {
+    padding-right: 10px;
+  }
+  .changeset-feed > button {
+    padding: 10px 8px;
+  }
+  .change-detail .change-reason {
+    font-size: 12px;
+  }
+  .change-heading {
+    display: block;
+  }
+  .change-heading h3 {
+    margin: 0 0 10px;
+  }
+  .change-heading button {
+    padding: 0;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  .field-diff p {
+    font-size: 11px;
+    padding: 10px 10px 10px 25px;
+  }
+  .field-diff p > span {
+    left: 8px;
+  }
+  .connected-work > button {
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .connected-work > button > .mono {
+    min-width: 42px;
+  }
+  .connected-work strong {
+    font-size: 11px;
+  }
+  .continuous-history,
+  body[data-direction="atlas"] .continuous-history {
+    height: 42px;
+    padding: 0 15px;
+  }
+  .continuous-history .revision-controls {
+    gap: 6px;
+  }
+  .continuous-history .revision-controls .mono {
+    font-size: 10px;
+  }
+  .inspector .inline-edit textarea {
+    min-height: 140px;
+  }
+  .full-artifact .statement {
+    font-size: 15px;
+  }
+  .inspector.full-artifact,
+  body[data-direction="atlas"] .inspector.full-artifact {
+    padding: 22px;
+  }
+  .full-artifact h2 {
+    font-size: 23px;
+  }
+  .node-actions {
+    max-width: 330px;
+  }
+  .node-actions > button {
+    padding: 7px 8px;
+  }
+}
+@media (max-width: 500px) {
+  .history-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: auto;
+  }
+  .changeset-feed {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    min-height: 115px;
+    flex-shrink: 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 9px;
+  }
+  .changeset-feed > button {
+    min-width: 150px;
+    max-width: 150px;
+    margin: 0 5px 0 0;
+  }
+  .change-detail {
+    overflow: visible;
+    flex-shrink: 0;
+  }
+  .graph-toolbar select {
+    max-width: 115px;
+  }
+  .context-actions button {
+    max-width: 100px;
+  }
+  .history-scope select {
+    max-width: 140px;
+  }
+}
+.revision-axis input {
+  appearance: none;
+  -webkit-appearance: none;
+  outline-offset: 2px;
+}
+.revision-axis input::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--line);
+}
+.revision-axis input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 7px;
+  height: 17px;
+  border-radius: 1px;
+  background: var(--accent);
+  margin-top: -8px;
+  border: 0;
+}
+.revision-axis input::-moz-range-track {
+  height: 1px;
+  background: var(--line);
+}
+.revision-axis input::-moz-range-thumb {
+  width: 7px;
+  height: 17px;
+  border-radius: 1px;
+  background: var(--accent);
+  border: 0;
+}
+.history-scope-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+.return-scope {
+  font-size: 10px;
+  color: var(--muted);
+  margin-left: auto;
+  padding: 5px 0;
+}
+.history-workspace > p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.history-workspace > button {
+  font-size: 12px;
+  text-align: left;
+  color: var(--accent);
+  padding: 10px 0;
+}

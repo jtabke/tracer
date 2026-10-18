@@ -1,0 +1,197 @@
+/* Direct view controls and readable relationship sections, without disclosure hoops. */
+.database-picker {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.database-picker select {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  max-width: 190px;
+  padding: 6px 22px 6px 0;
+  cursor: pointer;
+}
+.database-picker select option {
+  background: var(--panel);
+  color: inherit;
+}
+.switch-database {
+  padding: 20px;
+  font-size: 13px;
+}
+.switch-database p {
+  margin: 0 0 18px;
+  line-height: 1.6;
+}
+.switch-database button {
+  padding: 8px 12px;
+  margin-right: 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.graph-toolbar {
+  height: auto;
+  min-height: 48px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+.neighborhood-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-left: 1px solid var(--line);
+  padding-left: 8px;
+}
+.neighborhood-controls select,
+#node-detail,
+.graph-toolbar #link-filter {
+  font-size: 11px;
+  padding: 6px;
+  max-width: 150px;
+}
+.neighborhood-controls button {
+  padding: 6px 8px;
+  font-size: 11px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.neighborhood-controls button[aria-pressed="true"] {
+  color: var(--accent);
+  background: var(--soft);
+}
+.neighborhood-controls .focus-apply {
+  border: 1px solid var(--line);
+  color: inherit;
+}
+.graph-toolbar .graph-count {
+  margin-left: auto;
+}
+.relationship-group {
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+}
+.relationship-group h4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0 0 4px;
+  padding: 7px 0 4px;
+}
+.relationship-group h4 span {
+  font: 10px var(--mono);
+}
+.relationship-entry {
+  border: 0;
+}
+.relationship-group .connection-row {
+  padding: 6px 0;
+}
+.relationship-group .connection-row strong {
+  color: inherit;
+  line-height: 1.45;
+}
+.canvas.space-pan,
+.canvas.space-pan .node,
+.canvas.panning,
+.canvas.panning .node {
+  cursor: grab;
+}
+.canvas.panning,
+.canvas.panning .node {
+  cursor: grabbing;
+}
+@media (max-width: 760px) {
+  .database-picker select {
+    max-width: 185px;
+    font-size: 11px;
+  }
+  .graph-toolbar {
+    height: auto;
+    padding: 8px 0;
+    gap: 6px;
+  }
+  .neighborhood-controls {
+    gap: 3px;
+    padding-left: 6px;
+  }
+  .neighborhood-controls select,
+  #node-detail,
+  .graph-toolbar #link-filter {
+    font-size: 10px;
+    padding: 5px 3px;
+    max-width: 120px;
+  }
+  .neighborhood-controls button {
+    font-size: 10px;
+    padding: 5px;
+  }
+  .graph-count {
+    display: none;
+  }
+}
+@media (max-width: 500px) {
+  .graph-toolbar {
+    gap: 4px;
+  }
+  .neighborhood-controls {
+    order: 2;
+    width: 100%;
+    border-left: 0;
+    padding-left: 0;
+  }
+  #node-detail {
+    margin-left: auto;
+  }
+}
+.topbar {
+  flex-shrink: 0;
+}
+.crumb,
+.crumb .database-picker {
+  min-width: 0;
+}
+@media (max-width: 600px) {
+  .crumb > span,
+  .crumb > button {
+    display: none;
+  }
+  .crumb .database-picker {
+    flex: 1;
+  }
+  .database-picker select {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+@media (max-width: 760px) {
+  body[data-direction="atlas"] .topbar {
+    display: grid;
+    grid-template-rows: 32px 35px;
+    gap: 7px 12px;
+    height: 91px;
+    padding: 10px 16px 0;
+    align-content: start;
+  }
+  .topbar .crumb {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+  }
+  .topbar .search-button {
+    grid-row: 1;
+    margin: 0;
+    gap: 0;
+  }
+  .topbar .workspace-perspectives {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: auto;
+  }
+}

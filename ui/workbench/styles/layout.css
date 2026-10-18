@@ -1,0 +1,881 @@
+/* Workspace shell, projections and responsive inspector layout. */
+.reviewbar {
+  font-size: 10px;
+}
+.reviewbar > span:last-child {
+  display: block;
+}
+.reviewbar {
+  height: 30px;
+}
+#app {
+  height: calc(100dvh - 30px);
+}
+.presentation #app {
+  height: 100dvh;
+}
+body[data-direction="atlas"] .topbar {
+  padding: 0 26px;
+}
+.crumb button {
+  padding: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.context {
+  min-height: 85px;
+}
+body[data-direction="atlas"] .context {
+  padding: 10px 26px 18px;
+}
+.context.details-visible h1,
+body[data-direction="atlas"] .context.details-visible h1 {
+  font-size: 20px;
+  letter-spacing: -0.4px;
+  margin: 3px 0 8px;
+}
+.context p {
+  font-size: 11px;
+}
+.search-button {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.view-switch button {
+  font-size: 11px;
+  padding: 7px 10px;
+}
+.workarea {
+  overflow: hidden;
+}
+.view {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.graph-toolbar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+select {
+  color: var(--muted);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 6px;
+  max-width: 220px;
+}
+.graph-toolbar select {
+  border: 0;
+}
+.graph-count {
+  margin-left: auto;
+  color: var(--muted);
+}
+.canvas {
+  flex: 1;
+  min-height: 0;
+  touch-action: none;
+}
+.scene {
+  position: absolute;
+  transform-origin: 0 0;
+  inset: 0;
+  pointer-events: none;
+}
+.node-layer {
+  position: absolute;
+  inset: 0;
+}
+.scene .node,
+.scene .edgehit {
+  pointer-events: auto;
+}
+.graph-lane {
+  position: absolute;
+  top: 9px;
+  bottom: 65px;
+  border-radius: 8px;
+  background: #81999604;
+  border-top: 1px solid #81999620;
+  pointer-events: none;
+}
+.graph-lane > span {
+  display: block;
+  margin: 14px 12px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.01em;
+}
+.node,
+body[data-direction="atlas"] .node {
+  width: 174px;
+  min-height: 0;
+  height: 66px;
+  padding: 11px 12px;
+  border-radius: 6px;
+  box-shadow: none;
+}
+.node .node-meta {
+  margin-bottom: 5px;
+  gap: 7px;
+}
+.node .node-meta svg {
+  width: 11px;
+  height: 11px;
+}
+.node .node-meta .mono {
+  font-size: 10px;
+}
+.node strong {
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.node .node-type {
+  font-size: 9px;
+  margin-top: 7px;
+}
+.node:before,
+body[data-direction="atlas"] .node:before {
+  display: none;
+}
+.node.selected {
+  box-shadow: 0 0 0 2px #c6d9b516;
+}
+.density-expanded .node,
+body[data-direction="atlas"] .density-expanded .node {
+  height: 100px;
+}
+.density-expanded .node strong {
+  font-size: 13px;
+  -webkit-line-clamp: 3;
+}
+.density-overview .node,
+body[data-direction="atlas"] .density-overview .node {
+  width: 72px;
+  height: 32px;
+  padding: 9px;
+}
+.density-overview .node .node-meta {
+  margin: 0;
+  justify-content: center;
+}
+.density-overview .node strong,
+.density-overview .node svg {
+  display: none;
+}
+.edges .edgehit:hover {
+  stroke: #c6d9b522;
+  stroke-width: 12;
+}
+.edgehit:focus-visible {
+  stroke: #c6d9b522;
+  outline: none;
+}
+.canvas-tools {
+  z-index: 3;
+  left: 22px;
+  align-items: center;
+}
+.canvas-tools button {
+  font-size: 11px;
+}
+.canvas-tools .mono {
+  font-size: 10px;
+}
+.node-action-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.node-actions {
+  position: absolute;
+  display: flex;
+  gap: 0;
+  pointer-events: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px;
+  max-width: 290px;
+}
+.node-actions > button {
+  padding: 7px 9px;
+  font-size: 10px;
+  border-right: 1px solid var(--line);
+  white-space: nowrap;
+}
+.node-actions > button:last-of-type {
+  border: 0;
+}
+.node-actions button:hover {
+  background: var(--soft);
+}
+.node-more {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  min-width: 145px;
+  padding: 5px;
+}
+.node-more button {
+  display: block;
+  padding: 8px;
+  width: 100%;
+  text-align: left;
+}
+.local-dot {
+  color: var(--accent);
+  font-size: 8px;
+  margin-left: auto;
+}
+.inspector,
+body[data-direction="atlas"] .inspector {
+  width: var(--inspector-width, 340px);
+  padding: 22px;
+  position: relative;
+  flex-shrink: 0;
+}
+.inspector-top {
+  margin-bottom: 12px;
+  align-items: center;
+}
+.inspector-top > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.inspector-top .mono {
+  font-size: 12px;
+}
+.version {
+  font: 10px var(--mono);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+.inspector-actions {
+  gap: 5px;
+}
+.inspector-actions button {
+  font-size: 17px;
+  padding: 3px 6px;
+}
+.inspector .type-label {
+  font-size: 10px;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0 0 19px;
+}
+.inspector h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 0 0 16px;
+  letter-spacing: -0.35px;
+}
+.statement {
+  font-size: 13px;
+  line-height: 1.75;
+  margin-bottom: 19px;
+}
+.section-label {
+  font-size: 10px;
+  margin: 18px 0 8px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 500;
+}
+.criterion {
+  font-size: 12px;
+  line-height: 1.65;
+  margin: 0 0 20px;
+}
+.inspector-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 10px;
+}
+.inspector-section-heading h3 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
+}
+.inspector-section-heading h3 span {
+  font-size: 10px;
+  color: var(--muted);
+  margin-left: 5px;
+}
+.inspector-section-heading button {
+  font-size: 17px;
+  padding: 0 4px;
+}
+.relationship-group {
+  border-top: 1px solid var(--line);
+}
+.relationship-group summary {
+  cursor: pointer;
+  color: var(--muted);
+  padding: 11px 0;
+}
+.relationship-group summary span {
+  float: right;
+  font: 10px var(--mono);
+}
+.connection-row {
+  border: 0;
+  padding: 6px 0 8px;
+  gap: 5px;
+}
+.connection-row > span:first-child {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+.connection-row .mono {
+  font-size: 9px;
+  min-width: 46px;
+  margin: 0;
+  display: inline;
+}
+.connection-row strong {
+  font-size: 11px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+.connection-row .arrow {
+  font-size: 11px;
+}
+.artifact-history {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+}
+.artifact-history > button {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  padding: 7px 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.artifact-history .mono {
+  font-size: 10px;
+}
+.inspector-resize {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  cursor: col-resize;
+  touch-action: none;
+}
+.inspector-resize:hover,
+.inspector-resize:focus-visible {
+  background: var(--line);
+}
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+.editor-fields .edit-actions button {
+  font-size: 11px;
+}
+.inspector-backdrop {
+  position: absolute;
+  inset: 0;
+  background: #07101466;
+  z-index: 8;
+  cursor: default;
+}
+.inspector-backdrop:focus-visible {
+  outline: none;
+}
+body[data-panel="drawer"] .inspector {
+  position: absolute;
+  z-index: 9;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0 18px 18px 0;
+  border-radius: 10px;
+}
+body[data-panel="sheet"] .inspector {
+  position: absolute;
+  z-index: 9;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  padding: 24px 28px;
+}
+body[data-panel="sheet"] .inspector .statement {
+  font-size: 15px;
+  max-width: 600px;
+}
+body[data-panel="sheet"] .inspector h2 {
+  font-size: 23px;
+  max-width: 600px;
+}
+body[data-panel="sheet"] .inspector .type-label {
+  justify-content: flex-start;
+}
+body[data-panel="sheet"] .connection-row strong {
+  font-size: 13px;
+}
+body[data-panel="sheet"] .connection-row {
+  padding: 10px 0;
+}
+body[data-panel="sheet"] .criterion {
+  font-size: 13px;
+}
+.workspace-notice {
+  padding: 8px 26px;
+  background: var(--soft);
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.workspace-notice button {
+  font-size: 14px;
+}
+.historybar,
+body[data-direction="atlas"] .historybar {
+  height: 80px;
+  padding: 0 24px;
+  gap: 20px;
+  align-items: center;
+  overflow: hidden;
+}
+.historybar > button {
+  white-space: nowrap;
+  font-size: 11px;
+}
+.revision-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.revision-controls button {
+  font-size: 14px;
+}
+.revision-controls button[data-action="latest"] {
+  font-size: 10px;
+  color: var(--accent);
+}
+.revision-controls .mono {
+  font-size: 11px;
+}
+.matrix {
+  position: relative;
+  padding: 16px 24px;
+}
+.matrix-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: 20px;
+  color: var(--muted);
+  gap: 15px;
+}
+.matrix-controls select {
+  margin-left: 8px;
+}
+.matrix table {
+  font-size: 11px;
+  min-width: 650px;
+}
+.matrix td:first-child {
+  min-width: 215px;
+  max-width: 280px;
+}
+.matrix th {
+  font-size: 9px;
+}
+.matrix td {
+  padding: 14px 8px;
+}
+.matrix td button .mono {
+  font-size: 9px;
+  margin-bottom: 5px;
+}
+.matrix td.mark {
+  font-size: 15px;
+}
+.matrix .edge-detail {
+  position: sticky;
+  left: 0;
+  bottom: 10px;
+}
+.history-view {
+  padding: 24px 28px;
+  max-width: none;
+}
+.history-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.history-heading h2 {
+  font-size: 21px;
+  letter-spacing: -0.3px;
+  margin: 0 0 15px;
+}
+.history-events {
+  display: flex;
+  gap: 8px;
+  overflow: auto;
+  padding-bottom: 18px;
+}
+.history-events button {
+  min-width: 140px;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.history-events button.selected {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+.history-events .mono {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+.history-events strong {
+  font-size: 11px;
+  font-weight: 500;
+}
+.change-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.change-heading button {
+  color: var(--accent);
+}
+.change-detail .change-reason {
+  max-width: 700px;
+}
+.change-detail article {
+  margin-top: 24px;
+}
+.change-detail article > h3 {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  gap: 15px;
+}
+.change-detail h3 > span {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.field-diff h4 {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: var(--muted);
+}
+.field-diff p {
+  max-width: none;
+  margin: 7px 0;
+  padding: 12px 15px 12px 32px;
+  position: relative;
+  border-radius: 4px;
+}
+.field-diff p > span {
+  position: absolute;
+  left: 12px;
+}
+.field-diff .before {
+  background: #ad746c12;
+  color: #d4aaa4;
+}
+.field-diff .after {
+  background: #a1bf9d13;
+  color: #c1d3b9;
+}
+.change-detail article > button {
+  color: var(--accent);
+  font-size: 11px;
+  margin-top: 10px;
+}
+.edge-detail {
+  z-index: 6;
+}
+.edge-detail > .mono {
+  font-size: 11px;
+}
+.edge-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+.edge-actions button {
+  float: none;
+  font-size: 11px;
+  color: var(--accent);
+  padding: 0;
+}
+.edge-detail > button {
+  font-size: 16px;
+}
+.edge-detail p {
+  font-size: 11px;
+  line-height: 1.7;
+}
+dialog {
+  max-height: 85dvh;
+  overflow: auto;
+}
+.dialog-head h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+.dialog-head button {
+  font-size: 20px;
+}
+.workspace-form label {
+  display: block;
+  font-size: 12px;
+  margin: 15px 0;
+}
+.workspace-form input,
+.workspace-form select,
+.workspace-form textarea {
+  display: block;
+  width: 100%;
+  max-width: none;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 7px;
+  font-size: 12px;
+}
+.workspace-form textarea {
+  height: 90px;
+  resize: vertical;
+}
+.workspace-form > button {
+  padding: 10px 15px;
+  background: var(--soft);
+  border-radius: 4px;
+  font-size: 12px;
+}
+.form-error {
+  color: #dfaaa3;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.add-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.add-choices button {
+  text-align: left;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 13px;
+}
+.add-choices span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+}
+.command-icon {
+  display: inline-block;
+  width: 75px;
+  color: var(--muted);
+}
+#search-results button {
+  font-size: 12px;
+}
+#search-results button:focus-visible {
+  background: var(--soft);
+  outline-offset: -2px;
+}
+@media (max-width: 1050px) {
+  .graph-count {
+    display: none;
+  }
+  .historybar,
+  body[data-direction="atlas"] .historybar {
+    gap: 12px;
+    padding: 0 16px;
+  }
+  .historybar > button {
+    font-size: 10px;
+  }
+  .search-button {
+    gap: 14px;
+  }
+  .node-more {
+    left: auto;
+    right: 0;
+    top: 100%;
+  }
+}
+@media (max-width: 760px) {
+  .crumb {
+    font-size: 10px;
+    gap: 5px;
+  }
+  .crumb button {
+    font-size: 10px;
+  }
+  .topbar .search-button {
+    padding: 6px;
+  }
+  .topbar .search-button kbd {
+    font-size: 11px;
+  }
+  .context h1,
+  body[data-direction="atlas"] .context h1 {
+    font-size: 19px;
+  }
+  .context.details-visible h1,
+  body[data-direction="atlas"] .context.details-visible h1 {
+    font-size: 19px;
+  }
+  .view-switch {
+    margin-top: 9px;
+  }
+  .view-switch button {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .graph-toolbar select {
+    font-size: 10px;
+  }
+  .historybar,
+  body[data-direction="atlas"] .historybar {
+    height: 76px;
+    padding: 0 12px;
+    gap: 9px;
+  }
+  .historybar > button {
+    font-size: 0;
+    gap: 0;
+  }
+  .historybar > button svg {
+    width: 16px;
+    height: 16px;
+  }
+  .revision-controls {
+    gap: 5px;
+  }
+  .revision-controls button {
+    padding: 5px;
+  }
+  .revision-controls .mono {
+    font-size: 10px;
+  }
+  .canvas-tools {
+    bottom: 15px;
+    left: 16px;
+    padding: 3px 5px !important;
+  }
+  .canvas-tools button {
+    padding: 7px 8px;
+  }
+  .inspector,
+  body[data-direction="atlas"] .inspector {
+    box-shadow: none;
+  }
+  .workspace-notice {
+    padding: 7px 15px;
+    font-size: 10px;
+  }
+  .history-view {
+    padding: 20px 18px;
+  }
+  .history-heading h2 {
+    font-size: 19px;
+  }
+  .change-heading {
+    align-items: flex-start;
+  }
+  .change-heading button {
+    max-width: 130px;
+  }
+  .reviewbar > span:first-child {
+    display: none;
+  }
+  .reviewbar > span:last-child {
+    margin: auto;
+    font-size: 9px;
+  }
+  .matrix {
+    padding: 15px;
+  }
+  .graph-lane > span {
+    font-size: 9px;
+    margin: 12px 8px;
+  }
+}
+@media (max-width: 420px) {
+  .graph-toolbar {
+    gap: 6px;
+  }
+  .graph-toolbar select {
+    max-width: 120px;
+  }
+  .crumb > span:last-of-type {
+    display: none;
+  }
+  .search-button kbd {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* At distant zoom, preserve node bounds/positions and keep identity readable. */
+.zoom-overview .node strong,
+.zoom-overview .node svg,
+.zoom-overview .node-type,
+.zoom-overview .graph-lane > span {
+  display: none !important;
+}
+.zoom-overview .node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.zoom-overview .node .node-meta {
+  margin: 0;
+  justify-content: center;
+}
+.zoom-overview .node .node-meta .mono {
+  font-size: calc(10px / var(--camera-zoom));
+}
