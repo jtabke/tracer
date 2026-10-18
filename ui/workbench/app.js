@@ -1,3 +1,5 @@
+import { createDomBindings } from "./dom-bindings.ts";
+import { escapeHtml as escape, mono } from "./html.ts";
 import { renderInspector, renderEdgeDetail } from "./inspector-renderer.ts";
 import { createInspectorBindings } from "./inspector-bindings.ts";
 import { createRelationshipScopeEditor } from "./relationship-scope-editor.ts";
@@ -52,6 +54,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   const app = document.querySelector("#app"),
     dialog = document.querySelector("#workspace-dialog");
   const inspectorInteractions = createInspectorInteractions(app);
+  const workspaceBindings = createDomBindings(app);
+  const { on, click } = workspaceBindings;
   const currentProject = params.get("project") ?? "default";
   const evidenceWorkspace = native ? createEvidenceWorkspace(native.mutations) : null;
   const projectTools = native
@@ -364,13 +368,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     expand,
     openAdd,
   });
-  const escape = (text) =>
-    String(text ?? "").replace(
-      /[&<>"']/g,
-      (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char],
-    );
   const e = escape;
-  const mono = (text) => `<span class="mono">${e(text)}</span>`;
   const inspectorContext = {
     ...editingContext,
     data: () => data,
@@ -752,6 +750,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   function render() {
     inspectorInteractions.capture();
     inspectorBindings.dispose();
+    workspaceBindings.dispose();
     graphInput.unbind();
     function renderPendingSaveBanner() {
       return native && native.mutations.snapshot().status === "unknown"
@@ -1628,95 +1627,77 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     render();
   }
   function bind() {
-    const recipe = app.querySelector("#matrix-recipe");
-    if (recipe) recipe.onchange = () => matrixRecipes.load(recipe.value);
+    workspaceBindings.reset();
+    const change = (selector, handle) => on(selector, "change", handle);
+    change("#matrix-recipe", (recipe) => matrixRecipes.load(recipe.value));
     inspectorBindings.bind();
-    app
-      .querySelector("#database-picker")
-      ?.addEventListener("change", (event) => switchDatabase(event.target.value));
+    change("#database-picker", (control) => switchDatabase(control.value));
     for (const field of ["direction", "depth"])
-      app.querySelector(`#focus-form [name="${field}"]`)?.addEventListener("change", (event) => {
-        state.focusConfig[field] =
-          field === "depth" ? Number(event.target.value) : event.target.value;
+      change(`#focus-form [name="${field}"]`, (control) => {
+        state.focusConfig[field] = field === "depth" ? Number(control.value) : control.value;
       });
-    app.querySelector("#node-detail")?.addEventListener("change", (event) => {
-      state.density = event.target.value;
+    change("#node-detail", (control) => {
+      state.density = control.value;
       render();
     });
-    app.querySelector("#trace-column-count")?.addEventListener("change", (event) => {
-      configureMatrixColumns(Number(event.target.value));
+    change("#trace-column-count", (control) => {
+      configureMatrixColumns(Number(control.value));
     });
-    const configSummary = app.querySelector(".trace-config-toggle > summary");
-    if (configSummary)
-      configSummary.onclick = () => {
-        state.matrixConfigOpen = !configSummary.parentElement.open;
-      };
-    app.querySelectorAll("[data-matrix-mode]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          state.matrixMode = button.dataset.matrixMode;
-          render();
-        }),
+    click(".trace-config-toggle > summary", (summary) => {
+      state.matrixConfigOpen = !summary.parentElement.open;
+    });
+    click("[data-matrix-mode]", (button) => {
+      state.matrixMode = button.dataset.matrixMode;
+      render();
+    });
+    click("[data-cell-source]", (button) =>
+      openConnect(null, {
+        source: button.dataset.cellSource,
+        target: button.dataset.cellTarget,
+      }),
     );
-    app.querySelectorAll("[data-cell-source]").forEach(
-      (button) =>
-        (button.onclick = () =>
-          openConnect(null, {
-            source: button.dataset.cellSource,
-            target: button.dataset.cellTarget,
-          })),
-    );
-    app.querySelectorAll("[data-add-stage]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          const step = state.matrixSteps[Number(button.dataset.addStage)];
-          const targets = [...model.records.values()].filter(
-            (record) => record.type === step.targetType,
-          );
-          openDialog(
-            "Connect recorded work",
-            `<div class="stage-targets">${targets.map((record) => `<button data-stage-target="${e(record.key)}">${mono(record.key)} ${e(record.title)}</button>`).join("") || "<p>Create an artifact of this type first.</p>"}</div>`,
-          );
-          dialog.querySelectorAll("[data-stage-target]").forEach(
-            (target) =>
-              (target.onclick = () => {
-                dialog.close();
-                openConnect(null, {
-                  source: button.dataset.source,
-                  target: target.dataset.stageTarget,
-                });
-                const select = dialog.querySelector("#connection-type");
-                if ([...select.options].some((option) => option.value === step.type))
-                  select.value = step.type;
-              }),
-          );
-        }),
-    );
-    app.querySelector("#trace-root-type")?.addEventListener("change", (event) => {
-      state.matrixRootType = event.target.value;
+    click("[data-add-stage]", (button) => {
+      const step = state.matrixSteps[Number(button.dataset.addStage)];
+      const targets = [...model.records.values()].filter(
+        (record) => record.type === step.targetType,
+      );
+      openDialog(
+        "Connect recorded work",
+        `<div class="stage-targets">${targets.map((record) => `<button data-stage-target="${e(record.key)}">${mono(record.key)} ${e(record.title)}</button>`).join("") || "<p>Create an artifact of this type first.</p>"}</div>`,
+      );
+      dialog.querySelectorAll("[data-stage-target]").forEach(
+        (target) =>
+          (target.onclick = () => {
+            dialog.close();
+            openConnect(null, {
+              source: button.dataset.source,
+              target: target.dataset.stageTarget,
+            });
+            const select = dialog.querySelector("#connection-type");
+            if ([...select.options].some((option) => option.value === step.type))
+              select.value = step.type;
+          }),
+      );
+    });
+    change("#trace-root-type", (control) => {
+      state.matrixRootType = control.value;
       configureMatrixColumns();
     });
-    app.querySelectorAll("[data-trace-relation]").forEach(
-      (select) =>
-        (select.onchange = () => {
-          const index = Number(select.dataset.traceRelation);
-          const source = index ? state.matrixSteps[index - 1].targetType : state.matrixRootType;
-          state.matrixSteps[index] = matrixColumnChoices(data.schema, source).find(
-            (choice) => choice.type === select.value,
-          );
-          configureMatrixColumns();
-        }),
-    );
-    app.querySelectorAll("[data-trace-target]").forEach(
-      (select) =>
-        (select.onchange = () => {
-          state.matrixSteps[Number(select.dataset.traceTarget)].targetType = select.value;
-          configureMatrixColumns();
-        }),
-    );
-    app.querySelector("#matrix-search")?.addEventListener("input", (event) => {
-      const start = event.target.selectionStart;
-      state.matrixSearch = event.target.value;
+    change("[data-trace-relation]", (select) => {
+      const index = Number(select.dataset.traceRelation);
+      const source = index ? state.matrixSteps[index - 1].targetType : state.matrixRootType;
+      state.matrixSteps[index] = matrixColumnChoices(data.schema, source).find(
+        (choice) => choice.type === select.value,
+      );
+      configureMatrixColumns();
+    });
+    change("[data-trace-target]", (select) => {
+      state.matrixSteps[Number(select.dataset.traceTarget)].targetType = select.value;
+      configureMatrixColumns();
+    });
+    on("#matrix-search", "input", (control) => {
+      const start = control.selectionStart;
+      state.matrixSearch = control.value;
       state.matrixCell = null;
       state.matrixAnchor = null;
       render();
@@ -1724,7 +1705,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       input.focus();
       input.setSelectionRange(start, start);
     });
-    function handleAdjacencyKey(event) {
+    function handleAdjacencyKey(_button, event) {
       const button = event.currentTarget;
       if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
       const cell = button.closest("td"),
@@ -1742,129 +1723,92 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         target.focus();
       }
     }
-    app
-      .querySelectorAll(".matrix table:not([role=grid]) button")
-      .forEach((button) => button.addEventListener("keydown", handleAdjacencyKey));
-    app.querySelectorAll("[data-action]").forEach((button) => {
-      if (!button.closest(".inspector")) button.onclick = () => action(button.dataset.action);
+    on(".matrix table:not([role=grid]) button", "keydown", handleAdjacencyKey);
+    click("[data-action]:not(.inspector [data-action])", (button) => action(button.dataset.action));
+    click("[data-view]", (button) => changePerspective(button.dataset.view));
+    click("[data-density]", (button) => {
+      state.density = button.dataset.density;
+      render();
     });
-    app
-      .querySelectorAll("[data-view]")
-      .forEach((button) => (button.onclick = () => changePerspective(button.dataset.view)));
-    app.querySelectorAll("[data-density]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          state.density = button.dataset.density;
-          render();
-        }),
-    );
-    app.querySelectorAll("[data-open-artifact]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          if (
-            state.visible.size >= MAX_VISIBLE &&
-            !state.visible.has(button.dataset.openArtifact)
-          ) {
-            notify("50-artifact graph limit reached.");
-            render();
-            return;
-          }
-          visitRevision(head);
-          state.visible.add(button.dataset.openArtifact);
-          state.selected = button.dataset.openArtifact;
-          state.inspector = true;
-          changePerspective("graph");
-        }),
-    );
-    app.querySelectorAll("[data-event]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          pickEvent(button.dataset.event, { showHistory: true });
-        }),
-    );
-    app
-      .querySelectorAll("[data-revision]")
-      .forEach((button) => (button.onclick = () => visitRevision(button.dataset.revision)));
-    app.querySelectorAll("[data-matrix-edge]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          state.edge = button.dataset.matrixEdge;
-          state.inspector = true;
-          state.historySubject = null;
-          render();
-          app
-            .querySelector(".matrix .selected-link")
-            ?.scrollIntoView({ block: "nearest", inline: "nearest" });
-        }),
-    );
+    click("[data-open-artifact]", (button) => {
+      if (state.visible.size >= MAX_VISIBLE && !state.visible.has(button.dataset.openArtifact)) {
+        notify("50-artifact graph limit reached.");
+        render();
+        return;
+      }
+      visitRevision(head);
+      state.visible.add(button.dataset.openArtifact);
+      state.selected = button.dataset.openArtifact;
+      state.inspector = true;
+      changePerspective("graph");
+    });
+    click("[data-event]", (button) => {
+      pickEvent(button.dataset.event, { showHistory: true });
+    });
+    click("[data-revision]", (button) => visitRevision(button.dataset.revision));
+    click("[data-matrix-edge]:not([role=grid] [data-matrix-edge])", (button) => {
+      state.edge = button.dataset.matrixEdge;
+      state.inspector = true;
+      state.historySubject = null;
+      render();
+      app
+        .querySelector(".matrix .selected-link")
+        ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
     for (const id of ["link-filter", "matrix-filter"])
-      document.querySelector("#" + id)?.addEventListener("change", (event) => {
-        state.filter = event.target.value;
+      change("#" + id, (control) => {
+        state.filter = control.value;
         render();
       });
-    document.querySelector("#event-filter")?.addEventListener("change", (event) => {
-      state.timelineFilter = event.target.value;
+    change("#event-filter", (control) => {
+      state.timelineFilter = control.value;
       state.historyLimit = 30;
       render();
     });
-    app.querySelectorAll("[data-review-artifact]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          if (
-            !state.visible.has(button.dataset.reviewArtifact) &&
-            state.visible.size >= MAX_VISIBLE
-          ) {
-            notify("50-artifact graph limit reached.");
-            render();
-            return;
-          }
-          state.visible.add(button.dataset.reviewArtifact);
-          state.selected = button.dataset.reviewArtifact;
-          state.inspector = true;
-          state.artifactFull = false;
-          state.inlineField = null;
-          state.editing = false;
-          state.edge = null;
-          render();
-        }),
-    );
-    document.querySelector("#matrix-scope")?.addEventListener("change", (event) => {
-      state.matrixScope = event.target.value;
+    click("[data-review-artifact]", (button) => {
+      if (!state.visible.has(button.dataset.reviewArtifact) && state.visible.size >= MAX_VISIBLE) {
+        notify("50-artifact graph limit reached.");
+        render();
+        return;
+      }
+      state.visible.add(button.dataset.reviewArtifact);
+      state.selected = button.dataset.reviewArtifact;
+      state.inspector = true;
+      state.artifactFull = false;
+      state.inlineField = null;
+      state.editing = false;
+      state.edge = null;
+      render();
+    });
+    change("#matrix-scope", (control) => {
+      state.matrixScope = control.value;
       state.matrixCell = null;
       state.matrixAnchor = null;
       render();
     });
-    document
-      .querySelector("#revision-range")
-      ?.addEventListener("change", (event) => visitRevision(event.target.value));
-    document.querySelector("#focus-form")?.addEventListener("submit", (event) => {
+    change("#revision-range", (control) => visitRevision(control.value));
+    on("#focus-form", "submit", (form, event) => {
       event.preventDefault();
-      const fields = new FormData(event.target);
+      const fields = new FormData(form);
       state.focusConfig = {
         direction: fields.get("direction"),
         depth: Number(fields.get("depth")),
       };
       action("focus");
     });
-    document.querySelector("#timeline-scope")?.addEventListener("change", (event) => {
-      state.timelineScope = event.target.value;
+    change("#timeline-scope", (control) => {
+      state.timelineScope = control.value;
       render();
     });
-    app.querySelectorAll("[data-axis-event]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          state.timelineFilter = state.timelineScope === "project" ? "project" : "selected";
-          pickEvent(button.dataset.axisEvent, { showHistory: true });
-        }),
-    );
-    app.querySelectorAll("[data-path-link]").forEach(
-      (button) =>
-        (button.onclick = () => {
-          state.edge = button.dataset.pathLink;
-          state.inspector = true;
-          render();
-        }),
-    );
+    click("[data-axis-event]", (button) => {
+      state.timelineFilter = state.timelineScope === "project" ? "project" : "selected";
+      pickEvent(button.dataset.axisEvent, { showHistory: true });
+    });
+    click("[data-path-link]", (button) => {
+      state.edge = button.dataset.pathLink;
+      state.inspector = true;
+      render();
+    });
     if (state.perspective === "matrix" && state.matrixMode === "traceability") {
       if (state.matrixDraft)
         app
@@ -2039,6 +1983,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     keydown: handleWorkspaceKey,
     suspend: () => {
       inspectorBindings.dispose();
+      workspaceBindings.dispose();
       graphInput.unbind();
       gridEditor.dispose();
     },

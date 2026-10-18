@@ -88,9 +88,6 @@ export function createMatrixInput(get: () => MatrixContext, actions: MatrixActio
       if (target.closest("[data-cell-add]")) actions.beginEdit(row, column, "add");
     }
     cell.addEventListener("click", click, { signal });
-    // Generic relationship inspection must not run before cell selection.
-    for (const button of cell.querySelectorAll<HTMLButtonElement>("[data-matrix-edge]"))
-      button.onclick = null;
     cell.addEventListener(
       "dblclick",
       (event) => {

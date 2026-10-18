@@ -2,6 +2,14 @@
 
 Updated 2026-10-18. Verification dates appear with each maintenance round. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
 
+## Workbench binding and markup reduction
+
+2026-10-18: replaced repeated selector/loop/handler wiring with shared typed direct-listener setup used by the workbench and inspector. Workspace rerender and cached-page suspension dispose old handlers; return binds the current DOM. Complex actions, dialog callbacks, global keyboard/resize, graph/Matrix gestures, draft capture and save/reconciliation keep their existing owners. Shared HTML escaping and identifier markup remove duplicate encoding code without changing output or native command paths.
+
+Changed production UI sources fall from 2,699 to 2,662 lines: **37 fewer production lines**, including all 40 lines in the two new helpers. Added tests and documentation are excluded from that production count. The main controller falls from 2,055 to 2,000 lines; this round measures net reduction across modules rather than file movement.
+
+Added a literal-text/quoted-attribute escaping regression check and browser journeys covering detached navigation/search/detail/filter controls, suspension, retained filters and current-control recovery without native writes. Grid selection/editing and ordinary relationship-table inspection have explicit separate ownership, removing the old `onclick` clearing workaround; a regression journey verifies both behaviors. The focused inspector/workbench checks pass. Paired builds over the same disposable medical fixture match all 53 Matrix/inspector markup and screenshot pairs byte-for-byte across desktop, drawer, narrow and phone layouts without native writes. The full `npm run check` passed formatting, strict types, UI lint, 412 unit tests, 175 browser tests, production/harness builds, all workbench scenarios and dependency/duplication/complexity gates. No quality thresholds or exclusions changed.
+
 ## Typed Matrix editor
 
 2026-10-18: replaced the remaining 410-line Matrix editor JavaScript module with a strict TypeScript draft/save/cancel controller and a separate typed grid/popover renderer. `MatrixEditorContext` extends the established cell/row/draft/action contracts with the current head, mutation status and workspace-owned commit callback. Root, artifact and relationship variants narrow explicitly; replacement drafts retain their captured relationship versions. Consolidated identical rendered Save/Cancel lock checks, reused the shared graph visibility limit and removed an unused selection helper. This is an ownership/type-checking improvement, not a total-code reduction.

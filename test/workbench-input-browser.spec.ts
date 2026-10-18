@@ -235,3 +235,59 @@ for (const width of [1440, 680, 390]) {
     expect(app.errors).toEqual([]);
   });
 }
+
+test("workspace controls discard detached listeners and resume one scope after page suspension", async ({
+  page,
+  app,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(app.origin);
+  await expect(page.locator(".node").first()).toBeVisible();
+  const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
+  const oldMatrix = await page.locator('[data-view="matrix"]').elementHandle();
+  const oldSearch = await page.locator('[data-action="search"]').elementHandle();
+  const oldDetail = await page.locator("#node-detail").elementHandle();
+  const density = await page.locator("#node-detail").inputValue();
+  await page.setViewportSize({ width: 1441, height: 1000 });
+  await expect.poll(() => oldMatrix!.evaluate((element) => element.isConnected)).toBe(false);
+  for (const button of [oldMatrix, oldSearch])
+    await button!.evaluate((element) =>
+      element.dispatchEvent(new MouseEvent("click", { bubbles: true })),
+    );
+  await oldDetail!.evaluate((element) => {
+    if (!(element instanceof HTMLSelectElement)) throw new Error("Expected detail selection");
+    element.value = "full";
+    element.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(page.locator('[data-view="graph"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#workspace-dialog")).not.toBeVisible();
+  await expect(page.locator("#node-detail")).toHaveValue(density);
+  await page.locator('[data-view="matrix"]').click();
+  const search = page.locator("#matrix-search");
+  const oldInput = await search.elementHandle();
+  await search.fill("Retained filter");
+  await oldInput!.evaluate((element) => {
+    if (!(element instanceof HTMLInputElement)) throw new Error("Expected Matrix search");
+    element.value = "Detached filter";
+    element.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await expect(search).toHaveValue("Retained filter");
+  await page.evaluate(() =>
+    window.dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true })),
+  );
+  await page.locator('[data-view="graph"]').dispatchEvent("click");
+  await page.locator('[data-action="search"]').dispatchEvent("click");
+  await expect(page.locator('[data-view="matrix"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#workspace-dialog")).not.toBeVisible();
+  await page.evaluate(() =>
+    window.dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true })),
+  );
+  await expect(search).toHaveValue("Retained filter");
+  await page.locator('[data-action="search"]').click();
+  await expect(page.locator("#search")).toBeFocused();
+  await page.keyboard.press("Escape");
+  await page.locator('[data-view="graph"]').click();
+  await expect(page.locator('[data-view="graph"]')).toHaveAttribute("aria-pressed", "true");
+  expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
+  expect(app.errors).toEqual([]);
+});

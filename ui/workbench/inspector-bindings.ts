@@ -1,3 +1,4 @@
+import { createDomBindings } from "./dom-bindings.ts";
 import { textDraftChanged, type TextField } from "./artifact-draft.ts";
 import type { EditingContext } from "./editing-context.ts";
 import type { createInspectorInteractions } from "./inspector-interactions.ts";
@@ -38,15 +39,10 @@ function isTextField(value: string | undefined): value is TextField {
 // One binding lifetime per rendered inspector, including detached DOM and bfcache suspension.
 export function createInspectorBindings(options: Options) {
   const { app, state, render, notify } = options;
-  let controller: AbortController | undefined;
-  function dispose() {
-    controller?.abort();
-    controller = undefined;
-  }
+  const bindings = createDomBindings(app);
+  const clicks = bindings.click;
   function bind() {
-    dispose();
-    controller = new AbortController();
-    const { signal } = controller;
+    const signal = bindings.reset();
     options.bindRelationshipScope(signal);
     options.interactions.bind(
       {
@@ -67,14 +63,6 @@ export function createInspectorBindings(options: Options) {
       },
       signal,
     );
-    function clicks(selector: string, handle: (button: HTMLElement) => void) {
-      app.querySelectorAll<HTMLElement>(selector).forEach((button) => {
-        function handleInspectorClick() {
-          handle(button);
-        }
-        button.addEventListener("click", handleInspectorClick, { signal });
-      });
-    }
     clicks(".inspector [data-action]", (button) => options.action(button.dataset.action!));
     clicks("[data-related]", (button) => {
       const key = button.dataset.related!;
@@ -180,5 +168,5 @@ export function createInspectorBindings(options: Options) {
       first?.focus();
     }
   }
-  return { bind, dispose, trapFocus };
+  return { bind, dispose: bindings.dispose, trapFocus };
 }

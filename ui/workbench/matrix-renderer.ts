@@ -1,3 +1,4 @@
+import { escapeHtml as esc, mono } from "./html.ts";
 import { inRange } from "./matrix-selection.ts";
 import { duplicateTarget } from "./matrix-proposal.ts";
 import { requiredField } from "./authoring-policy.ts";
@@ -16,16 +17,8 @@ type MatrixRenderContext = Pick<
   MatrixEditorContext,
   "state" | "projection" | "model" | "data" | "head" | "native"
 >;
-const characters: Record<string, string> = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-  "'": "&#39;",
-};
-const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, (char) => characters[char]);
 const keyName = (record: Pick<WorkspaceEntity, "key" | "title">) =>
-  `<span class="mono">${esc(record.key)}</span><strong>${esc(record.title)}</strong>`;
+  `${mono(record.key)}<strong>${esc(record.title)}</strong>`;
 
 const shortTypes: Record<string, string> = {
   verification_protocol: "verification",

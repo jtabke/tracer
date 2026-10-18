@@ -527,3 +527,30 @@ for (const width of [1440, 680, 390]) {
     expect(app.errors).toEqual([]);
   });
 }
+
+test("Matrix grid owns cell editing while relationship tables retain direct inspection", async ({
+  page,
+  app,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(app.origin + "/?view=matrix");
+  const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
+  await page.locator('[data-grid-col="1"] [data-grid-artifact]').first().dblclick();
+  await expect(page.locator("#matrix-cell-form")).toHaveAttribute(
+    "aria-label",
+    "Replace relationship target",
+  );
+  await expect(page.locator(".chosen-target")).toContainText("SYS-03");
+  await page.locator("[data-cell-cancel]").click();
+  await expect(page.locator('[data-grid-row="0"][data-grid-col="1"]')).toBeFocused();
+  await page.locator('[data-matrix-mode="relationships"]').click();
+  const edge = page.locator(".matrix table:not([role=grid]) [data-matrix-edge]").first();
+  const id = await edge.getAttribute("data-matrix-edge");
+  await edge.click();
+  await expect(page.locator(".relationship-inspector")).toHaveAttribute(
+    "data-inspector-context",
+    `relationship:${id}`,
+  );
+  expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
+  expect(app.errors).toEqual([]);
+});

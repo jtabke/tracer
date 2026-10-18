@@ -59,7 +59,7 @@ Generated builds, dependency installs, caches, local databases, environment file
 
 Keep projection/geometry policies independent of React and use strict TypeScript contracts for new policy/lifecycle modules. Keep drafts, working view and native mutation ownership explicit. A retained snapshot supplies display context; it does not authorize writes.
 
-An effect that registers a listener or schedules frames must release both on cleanup. Cancel pending work when its scope changes; coalesce repeated resize work. Follow [React's effect dependency guidance](https://react.dev/learn/removing-effect-dependencies): dependencies must reflect the values the effect reads, rather than hiding stale closures. Preserve different map/walker camera policies when sharing lifecycle code.
+Use `ui/workbench/dom-bindings.ts` for direct listeners on replacing workbench DOM: reset for each render and dispose on replacement/suspension. Share literal markup encoding through `ui/workbench/html.ts`. An effect that registers a listener or schedules frames must release both on cleanup. Cancel pending work when its scope changes; coalesce repeated resize work. Follow [React's effect dependency guidance](https://react.dev/learn/removing-effect-dependencies): dependencies must reflect the values the effect reads, rather than hiding stale closures. Preserve different map/walker camera policies when sharing lifecycle code.
 
 Test meaningful invariants such as cancellation between frames, exact recorded identity, deterministic layout/label behavior, nonmutation of snapshots and real browser return/resize flows. Use disposable example databases for workflow checks. Extract behavior around a clear responsibility; file splitting alone is not a reduction in total code or complexity.
 
