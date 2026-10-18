@@ -529,3 +529,59 @@ test("CLI saved views are version-guarded presentation metadata and command erro
     assert.equal(help.stderr, "");
     assert.equal(existsSync(helpDb), false);
   }));
+
+test("simple CLI writes reject unsupported IDs, guards and typos without adding revisions", () => {
+  fixture(({ cli, invoke }) => {
+    const f = seed(cli);
+    const before = cli("changeset", "list");
+    for (const [kind, action, args, input, property] of [
+      [
+        "entity",
+        "create",
+        [],
+        { type: "item", fields: { title: "Rejected" }, id: "supplied" },
+        "id",
+      ],
+      [
+        "entity",
+        "update",
+        [f.output.id, "1"],
+        { fields: { title: "Rejected" }, fiellds: {} },
+        "fiellds",
+      ],
+      [
+        "relationship",
+        "create",
+        [],
+        {
+          type: "depends_on",
+          source: f.output.id,
+          target: f.hardware.id,
+          fields: {},
+          expectedEndpoints: { sourceVersion: 1, targetVersion: 1 },
+        },
+        "expectedEndpoints",
+      ],
+      [
+        "relationship",
+        "create",
+        [],
+        {
+          type: "depends_on",
+          source: f.output.id,
+          target: f.hardware.id,
+          fields: {},
+          rejectExisting: true,
+        },
+        "rejectExisting",
+      ],
+    ] as const) {
+      const result = invoke("--schema-version", "1", kind, action, ...args, JSON.stringify(input));
+      assert.equal(result.status, 1);
+      const error = JSON.parse(result.stderr);
+      assert.equal(error.error, "validation");
+      assert.deepEqual(error.details.path, [property]);
+    }
+    assert.deepEqual(cli("changeset", "list"), before);
+  });
+});

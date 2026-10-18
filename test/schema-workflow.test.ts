@@ -121,6 +121,7 @@ test("example workflows remain project owned, validate against permissions and r
 test("legacy enrichment is reviewable, leaves native state unchanged and preserves authored flow", async () => {
   const legacy = structuredClone(projectTemplates.engineering.schema);
   delete legacy.relationshipTypes.tested_by;
+  delete legacy.coverageExpectations;
   for (const definition of Object.values(legacy.relationshipTypes)) delete definition.workflow;
   const before = structuredClone(legacy);
   const proposal = workflowProposal(legacy);

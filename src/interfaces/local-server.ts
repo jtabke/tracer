@@ -4,10 +4,11 @@ import type { Socket } from "node:net";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readFile, realpath } from "node:fs/promises";
 import { resolve, extname, sep } from "node:path";
-import { TracerError, ensure, record } from "../core/model.ts";
+import { TracerError, ensure, record, knownProperties } from "../core/model.ts";
 import type { Schema, ObjectQuery, HistoryQuery } from "../core/model.ts";
 import type { Tracer } from "../application/service.ts";
 import { demoGuide } from "./demo-guide.ts";
+import { serializeProjectExport, type ProjectExport } from "../core/project-export.ts";
 import type { DemoGuide } from "./demo-guide.ts";
 import type { ChangesetInput } from "../application/commands.ts";
 import type { MatrixQuery, TableQuery } from "../application/views.ts";
@@ -120,9 +121,16 @@ async function nativeMutation(tracer: Tracer, path: string, input: Record<string
         actor: "local-ui",
       });
     case "/api/schema":
-      return tracer.setSchema(input.schema as Schema, input.expectedVersion as number, {
-        actor: "local-ui",
-        reason: "Define project schema",
+      knownProperties(input, ["schema", "expectedVersion", "initialViews"]);
+      return tracer.setSchema({
+        schema: input.schema as Schema,
+        expectedVersion: input.expectedVersion as number,
+        ...(input.initialViews === undefined
+          ? {}
+          : {
+              initialViews: input.initialViews as import("../core/presentation.ts").InitialView[],
+            }),
+        provenance: { actor: "local-ui", reason: "Define project schema" },
       });
     case "/api/changesets":
       return tracer.applyChangeset(input as ChangesetInput, {
@@ -143,6 +151,8 @@ async function readQuery(
   context: { token: string; guide: DemoGuide | null; projects: { id: string; title: string }[] },
 ): Promise<{ handled: true; value: unknown } | { handled: false }> {
   const projections: Record<string, (filters: ReturnType<typeof query>) => Promise<unknown>> = {
+    "/api/next-work": (filters) =>
+      tracer.getNextWork(filters as import("../core/next-work.ts").NextWorkQuery),
     "/api/table": (filters) => tracer.getTable(filters as TableQuery),
     "/api/matrix": (filters) => tracer.getMatrix(filters as MatrixQuery),
     "/api/entities": (filters) => tracer.queryEntities(filters as ObjectQuery),
@@ -166,6 +176,10 @@ async function readQuery(
   const projection = projections[url.pathname];
   if (projection) return { handled: true, value: await projection(query(url)) };
   const resources: Record<string, () => unknown> = {
+    "/api/project-export": () => {
+      noFilters(url, "Project export accepts no filters");
+      return tracer.exportProject();
+    },
     "/api/coverage-expectations": () =>
       tracer.coverage.list(query(url) as import("../core/coverage.ts").CoverageListQuery),
     "/api/coverage": () =>
@@ -342,6 +356,11 @@ async function serveRead(
 ) {
   const result = await readQuery(tracer, url, context);
   if (result.handled) {
+    if (url.pathname === "/api/project-export") {
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(serializeProjectExport(result.value as ProjectExport));
+      return;
+    }
     send(200, result.value);
     return;
   }

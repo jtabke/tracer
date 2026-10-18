@@ -126,6 +126,15 @@ function provenanceProperty(value: object, name: string): unknown {
 export function record(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
+export function knownProperties(value: object, allowed: string[], path: (string | number)[] = []) {
+  for (const key of Object.keys(value))
+    ensure(
+      allowed.includes(key),
+      "validation",
+      `Unknown property at ${[...path, key].join(".")}. Allowed properties: ${allowed.join(", ")}`,
+      { path: [...path, key] },
+    );
+}
 // Check container shape without evaluating getters or traversing child values.
 function jsonContainer(item: object) {
   if (!Array.isArray(item) && ![Object.prototype, null].includes(Object.getPrototypeOf(item)))
@@ -159,56 +168,125 @@ export function json(value: unknown): value is Json {
   };
   return valid(value);
 }
-export function validateSchema(value: unknown): asserts value is Schema {
+function schemaProperties(value: Record<string, unknown>) {
+  knownProperties(value, [
+    "entityTypes",
+    "relationshipTypes",
+    "coverageExpectations",
+    "id",
+    "version",
+  ]);
+  for (const group of ["entityTypes", "relationshipTypes"]) {
+    const definitions = value[group];
+    if (!record(definitions)) continue;
+    for (const [name, definition] of Object.entries(definitions))
+      definitionProperties(definition, group, [group, name]);
+  }
+  coverageProperties(value.coverageExpectations);
+}
+function definitionProperties(value: unknown, group: string, path: (string | number)[]) {
+  if (!record(value)) return;
+  knownProperties(
+    value,
+    group === "entityTypes" ? ["fields"] : ["fields", "source", "target", "workflow"],
+    path,
+  );
+  if (record(value.fields))
+    for (const [field, rule] of Object.entries(value.fields)) {
+      if (record(rule)) knownProperties(rule, ["type", "required"], [...path, "fields", field]);
+    }
+  if (Array.isArray(value.workflow))
+    value.workflow.forEach((route, index) => {
+      if (record(route))
+        knownProperties(
+          route,
+          ["source", "target", "direction", "label", "feedback"],
+          [...path, "workflow", index],
+        );
+    });
+}
+function coverageProperties(value: unknown) {
+  if (!record(value)) return;
+  for (const [name, rule] of Object.entries(value)) {
+    const path = ["coverageExpectations", name];
+    if (!record(rule)) continue;
+    knownProperties(
+      rule,
+      ["name", "subject", "relationshipType", "direction", "related", "minimumDistinctTargets"],
+      path,
+    );
+    for (const side of ["subject", "related"]) {
+      const population = rule[side];
+      if (!record(population)) continue;
+      knownProperties(population, ["type", "filter"], [...path, side]);
+      if (record(population.filter))
+        knownProperties(population.filter, ["field", "equals"], [...path, side, "filter"]);
+    }
+  }
+}
+function schemaMetadata(value: Record<string, unknown>) {
+  ensure(
+    value.id === undefined || value.id === "project",
+    "validation",
+    "Schema ID must be project",
+  );
+  ensure(
+    value.version === undefined ||
+      (Number.isSafeInteger(value.version) && Number(value.version) >= 0),
+    "validation",
+    "Schema version must be a nonnegative integer",
+  );
+}
+function fieldDefinition(name: string, field: unknown) {
+  ensure(
+    name.trim() &&
+      record(field) &&
+      typeof field.type === "string" &&
+      ["string", "number", "boolean", "json"].includes(field.type) &&
+      (field.required === undefined || typeof field.required === "boolean"),
+    "validation",
+    "Invalid field definition",
+  );
+}
+function typeDefinitions(definitions: Record<string, unknown>) {
+  for (const [name, definition] of Object.entries(definitions)) {
+    ensure(
+      name.trim() && record(definition) && record(definition.fields),
+      "validation",
+      "Types need a name and fields",
+    );
+    for (const [field, rule] of Object.entries(definition.fields)) fieldDefinition(field, rule);
+  }
+}
+function relationshipDefinitions(definitions: Record<string, unknown>, entityTypes: object) {
+  for (const definition of Object.values(definitions)) {
+    const rule = definition as RelationshipDefinition;
+    for (const types of [rule.source, rule.target])
+      ensure(
+        types === undefined ||
+          (Array.isArray(types) &&
+            types.every((type) => typeof type === "string" && Object.hasOwn(entityTypes, type))),
+        "validation",
+        "Endpoint constraint refers to an unknown entity type",
+      );
+    ensure(
+      validWorkflow(rule.workflow, entityTypes, rule),
+      "validation",
+      "Workflow routes need declared endpoints, direction and a label; duplicate paths are not allowed",
+    );
+  }
+}
+export function validateSchema(value: unknown, strictProperties = true): asserts value is Schema {
   ensure(
     json(value) && record(value) && record(value.entityTypes) && record(value.relationshipTypes),
     "validation",
     "Schema needs entityTypes and relationshipTypes",
   );
-  for (const definitions of [value.entityTypes, value.relationshipTypes]) {
-    for (const [name, definition] of Object.entries(definitions)) {
-      ensure(
-        name.trim() && record(definition) && record(definition.fields),
-        "validation",
-        "Types need a name and fields",
-      );
-      for (const [name, field] of Object.entries(definition.fields)) {
-        ensure(
-          name.trim() &&
-            record(field) &&
-            typeof field.type === "string" &&
-            ["string", "number", "boolean", "json"].includes(field.type) &&
-            (field.required === undefined || typeof field.required === "boolean"),
-          "validation",
-          "Invalid field definition",
-        );
-      }
-    }
-  }
-  for (const definition of Object.values(value.relationshipTypes)) {
-    for (const constraint of ["source", "target"]) {
-      const types = (definition as Record<string, unknown>)[constraint];
-      ensure(
-        types === undefined ||
-          (Array.isArray(types) &&
-            types.every(
-              (type) =>
-                typeof type === "string" && Object.hasOwn(value.entityTypes as object, type),
-            )),
-        "validation",
-        "Endpoint constraint refers to an unknown entity type",
-      );
-    }
-    ensure(
-      validWorkflow(
-        (definition as RelationshipDefinition).workflow,
-        value.entityTypes as object,
-        definition as RelationshipDefinition,
-      ),
-      "validation",
-      "Workflow routes need declared endpoints, direction and a label; duplicate paths are not allowed",
-    );
-  }
+  if (strictProperties) schemaProperties(value);
+  schemaMetadata(value);
+  typeDefinitions(value.entityTypes);
+  typeDefinitions(value.relationshipTypes);
+  relationshipDefinitions(value.relationshipTypes, value.entityTypes);
   ensure(
     validCoverageExpectations(value.coverageExpectations, value as Schema),
     "validation",

@@ -3,6 +3,8 @@ Usage: node src/interfaces/cli.ts [OPTIONS] COMMAND
 Options (before command): --db project.sqlite --actor local --reason text
                          --schema-version N (required for individual data writes)
 Commands:
+  next-work get [QUERY_JSON]            five separate current-work queues; requirementType/statementField/allocationExpectationId/verificationExpectationId
+  project export                       canonical JSON; current state, recorded history/evidence and captures
   schema preview JSON                 ({schema,expectedVersion,limit?}; read only)
   entity get ID
   relationship get ID

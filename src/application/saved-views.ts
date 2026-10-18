@@ -1,8 +1,8 @@
 import { snapshotInput } from "../core/input-snapshot.ts";
-import { ensure, json, record } from "../core/model.ts";
+import { ensure, json, record, knownProperties } from "../core/model.ts";
 import type { SchemaObject } from "../core/model.ts";
 import { viewDefinition } from "../core/presentation.ts";
-import type { SavedView, ViewDefinition } from "../core/presentation.ts";
+import type { SavedView, ViewDefinition, InitialView } from "../core/presentation.ts";
 import type { Repository, Transaction } from "../persistence/contracts.ts";
 import { validateChainSteps } from "./chain.ts";
 
@@ -67,7 +67,7 @@ export class SavedViews {
   }
   async save(input: ViewSave): Promise<SavedView> {
     input = snapshotInput(input);
-    const { name, definition } = saveInput(input);
+    saveInput(input);
     return this.repository.transaction(async (tx) => {
       const schema = (await tx.get("schema", "project")) as SchemaObject | undefined;
       ensure(
@@ -75,29 +75,7 @@ export class SavedViews {
         "schema_conflict",
         "Model changed; refresh before saving the view",
       );
-      await validateScope(tx, schema, definition);
-      const views = await tx.listViews();
-      const before = input.id === undefined ? undefined : await tx.getView(input.id);
-      if (input.id !== undefined) ensure(before, "not_found", "Saved view was removed");
-      ensure(
-        (before?.version ?? 0) === input.expectedVersion,
-        "conflict",
-        "Saved view changed; refresh and review before retrying",
-      );
-      ensure(
-        !views.some((view) => view.name === name && view.id !== input.id),
-        "validation",
-        "A saved view already uses this name",
-      );
-      ensure(before || views.length < 50, "validation", "Project supports at most 50 saved views");
-      const value = {
-        id: before?.id ?? this.newId(),
-        name,
-        definition,
-        version: input.expectedVersion + 1,
-      };
-      await tx.saveView(value, input.expectedVersion);
-      return value;
+      return saveInTransaction(tx, schema, input, this.newId);
     });
   }
   async remove(id: string, expectedVersion: number) {
@@ -111,6 +89,63 @@ export class SavedViews {
       "Delete needs a saved view identity and version",
     );
     return this.repository.transaction((tx) => tx.removeView(id, expectedVersion));
+  }
+}
+
+async function saveInTransaction(
+  tx: Transaction,
+  schema: SchemaObject,
+  input: ViewSave,
+  newId: () => string,
+): Promise<SavedView> {
+  const { name, definition } = saveInput(input);
+  await validateScope(tx, schema, definition);
+  const views = await tx.listViews();
+  const before = input.id === undefined ? undefined : await tx.getView(input.id);
+  if (input.id !== undefined) ensure(before, "not_found", "Saved view was removed");
+  ensure(
+    (before?.version ?? 0) === input.expectedVersion,
+    "conflict",
+    "Saved view changed; refresh and review before retrying",
+  );
+  ensure(
+    !views.some((view) => view.name === name && view.id !== input.id),
+    "validation",
+    "A saved view already uses this name",
+  );
+  ensure(before || views.length < 50, "validation", "Project supports at most 50 saved views");
+  const value = {
+    id: before?.id ?? newId(),
+    name,
+    definition,
+    version: input.expectedVersion + 1,
+  };
+  await tx.saveView(value, input.expectedVersion);
+  return value;
+}
+export async function initializeViews(
+  tx: Transaction,
+  schema: SchemaObject,
+  input: InitialView[] | undefined,
+  newId: () => string,
+) {
+  if (input === undefined) return;
+  ensure(
+    Array.isArray(input) && input.length <= 10,
+    "validation",
+    "Initial setup supports at most ten named views",
+  );
+  for (const [index, view] of input.entries()) {
+    ensure(record(view), "validation", "Initial view must be an object", {
+      path: ["initialViews", index],
+    });
+    knownProperties(view, ["name", "definition"], ["initialViews", index]);
+    await saveInTransaction(
+      tx,
+      schema,
+      { ...view, expectedVersion: 0, expectedSchemaVersion: schema.version },
+      newId,
+    );
   }
 }
 

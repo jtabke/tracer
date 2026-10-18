@@ -30,6 +30,9 @@ export type * from "./application/commands.ts";
 export type * from "./application/views.ts";
 export type * from "./core/schema-preview.ts";
 export type * from "./core/project-snapshot.ts";
+export type * from "./core/project-export.ts";
+export type * from "./core/next-work.ts";
+export { serializeProjectExport } from "./core/project-export.ts";
 export type * from "./core/configuration.ts";
 export type * from "./core/baseline.ts";
 export type { Repository, Transaction } from "./persistence/contracts.ts";
@@ -41,3 +44,8 @@ export type * from "./core/working-context.ts";
 export type * from "./core/presentation.ts";
 export type * from "./core/schema-workflow.ts";
 export type { ViewSave } from "./application/saved-views.ts";
+
+export { parseCsv } from "./core/csv.ts";
+export { previewCsvImport } from "./core/csv-import.ts";
+export type * from "./core/csv-import-types.ts";
+export type { CsvTable, CsvRow } from "./core/csv.ts";

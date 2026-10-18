@@ -18,3 +18,17 @@ export function expectVersion(
     },
   );
 }
+
+export function expectProjectRevision(actual: number, expected: number) {
+  ensure(
+    Number.isSafeInteger(expected) && expected >= 0,
+    "validation",
+    "Expected project revision must be a nonnegative integer",
+  );
+  ensure(
+    actual === expected,
+    "conflict",
+    `Project changed since preview (expected r${expected}, current r${actual}). Create a new preview.`,
+    { path: ["expectedProjectRevision"], expectedVersion: expected, actualVersion: actual },
+  );
+}

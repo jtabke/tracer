@@ -3,12 +3,17 @@ import { dataCommands } from "./cli-data.ts";
 import { evidenceCommands } from "./cli-evidence.ts";
 import { projectionCommands, legacyProjectionCommands } from "./cli-projections.ts";
 import { savedViewCommands } from "./cli-saved-views.ts";
-import type { CliContext } from "./cli-input.ts";
+import { arity, queryInput, type CliContext, type CliCommand } from "./cli-input.ts";
 import { baselineCommands } from "./cli-baselines.ts";
 import { coverageCommands } from "./cli-coverage.ts";
 import { impactCommands } from "./cli-impact.ts";
 
-const commands = {
+const commands: Record<string, CliCommand> = {
+  "next-work get": ({ tracer, args }) => tracer.getNextWork(queryInput(args)),
+  "project export": ({ tracer, args }: CliContext) => {
+    arity(args, 0);
+    return tracer.exportProject();
+  },
   ...dataCommands,
   ...evidenceCommands,
   ...projectionCommands,

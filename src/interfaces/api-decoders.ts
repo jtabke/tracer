@@ -40,7 +40,8 @@ import {
 } from "./decode.ts";
 
 const schema: Decoder<SchemaObject> = (value) => {
-  validateSchema(value);
+  // Historical schemas may contain extension properties accepted by older writers.
+  validateSchema(value, false);
   object({ id: literal("project"), version: number })(value);
   return value as SchemaObject;
 };
@@ -256,7 +257,76 @@ function delta<T>(value: Decoder<T>) {
     after: nullable(value),
   });
 }
+const workRecord = object({
+  id: text,
+  type: text,
+  key: optional(text),
+  version: integer(1),
+  title: text,
+});
+const workEvidence = object({
+  receiptId: text,
+  output: workRecord,
+  outcome: text,
+  changedInputs: integer(),
+  unknownInputs: integer(),
+  reviewState: literal("unreviewed", "accepted", "acknowledged", "needs_reevaluation"),
+  reviewReason: text,
+});
+function workQueue<T>(item: Decoder<T>) {
+  return object({
+    available: boolean,
+    explanation: text,
+    evaluated: integer(),
+    items: array(item),
+  });
+}
 const reads: { [K in ReadPath]: Decoder<ReadResponse<K>> } = {
+  "/api/next-work": object({
+    schema: nullable(schema),
+    projectRevision: integer(),
+    evidenceRevision: integer(),
+    schemaVersion: integer(),
+    selection: object({
+      requirementType: text,
+      statementField: text,
+      allocationExpectationId: text,
+      verificationExpectationId: text,
+    }),
+    queues: object({
+      statements: workQueue(workRecord),
+      allocation: workQueue(workRecord),
+      verification: workQueue(workRecord),
+      changedEvidence: workQueue(workEvidence),
+      reviews: workQueue(workEvidence),
+    }),
+  }),
+  "/api/project-export": object({
+    format: literal("tracer-project-export"),
+    formatVersion: literal(1),
+    scope: object({
+      nativeHistory: literal("all-recorded"),
+      evidence: literal("all-recorded"),
+      externalContent: literal("references-only"),
+    }),
+    projectRevision: integer(),
+    evidenceRevision: integer(),
+    current: object({
+      schema: nullable(schema),
+      entities: array(entity),
+      relationships: array(relationship),
+    }),
+    provenance: object({ changesets: array(changeset), revisions: array(revision) }),
+    evidence: object({
+      external: array(external),
+      observations: array(observation),
+      receipts: array(receipt),
+      reviews: array(review),
+    }),
+    configurations: array(configuration),
+    baselines: array(baseline),
+    savedViews: array(savedView),
+  }),
   "/api/working-context": workingContextDecoder(schema, entity, relationship, workingComparison),
   "/api/impact": object({
     context: object({

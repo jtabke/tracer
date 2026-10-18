@@ -7,3 +7,6 @@ export type ProjectSnapshot = {
   entities: Entity[];
   relationships: Relationship[];
 };
+
+export const MAP_RECORD_LIMIT = 10_000;
+export const MAP_CONNECTION_LIMIT = 100_000;

@@ -41,7 +41,7 @@ export const dataCommands: Record<string, CliCommand> = {
     tracer.queryRelationships(queryInput<RelationshipQuery>(args)),
   "entity create": (context) =>
     context.tracer.createEntity(
-      requiredInput<EntityInput>(context.args),
+      requiredInput<EntityInput>(context.args, ["type", "key", "fields"]),
       expectedSchema(context),
       context.origin,
     ),
@@ -50,7 +50,7 @@ export const dataCommands: Record<string, CliCommand> = {
     return context.tracer.updateEntity(
       context.args[0],
       Number(context.args[1]),
-      jsonInput<EntityEdit>(context.args[2]),
+      jsonInput<EntityEdit>(context.args[2], ["key", "fields"]),
       expectedSchema(context),
       context.origin,
     );
@@ -72,7 +72,7 @@ export const dataCommands: Record<string, CliCommand> = {
   },
   "relationship create": (context) =>
     context.tracer.createRelationship(
-      requiredInput<RelationshipInput>(context.args),
+      requiredInput<RelationshipInput>(context.args, ["type", "source", "target", "fields"]),
       expectedSchema(context),
       context.origin,
     ),
@@ -81,7 +81,7 @@ export const dataCommands: Record<string, CliCommand> = {
     return context.tracer.updateRelationship(
       context.args[0],
       Number(context.args[1]),
-      jsonInput<RelationshipInput>(context.args[2]),
+      jsonInput<RelationshipInput>(context.args[2], ["type", "source", "target", "fields"]),
       expectedSchema(context),
       context.origin,
     );

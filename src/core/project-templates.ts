@@ -1,3 +1,5 @@
+import { engineeringStarter, engineeringViews } from "./engineering-starter.ts";
+import type { ChainView } from "./presentation.ts";
 import type { Schema } from "./model.ts";
 
 function schema(outputs: string[]): Schema {
@@ -59,14 +61,18 @@ function schema(outputs: string[]): Schema {
 }
 
 /** Starter schemas only; users' stored schemas remain authoritative. No approval policy. */
-export const projectTemplates: Record<string, { label: string; schema: Schema }> = {
+export const projectTemplates: Record<
+  string,
+  { label: string; schema: Schema; views?: { name: string; definition: ChainView }[] }
+> = {
   software: {
     label: "Software — intents, requirements, code, designs and tests",
     schema: schema(["code", "design", "test"]),
   },
   engineering: {
     label: "Engineering — intents, requirements, designs and tests",
-    schema: schema(["design", "test"]),
+    schema: engineeringStarter(schema(["design", "test"])),
+    views: engineeringViews,
   },
 };
 

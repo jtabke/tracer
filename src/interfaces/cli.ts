@@ -6,6 +6,7 @@ import { dispatchCli } from "./cli-dispatch.ts";
 import { cliHelp } from "./cli-help.ts";
 import { cliOptions } from "./cli-input.ts";
 import { observeLocal } from "./local-observer.ts";
+import { serializeProjectExport, type ProjectExport } from "../core/project-export.ts";
 
 let repository: SQLiteRepository | undefined;
 try {
@@ -15,7 +16,9 @@ try {
     repository = new SQLiteRepository(options.db);
     const tracer = new Tracer(repository, undefined, observeLocal);
     const result = await dispatchCli({ tracer, ...options });
-    console.log(JSON.stringify(result, null, 2));
+    if (options.tokens[0] === "project" && options.tokens[1] === "export")
+      process.stdout.write(serializeProjectExport(result as ProjectExport));
+    else console.log(JSON.stringify(result, null, 2));
   }
 } catch (error) {
   console.error(

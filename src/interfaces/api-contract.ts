@@ -66,6 +66,14 @@ import type { DemoGuide } from "./demo-guide.ts";
 
 /** The local wire contract. Callers select an endpoint, never a response type. */
 export type ReadApi = {
+  "/api/next-work": {
+    query: import("../core/next-work.ts").NextWorkQuery;
+    response: import("../core/next-work.ts").NextWork;
+  };
+  "/api/project-export": {
+    query: Record<string, never>;
+    response: import("../core/project-export.ts").ProjectExport;
+  };
   "/api/projects": { query: Record<string, never>; response: { id: string; title: string }[] };
   "/api/project-snapshot": {
     query: Record<string, never>;
@@ -107,7 +115,14 @@ export type ReadApi = {
 export type WriteApi = {
   "/api/coverage-expectations": { input: CoverageSet; response: SchemaObject };
   "/api/baselines": { input: BaselineInput; response: Baseline };
-  "/api/schema": { input: { schema: Schema; expectedVersion: number }; response: SchemaObject };
+  "/api/schema": {
+    input: {
+      schema: Schema;
+      expectedVersion: number;
+      initialViews?: import("../core/presentation.ts").InitialView[];
+    };
+    response: SchemaObject;
+  };
   "/api/changesets": {
     input: ChangesetInput;
     response: { changeset: Changeset; results: (Entity | Relationship | Deletion)[] };

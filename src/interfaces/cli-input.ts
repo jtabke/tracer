@@ -1,4 +1,4 @@
-import { TracerError, ensure, record } from "../core/model.ts";
+import { TracerError, ensure, record, knownProperties } from "../core/model.ts";
 import type { Provenance } from "../core/model.ts";
 import type { Tracer } from "../application/service.ts";
 
@@ -47,7 +47,7 @@ export function arity(args: string[], min: number, max = min) {
     "Wrong number of arguments; use --help",
   );
 }
-export function jsonInput<T>(value: string | undefined): T {
+export function jsonInput<T>(value: string | undefined, allowed?: string[]): T {
   ensure(value, "usage", "Missing JSON input");
   let result: unknown;
   try {
@@ -56,15 +56,16 @@ export function jsonInput<T>(value: string | undefined): T {
     throw new TracerError("usage", "Invalid JSON input");
   }
   ensure(record(result), "usage", "Input must be a JSON object");
+  if (allowed) knownProperties(result, allowed);
   return result as T;
 }
 export function queryInput<T>(args: string[]): T {
   arity(args, 0, 1);
   return args[0] ? jsonInput<T>(args[0]) : ({} as T);
 }
-export function requiredInput<T>(args: string[]): T {
+export function requiredInput<T>(args: string[], allowed?: string[]): T {
   arity(args, 1);
-  return jsonInput<T>(args[0]);
+  return jsonInput<T>(args[0], allowed);
 }
 export function expectedSchema(context: CliContext): number {
   const version = context.schemaVersion;

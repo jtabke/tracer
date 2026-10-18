@@ -24,6 +24,7 @@ export type ChainView = {
   steps: { type: string; relationshipType: string; direction: "incoming" | "outgoing" }[];
 };
 export type ViewDefinition = FamilyView | ChainView;
+export type InitialView = { name: string; definition: ViewDefinition };
 export type SavedView = { id: string; name: string; version: number; definition: ViewDefinition };
 
 function keys(value: unknown, allowed: string[]): asserts value is Record<string, unknown> {

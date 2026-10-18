@@ -15,7 +15,12 @@ export type Operation =
     }
   | { op: "relationship.update"; id: string; expectedVersion: number; input: RelationshipInput }
   | { op: "relationship.remove"; id: string; expectedVersion: number };
-export type ChangesetInput = { expectedSchemaVersion: number; operations: Operation[] };
+export type ChangesetInput = {
+  expectedSchemaVersion: number;
+  /** Optional exact native head captured by a reviewed proposal. */
+  expectedProjectRevision?: number;
+  operations: Operation[];
+};
 export type Deletion = { id: string; version: number; deleted: true };
 
 export type WriteContext = { expectedSchemaVersion: number; provenance: Provenance };
@@ -37,7 +42,12 @@ export type CreateRelationshipCommand = RelationshipInput &
 export type UpdateRelationshipCommand = RelationshipInput &
   WriteContext & { id: string; expectedVersion: number };
 export type RemoveRelationshipCommand = WriteContext & { id: string; expectedVersion: number };
-export type SetSchemaCommand = { schema: Schema; expectedVersion: number; provenance: Provenance };
+export type SetSchemaCommand = {
+  schema: Schema;
+  expectedVersion: number;
+  provenance: Provenance;
+  initialViews?: import("../core/presentation.ts").InitialView[];
+};
 export type ChangesetCommand = ChangesetInput & { provenance: Provenance };
 export type ChangesetResult = {
   changeset: Changeset;

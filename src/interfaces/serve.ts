@@ -80,7 +80,7 @@ if (
 if (secondaryGuidePath && !secondaryDb)
   throw new Error("--secondary-guide requires --secondary-db");
 if (seeded && secondaryDb)
-  throw new Error("--seed-demo creates isolated projects; do not combine it with --secondary-db");
+  throw new Error("--seed-demo creates an isolated project; do not combine it with --secondary-db");
 if (seeded) {
   const destination = join(tmpdir(), "tracer-demo-" + crypto.randomUUID());
   const project =
@@ -100,17 +100,8 @@ if (seeded) {
       `Example walkthrough: ${project.directory}/GUIDE.md\nTrace queries and task URLs: ${project.directory}/tasks.json`,
     );
   }
-  const companion = await seedRealisticProject(
-    join(tmpdir(), "tracer-demo-" + crypto.randomUUID()),
-    demoSize === "medical" ? "integrated" : "medical",
-  );
-  secondaryDb = companion.database;
-  secondaryGuidePath = join(companion.directory, "tasks.json");
   console.log(
-    `Second isolated project: ${companion.directory}\nResume both: npm start -- --db ${JSON.stringify(db)}${guidePath ? ` --guide ${JSON.stringify(guidePath)}` : ""} --secondary-db ${JSON.stringify(secondaryDb)} --secondary-guide ${JSON.stringify(secondaryGuidePath)}`,
-  );
-  console.log(
-    `Seeded isolated demo: ${project.directory}\nFixtures retained after shutdown. Restart with: npm start -- --db ${JSON.stringify(db)}${guidePath ? ` --guide ${JSON.stringify(guidePath)}` : ""}\nEach demo launch creates a fresh project. Changes persist in the printed database; use --db to resume.`,
+    `Example project: ${project.directory}\nEach demo launch creates a fresh project. Saved edits remain in its database; use Resume saved setup below to reopen it.`,
   );
 }
 if (guidePath) guide = await readDemoGuide(guidePath);
@@ -136,7 +127,19 @@ try {
         ]
       : [],
   );
-  console.log(`Tracer: ${server.origin}/\nDatabase: ${resolve(db)}\nCtrl+C to close.`);
+  const resume = [
+    "npm start -- --db",
+    shellArgument(resolve(db)),
+    "--port",
+    new URL(server.origin).port || "80",
+  ];
+  if (guidePath) resume.push("--guide", shellArgument(resolve(guidePath)));
+  if (secondaryDb) resume.push("--secondary-db", shellArgument(resolve(secondaryDb)));
+  if (secondaryGuidePath)
+    resume.push("--secondary-guide", shellArgument(resolve(secondaryGuidePath)));
+  console.log(
+    `Tracer: ${server.origin}/\nDatabase: ${resolve(db)}\nResume saved setup: ${resume.join(" ")}\nCtrl+C to close.`,
+  );
   let closing = false;
   const stop = async () => {
     if (closing) return;
@@ -151,4 +154,8 @@ try {
   repository.close();
   secondaryRepository?.close();
   throw error;
+}
+
+function shellArgument(value: string) {
+  return "'" + value.replaceAll("'", `'"'"'`) + "'";
 }

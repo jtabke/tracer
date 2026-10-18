@@ -3,8 +3,8 @@ import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
 import type { ProjectSnapshot } from "../core/project-snapshot.ts";
 import type { Transaction } from "../persistence/contracts.ts";
 
-export const MAP_RECORD_LIMIT = 10_000;
-export const MAP_CONNECTION_LIMIT = 100_000;
+import { MAP_RECORD_LIMIT, MAP_CONNECTION_LIMIT } from "../core/project-snapshot.ts";
+export { MAP_RECORD_LIMIT, MAP_CONNECTION_LIMIT } from "../core/project-snapshot.ts";
 
 export async function projectSnapshot(tx: Transaction): Promise<ProjectSnapshot> {
   const entities = (await boundedObjects(tx, "entity", MAP_RECORD_LIMIT)) as Entity[];

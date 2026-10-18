@@ -2,7 +2,7 @@ import { validateNativeEntity, validateNativeRelationship } from "./native-valid
 import { previewSchema } from "./schema-preview.ts";
 import type { SchemaPreviewInput } from "../core/schema-preview.ts";
 import { captureCommand } from "./native-command.ts";
-import { expectVersion } from "./version-guard.ts";
+import { expectProjectRevision, expectVersion } from "./version-guard.ts";
 import { readNative } from "./native-read.ts";
 import type {
   CreateEntityCommand,
@@ -22,6 +22,9 @@ import type {
   ErrorDetails,
 } from "../core/model.ts";
 import { projectSnapshot } from "./project-snapshot.ts";
+import { projectExport } from "./project-export.ts";
+import { nextWork } from "./next-work.ts";
+import type { NextWorkQuery } from "../core/next-work.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { NativeQueries } from "./native-queries.ts";
 import { WorkingContextService } from "./working-context.ts";
@@ -76,7 +79,7 @@ import type {
 } from "./views.ts";
 
 import { Configurations } from "./configurations.ts";
-import { SavedViews } from "./saved-views.ts";
+import { SavedViews, initializeViews } from "./saved-views.ts";
 import { Baselines } from "./baselines.ts";
 import { Coverage } from "./coverage.ts";
 import { ChangeImpactService } from "./impact.ts";
@@ -114,6 +117,13 @@ export class Tracer {
   getNativePin(id: string, version: number) {
     return this.repository.transaction((tx) => pinEntity(tx, id, version));
   }
+  /** Export current native state and all recorded provenance/evidence in one read snapshot. */
+  exportProject() {
+    return projectExport(this.repository);
+  }
+  getNextWork(query: NextWorkQuery = {}) {
+    return nextWork(this.repository, query);
+  }
   private expected(
     actual: number,
     expected: number,
@@ -136,6 +146,13 @@ export class Tracer {
         ? captureCommand(value as SetSchemaCommand)
         : { schema: value as Schema, expectedVersion: version, provenance: provenance! };
     const origin = validateProvenance(request.provenance);
+    const initialViews =
+      "initialViews" in request ? snapshotInput(request.initialViews) : undefined;
+    ensure(
+      initialViews === undefined || request.expectedVersion === 0,
+      "validation",
+      "Initial views can only be installed with a new project model",
+    );
     const schema = snapshotInput(request.schema);
     const expectedVersion = request.expectedVersion;
     validateSchema(schema);
@@ -160,6 +177,7 @@ export class Tracer {
       };
       await tx.beginChangeset(this.runtime.newId(), result.version, origin);
       await tx.save("schema", result, expectedVersion);
+      await initializeViews(tx, result, initialViews, () => this.runtime.newId());
       return result;
     });
   }
@@ -182,6 +200,8 @@ export class Tracer {
     );
     return this.repository.transaction(async (tx) => {
       const schema = await this.schema(tx, input.expectedSchemaVersion);
+      if (input.expectedProjectRevision !== undefined)
+        expectProjectRevision(await tx.headRevision(), input.expectedProjectRevision);
       const changeset = await tx.beginChangeset(this.runtime.newId(), schema.version, origin);
       const results: (Entity | Relationship | Deletion)[] = [];
       for (const operation of input.operations)
