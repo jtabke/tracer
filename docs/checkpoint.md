@@ -2,6 +2,12 @@
 
 Updated 2026-10-18. Verification dates appear with each maintenance round. Design decisions belong in [UX planning](ux-plan.md); contracts belong in [architecture](architecture.md).
 
+## Typed workspace snapshot ownership
+
+2026-10-18: added `workspace-session.ts` as the strict TypeScript owner of loaded workspace data, the derived head and historical snapshot cache. The workbench uses current session providers rather than separately assigning data/head/cache in four refresh paths. Explicit confirmed-save, Project tools refresh, pending-save inspection and editor-save inspection reasons preserve their different assessment/evidence updates. Rendering retains its existing model-refresh points; current-only local overlays preserve recorded historical projections.
+
+Native loading, mutation control, successful-read-before-acknowledgment ordering, read locks, retained drafts and captured save versions keep their existing controllers. Six unit cases cover adoption policies, caller-owned locks/drafts, same-head cache invalidation and historical/local-overlay isolation. Three added browser journeys verify confirmed-save/failed-refresh recovery and both uncertain-save inspection surfaces: failed reads prevent acknowledgment, proposals survive and writes are never replayed. Paired production builds over the same disposable medical fixture match all 53 Matrix/inspector markup and screenshot pairs byte-for-byte across desktop, drawer, narrow and phone layouts without native writes; published illustrations remain unchanged. The controller falls from 2,000 to 1,988 lines; the new 58-line owner makes this a net addition of 46 production lines, an ownership/type-checking improvement rather than a code reduction. The full `npm run check` passed formatting, strict types, UI lint, 418 unit tests, 178 browser tests, production/harness builds, all workbench scenarios and dependency/duplication/complexity gates. No quality thresholds or exclusions changed.
+
 ## Workbench binding and markup reduction
 
 2026-10-18: replaced repeated selector/loop/handler wiring with shared typed direct-listener setup used by the workbench and inspector. Workspace rerender and cached-page suspension dispose old handlers; return binds the current DOM. Complex actions, dialog callbacks, global keyboard/resize, graph/Matrix gestures, draft capture and save/reconciliation keep their existing owners. Shared HTML escaping and identifier markup remove duplicate encoding code without changing output or native command paths.

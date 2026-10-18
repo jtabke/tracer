@@ -1,3 +1,4 @@
+import { createWorkspaceSession } from "./workspace-session.ts";
 import { createDomBindings } from "./dom-bindings.ts";
 import { escapeHtml as escape, mono } from "./html.ts";
 import { renderInspector, renderEdgeDetail } from "./inspector-renderer.ts";
@@ -34,22 +35,22 @@ import {
   potentialPaths,
 } from "./workspace-journeys.mjs";
 import { MAX_VISIBLE, typeName, titleCase } from "./presentation.ts";
-import { snapshotAt, significantEvents, diffAt } from "./workspace-history.ts";
+import { significantEvents, diffAt } from "./workspace-history.ts";
 import { allowedTypes } from "./relationship-policy.ts";
 export async function startWorkbench({ staticData, staticDatabases } = {}) {
   const params = new URLSearchParams(location.search);
   const native = staticData ? null : await import("./native-client.ts");
   document.querySelector("#app").textContent = "Loading workspace…";
-  let data;
+  let initialData;
   try {
-    data = native ? await native.initialize() : await staticData();
+    initialData = native ? await native.initialize() : await staticData();
   } catch (error) {
     document.querySelector("#app").textContent =
       `The database could not be loaded. ${error.message}`;
     throw error;
   }
 
-  let head = data.snapshotReference.revision;
+  const workspace = createWorkspaceSession(initialData);
   document.body.classList.toggle("presentation", !staticData || params.has("presentation"));
   const app = document.querySelector("#app"),
     dialog = document.querySelector("#workspace-dialog");
@@ -64,16 +65,16 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
         selected: () => state.selected,
         settled: () => render(),
         onMap: () => openDevelopmentMap(),
-        current: () => state.revision === head && !state.readBlocked && !state.saving,
+        current: () => state.revision === workspace.head && !state.readBlocked && !state.saving,
       })
     : null;
   let databases = native ? native.projects.map((project) => ({ ...project, url: null })) : [];
   if (!native && staticDatabases) databases = await staticDatabases();
   const state = {
     ...createNavigationState(
-      data.trace.root,
-      data.trace.keys,
-      head,
+      workspace.data.trace.root,
+      workspace.data.trace.keys,
+      workspace.head,
       params.get("view"),
       innerWidth > 1050,
     ),
@@ -117,18 +118,20 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   };
   initializeMatrixColumns();
   function initializeMatrixColumns() {
-    if (!data.schema.entityTypes.product_requirement) {
-      const first = data.entities.find((record) => record.key === data.trace.root);
-      state.matrixRootType = first?.type ?? Object.keys(data.schema.entityTypes)[0];
+    if (!workspace.data.schema.entityTypes.product_requirement) {
+      const first = workspace.data.entities.find(
+        (record) => record.key === workspace.data.trace.root,
+      );
+      state.matrixRootType = first?.type ?? Object.keys(workspace.data.schema.entityTypes)[0];
       state.matrixSteps = [];
-      let key = data.trace.root;
+      let key = workspace.data.trace.root;
       const followed = new Set();
       for (let index = 0; index < 3; index++) {
-        const link = data.relationships.find(
+        const link = workspace.data.relationships.find(
           (link) => link.source === key && !followed.has(link.id),
         );
         if (!link) break;
-        const target = data.entities.find((record) => record.key === link.target);
+        const target = workspace.data.entities.find((record) => record.key === link.target);
         if (!target) break;
         state.matrixSteps.push({ type: link.type, targetType: target.type });
         followed.add(link.id);
@@ -156,13 +159,13 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     );
   const rememberContext = () => {
     if (!native) return;
-    if (recoveryIdentity !== data.changesets[0]?.id) {
-      recoveryIdentity = data.changesets[0]?.id;
+    if (recoveryIdentity !== workspace.data.changesets[0]?.id) {
+      recoveryIdentity = workspace.data.changesets[0]?.id;
       recovery = createRecovery(workspaceStorage, recoveryIdentity);
     }
     const stored = recovery.save(
       state,
-      head,
+      workspace.head,
       hasDrafts(),
       recoveredUncertain ||
         state.saving ||
@@ -182,7 +185,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   };
   initializeRecovery();
   function adoptInitialMatrix() {
-    if (!native || data.entities.length) return;
+    if (!native || workspace.data.entities.length) return;
     const view = native.savedViews
       .filter(
         (view) =>
@@ -202,9 +205,9 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   }
   function initializeRecovery() {
     if (native) {
-      recoveryIdentity = data.changesets[0]?.id;
+      recoveryIdentity = workspace.data.changesets[0]?.id;
       recovery = createRecovery(workspaceStorage, recoveryIdentity);
-      const saved = recovery.restore(state, head);
+      const saved = recovery.restore(state, workspace.head);
       if (!saved && !params.has("view")) adoptInitialMatrix();
       if (["graph", "matrix", "history"].includes(params.get("view"))) {
         state.perspective = params.get("view");
@@ -232,7 +235,6 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       window.addEventListener("pagehide", rememberContext);
     }
   }
-  const cache = new Map();
   let model;
   const editingContext = {
     app,
@@ -240,10 +242,10 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     state,
     native: Boolean(native),
     model: () => model,
-    schema: () => data.schema,
-    head: () => head,
+    schema: () => workspace.data.schema,
+    head: () => workspace.head,
     refreshModel: () => {
-      model = currentModel();
+      model = workspace.model(state);
     },
     render,
     notify,
@@ -295,10 +297,10 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     inspectRevisionAction,
   } = createWorkspaceNavigation({
     state,
-    head: () => head,
-    trace: () => data.trace,
+    head: () => workspace.head,
+    trace: () => workspace.data.trace,
     relevantFeed,
-    paths: (revision) => potentialPaths(data, revision),
+    paths: (revision) => potentialPaths(workspace.data, revision),
     neighborhood: () =>
       focusedNeighborhood(model, state.selected, {
         ...state.focusConfig,
@@ -340,7 +342,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     state,
     app,
     native: Boolean(native),
-    trace: () => data.trace,
+    trace: () => workspace.data.trace,
     links: () => model.links,
     visibleKeys,
     visibleLinks,
@@ -371,7 +373,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   const e = escape;
   const inspectorContext = {
     ...editingContext,
-    data: () => data,
+    data: () => workspace.data,
     panelMode,
     supportsTextField,
     mono,
@@ -422,20 +424,6 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     state.notice = message;
     document.querySelector("#announcement").textContent = message;
   }
-  function currentModel() {
-    if (!cache.has(state.revision)) cache.set(state.revision, snapshotAt(data, state.revision));
-    const native = cache.get(state.revision),
-      records = new Map(native.records);
-    if (state.revision === head)
-      for (const [key, record] of state.localEntities) records.set(key, record);
-    let links = native.links;
-    if (state.revision === head)
-      links = [
-        ...links.filter((link) => !state.removed.has(link.id)),
-        ...state.localLinks.values(),
-      ];
-    return { records, links };
-  }
   function visibleKeys() {
     if (state.perspective === "graph" && state.pathPreview)
       return state.pathPreview.keys.filter((key) => model.records.has(key));
@@ -455,11 +443,19 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     );
   }
   function panelMode() {
-    const workspace = innerWidth - (innerWidth <= 760 ? 50 : 68);
-    return workspace < 640 ? "sheet" : workspace - state.width - 22 < 640 ? "drawer" : "docked";
+    const availableWidth = innerWidth - (innerWidth <= 760 ? 50 : 68);
+    return availableWidth < 640
+      ? "sheet"
+      : availableWidth - state.width - 22 < 640
+        ? "drawer"
+        : "docked";
   }
-  async function commit(operations, errorElement = null, schemaVersion = data.schema.version) {
-    if (state.saving || state.readBlocked || state.revision !== head) return null;
+  async function commit(
+    operations,
+    errorElement = null,
+    schemaVersion = workspace.data.schema.version,
+  ) {
+    if (state.saving || state.readBlocked || state.revision !== workspace.head) return null;
     state.saving = true;
     inspectorInteractions.busy(true, true);
     const dialogControls = [
@@ -475,14 +471,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     try {
       saved = await native.save(schemaVersion, operations);
       const next = await native.load();
-      data = next;
-      head = next.snapshotReference.revision;
-      cache.clear();
-      state.revision = head;
-      state.event = head;
-      state.assessment = head;
-      state.evidenceEpoch++;
-      model = currentModel();
+      workspace.adopt(next, "saved", state);
+      model = workspace.model(state);
       return saved;
     } catch (error) {
       if (saved) state.readBlocked = true;
@@ -526,7 +516,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
   }
   function relevantFeed() {
-    return historyFeed(data, {
+    return historyFeed(workspace.data, {
       scope: state.timelineFilter,
       key: state.historySubject?.key ?? state.selected,
       linkId: state.historySubject ? state.historySubject.linkId : state.edge,
@@ -565,12 +555,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
           const next = await native.load();
           native.mutations.acknowledge();
           if (matchingReview) state.evidenceDiscard++;
-          state.evidenceEpoch++;
-          data = next;
-          head = next.snapshotReference.revision;
-          cache.clear();
-          state.revision = head;
-          state.event = head;
+          workspace.adopt(next, "pending-inspected", state);
           dialog.close();
           render();
         } catch (error) {
@@ -663,16 +648,11 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     )
       return;
     rememberDraft();
-    const starting = !Object.keys(data.schema.entityTypes).length;
+    const starting = !Object.keys(workspace.data.schema.entityTypes).length;
     try {
-      data = await native.load();
+      workspace.adopt(await native.load(), "refreshed", state);
       if (starting) adoptInitialMatrix();
-      head = data.snapshotReference.revision;
-      cache.clear();
-      state.revision = head;
-      state.event = head;
       state.readBlocked = recoveredUncertain;
-      state.evidenceEpoch++;
       render();
     } catch (error) {
       state.readBlocked = true;
@@ -693,8 +673,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       subject,
       open: state.evidenceOpen,
       visible: Boolean(slot),
-      current: state.revision === head,
-      head,
+      current: state.revision === workspace.head,
+      head: workspace.head,
       epoch: state.evidenceEpoch,
       blocked: state.readBlocked || state.saving,
       discardRevision: state.evidenceDiscard,
@@ -725,15 +705,15 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       state.matrixScroll = { top: previousScroll.scrollTop, left: previousScroll.scrollLeft };
     gridEditor.dispose();
     evidenceWorkspace?.host.remove();
-    model = currentModel();
+    model = workspace.model(state);
     if (!model.records.size) state.inspector = false;
-    if (!state.selected && data.trace.root) {
-      state.selected = data.trace.root;
-      state.visible = new Set(data.trace.keys);
-      state.baseScope = new Set(data.trace.keys);
+    if (!state.selected && workspace.data.trace.root) {
+      state.selected = workspace.data.trace.root;
+      state.visible = new Set(workspace.data.trace.keys);
+      state.baseScope = new Set(workspace.data.trace.keys);
     }
-    if (!data.schema.entityTypes[state.matrixRootType]) {
-      state.matrixRootType = Object.keys(data.schema.entityTypes)[0] ?? "";
+    if (!workspace.data.schema.entityTypes[state.matrixRootType]) {
+      state.matrixRootType = Object.keys(workspace.data.schema.entityTypes)[0] ?? "";
       state.matrixSteps = [];
     }
   }
@@ -784,7 +764,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     function renderAssessmentSummarySlot() {
       return native &&
         !state.evidenceOpen &&
-        state.revision === head &&
+        state.revision === workspace.head &&
         (state.investigation || state.evidenceDirty)
         ? '<div id="evidence-slot"></div>'
         : "";
@@ -797,7 +777,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
 
     function renderRevisionBanner() {
-      return state.revision !== head
+      return state.revision !== workspace.head
         ? `<div class="temporal-context" role="status"><strong>Viewing revision ${state.revision} · Read only</strong><button data-action="latest">Return to latest</button></div>`
         : "";
     }
@@ -815,8 +795,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     function renderAssessmentAction() {
       return native &&
         !state.evidenceOpen &&
-        !(state.revision === head && (state.investigation || state.evidenceDirty))
-        ? `<button data-action="assess-evidence" ${state.revision !== head || !assessmentSubject() ? "disabled" : ""}>${state.evidenceDirty ? "Resume assessment" : "Assess evidence"}</button>`
+        !(state.revision === workspace.head && (state.investigation || state.evidenceDirty))
+        ? `<button data-action="assess-evidence" ${state.revision !== workspace.head || !assessmentSubject() ? "disabled" : ""}>${state.evidenceDirty ? "Resume assessment" : "Assess evidence"}</button>`
         : "";
     }
 
@@ -826,18 +806,20 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       if (state.perspective === "history") return `History · r${state.event}`;
       if (state.perspective === "matrix")
         return state.matrixMode === "traceability" ? "Traceability" : "Relationships";
-      return data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections";
+      return workspace.data.schema.entityTypes.product_requirement
+        ? "Requirement trace"
+        : "Connections";
     }
 
     prepareWorkspaceRender();
     document.body.dataset.panel = panelMode();
     const record = model.records.get(state.selected),
       count = visibleKeys().length,
-      atHead = state.revision === head;
+      atHead = state.revision === workspace.head;
     const workspaceTabs = `<nav class="view-switch workspace-perspectives" aria-label="Workspace perspective">${["graph", "matrix", "history"].map((view) => `<button data-view="${view}" aria-pressed="${state.perspective === view}">${icon(view)}${view[0].toUpperCase() + view.slice(1)}</button>`).join("")}</nav>`;
     app.innerHTML = `<div class="shell"><aside class="rail" aria-label="Project navigation"><div class="brand">${brand}</div><nav class="railnav"><button class="active" data-action="graph" title="Development map">${icon("graph")}</button></nav></aside>
-  <main class="workspace"><header class="topbar"><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}${nextWorkButton()}<button data-action="project-tools">Project tools</button><button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
-  <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderAssessmentAction()}${renderSelectionActions()}</div></section>
+  <main class="workspace"><header class="topbar"><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}${nextWorkButton()}<button data-action="project-tools">Project tools</button><button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
+  <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderAssessmentAction()}${renderSelectionActions()}</div></section>
   ${renderRevisionBanner()}
   ${renderInvestigationBanner()}
   ${renderAssessmentSummarySlot()}
@@ -867,7 +849,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
 
   function graph() {
     if (!model.records.size)
-      return `<section class="empty-workspace"><h2>${data.schema.version ? "Create your first artifact" : "Define your project model"}</h2><p>${data.schema.version ? "Create an item, then connect it to the engineering work it describes." : "Choose the types and relationships your project needs, then create its first item."}</p><button data-action="project-tools">${data.schema.version ? "New item and project tools" : "Configure model and project tools"}</button></section>`;
+      return `<section class="empty-workspace"><h2>${workspace.data.schema.version ? "Create your first artifact" : "Define your project model"}</h2><p>${workspace.data.schema.version ? "Create an item, then connect it to the engineering work it describes." : "Choose the types and relationships your project needs, then create its first item."}</p><button data-action="project-tools">${workspace.data.schema.version ? "New item and project tools" : "Configure model and project tools"}</button></section>`;
     const filterTypes = [
       ...new Set(
         model.links
@@ -897,7 +879,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     const scene = canvas.querySelector(".scene");
     const changed = new Set(
       state.assessment
-        ? diffAt(data, state.assessment)
+        ? diffAt(workspace.data, state.assessment)
             .filter((diff) => diff.kind === "entity")
             .map((diff) => diff.after?.key ?? diff.before?.key)
         : [],
@@ -909,14 +891,14 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         .flatMap((link) => [link.source, link.target]),
     ]);
     scene.querySelector(".node-layer").innerHTML =
-      (visibleKeys().every((key) => data.trace.keys.includes(key))
-        ? `<div class="graph-lane" data-style="left:4%;width:28%"><span>${data.schema.entityTypes.product_requirement ? "Product requirement" : "Selected artifact"}</span></div><div class="graph-lane" data-style="left:37%;width:28%"><span>${data.schema.entityTypes.product_requirement ? "Subsystem allocations" : "Connections"}</span></div><div class="graph-lane" data-style="left:70%;width:28%"><span>${data.schema.entityTypes.product_requirement ? "Verification plan" : "Connected artifacts"}</span></div>`
+      (visibleKeys().every((key) => workspace.data.trace.keys.includes(key))
+        ? `<div class="graph-lane" data-style="left:4%;width:28%"><span>${workspace.data.schema.entityTypes.product_requirement ? "Product requirement" : "Selected artifact"}</span></div><div class="graph-lane" data-style="left:37%;width:28%"><span>${workspace.data.schema.entityTypes.product_requirement ? "Subsystem allocations" : "Connections"}</span></div><div class="graph-lane" data-style="left:70%;width:28%"><span>${workspace.data.schema.entityTypes.product_requirement ? "Verification plan" : "Connected artifacts"}</span></div>`
         : "") +
       visibleKeys()
         .map((key) => {
           const record = model.records.get(key),
             point = projectPoint(state.layout.get(key));
-          return `<button class="node ${state.pathLinkIds ? "path-context" : ""} ${changed.has(key) ? "changed" : ""} ${key === state.selected ? "selected" : ""} ${state.fade && !related.has(key) ? "dim" : ""}" data-key="${e(key)}" data-style="left:${point.x}px;top:${point.y}px" aria-pressed="${key === state.selected}" title="${e(record.title)}" aria-label="${e(key)}: ${e(record.title)}"><span class="node-meta">${icon(record.type)}${mono(key)}${changed.has(key) ? '<span class="change-mark" title="Changed in selected revision">Δ</span>' : ""}${state.localEntities.has(key) && state.revision === head ? '<span class="local-dot" title="Local edit">●</span>' : ""}</span><strong>${e(record.title)}</strong>${state.density === "expanded" ? `<span class="node-type">${e(typeName(record.type))}</span>` : ""}</button>`;
+          return `<button class="node ${state.pathLinkIds ? "path-context" : ""} ${changed.has(key) ? "changed" : ""} ${key === state.selected ? "selected" : ""} ${state.fade && !related.has(key) ? "dim" : ""}" data-key="${e(key)}" data-style="left:${point.x}px;top:${point.y}px" aria-pressed="${key === state.selected}" title="${e(record.title)}" aria-label="${e(key)}: ${e(record.title)}"><span class="node-meta">${icon(record.type)}${mono(key)}${changed.has(key) ? '<span class="change-mark" title="Changed in selected revision">Δ</span>' : ""}${state.localEntities.has(key) && state.revision === workspace.head ? '<span class="local-dot" title="Local edit">●</span>' : ""}</span><strong>${e(record.title)}</strong>${state.density === "expanded" ? `<span class="node-type">${e(typeName(record.type))}</span>` : ""}</button>`;
         })
         .join("");
     applyGeometry(scene);
@@ -936,7 +918,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     return ["decomposes_into", "depends_on"].includes(type) ? "" : "reference-edge";
   }
   function renderEdge(link, d, focused) {
-    return `<g><title>${e(link.source)} → ${e(titleCase(link.type))} → ${e(link.target)}</title><path class="edge ${state.pathLinkIds?.has(link.id) ? "recorded-path" : ""} ${state.assessment && diffAt(data, state.assessment).some((diff) => diff.kind === "relationship" && diff.id === link.id) ? "changed-edge" : ""} ${focused ? "focused" : state.fade ? "dim" : ""} ${edgeRoleClass(link.type)}" d="${d}" marker-end="url(#arrow)"/><path class="edgehit" d="${d}" data-edge="${e(link.id)}" tabindex="0" role="button" aria-label="${e(link.source)} ${e(titleCase(link.type))} ${e(link.target)}"/></g>`;
+    return `<g><title>${e(link.source)} → ${e(titleCase(link.type))} → ${e(link.target)}</title><path class="edge ${state.pathLinkIds?.has(link.id) ? "recorded-path" : ""} ${state.assessment && diffAt(workspace.data, state.assessment).some((diff) => diff.kind === "relationship" && diff.id === link.id) ? "changed-edge" : ""} ${focused ? "focused" : state.fade ? "dim" : ""} ${edgeRoleClass(link.type)}" d="${d}" marker-end="url(#arrow)"/><path class="edgehit" d="${d}" data-edge="${e(link.id)}" tabindex="0" role="button" aria-label="${e(link.source)} ${e(titleCase(link.type))} ${e(link.target)}"/></g>`;
   }
   function drawEdges() {
     const svg = document.querySelector("svg.edges");
@@ -1030,7 +1012,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       })
     )
       toolbarTop = 9;
-    layer.innerHTML = `<div class="node-actions" role="toolbar" aria-label="Actions for ${e(state.selected)}" data-style="left:${toolbarLeft}px;top:${toolbarTop}px"><button data-node-action="expand" title="Expand recorded neighbors">Expand <span>＋</span></button>${state.expansions.has(state.selected) ? '<button data-node-action="collapse">Collapse</button>' : ""}<button data-node-action="connect" ${state.revision !== head ? "disabled" : ""}>Connect</button><button data-node-action="edit" ${state.revision !== head ? "disabled" : ""}>Edit</button><button data-node-action="more" aria-label="More node actions">···</button>${state.more ? `<div class="node-more"><button data-action="details">Inspect</button><button data-action="open-artifact">Open artifact</button><button data-action="pin">${state.pinned.has(state.selected) ? "Unpin position" : "Pin position"}</button><button data-action="focus">Focus neighborhood</button></div>` : ""}</div>`;
+    layer.innerHTML = `<div class="node-actions" role="toolbar" aria-label="Actions for ${e(state.selected)}" data-style="left:${toolbarLeft}px;top:${toolbarTop}px"><button data-node-action="expand" title="Expand recorded neighbors">Expand <span>＋</span></button>${state.expansions.has(state.selected) ? '<button data-node-action="collapse">Collapse</button>' : ""}<button data-node-action="connect" ${state.revision !== workspace.head ? "disabled" : ""}>Connect</button><button data-node-action="edit" ${state.revision !== workspace.head ? "disabled" : ""}>Edit</button><button data-node-action="more" aria-label="More node actions">···</button>${state.more ? `<div class="node-more"><button data-action="details">Inspect</button><button data-action="open-artifact">Open artifact</button><button data-action="pin">${state.pinned.has(state.selected) ? "Unpin position" : "Pin position"}</button><button data-action="focus">Focus neighborhood</button></div>` : ""}</div>`;
     applyGeometry(layer);
     layer
       .querySelectorAll("[data-node-action]")
@@ -1108,7 +1090,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     );
   }
   function investigationContext() {
-    const diff = diffAt(data, state.pathRevision).find(
+    const diff = diffAt(workspace.data, state.pathRevision).find(
       (item) => item.kind === "entity" && (item.after?.key ?? item.before?.key) === state.pathRoot,
     );
     const fields = diff?.fields ?? [];
@@ -1144,12 +1126,8 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         try {
           const next = await native.load();
           native.mutations.acknowledge();
-          data = next;
-          head = next.snapshotReference.revision;
-          cache.clear();
-          state.revision = head;
-          state.event = head;
-          model = currentModel();
+          workspace.adopt(next, "editor-inspected", state);
+          model = workspace.model(state);
           errorElement.append(
             document.createTextNode(
               " Project refreshed. Your proposal is retained; compare it before saving again.",
@@ -1173,7 +1151,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     }
   }
   function matrixHeader() {
-    return `<div class="matrix-actions"><div class="matrix-lenses" role="group" aria-label="Matrix representation"><button data-matrix-mode="traceability" aria-pressed="${state.matrixMode === "traceability"}">Traceability</button><button data-matrix-mode="relationships" aria-pressed="${state.matrixMode === "relationships"}">Relationships</button></div><button data-action="create-artifact" ${state.revision !== head ? "disabled" : ""}>＋ New artifact</button></div>`;
+    return `<div class="matrix-actions"><div class="matrix-lenses" role="group" aria-label="Matrix representation"><button data-matrix-mode="traceability" aria-pressed="${state.matrixMode === "traceability"}">Traceability</button><button data-matrix-mode="relationships" aria-pressed="${state.matrixMode === "relationships"}">Relationships</button></div><button data-action="create-artifact" ${state.revision !== workspace.head ? "disabled" : ""}>＋ New artifact</button></div>`;
   }
   let matrixProjection;
   const gridEditor = createGridEditor(matrixContext);
@@ -1181,8 +1159,8 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     return {
       state,
       model,
-      data,
-      head,
+      data: workspace.data,
+      head: workspace.head,
       native,
       app,
       projection: matrixProjection,
@@ -1201,8 +1179,12 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   const matrixRecipes = native
     ? createMatrixRecipes({
         native,
-        current: () => ({ state, head, schemaVersion: data.schema.version }),
-        canWrite: () => !state.readBlocked && !writesBlocked() && state.revision === head,
+        current: () => ({
+          state,
+          head: workspace.head,
+          schemaVersion: workspace.data.schema.version,
+        }),
+        canWrite: () => !state.readBlocked && !writesBlocked() && state.revision === workspace.head,
         dialog,
         openDialog,
         escape: e,
@@ -1259,7 +1241,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         selectedType !== state.matrixRootType
       ) {
         state.matrixRootType = selectedType;
-        state.matrixSteps = matrixColumns(data.schema, selectedType, [], 3);
+        state.matrixSteps = matrixColumns(workspace.data.schema, selectedType, [], 3);
       }
     }
   }
@@ -1271,7 +1253,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   }
   function traceabilityMatrix() {
     function renderNewMatrixRow() {
-      return native && state.revision === head
+      return native && state.revision === workspace.head
         ? `<tr class="matrix-create-row"><td colspan="${state.matrixSteps.length + 1}"><button data-grid-create-root>＋ New ${e(typeName(state.matrixRootType).toLowerCase())}</button></td></tr>`
         : "";
     }
@@ -1287,7 +1269,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
 
     function renderMatrixCellActions() {
       return state.matrixCell
-        ? `<div class="matrix-cell-actions">${state.matrixAnchor && (state.matrixAnchor.row !== state.matrixCell.row || state.matrixAnchor.column !== state.matrixCell.column) ? '<span class="range-selection-label">Range selected · copy as text</span>' : ""}<button data-grid-edit ${!native || state.revision !== head ? "disabled" : ""}>Edit cell</button>${state.edge ? "<button data-grid-inspect>Inspect relationship</button>" : ""}<button data-grid-show-path>Show ${state.matrixPath?.links.length > state.matrixSteps.length ? "paths" : "path"} on graph</button></div>`
+        ? `<div class="matrix-cell-actions">${state.matrixAnchor && (state.matrixAnchor.row !== state.matrixCell.row || state.matrixAnchor.column !== state.matrixCell.column) ? '<span class="range-selection-label">Range selected · copy as text</span>' : ""}<button data-grid-edit ${!native || state.revision !== workspace.head ? "disabled" : ""}>Edit cell</button>${state.edge ? "<button data-grid-inspect>Inspect relationship</button>" : ""}<button data-grid-show-path>Show ${state.matrixPath?.links.length > state.matrixSteps.length ? "paths" : "path"} on graph</button></div>`
         : "";
     }
 
@@ -1296,7 +1278,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     }
     function renderNextConnection() {
       return connection
-        ? `<div class="connected-next" role="status"><span>Connected to ${mono(connection.target)}</span><button data-connected-graph>View on graph</button><button data-connected-another ${state.revision !== head ? "disabled" : ""}>Add another</button></div>`
+        ? `<div class="connected-next" role="status"><span>Connected to ${mono(connection.target)}</span><button data-connected-graph>View on graph</button><button data-connected-another ${state.revision !== workspace.head ? "disabled" : ""}>Add another</button></div>`
         : "";
     }
 
@@ -1308,10 +1290,10 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
             `<option value="${e(value)}" ${value === selected ? "selected" : ""}>${e(typeName(value))}</option>`,
         )
         .join("");
-    const types = Object.keys(data.schema.entityTypes);
+    const types = Object.keys(workspace.data.schema.entityTypes);
     const columnOptions = (step, index) => {
       const source = index ? state.matrixSteps[index - 1].targetType : state.matrixRootType;
-      const choices = matrixColumnChoices(data.schema, source);
+      const choices = matrixColumnChoices(workspace.data.schema, source);
       return `<select data-trace-relation="${index}" aria-label="Column ${index + 2} relationship">${options(step.type, [...new Set(choices.map((choice) => choice.type))])}</select><select data-trace-target="${index}" aria-label="Column ${index + 2} artifact type">${options(
         step.targetType,
         choices.filter((choice) => choice.type === step.type).map((choice) => choice.targetType),
@@ -1361,7 +1343,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
           `<tr class="${key === state.selected ? "selected" : ""}"><td><button data-related="${e(key)}">${mono(key)}${e(model.records.get(key).title)}</button></td>${keys
             .map((target) => {
               const cell = links.filter((link) => link.source === key && link.target === target);
-              return `<td class="mark ${cell.some((link) => link.id === state.edge) ? "selected-link" : ""}">${cell.length ? cell.map((link) => `<button data-matrix-edge="${e(link.id)}" title="${e(titleCase(link.type))}" aria-label="${key} ${e(titleCase(link.type))} ${target}">${link.type === "verified_by" ? "◇" : "●"}</button>`).join("") : state.revision === head && allowedTypes(data.schema, model.records.get(key), model.records.get(target)).length ? `<button data-cell-source="${e(key)}" data-cell-target="${e(target)}" aria-label="Connect ${e(key)} to ${e(target)}" title="Create a typed relationship">＋</button>` : "·"}</td>`;
+              return `<td class="mark ${cell.some((link) => link.id === state.edge) ? "selected-link" : ""}">${cell.length ? cell.map((link) => `<button data-matrix-edge="${e(link.id)}" title="${e(titleCase(link.type))}" aria-label="${key} ${e(titleCase(link.type))} ${target}">${link.type === "verified_by" ? "◇" : "●"}</button>`).join("") : state.revision === workspace.head && allowedTypes(workspace.data.schema, model.records.get(key), model.records.get(target)).length ? `<button data-cell-source="${e(key)}" data-cell-target="${e(target)}" aria-label="Connect ${e(key)} to ${e(target)}" title="Create a typed relationship">＋</button>` : "·"}</td>`;
             })
             .join("")}</tr>`,
       )
@@ -1422,22 +1404,23 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     }
 
     function renderChange() {
-      return data.changesets.find((item) => item.projectRevision === state.event);
+      return workspace.data.changesets.find((item) => item.projectRevision === state.event);
     }
 
     const feed = relevantFeed(),
       relevantChange = feed.some((item) => item.revision === state.event),
-      diffs = relevantChange ? diffAt(data, state.event) : [],
+      diffs = relevantChange ? diffAt(workspace.data, state.event) : [],
       change = renderChange(),
-      work = relevantChange ? connectedWork(data, state.event) : [];
+      work = relevantChange ? connectedWork(workspace.data, state.event) : [];
     const changedArtifacts = diffs.filter((diff) => diff.kind === "entity"),
       changedLinks = diffs.filter((diff) => diff.kind === "relationship");
     const reason = relevantChange ? (change?.reason ?? "") : "";
     const selectedLink =
       model.links.find((link) => link.id === state.edge) ??
-      data.relationships.find((link) => link.id === state.edge);
+      workspace.data.relationships.find((link) => link.id === state.edge);
     const subjectLink =
-      data.relationships.find((link) => link.id === state.historySubject?.linkId) ?? selectedLink;
+      workspace.data.relationships.find((link) => link.id === state.historySubject?.linkId) ??
+      selectedLink;
     const scope = state.historySubject?.linkId
       ? `${subjectLink?.source ?? ""} → ${subjectLink?.target ?? ""}`
       : (state.historySubject?.key ?? state.selected);
@@ -1446,15 +1429,15 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     return `<section class="history-workspace"><div class="history-scope"><span class="history-scope-label">${feed.length} changesets</span><label class="sr-only" for="event-filter">History scope</label><select id="event-filter"><option value="selected" ${state.timelineFilter === "selected" ? "selected" : ""}>${e(scope)} only</option><option value="project" ${state.timelineFilter === "project" ? "selected" : ""}>Project</option></select></div><div class="history-columns"><nav class="changeset-feed" aria-label="Changesets">${renderChangesetButtons()}${feed.length > state.historyLimit ? '<button data-action="more-history">Show more</button>' : ""}</nav><div class="change-detail"><div class="change-heading"><h3>${renderChangeCount()}</h3></div><p class="change-reason">${e(reason)}</p>${renderChangedFields()}${renderConnectedWorkSection()}</div></div></section>`;
   }
   function timeline() {
-    if (!head) return '<footer class="historybar">No saved changes yet</footer>';
+    if (!workspace.head) return '<footer class="historybar">No saved changes yet</footer>';
     const events =
       state.timelineScope === "project"
-        ? significantEvents(data)
-        : historyFeed(data, { key: state.selected, linkId: state.edge }).map((event) => ({
+        ? significantEvents(workspace.data)
+        : historyFeed(workspace.data, { key: state.selected, linkId: state.edge }).map((event) => ({
             ...event,
             title: event.title,
           }));
-    return `<footer class="historybar continuous-history"><label class="sr-only" for="timeline-scope">Timeline scope</label><select id="timeline-scope"><option value="project">Project</option><option value="selected" ${state.timelineScope === "selected" ? "selected" : ""}>Selection</option></select><span class="timeline-scale">Revisions 1–${head}</span><div class="revision-axis"><div class="axis-ticks">${events.map((event) => `<button data-axis-event="${event.revision}" data-style="left:${((event.revision - 1) / (head - 1)) * 100}%" title="r${event.revision} · ${e(event.title)}" aria-label="Revision ${event.revision}: ${e(event.title)}"></button>`).join("")}</div><label class="sr-only" for="revision-range">Project revision</label><input id="revision-range" type="range" min="1" max="${head}" step="1" value="${state.revision}" aria-valuetext="Revision ${state.revision} of ${head}"></div><div class="revision-controls"><button data-action="previous-event" aria-label="Previous changeset">‹</button><span class="mono">r${state.revision}</span><button data-action="next-event" aria-label="Next changeset">›</button></div></footer>`;
+    return `<footer class="historybar continuous-history"><label class="sr-only" for="timeline-scope">Timeline scope</label><select id="timeline-scope"><option value="project">Project</option><option value="selected" ${state.timelineScope === "selected" ? "selected" : ""}>Selection</option></select><span class="timeline-scale">Revisions 1–${workspace.head}</span><div class="revision-axis"><div class="axis-ticks">${events.map((event) => `<button data-axis-event="${event.revision}" data-style="left:${((event.revision - 1) / (workspace.head - 1)) * 100}%" title="r${event.revision} · ${e(event.title)}" aria-label="Revision ${event.revision}: ${e(event.title)}"></button>`).join("")}</div><label class="sr-only" for="revision-range">Project revision</label><input id="revision-range" type="range" min="1" max="${workspace.head}" step="1" value="${state.revision}" aria-valuetext="Revision ${state.revision} of ${workspace.head}"></div><div class="revision-controls"><button data-action="previous-event" aria-label="Previous changeset">‹</button><span class="mono">r${state.revision}</span><button data-action="next-event" aria-label="Next changeset">›</button></div></footer>`;
   }
   const workspaceActions = {
     "matrix-show-project": () => {
@@ -1501,7 +1484,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     "create-artifact": createArtifactAction,
     "remove-edge": removeEdgeAction,
     "dismiss-notice": dismissNoticeAction,
-    latest: () => visitRevision(head),
+    latest: () => visitRevision(workspace.head),
     "previous-revision": () => visitRevision(state.revision - 1),
     "next-revision": () => visitRevision(state.revision + 1),
     "return-change": returnChangeAction,
@@ -1510,7 +1493,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     "inspect-revision": inspectRevisionAction,
   };
   function assessEvidenceAction() {
-    if (!native || state.revision !== head) return;
+    if (!native || state.revision !== workspace.head) return;
     const subject = assessmentSubject();
     if (!subject) return;
     if (!state.evidenceDirty || !state.evidenceSubject) {
@@ -1588,7 +1571,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     state.edge = null;
     notify(
       native
-        ? `Relationship removed · r${head}`
+        ? `Relationship removed · r${workspace.head}`
         : "Relationship removed locally · no database save",
     );
     render();
@@ -1621,7 +1604,12 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   }
 
   function configureMatrixColumns(count = state.matrixSteps.length) {
-    state.matrixSteps = matrixColumns(data.schema, state.matrixRootType, state.matrixSteps, count);
+    state.matrixSteps = matrixColumns(
+      workspace.data.schema,
+      state.matrixRootType,
+      state.matrixSteps,
+      count,
+    );
     state.matrixCell = null;
     state.matrixAnchor = null;
     render();
@@ -1686,7 +1674,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     change("[data-trace-relation]", (select) => {
       const index = Number(select.dataset.traceRelation);
       const source = index ? state.matrixSteps[index - 1].targetType : state.matrixRootType;
-      state.matrixSteps[index] = matrixColumnChoices(data.schema, source).find(
+      state.matrixSteps[index] = matrixColumnChoices(workspace.data.schema, source).find(
         (choice) => choice.type === select.value,
       );
       configureMatrixColumns();
@@ -1736,7 +1724,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         render();
         return;
       }
-      visitRevision(head);
+      visitRevision(workspace.head);
       state.visible.add(button.dataset.openArtifact);
       state.selected = button.dataset.openArtifact;
       state.inspector = true;
@@ -1883,7 +1871,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       ["Fit graph", () => action("frame")],
       ["Show artifact details", () => showDetails()],
       ["Project history", () => changePerspective("history")],
-      ["Return to latest revision", () => visitRevision(head)],
+      ["Return to latest revision", () => visitRevision(workspace.head)],
       ["Add existing artifact", () => openAdd()],
     ];
     mountWorkspaceSearch({
@@ -1906,7 +1894,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   function openAdd() {
     openDialog(
       "Add to this view",
-      `<div class="add-choices"><button id="add-existing">Add existing artifact <span>Search ${model.records.size} records</span></button><button id="create-new" ${state.revision !== head ? "disabled" : ""}>Create artifact <span>${native ? "Selected project" : "Local prototype record"}</span></button></div>`,
+      `<div class="add-choices"><button id="add-existing">Add existing artifact <span>Search ${model.records.size} records</span></button><button id="create-new" ${state.revision !== workspace.head ? "disabled" : ""}>Create artifact <span>${native ? "Selected project" : "Local prototype record"}</span></button></div>`,
     );
     dialog.querySelector("#add-existing").onclick = () => {
       dialog.close();

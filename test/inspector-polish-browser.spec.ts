@@ -554,3 +554,88 @@ test("Matrix grid owns cell editing while relationship tables retain direct insp
   expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision);
   expect(app.errors).toEqual([]);
 });
+
+test("a confirmed save with a failed reload retains its proposal and blocks writes until project refresh", async ({
+  page,
+  app,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(app.origin);
+  await selectArtifact(page, "PRS-01");
+  const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
+  await page.getByRole("button", { name: "Edit statement", exact: true }).click();
+  const proposal = "Confirmed statement retained while the project read is unavailable.";
+  await page.locator("#inline-value").fill(proposal);
+  let writes = 0;
+  await page.route("**/api/changesets", async (route) => {
+    writes++;
+    await route.continue();
+  });
+  await page.route("**/api/project-snapshot", (route) => route.abort());
+  await page.locator("#inline-value").press("Control+Enter");
+  await expect(page.locator(".workspace-notice")).toContainText("Saved, but the refreshed project");
+  await expect(page.locator("#inline-value")).toHaveValue(proposal);
+  await page.locator("#inline-value").press("Control+Enter");
+  expect(writes).toBe(1);
+  expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision + 1);
+  expect((await app.tracer.getEntity(app.entities["PRS-01"].id)).fields.statement).toBe(proposal);
+  await page.unroute("**/api/project-snapshot");
+  await page.getByRole("button", { name: "Project tools", exact: true }).click();
+  await page.getByRole("button", { name: "Refresh project", exact: true }).click();
+  await expect(page.locator('[data-apply-field="statement"]')).toBeEnabled();
+  await expect(page.locator("#inline-value")).toHaveValue(proposal);
+  await page.locator("#inline-value").press("Escape");
+  await expect(page.locator(".inspector")).toContainText(proposal);
+  expect(writes).toBe(1);
+  expect(app.errors).toEqual([]);
+});
+
+for (const recovery of ["editor", "pending"] as const) {
+  test(`an uncertain ${recovery} save requires a successful read before acknowledgment and never replays the proposal`, async ({
+    page,
+    app,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto(app.origin);
+    await selectArtifact(page, "PRS-01");
+    const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
+    await page.getByRole("button", { name: "Edit statement", exact: true }).click();
+    const proposal = "Recorded once despite an unreadable save response.";
+    await page.locator("#inline-value").fill(proposal);
+    let writes = 0;
+    await page.route("**/api/changesets", async (route) => {
+      writes++;
+      const response = await route.fetch();
+      await route.fulfill({ response, body: "unreadable response" });
+    });
+    await page.locator("#inline-value").press("Control+Enter");
+    await page
+      .locator(
+        recovery === "editor" ? "[data-inspect-outcome]" : '[data-action="inspect-pending-save"]',
+      )
+      .click();
+    const acknowledge = page.getByRole("button", {
+      name: "I have inspected the result",
+      exact: true,
+    });
+    await expect(acknowledge).toBeVisible();
+    await page.route("**/api/project-snapshot", (route) => route.abort());
+    await acknowledge.click();
+    await expect(
+      page.locator(recovery === "editor" ? ".workspace-notice" : "#announcement"),
+    ).toContainText("Could not read the project");
+    await expect(page.locator('[data-apply-field="statement"]')).toBeDisabled();
+    await expect(page.locator("#inline-value")).toHaveValue(proposal);
+    await page.unroute("**/api/project-snapshot");
+    await acknowledge.click();
+    if (recovery === "editor") {
+      await expect(page.locator(".save-recovery")).toContainText("Project refreshed");
+      await expect(acknowledge).toBeDisabled();
+    } else await expect(page.locator("#workspace-dialog")).not.toBeVisible();
+    await page.locator("#inline-value").press("Escape");
+    await expect(page.locator(".inspector")).toContainText(proposal);
+    expect(writes).toBe(1);
+    expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision + 1);
+    expect(app.errors).toEqual([]);
+  });
+}
