@@ -8,7 +8,7 @@ import type {
   BaselineContentsQuery,
   BaselineContents,
 } from "../core/baseline.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 
 function shape(value: unknown, keys: string[]) {
   ensure(

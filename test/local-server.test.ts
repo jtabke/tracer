@@ -101,8 +101,15 @@ test("local HTTP mutations share services, preserve conflicts/history, and enfor
       operations: [
         { op: "entity.create", input: { type: "item", fields: { title: "Created in browser" } } },
       ],
-      actor: "spoofed",
     };
+    const spoofed = await request("/api/changesets", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ ...input, actor: "spoofed" }),
+    });
+    assert.equal(spoofed.status, 400);
+    assert.equal((await spoofed.json()).error, "validation");
+    assert.equal((await tracer.queryEntities()).items.length, 0);
     const create = await request("/api/changesets", {
       method: "POST",
       headers,

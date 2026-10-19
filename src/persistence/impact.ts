@@ -2,7 +2,7 @@ import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import type { Evidence, Receipt } from "../core/evidence.ts";
 import type { ImpactIncidentQuery, ImpactReceiptQuery } from "../core/impact.ts";
 import type { Relationship } from "../core/model.ts";
-import type { Transaction } from "./contracts.ts";
+import type { Transaction } from "../application/ports/repository.ts";
 import { jsonPage } from "./pages.ts";
 
 /** Derived lookup only: immutable receipt JSON remains the captured dependency authority. */

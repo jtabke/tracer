@@ -48,7 +48,7 @@ import {
   type Schema,
   type SchemaObject,
 } from "../core/model.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import type {
   ChangesetInput,
   Deletion,

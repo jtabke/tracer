@@ -1,6 +1,6 @@
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import type { Graph, GraphQuery, NativeDelta } from "./views.ts";
 import { graphLimits, graphNeighborhood } from "./graph.ts";
 

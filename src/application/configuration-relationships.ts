@@ -4,7 +4,7 @@ import type {
   PinnedEntity,
   PinnedRelationship,
 } from "../core/configuration.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import { pinRelationship } from "./native-pins.ts";
 
 /** Capture only deliberate links within the selected member set; never infer a complete BOM. */

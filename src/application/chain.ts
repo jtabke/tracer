@@ -1,6 +1,6 @@
 import { ensure, record } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import type { ChainQuery, ChainTable } from "./views.ts";
 
 /** A bounded, current-data path projection. Columns, not domain types, bound cycles. */

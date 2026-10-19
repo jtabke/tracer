@@ -11,7 +11,7 @@ import type {
   CoverageRow,
   CoverageSet,
 } from "../core/coverage.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import { projectSchema, queryShape, validatePageLimit } from "./native-query-support.ts";
 
 async function context(tx: Transaction, query: CoverageListQuery) {

@@ -1,6 +1,6 @@
 import { ensure, json, validateFields, TracerError } from "../core/model.ts";
 import type { Entity, Relationship, Schema, Kind, TypeDefinition } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 
 function objectFields(kind: Kind, value: Entity | Relationship, definition?: TypeDefinition) {
   try {

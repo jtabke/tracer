@@ -14,7 +14,7 @@ import type {
   EvidenceKind,
   EvidenceQuery,
 } from "../core/evidence.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import { resolveReceiptInput } from "./receipt-inputs.ts";
 import {
   compareCapturedInputs,

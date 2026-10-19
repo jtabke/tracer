@@ -8,7 +8,7 @@ import type {
   SchemaPreview,
   SchemaIssue,
 } from "../core/schema-preview.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import { nativeObjects, validatePageLimit, queryShape } from "./native-query-support.ts";
 import { validateNativeEntity, validateNativeRelationship } from "./native-validation.ts";
 import { expectVersion } from "./version-guard.ts";

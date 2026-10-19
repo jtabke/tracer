@@ -1,7 +1,7 @@
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship } from "../core/model.ts";
 import type { ChangeImpact, ImpactDelta, ImpactReachability } from "../core/impact.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 
 export const impactLimits = { entities: 200, relationships: 600, incident: 200, inputs: 200 };
 type Scope = ChangeImpact["scope"];

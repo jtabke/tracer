@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 import type { SQLInputValue } from "node:sqlite";
-import type { Repository, Transaction } from "./contracts.ts";
+import type { Repository, Transaction } from "../application/ports/repository.ts";
 import { TracerError, ensure } from "../core/model.ts";
 import type {
   Kind,

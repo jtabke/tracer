@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
 import { ensure } from "../core/model.ts";
-import type { Transaction } from "./contracts.ts";
+import type { Transaction } from "../application/ports/repository.ts";
 import type { SavedView } from "../core/presentation.ts";
 
 export function workspaceViewTransaction(

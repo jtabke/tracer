@@ -1,6 +1,6 @@
 import { ensure, json, record } from "../core/model.ts";
 import type { ObjectQuery, SchemaObject, Stored } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 
 export async function projectSchema(tx: Transaction): Promise<SchemaObject> {
   const schema = (await tx.get("schema", "project")) as SchemaObject | undefined;

@@ -163,6 +163,26 @@ Current receipts add their real input identities as provenance without recursive
 
 The TypeScript modular monolith, React UI, explicit SQLite adapter and MIT license are selected. Other-language clients can use CLI/API; Rust or another backend needs measured value. Avoid speculative packages, ORM/plugin frameworks or parallel domain engines. Package naming (`@tracer-local/core`) must preserve clear contracts and avoid distribution collisions.
 
+### Shared API and headless clients
+
+`src/interfaces/api/` owns endpoint definitions grouped into native, analysis, evidence and session capabilities. Each definition colocates its query or input schema, response decoder and typed service binding. `api-contract.ts` derives public path/request/response types from these definitions; there are no parallel hand-maintained route/type/decoder tables. Request types infer required and optional fields from their schemas. Read response decoders are checked against the bound service result; write bindings are checked against their response decoder. `api-models.ts` retains shared recorded-data decoders, including compatible historical extensions.
+
+`api/query.ts` owns encoding and structural validation together: required/optional fields, enum choices, unknown/duplicate rejection, exact-resource rules, canonical safe-integer syntax and structured JSON queries. Blank, fractional, exponent, hexadecimal, padded and unsafe integer values reject before service dispatch. The existing JSON impact arrays, structured working-context envelope and graph CSV expansion format remain unchanged. Query errors identify their field where applicable. Application services retain business bounds, scope, schema/version guards and transaction ownership.
+
+`src/client.ts` is the separate `@tracer-local/core/client` entry point. It has no UI or Node dependency. Each instance captures server/project/header configuration, privately owns its local session token, snapshots read queries before dispatch and supports injected fetch plus per-request cancellation. Browser adapters delegate to this client while retaining the existing mutation controller and immutable per-document project identity. Dependency checks prevent UI components from bypassing those adapters through a direct client import.
+
+`api-endpoints.ts` assembles the definitions and supplies typed client codecs and server dispatch independently of sockets/assets. `local-server.ts` retains body limits, security/session checks, project resolution, static assets, error/status mapping and request draining. `startHeadlessServer` (`@tracer-local/core/server`) runs the same boundary without static assets; `npm run serve:api -- --db PATH` needs no frontend build. Trusted process configuration supplies provenance; HTTP inputs cannot supply actors. Schema/session query parameters and unsupported mutation properties reject rather than being ignored.
+
+No transport retries are implicit. Server conflicts retain structured details; unconfirmed/cancelled/malformed write responses remain `outcome_unknown`, and consumers inspect before replaying. The browser's write lock remains its own responsibility; headless callers manage their recovery flow. All hosts currently remain loopback-only. Authentication, organizational authorization and backend parity are separate future work.
+
+### Application-owned repository port
+
+`src/application/ports/repository.ts` owns the asynchronous `Repository` and `Transaction` contracts. Application services consume this port; persistence adapters implement it. Ports may depend only on core types, and adapters may import ports only as types. The dependency gate enforces these directions, including negative fixtures that reject application-to-adapter and port-to-service dependencies. Root package exports for `Repository` and `Transaction` remain unchanged.
+
+The transaction contract requires consistent reads including the transaction's own writes, atomic native state/history/revision allocation, guarded concurrency, complete rollback and handles that expire when the callback ends. Callers await operations, avoid nested transactions/external IO and drain work before closing. Adapters do not silently replay callbacks.
+
+`test/repository-contract.ts` registers an initial adapter-independent behavior suite through a fresh-project factory with adapter-owned cleanup. SQLite runs it in `test/sqlite-repository-contract.test.ts`: rollback and identity reuse after rollback, transaction lifetime, competing expected-version writes with immutable history, failed-batch atomicity and missing-endpoint rejection. This is preparation, not backend parity proof: cross-connection snapshot/concurrency, pagination, deletion/identity permanence, evidence and baseline parity still need broader shared coverage before another adapter is supported. SQLite remains the only implementation; deployment and storage format are unchanged.
+
 ### Risks that require evidence
 
 Investigate schema flexibility, history growth, traversal/baseline cost, SQLite portability assumptions, divergent view state, noisy exports and batch reviewability. Benchmark small and large connected workloads against task-derived targets. Verify clean install, backup/move/reopen and distribution before portability claims; compare semantic equality deliberately.

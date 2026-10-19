@@ -2,7 +2,7 @@ import { ensure, record } from "../core/model.ts";
 import type { Entity, SchemaObject } from "../core/model.ts";
 import type { InputDeclaration } from "../core/evidence.ts";
 import type { Configuration } from "../core/configuration.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import { pinEntity } from "./native-pins.ts";
 
 /** Current guards, historical selectors and immutable configuration membership are exclusive. */

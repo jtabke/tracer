@@ -9,7 +9,9 @@
     "test/*.test.ts",
     "test/*.spec.ts",
     "test/map/*.test.mjs",
-    "test/legacy-entry.tsx"
+    "test/legacy-entry.tsx",
+    "src/client.ts",
+    "src/interfaces/headless-server.ts"
   ],
   "rules": {
     "complexity-cyclomatic": "error",
@@ -20,6 +22,10 @@
   "boundaries": {
     "zones": [
       {
+        "name": "headless-client",
+        "patterns": ["src/client.ts"]
+      },
+      {
         "name": "public-api",
         "patterns": ["src/index.ts"]
       },
@@ -28,12 +34,12 @@
         "patterns": ["src/core/**"]
       },
       {
-        "name": "application",
-        "patterns": ["src/application/**"]
+        "name": "repository-contract",
+        "patterns": ["src/application/ports/**"]
       },
       {
-        "name": "repository-contract",
-        "patterns": ["src/persistence/contracts.ts"]
+        "name": "application",
+        "patterns": ["src/application/**"]
       },
       {
         "name": "persistence",
@@ -43,10 +49,13 @@
         "name": "api-contract",
         "patterns": [
           "src/interfaces/api-contract.ts",
-          "src/interfaces/api-decoders.ts",
           "src/interfaces/coverage-decoders.ts",
           "src/interfaces/working-context-decoders.ts",
-          "src/interfaces/decode.ts"
+          "src/interfaces/decode.ts",
+          "src/interfaces/api-errors.ts",
+          "src/interfaces/api-endpoints.ts",
+          "src/interfaces/api-models.ts",
+          "src/interfaces/api/**"
         ]
       },
       {
@@ -133,7 +142,7 @@
       },
       {
         "from": "http-transport",
-        "allow": ["core", "api-contract", "http-transport"]
+        "allow": ["core", "api-contract", "http-transport", "headless-client"]
       },
       {
         "from": "api-client",
@@ -142,6 +151,10 @@
       {
         "from": "mutation-owner",
         "allow": ["ui", "http-transport"]
+      },
+      {
+        "from": "headless-client",
+        "allow": ["core", "api-contract"]
       }
     ],
     "coverage": {

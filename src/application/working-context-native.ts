@@ -2,7 +2,7 @@ import { canonical } from "../core/evidence.ts";
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship } from "../core/model.ts";
 import type { WorkingContext, WorkingRoute, WorkingTrace } from "../core/working-context.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import type { PreparedWorkingQuery, PreparedTrace } from "./working-context-query.ts";
 import { cursorOwner, workingCursor } from "./working-context-cursors.ts";
 

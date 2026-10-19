@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { decodeRead } from "../src/interfaces/api-decoders.ts";
+import { decodeRead } from "../src/interfaces/api-endpoints.ts";
 
 test("exact native revision reads preserve historical fields/schema after removal without recording evidence", async () => {
   const repository = new SQLiteRepository(":memory:");

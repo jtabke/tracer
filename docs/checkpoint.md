@@ -196,6 +196,34 @@ These fictional-fixture checks establish technical behavior, not representative-
 - Spreadsheet paste/bulk mutation, portable workspace context and arbitrary two-revision comparison remain open. Matrix saved recipes currently support outgoing path columns; receipt creation pickers remain bounded to 1,000 items.
 - PostgreSQL parity, authenticated collaboration, hosted integrations, restoration and standalone packaging remain future work.
 
+## Repository boundary preparation
+
+2026-10-18: moved the storage interfaces into application-owned `src/application/ports/repository.ts`, updated consumers and retained the root public type exports. The dependency gate now recognizes ports before the broader application zone; executable negative fixtures reject service-to-adapter and port-to-service imports. The port documents transaction consistency, atomicity, guard enforcement, callback lifetime and caller lifecycle obligations.
+
+Added an adapter-independent fresh-project suite and SQLite registration covering rollback of state/identity/history/head, expired transaction handles, competing expected-version updates with immutable history, failed batches and missing endpoints. This is initial preparation, not PostgreSQL or multiuser proof. Cross-connection behavior and broader shared pagination/evidence/baseline coverage remain future work. Architecture and developer guidance own the boundary and extension instructions. No runtime behavior, storage format or deployment changes were introduced.
+
+Verification passed: formatting, strict types, lint, 423 unit tests, 178 browser tests, production/harness builds, all workbench journeys and the merged-coverage dependency/duplication/complexity gates. No quality thresholds or exclusions changed.
+
+## Shared API and first-class headless HTTP
+
+2026-10-18: extracted typed API dispatch from local HTTP/static hosting. Exhaustive handler, request-decoder and query-codec tables follow the wire contract; application services retain semantic validation and transaction ownership. Shared query codecs fix the impact relationship-type array mismatch. Strict request objects reject unsupported fields, including actor/provenance injection; schema/session reads now reject query parameters. Shared error codes feed client decoding and exhaustive HTTP status mapping.
+
+Added the separate `@tracer-local/core/client` source entry point and routed browser adapters through it without bypassing the mutation controller. Each client fixes its server/project/header configuration, owns its session, captures read queries, accepts fetch injection/cancellation and never automatically retries writes. `@tracer-local/core/server` exposes a loopback headless host with trusted process provenance and allowlisted projects. `npm run serve:api -- --db PATH` starts without frontend assets/builds and prints a headless resume command.
+
+Integration checks exercise real client/server edits, conflicts, provenance, evidence/reviews/captures/views/export, project/server/session isolation, query-codec round trips, malformed input/response handling and caller-mutated queries. A committed write whose response is lost yields `outcome_unknown` and one saved record. A separate launcher smoke test runs outside the checkout without `dist`, writes through the client and confirms no static pages are served. Readiness for organizational hosting and PostgreSQL parity remain separate future work. The architecture and developer reference own the contracts, usage and recovery guidance.
+
+Strict validation exposed the shared object editor sending stored relationship `id`/`version` metadata inside an update's `input`. It now constructs the declared type/source/target/fields payload, keeping identity/version guards at operation level. Route-specific guards also replace a branching query guard without changing rejection behavior or quality limits.
+
+Verification passed: 433 unit tests, 178 browser tests on the corrected editor, all workbench journeys, production/harness builds, strict types, lint, formatting and merged-coverage dependency/duplication/complexity gates. Focused final-source API/launcher/contract/transport checks also passed (21 tests), refreshing coverage after module moves. No quality thresholds or exclusions changed.
+
+## Consolidated endpoint definitions and strict queries
+
+2026-10-18: replaced the separate endpoint type, query-encoding, body-decoder, response-decoder, handler and special-guard maps with capability-grouped definitions in `src/interfaces/api/`. A configuration read, structured impact query and changeset mutation established the pattern before migrating all routes. Each route now owns its request schema, response decoder and service binding together; public API types derive from these definitions. Shared recorded-data validators remain separate and preserve historical extensions. `api-endpoints.ts` supplies codecs and dispatch; removed the old API query/input/decoder/dispatch modules and updated consumers.
+
+The shared query codec explicitly validates required/optional fields, choices, unknown/duplicate keys, exact reads and nested JSON. Integer syntax is checked before numeric conversion and requires safe values; malformed queries never open a storage transaction. Application services retain semantic bounds, concurrency and transaction behavior. Paths, successful wire responses, trusted provenance and uncertain-write handling are unchanged. Added malformed-number/structure/no-storage cases and compiler probes for empty-query endpoints and decoder/service result mismatches. No backend, retry ledger, hosting mode or quality exclusions were added.
+
+Verification passed: 436 unit tests, 178 browser tests, all workbench journeys, production/harness builds, strict types, lint, formatting and merged-coverage dependency/duplication/complexity gates. The final parsing extraction also passed 19 focused API tests. Separate wire codecs keep parsing complexity within the existing limits. This reduces independently maintained declarations and routing boilerplate; total API lines increased because query structure previously left to services is now explicitly validated at the boundary.
+
 ## Open work
 
 Evaluate complete create → connect → modify → investigate → assess tasks with representative users in more than one domain. An unfamiliar-user session has not been run. Use observed next-action choices, completion time, assistance, errors and context loss to prioritize larger-dataset interaction, clearer review context and remaining authoring friction. Automated checks and visual consistency are supporting evidence, not substitutes for task validation.

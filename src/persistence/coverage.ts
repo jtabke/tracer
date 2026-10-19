@@ -2,7 +2,7 @@ import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship } from "../core/model.ts";
 import type { CoverageFilter, CoverageNativeQuery, CoverageNativeRow } from "../core/coverage.ts";
-import type { Transaction } from "./contracts.ts";
+import type { Transaction } from "../application/ports/repository.ts";
 import { page } from "./pages.ts";
 
 type Row = Record<string, unknown>;

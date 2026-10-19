@@ -7,7 +7,7 @@ import {
   type NextWorkQuery,
   type NextWorkSelection,
 } from "../core/next-work.ts";
-import type { Repository } from "../persistence/contracts.ts";
+import type { Repository } from "./ports/repository.ts";
 import { statementWork, coverageWork } from "./next-work-structure.ts";
 import { evidenceWork } from "./next-work-evidence.ts";
 import { workByteBudget } from "./next-work-budget.ts";

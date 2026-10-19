@@ -8,7 +8,7 @@ import { Tracer, serializeProjectExport } from "../src/index.ts";
 import type { ProjectExport, Schema, Entity, Repository, Transaction } from "../src/index.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { decodeRead } from "../src/interfaces/api-decoders.ts";
+import { decodeRead } from "../src/interfaces/api-endpoints.ts";
 
 const origin = { actor: "export engineer", reason: "CO₂ monitor simulation" };
 const schema: Schema = {

@@ -1,7 +1,7 @@
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
 import type { ProjectSnapshot } from "../core/project-snapshot.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 
 import { MAP_RECORD_LIMIT, MAP_CONNECTION_LIMIT } from "../core/project-snapshot.ts";
 export { MAP_RECORD_LIMIT, MAP_CONNECTION_LIMIT } from "../core/project-snapshot.ts";

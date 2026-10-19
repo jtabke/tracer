@@ -1,6 +1,6 @@
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship } from "../core/model.ts";
-import type { Repository } from "../persistence/contracts.ts";
+import type { Repository } from "./ports/repository.ts";
 
 type NativeObject = { entity: Entity; relationship: Relationship };
 export async function readNative<K extends keyof NativeObject>(

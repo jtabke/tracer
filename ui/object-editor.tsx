@@ -284,12 +284,13 @@ async function saveObjectDraft(
 ) {
   try {
     const fields = applyDraft(base.value.fields, base.definition.fields, values, dirty);
+    const link = base.value as Relationship;
     const operation = relationship
       ? {
           op: "relationship.update" as const,
           id: base.value.id,
           expectedVersion: base.value.version,
-          input: { ...(base.value as Relationship), fields },
+          input: { type: link.type, source: link.source, target: link.target, fields },
         }
       : {
           op: "entity.update" as const,

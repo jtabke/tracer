@@ -51,12 +51,8 @@ test("HTTP exact-resource guards retain distinct errors and query parsing stays 
     await error("/api/demo-guide?x=a&x=b", "usage", "Demo guide accepts no filters");
     await error("/api/unknown?x=a&x=b", "not_found", "Unknown query endpoint", 404);
     const ignored = "?x=a&x=b";
-    const schemaRead = await fetch(server.origin + "/api/schema" + ignored);
-    assert.equal(schemaRead.status, 200);
-    assert.equal(await schemaRead.json(), null);
-    const session = await fetch(server.origin + "/api/session" + ignored);
-    assert.equal(session.status, 200);
-    assert.match((await session.json()).token, /^[0-9a-f-]{36}$/);
+    await error("/api/schema" + ignored, "usage", "Schema accepts no filters");
+    await error("/api/session" + ignored, "usage", "Session accepts no filters");
     const asset = await fetch(server.origin + "/" + ignored);
     assert.equal(asset.status, 200);
     assert.match(await asset.text(), /Isolated query fixture/);

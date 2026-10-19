@@ -6,7 +6,7 @@ import {
   type WorkQueue,
   type WorkRecord,
 } from "../core/next-work.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import { workByteBudget } from "./next-work-budget.ts";
 
 const populationLimit = 10_000;

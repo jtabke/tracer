@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { Tracer } from "../src/application/service.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { recordedConnections } from "../src/application/recorded-connections.ts";
-import type { Transaction } from "../src/persistence/contracts.ts";
+import type { Transaction } from "../src/application/ports/repository.ts";
 import type { SchemaObject, Relationship } from "../src/core/model.ts";
 
 const schema: SchemaObject = {

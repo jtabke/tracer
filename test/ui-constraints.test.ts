@@ -12,7 +12,7 @@ import { write } from "../ui/write-transport.ts";
 import { MutationController } from "../ui/mutation-controller.ts";
 import type { MutationState } from "../ui/mutation-controller.ts";
 import { readResult } from "../ui/use-read.ts";
-import { decodeWrite } from "../src/interfaces/api-decoders.ts";
+import { decodeWrite } from "../src/interfaces/api-endpoints.ts";
 import type { Editing } from "../ui/editing.ts";
 const { fieldsFrom } = await import("../ui/fields.tsx");
 const { useMappingDraft } = await import("./legacy-ui/components/use-mapping-draft.ts");

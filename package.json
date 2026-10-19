@@ -35,7 +35,8 @@
     "lint": "eslint ui --max-warnings 0",
     "workbench": "node docs/ux-artifacts/product-identity/serve-native.mjs",
     "workbench:check": "tsc --project docs/ux-artifacts/product-identity/tsconfig.json && node docs/ux-artifacts/product-identity/check-workbench.mjs",
-    "workbench:screenshots": "node docs/ux-artifacts/product-identity/check-workbench.mjs --screenshots-only"
+    "workbench:screenshots": "node docs/ux-artifacts/product-identity/check-workbench.mjs --screenshots-only",
+    "serve:api": "node src/interfaces/serve.ts --headless"
   },
   "devDependencies": {
     "@bcoe/v8-coverage": "1.0.2",
@@ -68,6 +69,8 @@
   "license": "MIT",
   "exports": {
     ".": "./src/index.ts",
-    "./sqlite": "./src/persistence/sqlite.ts"
+    "./sqlite": "./src/persistence/sqlite.ts",
+    "./client": "./src/client.ts",
+    "./server": "./src/interfaces/headless-server.ts"
   }
 }

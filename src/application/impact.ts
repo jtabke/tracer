@@ -2,7 +2,7 @@ import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure } from "../core/model.ts";
 import type { ChangeImpact, ChangeImpactQuery, ImpactReceipt } from "../core/impact.ts";
 import type { ComparedState, Receipt } from "../core/evidence.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import { compareCapturedInputs, scopedInputState } from "./receipt-comparison.ts";
 import { impactLimits, impactNative } from "./impact-native.ts";
 import {

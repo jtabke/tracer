@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { decodeRead } from "../src/interfaces/api-decoders.ts";
+import { decodeRead } from "../src/interfaces/api-endpoints.ts";
 import { validateSchema, TracerError } from "../src/core/model.ts";
 import { projectTemplates } from "../src/core/project-templates.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";

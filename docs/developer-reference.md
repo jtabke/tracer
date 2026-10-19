@@ -109,7 +109,7 @@ try {
 
 Open the resulting file in the shared UI with `npm start -- --db desk-light-api.sqlite`. That short snippet creates two items and one link; the complete executable example also adds the component, tests a stale edit and checks persistence.
 
-One SQLite repository represents one project. Its parent directory must exist. Reuse the repository/service for that project's lifetime, await outstanding operations before closing it, and close it in `finally`. The adapter serializes its transactions; SQLite's synchronous driver still blocks the Node event loop. For an alternate backend, implement the [Repository contract](../src/persistence/contracts.ts) and verify its transaction/history semantics; SQLite is the implemented adapter.
+One SQLite repository represents one project. Its parent directory must exist. Reuse the repository/service for that project's lifetime, await outstanding operations before closing it, and close it in `finally`. The adapter serializes its transactions; SQLite's synchronous driver still blocks the Node event loop. For an alternate backend, implement the application-owned [Repository contract](../src/application/ports/repository.ts) and register a fresh-project factory with `repositoryContract` in `test/repository-contract.ts`. This initial shared suite supplements the existing SQLite tests; full transaction/history and cross-connection parity still require verification. SQLite is the implemented adapter.
 
 ### API map
 
@@ -131,6 +131,39 @@ One SQLite repository represents one project. Its parent directory must exist. R
 | Persisted headless view definitions                | `tracer.savedViews`                                                                                         | [Saved-view service](../src/application/saved-views.ts); separate from session-only map recipes                 |
 
 Use the linked signatures for full parameter/result types. UUIDs identify native objects; optional keys are human labels. Fields are JSON values checked against the project's declared string, number, boolean or JSON definitions. Relationship source/target arrays constrain permitted types: an omitted array allows any declared type; `[]` allows none. Optional `workflow` paths control presentation and do not reverse stored endpoints.
+
+### Headless HTTP operation
+
+Start an API process without building or serving the frontend:
+
+```sh
+npm run serve:api -- --db my-project.sqlite --port 4317
+```
+
+This opens the same SQLite project and application services as the browser launcher. It binds to `127.0.0.1`, retains Host/origin/session guards, and returns 404 for static pages. The printed resume command retains headless mode. The CLI remains another direct headless interface; use `npm run tracer -- --help` for commands.
+
+Use the shared client from a TypeScript script in this source checkout:
+
+```ts
+import { createClient } from "@tracer-local/core/client";
+
+const client = createClient({ baseUrl: "http://127.0.0.1:4317", project: "default" });
+await client.connect();
+const snapshot = await client.read("/api/project-snapshot", {});
+console.log(snapshot.projectRevision, snapshot.entities.length);
+const history = await client.read("/api/history", { limit: 25 });
+console.log(history.items);
+```
+
+`connect()` obtains this local server's mutation token. The client supplies the matching origin on writes; raw HTTP callers must supply both `Origin` and `X-Tracer-Token`. Reads and writes use endpoint-specific `ReadApi`/`WriteApi` types, paired query codecs and runtime response validation. Client configuration accepts an injected `fetch` and headers; individual calls accept `{ signal }`. Each instance fixes its server/project and privately owns its token. The browser uses this same implementation through its existing guarded mutation controller.
+
+Query fields are declared by the endpoint definition. Required parameters, enum choices and nested JSON shapes validate before the service runs; unknown and duplicate parameters reject. Numeric query values must use canonical decimal safe-integer notation: blank/whitespace, fractions, exponent or hexadecimal forms, padded numbers and unsafe values reject. Business-specific ranges and cursor/snapshot rules remain application validations. Existing route paths and query encodings are unchanged.
+
+Use `client.write(path, input)` with the named endpoint's input contract. Server-side request decoders reject unsupported fields and malformed structure, then application services enforce schema, version, scope and transaction rules. `/api/schema` and `/api/session` now reject query parameters. Caller-supplied actor/provenance fields are rejected rather than silently ignored. The launcher records `local-api` / `Headless operation`; embedded hosts can import `startHeadlessServer` from `@tracer-local/core/server` and configure trusted `provenance`, `port` and allowlisted `projects`. Supply a `Tracer` with an explicit observer when external content observation is needed; an unavailable source remains unknown.
+
+There are no automatic retries. `ApiError.code` preserves structured server failures and conflict details. Failed or malformed reads return `read_failed`. A lost, cancelled or malformed write response returns `outcome_unknown`: the write may have committed. Inspect current state/history before deciding what to do; do not blindly replay. A pre-send serialization failure returns `validation`. Headless programs own their concurrency and recovery policy; the client does not silently serialize commands or provide the browser's draft/write lock.
+
+These are local process interfaces, not authenticated organizational hosting. Direct embedding through `Tracer`, the CLI, the headless HTTP server and the browser share application behavior. SQLite remains the only backend.
 
 ### Versions, errors and paging
 

@@ -46,16 +46,18 @@ export type Revision = {
   version: number;
   snapshot: Stored | null;
 };
-export type ErrorCode =
-  | "validation"
-  | "conflict"
-  | "schema_conflict"
-  | "not_found"
-  | "referential_integrity"
-  | "busy"
-  | "storage"
-  | "unsupported_storage"
-  | "usage";
+export const errorCodes = [
+  "validation",
+  "conflict",
+  "schema_conflict",
+  "not_found",
+  "referential_integrity",
+  "busy",
+  "storage",
+  "unsupported_storage",
+  "usage",
+] as const;
+export type ErrorCode = (typeof errorCodes)[number];
 export type Page<T> = { items: T[]; nextAfter?: string };
 export type PageQuery = { after?: string; limit?: number };
 export type EntityQuery = PageQuery & { type?: string; key?: string; search?: string };

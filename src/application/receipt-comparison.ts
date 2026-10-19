@@ -9,7 +9,7 @@ import type {
   Review,
   Comparison,
 } from "../core/evidence.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 
 function nativeState(value: Entity, fields?: string[]) {
   return fields

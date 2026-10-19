@@ -3,7 +3,7 @@ import { ensure, json, record, validateProvenance } from "../core/model.ts";
 import type { Entity } from "../core/model.ts";
 import type { Configuration, ConfigurationInput } from "../core/configuration.ts";
 import type { EvidenceQuery } from "../core/evidence.ts";
-import type { Repository } from "../persistence/contracts.ts";
+import type { Repository } from "./ports/repository.ts";
 import type { Provenance } from "../core/model.ts";
 import { pinEntity } from "./native-pins.ts";
 import { captureRelationships } from "./configuration-relationships.ts";

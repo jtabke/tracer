@@ -1,5 +1,5 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { Transaction } from "./contracts.ts";
+import type { Transaction } from "../application/ports/repository.ts";
 import type { Baseline } from "../core/baseline.ts";
 import type { Stored } from "../core/model.ts";
 import { jsonPage } from "./pages.ts";

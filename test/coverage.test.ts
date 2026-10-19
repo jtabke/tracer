@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
-import type { Repository } from "../src/persistence/contracts.ts";
+import type { Repository } from "../src/application/ports/repository.ts";
 import type { Operation } from "../src/application/commands.ts";
 import type { CoverageExpectation, CoverageExpectations } from "../src/core/coverage.ts";
 import type { Schema } from "../src/core/model.ts";

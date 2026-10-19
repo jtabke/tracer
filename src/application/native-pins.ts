@@ -1,7 +1,7 @@
 import { ensure } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
 import type { PinnedEntity, PinnedRelationship } from "../core/configuration.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 
 export async function pinEntity(
   tx: Transaction,

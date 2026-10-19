@@ -34,10 +34,10 @@ test("domain and application modules cannot depend on Node, including type and d
 test("the actual quality gate rejects forbidden dependencies, raw HTTP and complexity growth", () => {
   const directory = mkdtempSync(join(tmpdir(), "tracer-architecture-gate-"));
   try {
-    for (const name of ["src/core", "ui", "config"])
+    for (const name of ["src/core", "src/application/ports", "src/persistence", "ui", "config"])
       mkdirSync(join(directory, name), { recursive: true });
     const config = JSON.parse(readFileSync(".fallowrc.json", "utf8"));
-    config.entry = ["src/core/bad.ts", "ui/bad.ts"];
+    config.entry = ["src/core/bad.ts", "src/application/bad.ts", "ui/bad.ts"];
     // The injected fixture has no runtime measurements; new complex code must still fail.
     config.health = { ...config.health, coverage: null };
     writeFileSync(join(directory, ".fallowrc.json"), JSON.stringify(config));
@@ -52,8 +52,9 @@ test("the actual quality gate rejects forbidden dependencies, raw HTTP and compl
     );
     writeFileSync(
       join(directory, "ui/bad.ts"),
-      'import { write as save } from "./write-transport.ts"; import "../docs/ux-artifacts/study.ts"; export function bad() { save(); return fetch("/"); }',
+      'import { write as save } from "./write-transport.ts"; import { headless } from "../src/client.ts"; import "../docs/ux-artifacts/study.ts"; export function bad() { save(); return headless + fetch("/"); }',
     );
+    writeFileSync(join(directory, "src/client.ts"), "export const headless = 1;");
     const branches = Array.from(
       { length: 23 },
       (_, index) => `if (x === ${index}) return ${index};`,
@@ -61,6 +62,18 @@ test("the actual quality gate rejects forbidden dependencies, raw HTTP and compl
     writeFileSync(
       join(directory, "src/core/bad.ts"),
       `import { bad } from "../../ui/bad.ts"; export const illegal = bad; export function tooComplex(x: number) { ${branches} return -1; }`,
+    );
+    writeFileSync(
+      join(directory, "src/application/bad.ts"),
+      'import { driver } from "../persistence/bad.ts"; export const service = driver;',
+    );
+    writeFileSync(
+      join(directory, "src/persistence/bad.ts"),
+      'import type { Port } from "../application/ports/repository.ts"; export const driver: Port = { value: 1 };',
+    );
+    writeFileSync(
+      join(directory, "src/application/ports/repository.ts"),
+      'import { service } from "../bad.ts"; export type Port = { value: number }; export const illegal = service;',
     );
     // Exercise all configured checks together on a deliberately forbidden fixture.
     // The production gate runs the same detectors separately without baselines.
@@ -94,6 +107,18 @@ test("the actual quality gate rejects forbidden dependencies, raw HTTP and compl
           finding.from_zone === "ui" && finding.to_zone === "http-transport",
       ),
     );
+    for (const [from, to] of [
+      ["application", "persistence"],
+      ["repository-contract", "application"],
+      ["ui", "headless-client"],
+    ])
+      assert.ok(
+        report.check.boundary_violations.some(
+          (finding: { from_zone: string; to_zone: string }) =>
+            finding.from_zone === from && finding.to_zone === to,
+        ),
+        `${from} must not depend on ${to}`,
+      );
     assert.ok(
       report.check.policy_violations.some(
         (finding: { rule_id: string }) => finding.rule_id === "typed-http",
@@ -120,6 +145,10 @@ test("the API contract rejects wrong endpoints, queries, payloads and caller-sel
   const source = `
 import { read } from "../ui/api.ts";
 import { write } from "../ui/write-transport.ts";
+import { createClient } from "../src/client.ts";
+import { read as endpoint } from "../src/interfaces/api/definition.ts";
+import { query, textParam } from "../src/interfaces/api/query.ts";
+import { object, number } from "../src/interfaces/decode.ts";
 import type { Entity, Page, Relationship } from "../src/core/model.ts";
 import type { Receipt } from "../src/core/evidence.ts";
 import type { ChangeImpact } from "../src/core/impact.ts";
@@ -146,6 +175,24 @@ const wrong: Promise<Page<Relationship>> = read("/api/entities", {});
 // @ts-expect-error callers cannot promise their own response type
 void read<Entity>("/api/entities", {});
 void wrong;
+// @ts-expect-error empty query endpoints reject unsupported parameters
+void read("/api/schema", {unexpected: "value"});
+const client = createClient({baseUrl: "http://localhost:4317"});
+const native: Promise<Page<Entity>> = client.read("/api/entities", {});
+void native;
+endpoint({
+  query: query({id: textParam}),
+  handle: (_context, input) => ({id: input.id}),
+  // @ts-expect-error the decoder must match the service's actual result
+  response: object({id: number}),
+});
+
+// @ts-expect-error headless queries obey the same endpoint contract
+void client.read("/api/native-pin", {id: "item"});
+// @ts-expect-error headless writes require captured version guards
+void client.write("/api/changesets", {operations: []});
+// @ts-expect-error callers cannot choose a headless response type
+void client.read<Entity>("/api/entities", {});
 `;
   const config = ts.readConfigFile("tsconfig.json", ts.sys.readFile);
   const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, process.cwd());

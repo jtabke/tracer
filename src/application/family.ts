@@ -1,6 +1,6 @@
 import { ensure, record } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import type { FamilyQuery, FamilyWorkspace } from "./views.ts";
 
 function validateFamilyQuery(schema: SchemaObject, query: FamilyQuery) {

@@ -9,7 +9,7 @@ import type { Entity, NextWorkQuery, Repository, Schema, Transaction } from "../
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { projectTemplates } from "../src/core/project-templates.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { decodeRead } from "../src/interfaces/api-decoders.ts";
+import { decodeRead } from "../src/interfaces/api-endpoints.ts";
 
 const origin = { actor: "next-work engineer", reason: "Inspect separate engineering queues" };
 async function fixture(run: (tracer: Tracer, repository: SQLiteRepository) => Promise<void>) {

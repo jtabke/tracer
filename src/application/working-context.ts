@@ -2,7 +2,7 @@ import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure } from "../core/model.ts";
 import type { Entity } from "../core/model.ts";
 import type { WorkingContext, WorkingContextQuery } from "../core/working-context.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import { projectSchema } from "./native-query-support.ts";
 import { workingQuery, validateWorkingRecipe } from "./working-context-query.ts";
 import type { PreparedWorkingQuery } from "./working-context-query.ts";

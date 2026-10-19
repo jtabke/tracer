@@ -3,7 +3,7 @@ import { ensure, json, record, knownProperties } from "../core/model.ts";
 import type { SchemaObject } from "../core/model.ts";
 import { viewDefinition } from "../core/presentation.ts";
 import type { SavedView, ViewDefinition, InitialView } from "../core/presentation.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 import { validateChainSteps } from "./chain.ts";
 
 export type ViewSave = {

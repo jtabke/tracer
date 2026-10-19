@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { decodeRead } from "../src/interfaces/api-decoders.ts";
+import { decodeRead } from "../src/interfaces/api-endpoints.ts";
 import { url as readUrl } from "../ui/api.ts";
 import type { WorkingContext } from "../src/core/working-context.ts";
 import { actor, captureReceipt, clocks, orbit, query, uuid } from "./working-context-fixture.ts";

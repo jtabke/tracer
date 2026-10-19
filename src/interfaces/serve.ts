@@ -14,6 +14,7 @@ import { observeLocal } from "./local-observer.ts";
 
 let db = "tracer.sqlite",
   port = 4317;
+let headless = false;
 let seeded = false,
   explicitDatabase = false;
 let demoSize = "integrated";
@@ -26,9 +27,13 @@ const args = process.argv.slice(2);
 for (let index = 0; index < args.length; index++) {
   if (args[index] === "--help") {
     console.log(
-      "npm start -- [--db project.sqlite [--guide tasks.json] | --seed-demo [--demo-size integrated|medical|technology|working|large|small|software|engineering|empty]] [--secondary-db second.sqlite [--secondary-guide tasks.json]] [--port 4317]",
+      "npm start -- [--db project.sqlite [--guide tasks.json] | --seed-demo [--demo-size integrated|medical|technology|working|large|small|software|engineering|empty]] [--secondary-db second.sqlite [--secondary-guide tasks.json]] [--port 4317] [--headless]",
     );
     process.exit(0);
+  }
+  if (args[index] === "--headless") {
+    headless = true;
+    continue;
   }
   if (args[index] === "--seed-demo") {
     seeded = true;
@@ -113,7 +118,7 @@ try {
   const secondaryGuide = secondaryGuidePath ? await readDemoGuide(secondaryGuidePath) : undefined;
   const server = await startLocalServer(
     new Tracer(repository, undefined, observeLocal),
-    resolve("dist"),
+    headless ? undefined : resolve("dist"),
     port,
     guide,
     secondaryRepository
@@ -126,9 +131,10 @@ try {
           },
         ]
       : [],
+    headless ? { actor: "local-api", reason: "Headless operation" } : undefined,
   );
   const resume = [
-    "npm start -- --db",
+    headless ? "npm run serve:api -- --db" : "npm start -- --db",
     shellArgument(resolve(db)),
     "--port",
     new URL(server.origin).port || "80",

@@ -7,7 +7,7 @@ import { join } from "node:path";
 import type { Receipt, Review } from "../src/core/evidence.ts";
 import type { Entity } from "../src/core/model.ts";
 import type { WorkingContext, WorkingContextQuery } from "../src/core/working-context.ts";
-import type { Repository, Transaction } from "../src/persistence/contracts.ts";
+import type { Repository, Transaction } from "../src/application/ports/repository.ts";
 import { Tracer } from "../src/application/service.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import {

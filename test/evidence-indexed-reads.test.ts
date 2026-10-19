@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
-import type { Repository, Transaction } from "../src/persistence/contracts.ts";
+import type { Repository, Transaction } from "../src/application/ports/repository.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { migrate } from "../src/persistence/migrations.ts";
 import { EvidenceService } from "../src/application/evidence.ts";

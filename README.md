@@ -68,6 +68,14 @@ The [product vision](docs/user-needs.md#product-vision) describes the broader di
 
 Import `Tracer` from `@tracer-local/core` and `SQLiteRepository` from `@tracer-local/core/sqlite`, or use the CLI/local HTTP API. The [API guide](docs/developer-reference.md#use-the-headless-core) covers commands, guards, paging, errors and sessions. The API ships as source; no npm SDK is published.
 
+To serve the API without a browser or frontend build:
+
+```sh
+npm run serve:api -- --db my-project.sqlite
+```
+
+Scripts can import `createClient` from `@tracer-local/core/client`. Each client has its own server, project and session; it uses the same typed contracts and response validation as the browser. See [headless HTTP operation](docs/developer-reference.md#headless-http-operation) for connection and recovery details.
+
 ## Development
 
 ```sh

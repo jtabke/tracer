@@ -1,7 +1,7 @@
 import { ensure } from "../core/model.ts";
 import type { Receipt } from "../core/evidence.ts";
 import { workRecord, type WorkEvidence, type WorkQueue } from "../core/next-work.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import { compareReceiptState } from "./receipt-comparison.ts";
 import { workByteBudget } from "./next-work-budget.ts";
 

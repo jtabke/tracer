@@ -1,6 +1,6 @@
 import { ensure, record } from "../core/model.ts";
 import type { Entity, Relationship } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import type { GraphQuery } from "./views.ts";
 import type { Receipt } from "../core/evidence.ts";
 

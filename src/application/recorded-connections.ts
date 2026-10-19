@@ -1,5 +1,5 @@
 import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import type { RecordedConnections, RecordedConnectionsQuery } from "./views.ts";
 
 /** One snapshot and one bounded link page; deduplicate at most 50 endpoint reads. */

@@ -2,7 +2,7 @@ import { ensure } from "../core/model.ts";
 import type { Entity } from "../core/model.ts";
 import type { Receipt } from "../core/evidence.ts";
 import type { WorkingContext, WorkingReceipt, WorkingInputFact } from "../core/working-context.ts";
-import type { Transaction, WorkingReceiptCandidate } from "../persistence/contracts.ts";
+import type { Transaction, WorkingReceiptCandidate } from "./ports/repository.ts";
 import { compareReceiptState } from "./receipt-comparison.ts";
 import { workingCursor } from "./working-context-cursors.ts";
 import type { PreparedWorkingQuery } from "./working-context-query.ts";

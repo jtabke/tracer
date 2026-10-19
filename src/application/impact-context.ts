@@ -1,7 +1,7 @@
 import { ensure, json } from "../core/model.ts";
 import type { SchemaObject } from "../core/model.ts";
 import type { ChangeImpact, ChangeImpactQuery } from "../core/impact.ts";
-import type { Transaction } from "../persistence/contracts.ts";
+import type { Transaction } from "./ports/repository.ts";
 import { projectSchema, queryShape, validatePageLimit } from "./native-query-support.ts";
 
 function identity(value: unknown): value is string {

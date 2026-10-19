@@ -11,7 +11,7 @@ import {
   MAP_CONNECTION_LIMIT,
   projectSnapshot,
 } from "../src/application/project-snapshot.ts";
-import type { Transaction } from "../src/persistence/contracts.ts";
+import type { Transaction } from "../src/application/ports/repository.ts";
 import { mapData } from "../ui/map-data.ts";
 
 test("native snapshots are complete across pages and fail explicitly at the fixed map bound", async () => {

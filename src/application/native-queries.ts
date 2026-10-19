@@ -1,7 +1,7 @@
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure, json, record } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject, ObjectQuery } from "../core/model.ts";
-import type { Repository } from "../persistence/contracts.ts";
+import type { Repository } from "./ports/repository.ts";
 import type { EvidenceService } from "./evidence.ts";
 import type {
   GraphQuery,

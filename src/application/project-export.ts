@@ -2,7 +2,7 @@ import { ensure } from "../core/model.ts";
 import type { Entity, Relationship, Page, SchemaObject } from "../core/model.ts";
 import type { ExternalIdentity, Observation, Receipt, Review } from "../core/evidence.ts";
 import { serializeProjectExport, type ProjectExport } from "../core/project-export.ts";
-import type { Repository, Transaction } from "../persistence/contracts.ts";
+import type { Repository, Transaction } from "./ports/repository.ts";
 
 const pageSize = 200;
 const itemLimit = 250_000;

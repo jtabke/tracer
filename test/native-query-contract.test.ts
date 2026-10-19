@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { Tracer } from "../src/application/service.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
-import type { Repository } from "../src/persistence/contracts.ts";
+import type { Repository } from "../src/application/ports/repository.ts";
 import type { Operation } from "../src/application/commands.ts";
 
 test("public native projection guards preserve synchronous versus rejected-Promise behavior before opening a transaction", async () => {

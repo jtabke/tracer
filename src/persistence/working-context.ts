@@ -7,7 +7,7 @@ import type {
   WorkingReceiptNativeQuery,
   WorkingPathNative,
   WorkingReceiptCandidate,
-} from "./contracts.ts";
+} from "../application/ports/repository.ts";
 import { page } from "./pages.ts";
 
 type Step = WorkingRouteNativeQuery["steps"][number];
