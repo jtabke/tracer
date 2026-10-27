@@ -346,21 +346,20 @@ function RecordedResult({
   );
 }
 function ComparisonSummary({ comparison }: { comparison: Comparison }) {
-  const changed = comparison.inputs.filter((input) => input.hasChanged).length;
-  const unknown = comparison.inputs.filter((input) => input.hasUnknown).length;
-  const matching = comparison.inputs.filter(
-    (input) => !input.hasChanged && !input.hasUnknown,
-  ).length;
+  const inputs = [...comparison.inputs, ...(comparison.relationshipInputs ?? [])];
+  const changed = inputs.filter((input) => input.hasChanged).length;
+  const unknown = inputs.filter((input) => input.hasUnknown).length;
+  const matching = inputs.filter((input) => !input.hasChanged && !input.hasUnknown).length;
   return (
     <section className="evidence-comparison-summary" aria-label="Input freshness and review status">
       <h3>
         Freshness: {comparison.state} · Review: {comparison.review.state}
       </h3>
       <p>
-        {changed} changed · {unknown} unknown · {matching} matching · {comparison.inputs.length}{" "}
-        declared inputs
+        {changed} changed · {unknown} unknown · {matching} matching · {inputs.length} declared
+        inputs
       </p>
-      {comparison.inputs.some((input) => input.hasChanged && input.hasUnknown) && (
+      {inputs.some((input) => input.hasChanged && input.hasUnknown) && (
         <p>Some inputs have both known changes and unknown current facts.</p>
       )}
       <p className="muted">Input freshness and the recorded outcome are independent.</p>

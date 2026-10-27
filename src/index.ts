@@ -49,3 +49,5 @@ export { parseCsv } from "./core/csv.ts";
 export { previewCsvImport } from "./core/csv-import.ts";
 export type * from "./core/csv-import-types.ts";
 export type { CsvTable, CsvRow } from "./core/csv.ts";
+
+export type { Resource, Reference, ReferenceState } from "./core/references.ts";

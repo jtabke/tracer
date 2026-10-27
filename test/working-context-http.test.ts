@@ -5,7 +5,83 @@ import { startLocalServer } from "../src/interfaces/local-server.ts";
 import { decodeRead } from "../src/interfaces/api-endpoints.ts";
 import { url as readUrl } from "../ui/api.ts";
 import type { WorkingContext } from "../src/core/working-context.ts";
+import { createClient } from "../src/client.ts";
 import { actor, captureReceipt, clocks, orbit, query, uuid } from "./working-context-fixture.ts";
+
+test("working-context HTTP accepts direct relationship inputs and aggregated uses without inventing a captured version", async () => {
+  const f = await orbit();
+  const server = await startLocalServer(f.tracer, resolve("ui"), 0);
+  try {
+    const input = f.entities.focus;
+    const edited = await f.tracer.updateEntity(
+      input.id,
+      input.version,
+      { fields: { ...input.fields, note: "Revised interpretation" } },
+      1,
+      actor,
+    );
+    const relation = (await f.tracer.queryRelationships({ limit: 1 })).items[0];
+    const recorded = await f.tracer.evidence.recordReceipt(
+      {
+        outputId: f.entities.evalA.id,
+        outcome: "Separate contextual uses and a directly used assertion",
+        inputs: [
+          {
+            entityId: input.id,
+            revision: input.version,
+            fields: ["note"],
+            role: "earlier interpretation",
+          },
+          {
+            entityId: input.id,
+            expectedVersion: edited.version,
+            fields: ["note"],
+            role: "current interpretation",
+          },
+        ],
+        relationshipInputs: [
+          { id: relation.id, expectedVersion: relation.version, role: "assertion used" },
+        ],
+      },
+      actor,
+    );
+    const client = createClient({ baseUrl: server.origin });
+    const q = { focusId: input.id, recipe: { routes: [] } };
+    const result = await client.read("/api/working-context", q);
+    const item = result.receipts.page.items.find((item) => item.receipt.id === recorded.id)!;
+    assert.equal(item.inputCount, 3);
+    assert.equal(item.focus.capturedVersion, undefined);
+    assert.equal(item.focus.comparison?.hasChanged, true);
+    assert.equal(item.comparison?.relationshipInputs?.length, 1);
+    assert.deepEqual(result, await f.tracer.getWorkingContext(q));
+    const wrongVersion = structuredClone(result);
+    wrongVersion.receipts.page.items[0].focus.capturedVersion = edited.version;
+    assert.throws(() => decodeRead("/api/working-context", q, wrongVersion));
+    const hiddenChange = structuredClone(result);
+    hiddenChange.receipts.page.items[0].focus.comparison!.hasChanged = false;
+    assert.throws(() => decodeRead("/api/working-context", q, hiddenChange));
+    const relationOnly = await f.tracer.evidence.recordReceipt(
+      {
+        outputId: f.entities.evalB.id,
+        outcome: "Relationship-only assessment",
+        inputs: [],
+        relationshipInputs: [{ id: relation.id }],
+      },
+      actor,
+    );
+    const own = await client.read("/api/working-context", {
+      focusId: f.entities.evalB.id,
+      recipe: { routes: [] },
+    });
+    const ownItem = own.receipts.page.items.find((item) => item.receipt.id === relationOnly.id)!;
+    assert.equal(ownItem.inputCount, 1);
+    assert.equal(ownItem.focus.declared, false);
+    assert.equal(ownItem.comparison?.inputs.length, 0);
+  } finally {
+    await server.close();
+    f.repository.close();
+  }
+});
 
 test("working-context HTTP has strict JSON query boundaries and exact native parity without read writes", async () => {
   const f = await orbit();

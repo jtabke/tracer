@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { performance } from "node:perf_hooks";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
+import { benchmarkEvidence } from "./benchmark-evidence.ts";
 import type { Operation } from "../src/application/commands.ts";
 
 // Disposable representative workload, not a release gate or a server benchmark.
@@ -63,6 +64,7 @@ try {
   started = performance.now();
   const traced = await tracer.traverse(ids[0], { maxDepth: 2 });
   const traversalMs = performance.now() - started;
+  const evidenceImpact = await benchmarkEvidence(tracer, ids);
   repository.close();
   closed = true;
   console.log(
@@ -79,6 +81,7 @@ try {
         entityPageSize: entities.items.length,
         incidentSize: incident.items.length,
         tracedNodes: traced.length,
+        evidenceImpact,
         databaseBytes: statSync(path).size,
       },
       null,

@@ -10,18 +10,29 @@ export type RelationshipDefinition = TypeDefinition & {
   source?: string[];
   target?: string[];
   workflow?: WorkflowConnection[];
+  reference?: boolean;
+  resourceTarget?: boolean;
+  resourceSource?: boolean;
 };
 export type Schema = {
   entityTypes: Record<string, TypeDefinition>;
   relationshipTypes: Record<string, RelationshipDefinition>;
   coverageExpectations?: CoverageExpectations;
 };
-export type Entity = { id: string; type: string; key?: string; fields: Fields; version: number };
+export type Entity = {
+  id: string;
+  type: string;
+  key?: string;
+  fields: Fields;
+  version: number;
+  resource?: import("./references.ts").Resource;
+};
 export type Relationship = {
   id: string;
   type: string;
   source: string;
   target: string;
+  reference?: import("./references.ts").Reference;
   fields: Fields;
   version: number;
 };
@@ -190,7 +201,9 @@ function definitionProperties(value: unknown, group: string, path: (string | num
   if (!record(value)) return;
   knownProperties(
     value,
-    group === "entityTypes" ? ["fields"] : ["fields", "source", "target", "workflow"],
+    group === "entityTypes"
+      ? ["fields"]
+      : ["fields", "source", "target", "workflow", "reference", "resourceTarget", "resourceSource"],
     path,
   );
   if (record(value.fields))
@@ -252,6 +265,7 @@ function fieldDefinition(name: string, field: unknown) {
 }
 function typeDefinitions(definitions: Record<string, unknown>) {
   for (const [name, definition] of Object.entries(definitions)) {
+    ensure(name !== "@resource", "validation", "@resource is reserved for native resources");
     ensure(
       name.trim() && record(definition) && record(definition.fields),
       "validation",
@@ -263,6 +277,13 @@ function typeDefinitions(definitions: Record<string, unknown>) {
 function relationshipDefinitions(definitions: Record<string, unknown>, entityTypes: object) {
   for (const definition of Object.values(definitions)) {
     const rule = definition as RelationshipDefinition;
+    ensure(
+      (rule.reference === undefined || typeof rule.reference === "boolean") &&
+        (rule.resourceTarget === undefined || typeof rule.resourceTarget === "boolean") &&
+        (rule.resourceSource === undefined || typeof rule.resourceSource === "boolean"),
+      "validation",
+      "Reference/resource permission must be boolean",
+    );
     for (const types of [rule.source, rule.target])
       ensure(
         types === undefined ||

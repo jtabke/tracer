@@ -1,3 +1,4 @@
+import { ReferenceWorkspace } from "./reference-workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
@@ -11,10 +12,12 @@ import { EvidenceView } from "./evidence.tsx";
 import { FieldControl, fieldsFrom } from "./fields.tsx";
 import { SchemaEditor } from "./schema-editor.tsx";
 import "./style.css";
+import "./model-page.css";
 import { NativeTypeOptions } from "./type-options.tsx";
 import { WorkItem } from "./work-item.tsx";
 
 export type NativeTask =
+  | "references"
   | "item"
   | "create"
   | "schema"
@@ -53,12 +56,13 @@ export function NativeTasks({
   const [visited, setVisited] = useState<NativeTask[]>([]);
   const [focused, setFocused] = useState(entity);
   const [dirty, setDirty] = useState(false);
+  const [referenceDirty, setReferenceDirty] = useReferenceTaskDirty(onTaskDirty);
   useEffect(() => {
     if (task) setVisited((current) => (current.includes(task) ? current : [...current, task]));
-    syncTaskDialog(dialog.current, task);
+    syncTaskSurface(dialog.current, task);
   }, [task]);
   const adoptEntity = useEffectEvent(() => {
-    const next = chooseFocusedEntity(entity, focused?.id, dirty);
+    const next = chooseFocusedEntity(entity, focused?.id, dirty || referenceDirty);
     if (next) {
       setFocused(next);
       setDirty(false);
@@ -68,6 +72,17 @@ export function NativeTasks({
     adoptEntity();
   }, [entity?.id]);
   const panels = {
+    references: () =>
+      schema ? (
+        <ReferenceWorkspace
+          key={focused?.id}
+          entity={focused}
+          schema={schema}
+          editing={editing}
+          onChanged={changed}
+          onDirty={setReferenceDirty}
+        />
+      ) : null,
     item: () =>
       schema && focused ? (
         <WorkItem
@@ -94,6 +109,7 @@ export function NativeTasks({
       ) : null,
     schema: () => (
       <SchemaEditor
+        flowOverview
         schema={schema}
         busy={editing.busy}
         onSave={onSchema}
@@ -139,34 +155,82 @@ export function NativeTasks({
     ),
   };
   return (
-    <dialog
-      ref={dialog}
-      className="native-task"
-      aria-label="Project task"
-      onKeyDown={(event) => {
-        if (event.key === "Escape") event.stopPropagation();
-      }}
-      onCancel={(event) => {
-        event.preventDefault();
-        onClose();
-      }}
-    >
-      <header className="native-task-header">
-        <strong>{task ? taskTitles[task] : "Project task"}</strong>
-        <button onClick={onClose}>Return to map</button>
-      </header>
-      {editing.error && <p role="alert">{editing.error}</p>}
-      <p className="task-draft-note">
-        Returning to the map retains this task and its in-session drafts.
-      </p>
-      {visited.map((name) => (
-        <div key={name} hidden={task !== name}>
-          {panels[name]()}
-        </div>
-      ))}
-    </dialog>
+    <>
+      <ModelPage
+        active={task === "schema"}
+        visited={visited.includes("schema")}
+        error={editing.error}
+        render={panels.schema}
+        onClose={onClose}
+      />
+      <dialog
+        ref={dialog}
+        className="native-task"
+        aria-label="Project task"
+        onKeyDown={(event) => {
+          if (event.key === "Escape") event.stopPropagation();
+        }}
+        onCancel={(event) => {
+          event.preventDefault();
+          onClose();
+        }}
+      >
+        <header className="native-task-header">
+          <strong>{task ? taskTitles[task] : "Project task"}</strong>
+          <button onClick={onClose}>Return to map</button>
+        </header>
+        {editing.error && <p role="alert">{editing.error}</p>}
+        <p className="task-draft-note">
+          Returning to the map retains this task and its in-session drafts.
+        </p>
+        {visited
+          .filter((name) => name !== "schema")
+          .map((name) => (
+            <div key={name} hidden={task !== name}>
+              {panels[name]()}
+            </div>
+          ))}
+      </dialog>
+    </>
   );
 }
+function ModelPage({
+  active,
+  visited,
+  error,
+  render,
+  onClose,
+}: {
+  active: boolean;
+  visited: boolean;
+  error?: string;
+  render(): React.ReactNode;
+  onClose(): void;
+}) {
+  return (
+    <section className="native-task model-page" hidden={!active} aria-label="Project model page">
+      <header className="model-page-header">
+        <div>
+          <strong>Model</strong>
+          <span>Project types and relationships</span>
+        </div>
+        <button onClick={onClose}>Return to workspace</button>
+      </header>
+      {error && <p role="alert">{error}</p>}
+      {visited && render()}
+    </section>
+  );
+}
+
+function syncTaskSurface(dialog: HTMLDialogElement | null, task: NativeTask | null) {
+  syncTaskDialog(dialog, task === "schema" ? null : task);
+  if (task === "schema") {
+    requestAnimationFrame(() =>
+      document.querySelector<HTMLElement>(".model-page:not([hidden]) h2")?.focus(),
+    );
+  }
+}
+
 function syncTaskDialog(dialog: HTMLDialogElement | null, task: NativeTask | null) {
   if (!dialog) return;
   if (!task) {
@@ -190,6 +254,7 @@ function discardAllowed(dirty: boolean) {
   );
 }
 const taskTitles = {
+  references: "References and evaluations",
   item: "Item details and editing",
   create: "New item",
   schema: "Project model",
@@ -356,4 +421,12 @@ function NewItemFields({
       ))}
     </>
   );
+}
+
+function useReferenceTaskDirty(report: ((task: NativeTask, value: boolean) => void) | undefined) {
+  const [dirty, setDirty] = useState(false);
+  useEffect(() => {
+    report?.("references", dirty);
+  }, [dirty, report]);
+  return [dirty, setDirty] as const;
 }

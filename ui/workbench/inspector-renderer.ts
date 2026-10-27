@@ -167,7 +167,7 @@ export function renderInspector(context: InspectorRenderContext): string {
     const ownHistory = renderOwnHistory(record);
     const header = renderHeader(record);
     const fields = renderFields(record);
-    const relationships = renderRelationships();
+    const relationships = renderRelationships() + referenceAction(native, historical);
     const reachable = context.reachableTrace(record.key);
     const reachableSection = renderReachableSection();
     const recent = `<section class="artifact-history"><div class="inspector-section-heading"><h3>Recent history</h3><button data-action="artifact-history" aria-label="View artifact history">↗</button></div>${ownHistory.map((entry) => `<button data-artifact-event="${entry.projectRevision}">${mono(`r${entry.projectRevision}`)}<span>${entry.version === 1 ? "Created" : `Updated to v${entry.version}`}</span></button>`).join("")}</section>`;
@@ -201,4 +201,10 @@ export function renderEdgeDetail(context: InspectorRenderContext): string {
     return `<section class="edge-detail" aria-label="Relationship details"><button data-action="close-edge" aria-label="Close relationship details">×</button><strong>${e(titleCase(link.type))}</strong>${mono(`${link.source} → ${link.target}`)}<p>${e(link.scope)}</p><div class="edge-actions"><button data-action="relationship-history">History</button><button data-action="edit-edge" ${state.revision !== head ? "disabled" : ""}>Edit</button><button data-action="remove-edge" ${state.revision !== head ? "disabled" : ""}>Remove</button></div></section>`;
   }
   return edgeDetail();
+}
+
+function referenceAction(native: boolean, historical: boolean) {
+  return native
+    ? `<button data-action="references" ${historical ? "disabled" : ""}>References and supporting material</button>`
+    : "";
 }

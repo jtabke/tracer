@@ -36,7 +36,8 @@
     "workbench": "node docs/ux-artifacts/product-identity/serve-native.mjs",
     "workbench:check": "tsc --project docs/ux-artifacts/product-identity/tsconfig.json && node docs/ux-artifacts/product-identity/check-workbench.mjs",
     "workbench:screenshots": "node docs/ux-artifacts/product-identity/check-workbench.mjs --screenshots-only",
-    "serve:api": "node src/interfaces/serve.ts --headless"
+    "serve:api": "node src/interfaces/serve.ts --headless",
+    "api:reference": "node src/interfaces/generate-api-reference.ts"
   },
   "devDependencies": {
     "@bcoe/v8-coverage": "1.0.2",

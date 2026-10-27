@@ -25,13 +25,13 @@ test("worked product guide creates a native model, items and links from an empty
     try {
       await page.goto(server.origin + "/?workspace=map");
       await page.getByRole("button", { name: "Configure model", exact: true }).click();
-      const task = page.getByRole("dialog", { name: "Project task", exact: true });
+      const task = page.locator(".native-task:visible");
       await task.getByRole("button", { name: "Text", exact: true }).click();
       await task.getByLabel("Advanced JSON", { exact: true }).check();
       await task.getByLabel("Project schema JSON", { exact: true }).fill(json);
       await task.getByRole("button", { name: "Save model", exact: true }).click();
       await expect.poll(async () => (await tracer.getSchema())?.version).toBe(1);
-      await task.getByRole("button", { name: "Return to map", exact: true }).click();
+      await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "New item", exact: true }).click();
       const items = [
         { type: "product", key: "PROD-001", title: "Desk light" },
@@ -57,7 +57,7 @@ test("worked product guide creates a native model, items and links from an empty
         { source: "PROD-001", type: "has_requirement", target: "REQ-001" },
         { source: "REQ-001", type: "allocated_to", target: "COMP-001" },
       ]) {
-        await task.getByRole("button", { name: "Return to map", exact: true }).click();
+        await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
         await page.getByRole("searchbox", { name: "Find an item" }).fill(link.source);
         await page
           .getByRole("button")

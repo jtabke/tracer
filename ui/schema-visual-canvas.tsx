@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Schema } from "../src/core/model.ts";
 import { fitModelScale } from "./model-canvas-scale.ts";
 import { ModelConnectionForm } from "./model-connection-form.tsx";
@@ -14,19 +14,24 @@ export function SchemaVisualCanvas({
   selection,
   onSelect,
   onChange,
+  flowOverview,
 }: {
   draft: Schema;
+  flowOverview?: boolean;
   version: number;
   selection: DefinitionSelection;
   onSelect(selection: DefinitionSelection): void;
   onChange(value: Schema): void;
 }) {
-  const layout = useCanvasLayout(draft);
+  const layout = useCanvasLayout(draft, flowOverview);
   const [source, setSource] = useState("");
   const [connecting, setConnecting] = useState<{ source: string; target: string } | null>(null);
   const [notice, setNotice] = useState("");
-  const [frame, setFrame] = useState(0);
-  const canvas = useRef<HTMLDivElement>(null);
+  const { canvas, frame, frameSelection } = useModelFraming(
+    draft,
+    layout.positions,
+    layout.setScale,
+  );
   const connect = (source: string, target: string) => {
     if (!Object.hasOwn(draft.entityTypes, source) || !Object.hasOwn(draft.entityTypes, target))
       return;
@@ -44,8 +49,7 @@ export function SchemaVisualCanvas({
         <CanvasControls
           canFrame={!!selection.name}
           onFrame={() => {
-            layout.setScale(1);
-            setFrame((value) => value + 1);
+            frameSelection();
           }}
           scale={layout.scale}
           onScale={layout.setScale}
@@ -82,6 +86,7 @@ export function SchemaVisualCanvas({
         />
       )}
       <ModelMap
+        workflowParticipantsOnly={flowOverview}
         frameRequest={frame}
         focus=""
         schema={draft}
@@ -184,12 +189,14 @@ function initialPositions(draft: Schema) {
     ).nodes.map((node) => [node.name, { x: node.x, y: node.y }]),
   );
 }
-function useCanvasLayout(draft: Schema) {
-  const [positions, setPositions] = useState(() => initialPositions(draft));
+function useCanvasLayout(draft: Schema, flowOverview = false) {
+  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(() =>
+    flowOverview ? {} : initialPositions(draft),
+  );
   const [scale, setScale] = useState(1);
   useEffect(() => {
-    setPositions((before) => appendPositions(before, draft));
-  }, [draft]);
+    if (!flowOverview) setPositions((before) => appendPositions(before, draft));
+  }, [draft, flowOverview]);
   return {
     positions,
     scale,
@@ -197,7 +204,7 @@ function useCanvasLayout(draft: Schema) {
     move: (name: string, x: number, y: number) =>
       setPositions((before) => ({ ...before, [name]: { x, y } })),
     reset: () => {
-      setPositions(initialPositions(draft));
+      setPositions(flowOverview ? {} : initialPositions(draft));
       setScale(1);
     },
   };
@@ -217,6 +224,21 @@ function appendPositions(before: Record<string, { x: number; y: number }>, draft
   };
 }
 
+function useInitialModelPageFit(
+  canvas: { current: HTMLDivElement | null },
+  draft: Schema,
+  positions: Record<string, { x: number; y: number }>,
+  setScale: (value: number) => void,
+) {
+  const fit = useEffectEvent(() => {
+    if (canvas.current?.closest(".model-page"))
+      setScale(fitModelCanvas(canvas.current, draft, positions));
+  });
+  useEffect(() => {
+    fit();
+  }, []);
+}
+
 function fitModelCanvas(
   element: HTMLDivElement | null,
   draft: Schema,
@@ -226,7 +248,37 @@ function fitModelCanvas(
     (definition) => definition.workflow?.length,
   );
   const bounds = modelFlow(draft, workflow ? "workflow" : "trace");
-  const width = Math.max(bounds.width, ...Object.values(positions).map((point) => point.x + 250));
-  const height = Math.max(bounds.height, ...Object.values(positions).map((point) => point.y + 140));
-  return fitModelScale({ width: element?.clientWidth ?? 1110, height: 660 }, { width, height });
+  const canvas = element?.querySelector<HTMLElement>(".model-flow-canvas");
+  const width =
+    canvas?.offsetWidth ||
+    Math.max(bounds.width, ...Object.values(positions).map((point) => point.x + 250));
+  const height =
+    canvas?.offsetHeight ||
+    Math.max(bounds.height, ...Object.values(positions).map((point) => point.y + 140));
+  const viewport = element?.querySelector<HTMLElement>(".model-flow-scroll");
+  return fitModelScale(
+    {
+      width: Math.max(100, (viewport?.clientWidth || element?.clientWidth || 1110) - 24),
+      height: viewport?.clientHeight || 660,
+    },
+    { width, height },
+  );
+}
+
+function useModelFraming(
+  draft: Schema,
+  positions: Record<string, { x: number; y: number }>,
+  setScale: (value: number) => void,
+) {
+  const [frame, setFrame] = useState(0);
+  const canvas = useRef<HTMLDivElement>(null);
+  useInitialModelPageFit(canvas, draft, positions, setScale);
+  return {
+    canvas,
+    frame,
+    frameSelection() {
+      setScale(1);
+      setFrame((value) => value + 1);
+    },
+  };
 }

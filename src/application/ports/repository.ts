@@ -1,3 +1,4 @@
+import type { ChangesetResult } from "../../core/changeset.ts";
 import type {
   Kind,
   Stored,
@@ -43,6 +44,10 @@ export type WorkingReceiptCandidate = {
  * including its own writes. It is valid only inside its repository callback.
  */
 export interface Transaction {
+  findResource(source: {
+    system: "file" | "git";
+    externalId: string;
+  }): Promise<import("../../core/model.ts").Entity | undefined>;
   workingRouteIds(
     query: WorkingRouteNativeQuery,
   ): Promise<{ total: number; ids: string[]; nextAfter?: string }>;
@@ -106,6 +111,14 @@ export interface Transaction {
     targetType: string,
     relationshipType: string,
   ): Promise<{ links: import("../../core/model.ts").Relationship[]; missingSourceIds: string[] }>;
+  /** Project-scoped, immutable successful command; lookup and append share the native transaction.
+   * Concurrent identical IDs must serialize or conflict, never commit twice.
+   * Append requires this transaction's active changeset and never replaces a result.
+   */
+  getChangesetCommand(
+    commandId: string,
+  ): Promise<{ intent: string; result: ChangesetResult } | undefined>;
+  appendChangesetCommand(commandId: string, intent: string, result: ChangesetResult): Promise<void>;
   beginChangeset(id: string, schemaVersion: number, provenance: Provenance): Promise<Changeset>;
   save(kind: Kind, object: Stored, expectedVersion: number): Promise<void>;
   remove(kind: "entity" | "relationship", id: string, expectedVersion: number): Promise<void>;
@@ -116,12 +129,16 @@ export interface Repository {
   /**
    * Commit all callback writes together, or roll them all back on rejection.
    * Native state, identity/version guards, history and revision allocation are
-   * atomic. Concurrent commands must not bypass guards or endpoint integrity.
+   * atomic, including successful command outcomes. Concurrent commands must not
+   * bypass guards or endpoint integrity.
    * A rejection must leave the repository usable for subsequent transactions.
    * Callbacks must await their operations and must not nest transactions or do
-   * external IO. Adapters must not silently replay callbacks after a conflict.
+   * external IO. A same-repository nested call must reject rather than queue
+   * behind its own callback. Independent callers must remain valid under the
+   * adapter’s isolation and guard rules; they are not nested calls.
+   * Adapters must not silently replay callbacks after a conflict.
    */
   transaction<T>(work: (tx: Transaction) => Promise<T>): Promise<T>;
-  /** Caller drains pending work before closing the repository. */
+  /** Caller drains pending work before closing; later transaction calls reject with storage. */
   close(): void;
 }

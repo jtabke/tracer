@@ -214,7 +214,7 @@ for (const domain of ["medical", "integrated"] as const) {
       const revision = Number(
         await task.getByLabel("Input revision", { exact: true }).inputValue(),
       );
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Configurations", exact: true }).click();
       await expect(task.getByLabel("Configuration name", { exact: true })).toHaveValue(name);
       await task.getByRole("button", { name: "Capture configuration", exact: true }).click();
@@ -229,16 +229,16 @@ for (const domain of ["medical", "integrated"] as const) {
       )!;
       expect(recorded.members[0].entity.id).toBe(seed.members[0].entity.id);
       expect(recorded.members[0].entity.version).toBe(revision);
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Documentation", exact: true }).click();
       await dialog.getByLabel("Documentation topic", { exact: true }).selectOption("common");
       await expect(
         dialog.getByRole("article", { name: "Shared development logic", exact: true }),
       ).toBeVisible();
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Documentation", exact: true }).click();
       await expect(dialog.getByLabel("Documentation topic", { exact: true })).toHaveValue("common");
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.reload();
       await ready(page);
       await page.getByRole("button", { name: "Configurations", exact: true }).click();

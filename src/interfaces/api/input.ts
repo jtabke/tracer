@@ -1,3 +1,13 @@
+import { validateResource, validateReference } from "../../core/references.ts";
+import type { Resource, Reference } from "../../core/references.ts";
+export const resourceInput = (value: unknown): Resource => {
+  validateResource(value);
+  return value;
+};
+export const referenceInput = (value: unknown): Reference => {
+  validateReference(value);
+  return value;
+};
 import type { Operation } from "../../application/commands.ts";
 import type { CoverageExpectation, CoverageExpectations } from "../../core/coverage.ts";
 import type { Schema } from "../../core/model.ts";
@@ -57,10 +67,35 @@ export const expectations: Decoder<CoverageExpectations> = (value) => {
     Object.defineProperty(result, key, { value: expectation(item), enumerable: true });
   return result;
 };
-const entity = strictObject({ type: text, key: optional(text), fields });
-const relationship = strictObject({ type: text, source: text, target: text, fields });
+const entity = strictObject({
+  type: text,
+  key: optional(text),
+  fields,
+  resource: optional(resourceInput),
+});
+const relationship = strictObject({
+  type: text,
+  source: text,
+  target: text,
+  fields,
+  reference: optional(referenceInput),
+});
 const endpointGuards = strictObject({ sourceVersion: number, targetVersion: number });
 const operations: { [K in Operation["op"]]: Decoder<Extract<Operation, { op: K }>> } = {
+  "reference.create": strictObject({
+    op: literal("reference.create"),
+    id: optional(text),
+    input: strictObject({
+      type: text,
+      source: text,
+      sourceVersion: number,
+      target: optional(text),
+      targetVersion: optional(number),
+      resource: optional(resourceInput),
+      fields,
+      reference: referenceInput,
+    }),
+  }),
   "entity.create": strictObject({
     op: literal("entity.create"),
     id: optional(text),
@@ -70,7 +105,12 @@ const operations: { [K in Operation["op"]]: Decoder<Extract<Operation, { op: K }
     op: literal("entity.update"),
     id: text,
     expectedVersion: number,
-    input: strictObject({ fields, key: optional(text) }),
+    input: strictObject({
+      fields,
+      key: optional(text),
+      type: optional(text),
+      resource: optional(resourceInput),
+    }),
   }),
   "entity.remove": strictObject({
     op: literal("entity.remove"),
@@ -109,7 +149,15 @@ export const locator = union(
   strictObject({ system: literal("git"), repository: text, path: text, ref: text }),
   strictObject({ system: literal("file"), path: text }),
 );
+export const relationshipDeclaration = strictObject({
+  id: text,
+  expectedVersion: optional(number),
+  revision: optional(number),
+  role: optional(text),
+});
 export const declaration = strictObject({
+  facet: optional(literal("native", "content")),
+  role: optional(text),
   entityId: text,
   expectedVersion: optional(number),
   revision: optional(number),

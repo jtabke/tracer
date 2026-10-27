@@ -12,7 +12,11 @@ export type FlowRoute = {
 
 // Declaration order is a presentation choice, never an inferred development stage.
 // Keep native endpoint alternatives; Any/None are shown in the connection key instead.
-export function modelFlow(schema: Schema, mode: "trace" | "workflow" = "trace") {
+export function modelFlow(
+  schema: Schema,
+  mode: "trace" | "workflow" = "trace",
+  participantsOnly = false,
+) {
   const names = Object.keys(schema.entityTypes);
   const rows = Math.max(1, Math.ceil(names.length / 4));
   const nodes = names.map((name, index) => ({
@@ -22,9 +26,16 @@ export function modelFlow(schema: Schema, mode: "trace" | "workflow" = "trace") 
     y: 85 + (index % rows) * 140,
   }));
   const routes = modelRoutes(schema, nodes, mode);
-  if (mode === "workflow") return workflowPositions(nodes, routes);
+  if (mode === "workflow")
+    return workflowPositions(workflowParticipants(nodes, routes, participantsOnly), routes);
 
   return { nodes, routes, width: 1110, height: 70 + rows * 140 };
+}
+
+function workflowParticipants(nodes: FlowType[], routes: FlowRoute[], participantsOnly: boolean) {
+  if (!participantsOnly || !routes.length) return nodes;
+  const names = new Set(routes.flatMap((route) => [route.source.name, route.target.name]));
+  return nodes.filter((node) => names.has(node.name));
 }
 
 export function flowPath({ source, target }: FlowRoute, index: number) {

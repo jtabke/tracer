@@ -1,3 +1,4 @@
+import { compareRelationships } from "./relationship-inputs.ts";
 import type { Entity, Relationship } from "../core/model.ts";
 import { canonical } from "../core/evidence.ts";
 import type {
@@ -26,6 +27,15 @@ function nativeState(value: Entity, fields?: string[]) {
 export function comparisonToken(value: ComparedState) {
   return canonical({
     receiptId: value.receiptId,
+    ...(value.relationshipInputs === undefined
+      ? {}
+      : {
+          relationshipInputs: value.relationshipInputs.map((r) => ({
+            id: r.id,
+            current: r.current,
+            state: r.state,
+          })),
+        }),
     inputs: value.inputs.map((input) => ({
       entityId: input.entityId,
       exists: input.current.entity !== null,
@@ -173,10 +183,14 @@ export async function compareCapturedInputs(
   for (const recorded of receipt.inputs) {
     inputs.push(await compareInput(tx, recorded, receipt.output.id));
   }
-  const hasUnknown = inputs.some((input) => input.hasUnknown);
-  const hasChanged = inputs.some((input) => input.hasChanged);
+  const relationshipInputs = await compareRelationships(tx, receipt.relationshipInputs);
+  const hasUnknown =
+    relationshipInputs.some((r) => r.hasUnknown) || inputs.some((input) => input.hasUnknown);
+  const hasChanged =
+    relationshipInputs.some((r) => r.hasChanged) || inputs.some((input) => input.hasChanged);
   return {
     receiptId: receipt.id,
+    ...(receipt.relationshipInputs === undefined ? {} : { relationshipInputs }),
     state: comparedState(hasUnknown, hasChanged),
     hasChanged,
     hasUnknown,

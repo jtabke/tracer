@@ -34,7 +34,7 @@ export function projectWorkspace(
   const entity = (value: Entity) => ({
     ...value,
     key: value.key ?? value.id,
-    title: String(value.fields.title ?? value.key ?? value.id),
+    title: String(value.fields.title ?? value.resource?.label ?? value.key ?? value.id),
     statement: String(value.fields.statement ?? ""),
   });
   const link = (value: Relationship) => ({

@@ -228,24 +228,32 @@ function validateOutputMatch(value: WorkingContext, item: WorkingReceipt) {
 }
 function validateInputFact(item: WorkingReceipt, fact: WorkingReceipt["focus"]) {
   requireFact(fact.declared === item.matches.inputIds.includes(fact.entityId));
-  requireFact(fact.declared === (fact.capturedVersion !== undefined));
+  requireFact(fact.declared || fact.capturedVersion === undefined);
   const loaded = fact.declared && item.comparison !== null;
   requireFact(loaded === (fact.comparison !== null));
   if (loaded) validateComparedInput(item, fact);
 }
 function validateComparedInput(item: WorkingReceipt, fact: WorkingReceipt["focus"]) {
-  const input = item.comparison!.inputs.find((input) => input.entityId === fact.entityId);
-  requireFact(input && input.recorded.entity.version === fact.capturedVersion);
+  const inputs = item.comparison!.inputs.filter((input) => input.entityId === fact.entityId);
+  requireFact(inputs.length > 0);
+  const versions = new Set(inputs.map((input) => input.recorded.entity.version));
+  const version = versions.size === 1 ? inputs[0].recorded.entity.version : undefined;
+  requireFact(fact.capturedVersion === version);
+  const hasUnknown = inputs.some((input) => input.hasUnknown);
+  const hasChanged = inputs.some((input) => input.hasChanged);
   const expected = {
-    state: input.state,
-    hasChanged: input.hasChanged,
-    hasUnknown: input.hasUnknown,
+    state: hasUnknown ? "unknown" : hasChanged ? "changed" : "current",
+    hasChanged,
+    hasUnknown,
   };
   requireFact(canonical(fact.comparison) === canonical(expected));
 }
 function validateComparison(item: WorkingReceipt) {
   requireFact(item.comparison!.receiptId === item.receipt.id);
-  requireFact(item.comparison!.inputs.length === item.inputCount);
+  requireFact(
+    item.comparison!.inputs.length + (item.comparison!.relationshipInputs?.length ?? 0) ===
+      item.inputCount,
+  );
   requireFact(item.comparisonUnavailable === undefined);
 }
 export function validateWorkingContextScope(value: WorkingContext, query: WorkingContextQuery) {

@@ -9,5 +9,6 @@ const labels: Record<string, string> = {
   user_need: "User need",
   test_run: "Recorded run",
 };
-export const typeName = (type: string) => labels[type] ?? titleCase(type);
+export const typeName = (type: string) =>
+  type === "@resource" ? "Resource" : (labels[type] ?? titleCase(type));
 export const MAX_VISIBLE = 50;

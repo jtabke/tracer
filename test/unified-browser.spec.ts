@@ -46,7 +46,7 @@ for (const domain of ["integrated", "medical", "technology"] as const) {
       await expect(dialog).toContainText(subject.key!);
       await dialog.getByRole("button", { name: "Edit item", exact: true }).click();
       await dialog.getByLabel("Item title", { exact: true }).fill(`Saved ${domain} title`);
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Edit item and connections", exact: true }).click();
       await expect(dialog.getByLabel("Item title", { exact: true })).toHaveValue(
         `Saved ${domain} title`,
@@ -59,7 +59,7 @@ for (const domain of ["integrated", "medical", "technology"] as const) {
               .fields.title,
         )
         .toBe(`Saved ${domain} title`);
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.reload();
       await page.getByRole("searchbox", { name: "Find an item" }).fill(subject.key!);
       await expect(
@@ -124,8 +124,8 @@ test("failed native reads retain the map and disable writes; empty projects conf
     await page.goto(server.origin + "/?workspace=map");
     await expect(page.getByRole("button", { name: "Configure model", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Configure model", exact: true }).click();
-    await expect(page.getByRole("dialog")).toContainText("Configure model");
-    await page.getByRole("button", { name: "Return to map", exact: true }).click();
+    await expect(page.locator(".model-page")).toContainText("Configure model");
+    await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
     await page.route("**/api/project-snapshot", (route) => route.abort());
     await page.getByRole("button", { name: "Refresh project", exact: true }).click();
     await expect(page.getByRole("alert")).toContainText("previous map is retained");
@@ -216,8 +216,8 @@ for (const width of [390, 1440])
       if (width === 390) {
         await page.getByText("Project tools", { exact: true }).click();
         await page.getByRole("button", { name: "Configure model", exact: true }).click();
-        await expect(page.getByRole("dialog")).toContainText("Configure model");
-        await page.getByRole("button", { name: "Return to map", exact: true }).click();
+        await expect(page.locator(".model-page")).toContainText("Configure model");
+        await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       }
       await expect(
         page.getByRole("heading", { name: "Trace · PRS-01", exact: true }),
@@ -273,7 +273,7 @@ test("native creation retains a stale-schema proposal, adopts explicitly, and sa
       "New native item",
     );
     expect((await core.getProjectSnapshot()).entities).toHaveLength(0);
-    await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+    await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
     await page.getByRole("button", { name: "Refresh project", exact: true }).click();
     await page.getByRole("button", { name: "New item", exact: true }).click();
     await dialog.getByRole("button", { name: "Use current model", exact: true }).click();

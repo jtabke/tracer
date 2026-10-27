@@ -13,6 +13,7 @@ import type { OptionalFields } from "./input.ts";
 type Field<T> = {
   decode: Decoder<T>;
   encoding: "text" | "integer" | "json" | "csv";
+  optional?: boolean;
   missing?: string;
   invalidJson?: string;
 };
@@ -47,7 +48,7 @@ export function choice<const T extends string>(...values: T[]): Field<T> {
   return { decode: literal(...values), encoding: "text" };
 }
 export function optionalParam<T>(field: Field<T>): Field<T | undefined> {
-  return { ...field, decode: decodeOptional(field.decode) };
+  return { ...field, optional: true, decode: decodeOptional(field.decode) };
 }
 export const pageParams = { after: optionalParam(textParam), limit: optionalParam(integerParam) };
 export const evidencePage = { ...pageParams, subject: optionalParam(textParam) };
@@ -126,6 +127,11 @@ export function query<S extends Record<string, Field<unknown>>>(
     return result as QueryValue<S>;
   };
   return {
+    parameters: Object.entries(fields).map(([name, field]) => ({
+      name,
+      encoding: field.encoding,
+      required: !field.optional,
+    })),
     encode(value) {
       ensure(record(value), "validation", "Query must be an object");
       const params = new URLSearchParams();
@@ -151,6 +157,7 @@ export function query<S extends Record<string, Field<unknown>>>(
 export function jsonQuery<Q>(decode: Decoder<Q>, message: string): QueryCodec<Q> {
   const field = jsonParam(decode, "Invalid working context JSON");
   return {
+    parameters: [{ name: "query", encoding: "json", required: true }],
     encode: (value) => "?" + new URLSearchParams({ query: JSON.stringify(value) }),
     decode(url) {
       checkKeys(url, ["query"], { exact: { code: "usage", message } });

@@ -21,7 +21,9 @@ function fixture() {
   const identity = db.prepare("INSERT OR IGNORE INTO identities VALUES (?,?,?,1)");
   const entity = (id: string, type: string, fields: Entity["fields"] = {}): Entity => {
     identity.run(id, "entity", 1);
-    db.prepare("INSERT INTO entities VALUES (?,?,NULL,1,?)").run(id, type, JSON.stringify(fields));
+    db.prepare(
+      "INSERT INTO entities (id,type,human_key,version,attributes_json) VALUES (?,?,NULL,1,?)",
+    ).run(id, type, JSON.stringify(fields));
     return { id, type, version: 1, fields };
   };
   const relationship = (
@@ -31,13 +33,9 @@ function fixture() {
     type = "realized_by",
   ): Relationship => {
     identity.run(id, "relationship", 1);
-    db.prepare("INSERT INTO relationships VALUES (?,?,?,?,1,?)").run(
-      id,
-      source,
-      target,
-      type,
-      "{}",
-    );
+    db.prepare(
+      "INSERT INTO relationships (id,source_entity_id,target_entity_id,type,version,attributes_json) VALUES (?,?,?,?,1,?)",
+    ).run(id, source, target, type, "{}");
     return { id, source, target, type, version: 1, fields: {} };
   };
   const revision = (

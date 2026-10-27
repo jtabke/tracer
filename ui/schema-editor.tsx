@@ -16,8 +16,10 @@ export function SchemaEditor({
   onCancel,
   initialSelection,
   onDirty,
+  flowOverview,
 }: {
   schema: SchemaObject | null;
+  flowOverview?: boolean;
   busy: boolean;
   onSave(
     draft: Schema,
@@ -28,10 +30,7 @@ export function SchemaEditor({
   initialSelection?: DefinitionSelection;
   onDirty?(value: boolean): void;
 }) {
-  const heading = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    heading.current?.focus();
-  }, []);
+  const heading = useModelHeading();
   const [captured, setCaptured] = useState(() => captureDraft(schema));
   const { base, version } = captured;
   const [draft, setDraft] = useState(() => workflowProposal(base));
@@ -126,6 +125,7 @@ export function SchemaEditor({
         <SchemaEditingSurface
           key={`${version}:${starter.generation}`}
           initialSelection={initialSelection}
+          flowOverview={flowOverview}
           draft={draft}
           version={version}
           advanced={advanced}
@@ -229,4 +229,12 @@ function DraftActions({
       </button>
     </>
   );
+}
+
+function useModelHeading() {
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    heading.current?.focus();
+  }, []);
+  return heading;
 }

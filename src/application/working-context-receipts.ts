@@ -26,23 +26,32 @@ function inputFact(
   compared: WorkingReceipt["comparison"],
   id: string,
 ): WorkingInputFact {
-  const recorded = candidate.inputs.find((input) => input.entityId === id);
-  if (!recorded) return { entityId: id, declared: false, comparison: null };
-  const state = compared?.inputs.find((input) => input.entityId === id);
+  const recorded = candidate.inputs.filter((input) => input.entityId === id);
+  if (!recorded.length) return { entityId: id, declared: false, comparison: null };
+  const versions = new Set(recorded.map((input) => input.capturedVersion));
+  const states = compared?.inputs.filter((input) => input.entityId === id);
   return {
     entityId: id,
     declared: true,
-    capturedVersion: recorded.capturedVersion,
-    comparison: inputState(state),
+    ...(versions.size === 1 ? { capturedVersion: recorded[0].capturedVersion } : {}),
+    comparison: inputState(states),
   };
 }
-function inputState(
-  state: NonNullable<WorkingReceipt["comparison"]>["inputs"][number] | undefined,
-) {
-  return state
-    ? { state: state.state, hasChanged: state.hasChanged, hasUnknown: state.hasUnknown }
-    : null;
+function inputState(states: NonNullable<WorkingReceipt["comparison"]>["inputs"] | undefined) {
+  if (!states?.length) return null;
+  const hasUnknown = states.some((s) => s.hasUnknown),
+    hasChanged = states.some((s) => s.hasChanged);
+  return {
+    state: hasUnknown
+      ? ("unknown" as const)
+      : hasChanged
+        ? ("changed" as const)
+        : ("current" as const),
+    hasChanged,
+    hasUnknown,
+  };
 }
+
 function directOutputs(
   candidate: WorkingReceiptCandidate,
   query: PreparedWorkingQuery,
@@ -62,7 +71,7 @@ function receiptMatches(
     routes: routes.matches
       .filter((match) => match.outputs.has(candidate.receipt.output.id))
       .map(({ rowId, routeKey }) => ({ rowId, routeKey })),
-    inputIds: candidate.inputs.map((input) => input.entityId),
+    inputIds: [...new Set(candidate.inputs.map((input) => input.entityId))],
     outputIds: directOutputs(candidate, query, rows),
   };
   ensure(

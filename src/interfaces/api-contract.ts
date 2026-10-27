@@ -29,7 +29,7 @@ export type EvidenceByKind = {
 };
 
 export class ApiError extends Error {
-  code: ErrorCode | "read_failed" | "outcome_unknown";
+  code: ErrorCode | "read_failed" | "outcome_unknown" | "incompatible_api";
   readonly details?: ErrorDetails;
   constructor(code: ApiError["code"], message: string, details?: ErrorDetails) {
     super(message);
@@ -37,3 +37,5 @@ export class ApiError extends Error {
     this.details = details;
   }
 }
+
+export type { ApiCapabilities, ApiOperation } from "./api-capabilities.ts";

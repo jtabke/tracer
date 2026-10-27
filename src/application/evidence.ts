@@ -1,3 +1,4 @@
+import { captureRelationships } from "./relationship-inputs.ts";
 import { ensure, json, record, validateProvenance as provenance } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject, Provenance } from "../core/model.ts";
 import type {
@@ -73,6 +74,9 @@ async function captureDeclaredInput(
   const { path, links } = await captureDependencyPath(tx, declaration, output, value);
   return {
     entityId: value.id,
+    contentRetention: observation ? "external-content-not-retained" : "native-history",
+    ...(declaration.facet === undefined ? {} : { facet: declaration.facet }),
+    ...(declaration.role === undefined ? {} : { role: declaration.role }),
     entity: value,
     links,
     ...(resolved.pin ? { pin: resolved.pin, revision: value.version } : {}),
@@ -94,9 +98,9 @@ async function captureObservation(
   declaration: ReceiptInput["inputs"][number],
   value: Entity,
 ) {
-  const external = await tx.getEvidence("external", value.id);
+  const external = (await tx.getEvidence("external", value.id)) ?? value.resource?.source;
   let observation: Observation | undefined;
-  if (external) {
+  if (external && declaration.facet !== "native") {
     text(declaration.observationId, "Explicit observation ID");
     observation = (await tx.getEvidence("observation", declaration.observationId)) as
       Observation | undefined;
@@ -131,7 +135,11 @@ function validateFieldScope(
         new Set(declaration.fields).size === declaration.fields.length &&
         declaration.fields.every(
           (name) =>
-            typeof name === "string" && Object.hasOwn(schema.entityTypes[value.type].fields, name),
+            typeof name === "string" &&
+            Object.hasOwn(
+              value.type === "@resource" ? value.fields : schema.entityTypes[value.type].fields,
+              name,
+            ),
         ),
       "validation",
       "Invalid native field scope",
@@ -255,7 +263,23 @@ export class EvidenceService {
     );
     text(input.externalId, "Stable external ID");
     return this.repository.transaction(async (tx) => {
-      await entity(tx, input.entityId);
+      const resource = await entity(tx, input.entityId);
+      const previous = await tx.findResource({
+        system: input.system,
+        externalId: input.externalId,
+      });
+      ensure(
+        !previous || previous.id === resource.id,
+        "conflict",
+        "External identity already belongs to another resource",
+      );
+      ensure(
+        !resource.resource ||
+          (resource.resource.source?.system === input.system &&
+            resource.resource.source.externalId === input.externalId),
+        "conflict",
+        "Binding differs from immutable resource identity",
+      );
       // Binding is immutable; native annotations remain independently editable.
       const value: ExternalIdentity = {
         id: input.entityId,
@@ -276,9 +300,10 @@ export class EvidenceService {
     const location = locator(input.locator);
     // Resolve locally outside the database lock. Observation is a point-in-time fact, not a source mutation.
     await this.repository.transaction(async (tx) => {
-      await entity(tx, input.entityId);
-      const external = (await tx.getEvidence("external", input.entityId)) as
-        ExternalIdentity | undefined;
+      const resource = await entity(tx, input.entityId);
+      const external =
+        ((await tx.getEvidence("external", input.entityId)) as ExternalIdentity | undefined) ??
+        resource.resource?.source;
       ensure(
         external && external.system === location.system,
         "validation",
@@ -323,6 +348,7 @@ export class EvidenceService {
             "expectedOutputVersion",
             "outcome",
             "inputs",
+            "relationshipInputs",
             "supersedes",
             "configurationId",
           ].includes(key),
@@ -332,7 +358,10 @@ export class EvidenceService {
     );
     text(input.outcome, "Outcome");
     ensure(
-      Array.isArray(input.inputs) && input.inputs.length > 0 && input.inputs.length <= 100,
+      Array.isArray(input.inputs) &&
+        input.inputs.length <= 100 &&
+        (input.inputs.length > 0 ||
+          (Array.isArray(input.relationshipInputs) && input.relationshipInputs.length > 0)),
       "validation",
       "Declare 1–100 inputs",
     );
@@ -349,10 +378,29 @@ export class EvidenceService {
       const seen = new Set<string>();
       for (const declaration of input.inputs) {
         const recorded = await captureDeclaredInput(tx, declaration, output, schema, configuration);
-        ensure(!seen.has(recorded.entityId), "validation", "Declare each input once");
-        seen.add(recorded.entityId);
+        const identity =
+          recorded.facet === undefined && recorded.role === undefined
+            ? recorded.entityId
+            : recorded.entityId +
+              ":" +
+              (recorded.facet ?? "default") +
+              ":" +
+              (recorded.role ?? "") +
+              ":" +
+              (recorded.observationId ?? recorded.revision ?? "current") +
+              ":" +
+              JSON.stringify(recorded.fields ?? []);
+        ensure(!seen.has(identity), "validation", "Declare each input once");
+        seen.add(identity);
         captured.push(recorded);
       }
+      const relationshipInputs = await captureRelationships(tx, input.relationshipInputs);
+      ensure(
+        captured.length + relationshipInputs.length > 0 &&
+          captured.length + relationshipInputs.length <= 100,
+        "validation",
+        "Declare at most 100 total inputs",
+      );
       await validateSupersedes(tx, input.supersedes, output.id);
       const value: Receipt = {
         ...actor,
@@ -362,6 +410,7 @@ export class EvidenceService {
         schema,
         outcome: input.outcome,
         inputs: captured,
+        ...(input.relationshipInputs === undefined ? {} : { relationshipInputs }),
         ...(configuration
           ? {
               configuration: {

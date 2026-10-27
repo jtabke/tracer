@@ -1,3 +1,5 @@
+import { TransactionQueue } from "./transaction-queue.ts";
+import { decodeEntity, decodeRelationship } from "./native-codec.ts";
 import { DatabaseSync } from "node:sqlite";
 import type { SQLInputValue } from "node:sqlite";
 import type { Repository, Transaction } from "../application/ports/repository.ts";
@@ -38,20 +40,7 @@ const tables = { entity: "entities", relationship: "relationships", schema: "sch
 function decode(kind: Kind, row: Row): Stored {
   const common = { id: String(row.id), version: Number(row.version) };
   if (kind === "schema") return { ...common, ...JSON.parse(String(row.definition_json)) };
-  if (kind === "entity")
-    return {
-      ...common,
-      type: String(row.type),
-      ...(row.human_key === null ? {} : { key: String(row.human_key) }),
-      fields: JSON.parse(String(row.attributes_json)),
-    };
-  return {
-    ...common,
-    type: String(row.type),
-    source: String(row.source_entity_id),
-    target: String(row.target_entity_id),
-    fields: JSON.parse(String(row.attributes_json)),
-  };
+  return kind === "entity" ? decodeEntity(row) : decodeRelationship(row);
 }
 function changeset(row: Row): Changeset {
   return {
@@ -124,19 +113,20 @@ function filters(query: ObjectQuery) {
 
 export class SQLiteRepository implements Repository {
   private db!: DatabaseSync;
-  private pending: Promise<unknown> = Promise.resolve();
+  private readonly queue = new TransactionQueue();
   constructor(path: string) {
     try {
       this.db = new DatabaseSync(path);
       this.db.exec("PRAGMA foreign_keys=ON; PRAGMA busy_timeout=100; PRAGMA journal_mode=WAL;");
       migrate(this.db);
     } catch (error) {
+      this.queue.close();
       this.db?.close();
       throw storageError(error);
     }
   }
   transaction<T>(work: (tx: Transaction) => Promise<T>): Promise<T> {
-    const run = this.pending.then(async () => {
+    return this.queue.run(async () => {
       let current: Changeset | undefined;
       let ordinal = 0;
       let active = true;
@@ -157,6 +147,33 @@ export class SQLiteRepository implements Repository {
           );
       };
       const tx: Transaction = {
+        findResource: async (source) => {
+          check();
+          const owner = this.db
+            .prepare(
+              "SELECT entity_id AS id FROM resource_identities WHERE system=? AND external_id=? UNION SELECT subject_id AS id FROM evidence WHERE kind='external' AND system=? AND external_id=?",
+            )
+            .get(source.system, source.externalId, source.system, source.externalId);
+          if (owner) {
+            const existing = this.db
+              .prepare("SELECT * FROM entities WHERE id=?")
+              .get(String(owner.id));
+            ensure(
+              existing,
+              "conflict",
+              "Source identity belongs to a removed resource; it cannot be reassigned",
+            );
+            return decode("entity", existing) as import("../core/model.ts").Entity;
+          }
+          const row = this.db
+            .prepare(
+              `SELECT e.* FROM entities e WHERE
+            (json_extract(e.resource_json,'$.source.system')=? AND json_extract(e.resource_json,'$.source.externalId')=?)
+            OR e.id IN (SELECT subject_id FROM evidence WHERE kind='external' AND system=? AND external_id=?) LIMIT 1`,
+            )
+            .get(source.system, source.externalId, source.system, source.externalId);
+          return row ? (decode("entity", row) as import("../core/model.ts").Entity) : undefined;
+        },
         ...workingContextTransaction(this.db, check),
         ...impactTransaction(this.db, check),
         ...coverageTransaction(this.db, check),
@@ -340,6 +357,26 @@ export class SQLiteRepository implements Repository {
             .all(...sourceIds, relationshipType, targetType);
           return { links, missingSourceIds: missing.map((row) => String(row.id)) };
         },
+        getChangesetCommand: async (commandId) => {
+          check();
+          const row = this.db
+            .prepare("SELECT intent_json,result_json FROM changeset_commands WHERE command_id=?")
+            .get(commandId);
+          return row
+            ? { intent: String(row.intent_json), result: JSON.parse(String(row.result_json)) }
+            : undefined;
+        },
+        appendChangesetCommand: async (commandId, intent, result) => {
+          check();
+          ensure(
+            current && current.id === result.changeset.id,
+            "storage",
+            "Command outcome requires its current changeset",
+          );
+          this.db
+            .prepare("INSERT INTO changeset_commands VALUES (?,?,?,?)")
+            .run(commandId, intent, current.id, JSON.stringify(result));
+        },
         beginChangeset: async (id, schemaVersion, provenance) => {
           check();
           ensure(!current, "storage", "Only one changeset per transaction");
@@ -457,10 +494,9 @@ export class SQLiteRepository implements Repository {
         active = false;
       }
     });
-    this.pending = run.catch(() => {});
-    return run;
   }
   close() {
     this.db.close();
+    this.queue.close();
   }
 }

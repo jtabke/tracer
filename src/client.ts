@@ -1,3 +1,5 @@
+import { assertApiCompatible, captureRequirements } from "./interfaces/api-compatibility.ts";
+import type { CompatibilityRequirements } from "./interfaces/api-compatibility.ts";
 import { ApiError } from "./interfaces/api-contract.ts";
 import type {
   EvidenceByKind,
@@ -16,7 +18,10 @@ import { snapshotInput } from "./core/input-snapshot.ts";
 
 export { ApiError } from "./interfaces/api-contract.ts";
 export type * from "./interfaces/api-contract.ts";
+export type { CompatibilityRequirements } from "./interfaces/api-compatibility.ts";
 export type ClientOptions = {
+  /** Opt in to checking compatibility before connecting; writes stay blocked until verified. */
+  require?: CompatibilityRequirements;
   /** Absolute server URL for headless use; omitted for same-origin browser use. */
   baseUrl?: string;
   project?: string;
@@ -32,7 +37,10 @@ export function createClient(options: ClientOptions = {}) {
   const project = options.project ?? "default";
   const initialHeaders = new Headers(options.headers);
   const fetchRequest = options.fetch ?? ((...args) => globalThis.fetch(...args));
+  const required = options.require === undefined ? undefined : captureRequirements(options.require);
   let token = "";
+  let compatibilityReady = required === undefined;
+  let compatibilitySequence = 0;
 
   async function request<T>(
     path: string,
@@ -101,6 +109,11 @@ export function createClient(options: ClientOptions = {}) {
     input: WriteInput<K>,
     options: RequestOptions = {},
   ): Promise<WriteResponse<K>> {
+    if (!compatibilityReady)
+      throw new ApiError(
+        "incompatible_api",
+        "Verify API compatibility before writing. Nothing was sent.",
+      );
     let body: string;
     try {
       body = JSON.stringify(input);
@@ -109,8 +122,36 @@ export function createClient(options: ClientOptions = {}) {
     }
     return request(path, (value) => decodeWrite(path, value), body, options);
   }
+  /** Explicit, uncached preflight. A failed or superseded check cannot authorize a write. */
+  async function checkCompatibility(
+    requirements: CompatibilityRequirements = {},
+    options: RequestOptions = {},
+  ) {
+    const sequence = ++compatibilitySequence;
+    compatibilityReady = false;
+    const captured = captureRequirements(requirements);
+    let capabilities: ReadResponse<"/api/capabilities">;
+    try {
+      capabilities = await read("/api/capabilities", {}, options);
+    } catch (error) {
+      if (error instanceof ApiError && error.code === "not_found")
+        throw new ApiError("incompatible_api", "Server does not support API capability discovery.");
+      throw error;
+    }
+    assertApiCompatible(capabilities, required ?? {});
+    assertApiCompatible(capabilities, captured);
+    if (sequence !== compatibilitySequence)
+      throw new ApiError(
+        "incompatible_api",
+        "API compatibility check was superseded. Nothing was sent.",
+      );
+    compatibilityReady = true;
+    return capabilities;
+  }
   async function connect(options: RequestOptions = {}) {
+    token = "";
+    if (required !== undefined) await checkCompatibility({}, options);
     token = (await read("/api/session", {}, options)).token;
   }
-  return { read, write, connect };
+  return { read, write, connect, checkCompatibility };
 }

@@ -817,7 +817,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       count = visibleKeys().length,
       atHead = state.revision === workspace.head;
     const workspaceTabs = `<nav class="view-switch workspace-perspectives" aria-label="Workspace perspective">${["graph", "matrix", "history"].map((view) => `<button data-view="${view}" aria-pressed="${state.perspective === view}">${icon(view)}${view[0].toUpperCase() + view.slice(1)}</button>`).join("")}</nav>`;
-    app.innerHTML = `<div class="shell"><aside class="rail" aria-label="Project navigation"><div class="brand">${brand}</div><nav class="railnav"><button class="active" data-action="graph" title="Development map">${icon("graph")}</button></nav></aside>
+    app.innerHTML = `<div class="shell"><aside class="rail" aria-label="Project navigation"><div class="brand">${brand}</div><nav class="railnav"><button class="active" data-action="graph" title="Development map">${icon("graph")}</button>${modelNavigation()}</nav></aside>
   <main class="workspace"><header class="topbar"><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}${nextWorkButton()}<button data-action="project-tools">Project tools</button><button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
   <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderAssessmentAction()}${renderSelectionActions()}</div></section>
   ${renderRevisionBanner()}
@@ -843,6 +843,12 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     projectTools?.update(state.evidenceEpoch);
     rememberContext();
   }
+  function modelNavigation() {
+    return native
+      ? `<button data-action="model" title="Model" aria-label="Model">${icon("subsystem_requirement")}</button>`
+      : "";
+  }
+
   function nextWorkButton() {
     return native ? '<button data-action="next-work">Next work</button>' : "";
   }
@@ -898,7 +904,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         .map((key) => {
           const record = model.records.get(key),
             point = projectPoint(state.layout.get(key));
-          return `<button class="node ${state.pathLinkIds ? "path-context" : ""} ${changed.has(key) ? "changed" : ""} ${key === state.selected ? "selected" : ""} ${state.fade && !related.has(key) ? "dim" : ""}" data-key="${e(key)}" data-style="left:${point.x}px;top:${point.y}px" aria-pressed="${key === state.selected}" title="${e(record.title)}" aria-label="${e(key)}: ${e(record.title)}"><span class="node-meta">${icon(record.type)}${mono(key)}${changed.has(key) ? '<span class="change-mark" title="Changed in selected revision">Δ</span>' : ""}${state.localEntities.has(key) && state.revision === workspace.head ? '<span class="local-dot" title="Local edit">●</span>' : ""}</span><strong>${e(record.title)}</strong>${state.density === "expanded" ? `<span class="node-type">${e(typeName(record.type))}</span>` : ""}</button>`;
+          return `<button class="node ${state.pathLinkIds ? "path-context" : ""} ${changed.has(key) ? "changed" : ""} ${key === state.selected ? "selected" : ""} ${state.fade && !related.has(key) ? "dim" : ""}" data-key="${e(key)}" data-style="left:${point.x}px;top:${point.y}px" aria-pressed="${key === state.selected}" title="${e(key)}: ${e(record.title)}" aria-label="${e(key)}: ${e(record.title)}"><span class="node-meta">${icon(record.type)}${mono(key)}${changed.has(key) ? '<span class="change-mark" title="Changed in selected revision">Δ</span>' : ""}${state.localEntities.has(key) && state.revision === workspace.head ? '<span class="local-dot" title="Local edit">●</span>' : ""}</span><strong>${e(record.title)}</strong>${state.density === "expanded" ? `<span class="node-type">${e(typeName(record.type))}</span>` : ""}</button>`;
         })
         .join("");
     applyGeometry(scene);
@@ -1591,6 +1597,14 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       matrixRecipes.save();
       return;
     }
+    if (name === "model") {
+      projectTools?.open("schema");
+      return;
+    }
+    if (name === "references") {
+      projectTools?.open("references");
+      return;
+    }
     if (name === "next-work") {
       projectTools?.open("next-work");
       return;
@@ -1940,7 +1954,12 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   function handleWorkspaceKey(event) {
     const typing =
       /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable;
-    if (document.querySelector(".native-task[open], .project-tool-menu[open]")) return;
+    if (
+      document.querySelector(
+        ".native-task[open], .project-tool-menu[open], .model-page:not([hidden])",
+      )
+    )
+      return;
     if (searchShortcut(event, typing)) return;
     if (dialog.open || document.querySelector(".native-task[open]")) return;
     if (state.evidenceOpen) {

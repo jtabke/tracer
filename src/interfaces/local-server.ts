@@ -1,3 +1,4 @@
+import { httpLimits } from "./api-capabilities.ts";
 import { mutation, readQuery } from "./api-endpoints.ts";
 import type { Provenance } from "../core/model.ts";
 import { createServer } from "node:http";
@@ -22,7 +23,7 @@ async function body(request: IncomingMessage): Promise<Record<string, unknown>> 
   const chunks: Buffer[] = [];
   for await (const chunk of request) {
     size += chunk.length;
-    ensure(size <= 1024 * 1024, "usage", "Request body exceeds 1 MiB");
+    ensure(size <= httpLimits.maxRequestBodyBytes, "usage", "Request body exceeds 1 MiB");
     chunks.push(chunk);
   }
   let value: unknown;

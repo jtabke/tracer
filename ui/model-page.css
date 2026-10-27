@@ -1,0 +1,174 @@
+/* Model configuration is a retained page, not a constrained task dialog. */
+.native-task.model-page:not([hidden]) {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--color-background, #151c20);
+}
+.model-page[hidden] {
+  display: none;
+}
+.model-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-divider);
+}
+.model-page-header > div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.model-page-header span {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+.native-task.model-page > .schema-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 8px 24px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: auto;
+}
+.model-page .schema-editor > .toolbar {
+  position: absolute;
+  right: 24px;
+  top: 66px;
+  margin: 0;
+}
+.model-page .schema-editor > .toolbar h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.model-page .schema-editor > p {
+  min-height: 30px;
+  padding-right: 210px;
+}
+.model-page .schema-editing-notes {
+  margin: 2px 0;
+}
+.model-page .schema-editor > p {
+  margin: 4px 0;
+}
+.model-page .schema-editor > fieldset {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 350px;
+}
+.model-page .schema-editing-surface.is-visual:not(.has-properties),
+.model-page .schema-editing-surface.is-visual:not(.has-properties) > div:first-child,
+.model-page .schema-visual-canvas,
+.model-page .model-connection-plan {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.model-page .schema-editing-surface > [hidden] {
+  display: none !important;
+}
+.model-page .schema-mode-switch {
+  margin: 8px 0;
+}
+.model-page .schema-visual-canvas .model-flow-scroll {
+  flex: 1;
+  min-height: 240px;
+  height: auto;
+  max-height: none;
+  border-radius: 4px;
+}
+.model-page .model-map-routes {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.model-page .schema-editor > .toolbar h2 {
+  font-size: 20px;
+}
+.model-page .schema-canvas-toolbar {
+  margin-bottom: 8px;
+}
+.model-page .model-flow-modes > span,
+.model-page .schema-canvas-toolbar > span {
+  display: none;
+}
+.model-page .schema-layout-note {
+  margin-top: 4px;
+}
+.model-page .schema-editor fieldset > h3 {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.model-page .schema-editor fieldset > p:last-child {
+  margin: 0;
+  font-size: 12px;
+}
+@media (min-width: 900px) {
+  .model-page .schema-editor > fieldset {
+    position: relative;
+  }
+  .model-page .schema-canvas-toolbar {
+    position: absolute;
+    top: 0;
+    left: 165px;
+    right: 0;
+  }
+  .model-page .schema-mode-switch {
+    margin: 0 0 8px;
+    min-height: 38px;
+  }
+  .model-page .schema-mode-switch > span {
+    display: none;
+  }
+  .model-page .model-flow-modes {
+    min-height: 38px;
+    margin-bottom: 8px;
+  }
+  .model-page .model-connection-plan > .model-route-select {
+    position: absolute;
+    top: 46px;
+    right: 0;
+    max-width: 360px;
+    margin: 0;
+  }
+}
+@media (max-width: 680px) {
+  .model-page-header {
+    padding: 12px;
+  }
+  .model-page-header span {
+    display: none;
+  }
+  .native-task.model-page > .schema-editor {
+    padding: 12px;
+  }
+  .model-page .schema-visual-canvas .model-flow-scroll {
+    min-height: 240px;
+  }
+}

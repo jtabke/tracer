@@ -373,7 +373,7 @@ test("format-five migration preserves existing native/evidence/view captures; ba
     repository.close();
     const downgrade = new DatabaseSync(database);
     downgrade.exec(
-      "DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; UPDATE storage_version SET version=5",
+      "DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=5",
     );
     downgrade.close();
     repository = new SQLiteRepository(database);
@@ -388,7 +388,7 @@ test("format-five migration preserves existing native/evidence/view captures; ba
     );
     repository.close();
     const inspect = new DatabaseSync(database);
-    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 8);
+    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 10);
     assert.throws(
       () => inspect.prepare("UPDATE baselines SET payload_json='{}' WHERE id=?").run(baseline.id),
       /Immutable baseline/i,

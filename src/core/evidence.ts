@@ -26,6 +26,8 @@ export type Observation = ObservedState &
     at: string;
   };
 export type InputDeclaration = {
+  facet?: "native" | "content";
+  role?: string;
   entityId: string;
   expectedVersion?: number;
   // Exact historical native version; distinct from the current concurrency guard.
@@ -38,12 +40,34 @@ export type InputDeclaration = {
   expectedPathVersions?: number[];
 };
 export type CapturedInput = InputDeclaration & {
+  contentRetention?: "native-history" | "external-content-not-retained";
   entity: Entity;
   observation?: Observation;
   links: Relationship[];
   pin?: PinnedEntity;
 };
+export type RelationshipDeclaration = {
+  id: string;
+  expectedVersion?: number;
+  revision?: number;
+  role?: string;
+};
+export type CapturedRelationship = import("./configuration.ts").PinnedRelationship & {
+  source: Entity;
+  target: Entity;
+  role?: string;
+};
+export type RelationshipComparison = {
+  id: string;
+  recorded: CapturedRelationship;
+  current: Relationship | null;
+  hasChanged: boolean;
+  hasUnknown: boolean;
+  state: "current" | "changed" | "unknown";
+  reasons: string[];
+};
 export type ReceiptInput = {
+  relationshipInputs?: RelationshipDeclaration[];
   outputId: string;
   expectedOutputVersion?: number;
   outcome: string;
@@ -52,6 +76,7 @@ export type ReceiptInput = {
   configurationId?: string;
 };
 export type Receipt = Provenance & {
+  relationshipInputs?: CapturedRelationship[];
   id: string;
   at: string;
   output: Entity;
@@ -76,6 +101,7 @@ export type InputComparison = {
   };
 };
 export type ComparedState = {
+  relationshipInputs?: RelationshipComparison[];
   receiptId: string;
   state: "current" | "changed" | "unknown";
   hasChanged: boolean;

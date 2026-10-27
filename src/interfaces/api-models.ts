@@ -1,3 +1,4 @@
+import { resourceInput, referenceInput } from "./api/input.ts";
 import type { Baseline } from "../core/baseline.ts";
 import type { Configuration, PinnedEntity } from "../core/configuration.ts";
 import type {
@@ -41,6 +42,7 @@ export const entity: Decoder<Entity> = object({
   version: number,
   type: text,
   key: optional(text),
+  resource: optional(resourceInput),
   fields,
 });
 export const relationship: Decoder<Relationship> = object({
@@ -49,6 +51,7 @@ export const relationship: Decoder<Relationship> = object({
   type: text,
   source: text,
   target: text,
+  reference: optional(referenceInput),
   fields,
 });
 const stored = union(schema, union(relationship, entity));
@@ -128,7 +131,10 @@ export const observation: Decoder<Observation> = object({
   hash: optional(text),
 });
 const capturedInput: Decoder<CapturedInput> = object({
+  contentRetention: optional(literal("native-history", "external-content-not-retained")),
   entityId: text,
+  facet: optional(literal("native", "content")),
+  role: optional(text),
   expectedVersion: optional(number),
   revision: optional(number),
   observationId: optional(text),
@@ -139,16 +145,37 @@ const capturedInput: Decoder<CapturedInput> = object({
   links: array(relationship),
   pin: optional(pin),
 });
+const capturedRelationship = object({
+  relationship,
+  schema,
+  source: entity,
+  target: entity,
+  revisionId: text,
+  changesetId: text,
+  projectRevision: number,
+  role: optional(text),
+});
+const relationshipComparison = object({
+  id: text,
+  recorded: capturedRelationship,
+  current: nullable(relationship),
+  hasChanged: boolean,
+  hasUnknown: boolean,
+  state: literal("current", "changed", "unknown"),
+  reasons: array(text),
+});
 export const receipt: Decoder<Receipt> = object({
   ...provenance,
   output: entity,
   schema,
   outcome: text,
   inputs: array(capturedInput),
+  relationshipInputs: optional(array(capturedRelationship)),
   supersedes: optional(text),
   configuration: optional(object({ id: text, name: text, subject: entity })),
 });
 const compared = {
+  relationshipInputs: optional(array(relationshipComparison)),
   receiptId: text,
   state: literal("current", "changed", "unknown"),
   hasChanged: boolean,

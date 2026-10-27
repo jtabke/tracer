@@ -97,6 +97,10 @@ export const dataCommands: Record<string, CliCommand> = {
   },
   "changeset apply": ({ tracer, args, origin }) =>
     tracer.applyChangeset(requiredInput<ChangesetInput>(args), origin),
+  "changeset outcome": ({ tracer, args }) => {
+    arity(args, 1);
+    return tracer.getChangesetOutcome(args[0]);
+  },
   "changeset list": ({ tracer, args }) => {
     arity(args, 0, 2);
     return tracer.changesets(

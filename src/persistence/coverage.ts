@@ -13,10 +13,10 @@ function nativeTables(atRevision?: number): SQL {
   if (atRevision === undefined)
     return {
       text: `native_entities AS NOT MATERIALIZED (
-        SELECT id,type,human_key,version,attributes_json AS fields FROM entities
+        SELECT id,type,human_key,version,attributes_json AS fields,resource_json AS resource FROM entities
       ), native_links AS NOT MATERIALIZED (
         SELECT id,type,source_entity_id AS source,target_entity_id AS target,version,
-          attributes_json AS fields FROM relationships
+          attributes_json AS fields,reference_json AS reference FROM relationships
       )`,
       values: [],
     };
@@ -24,13 +24,13 @@ function nativeTables(atRevision?: number): SQL {
     text: `native_entities AS NOT MATERIALIZED (
       SELECT r.object_id AS id,json_extract(r.snapshot_json,'$.type') AS type,
         json_extract(r.snapshot_json,'$.key') AS human_key,r.version,
-        json_extract(r.snapshot_json,'$.fields') AS fields
+        json_extract(r.snapshot_json,'$.fields') AS fields,json_extract(r.snapshot_json,'$.resource') AS resource
       ${historicalRows("entity")}
     ), native_links AS NOT MATERIALIZED (
       SELECT r.object_id AS id,json_extract(r.snapshot_json,'$.type') AS type,
         json_extract(r.snapshot_json,'$.source') AS source,
         json_extract(r.snapshot_json,'$.target') AS target,r.version,
-        json_extract(r.snapshot_json,'$.fields') AS fields
+        json_extract(r.snapshot_json,'$.fields') AS fields,json_extract(r.snapshot_json,'$.reference') AS reference
       ${historicalRows("relationship")}
     )`,
     values: [atRevision, atRevision, atRevision, atRevision],
@@ -120,10 +120,10 @@ function coverageRows(db: DatabaseSync, query: CoverageNativeQuery, subjects: Ro
       COALESCE(unknowns.unresolved_count,0) AS unresolved_count,
       related.id AS related_id,related.type AS related_type,
       related.human_key AS related_key,related.version AS related_version,
-      related.fields AS related_fields,
+      related.fields AS related_fields,related.resource AS related_resource,
       representative.id AS link_id,representative.type AS link_type,
       representative.source AS link_source,representative.target AS link_target,
-      representative.version AS link_version,representative.fields AS link_fields
+      representative.version AS link_version,representative.fields AS link_fields,representative.reference AS link_reference
     FROM selected subject LEFT JOIN totals ON totals.subject_id=subject.id
       LEFT JOIN unknowns ON unknowns.subject_id=subject.id
       LEFT JOIN ranked ON ranked.subject_id=subject.id AND ranked.sample_rank<=3
@@ -148,6 +148,7 @@ function entity(row: Row, prefix = ""): Entity {
     version: Number(row[`${prefix}version`]),
     ...(key === null ? {} : { key: String(key) }),
     fields: JSON.parse(String(row[`${prefix}fields`])),
+    ...(row[`${prefix}resource`] ? { resource: JSON.parse(String(row[`${prefix}resource`])) } : {}),
   };
 }
 function relationship(row: Row): Relationship {
@@ -158,6 +159,7 @@ function relationship(row: Row): Relationship {
     target: String(row.link_target),
     version: Number(row.link_version),
     fields: JSON.parse(String(row.link_fields)),
+    ...(row.link_reference ? { reference: JSON.parse(String(row.link_reference)) } : {}),
   };
 }
 function nativeRow(subject: Entity, row: Row): CoverageNativeRow {

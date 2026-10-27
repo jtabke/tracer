@@ -39,7 +39,7 @@ const format2 = `
   CREATE INDEX revision_object ON object_revisions(object_id, version);
 `;
 
-export function writeCurrent(db: DatabaseSync, kind: Kind, object: Stored) {
+export function writeCurrent(db: DatabaseSync, kind: Kind, object: Stored, legacy = false) {
   if (kind === "schema") {
     const schema = object as SchemaObject;
     db.prepare(
@@ -58,7 +58,7 @@ export function writeCurrent(db: DatabaseSync, kind: Kind, object: Stored) {
   } else if (kind === "entity") {
     const entity = object as Entity;
     db.prepare(
-      "INSERT INTO entities VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET type=excluded.type, human_key=excluded.human_key, version=excluded.version, attributes_json=excluded.attributes_json",
+      "INSERT INTO entities (id,type,human_key,version,attributes_json) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET type=excluded.type, human_key=excluded.human_key, version=excluded.version, attributes_json=excluded.attributes_json",
     ).run(
       entity.id,
       entity.type,
@@ -69,9 +69,34 @@ export function writeCurrent(db: DatabaseSync, kind: Kind, object: Stored) {
   } else {
     const link = object as Relationship;
     db.prepare(
-      "INSERT INTO relationships VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET source_entity_id=excluded.source_entity_id, target_entity_id=excluded.target_entity_id, type=excluded.type, version=excluded.version, attributes_json=excluded.attributes_json",
+      "INSERT INTO relationships (id,source_entity_id,target_entity_id,type,version,attributes_json) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET source_entity_id=excluded.source_entity_id, target_entity_id=excluded.target_entity_id, type=excluded.type, version=excluded.version, attributes_json=excluded.attributes_json",
     ).run(link.id, link.source, link.target, link.type, link.version, JSON.stringify(link.fields));
   }
+  if (!legacy && kind === "entity")
+    db.prepare("UPDATE entities SET resource_json=? WHERE id=?").run(
+      JSON.stringify((object as Entity).resource) ?? null,
+      object.id,
+    );
+  if (!legacy && kind === "entity" && (object as Entity).resource?.source) {
+    const source = (object as Entity).resource!.source!;
+    db.prepare("INSERT INTO resource_identities VALUES (?,?,?) ON CONFLICT DO NOTHING").run(
+      source.system,
+      source.externalId,
+      object.id,
+    );
+    ensure(
+      db
+        .prepare("SELECT entity_id FROM resource_identities WHERE system=? AND external_id=?")
+        .get(source.system, source.externalId)?.entity_id === object.id,
+      "conflict",
+      "Resource source identity is permanently assigned",
+    );
+  }
+  if (!legacy && kind === "relationship")
+    db.prepare("UPDATE relationships SET reference_json=? WHERE id=?").run(
+      JSON.stringify((object as Relationship).reference) ?? null,
+      object.id,
+    );
 }
 
 // Called only inside the physical-format migration transaction.
@@ -103,7 +128,7 @@ function importLegacyObjects(db: DatabaseSync) {
   }
   for (const kind of ["schema", "entity", "relationship"] as const) {
     for (const row of db.prepare("SELECT payload FROM objects WHERE kind=?").all(kind))
-      writeCurrent(db, kind, JSON.parse(String(row.payload)));
+      writeCurrent(db, kind, JSON.parse(String(row.payload)), true);
   }
   ensure(
     db.prepare("PRAGMA foreign_key_check").all().length === 0,
@@ -124,7 +149,8 @@ function storageVersion(db: DatabaseSync) {
   const versions = exists ? db.prepare("SELECT version FROM storage_version").all() : [];
   ensure(
     !exists ||
-      (versions.length === 1 && [1, 2, 3, 4, 5, 6, 7, 8].includes(Number(versions[0].version))),
+      (versions.length === 1 &&
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(Number(versions[0].version))),
     "unsupported_storage",
     "Unsupported physical database format",
   );
@@ -211,6 +237,29 @@ export function migrate(db: DatabaseSync) {
       indexReceiptDependencies(db);
       db.exec("UPDATE storage_version SET version=8");
     }
+    if (version < 9) {
+      db.exec(`
+        CREATE TABLE changeset_commands (
+          command_id TEXT PRIMARY KEY NOT NULL,
+          intent_json TEXT NOT NULL,
+          changeset_id TEXT NOT NULL UNIQUE REFERENCES changesets(id),
+          result_json TEXT NOT NULL
+        );
+        CREATE TRIGGER changeset_command_no_update BEFORE UPDATE ON changeset_commands BEGIN SELECT RAISE(ABORT,'Immutable command outcome'); END;
+        CREATE TRIGGER changeset_command_no_delete BEFORE DELETE ON changeset_commands BEGIN SELECT RAISE(ABORT,'Immutable command outcome'); END;
+        UPDATE storage_version SET version=9;
+      `);
+    }
+    if (version < 10)
+      db.exec(`
+      CREATE TABLE resource_identities(system TEXT NOT NULL,external_id TEXT NOT NULL,entity_id TEXT NOT NULL REFERENCES identities(id),PRIMARY KEY(system,external_id));
+      CREATE TRIGGER resource_identity_no_update BEFORE UPDATE ON resource_identities BEGIN SELECT RAISE(ABORT,'Immutable resource identity'); END;
+      CREATE TRIGGER resource_identity_no_delete BEFORE DELETE ON resource_identities BEGIN SELECT RAISE(ABORT,'Immutable resource identity'); END;
+      ALTER TABLE entities ADD COLUMN resource_json TEXT;
+      ALTER TABLE relationships ADD COLUMN reference_json TEXT;
+      CREATE UNIQUE INDEX resource_source_identity ON entities(json_extract(resource_json,'$.source.system'),json_extract(resource_json,'$.source.externalId')) WHERE json_extract(resource_json,'$.source') IS NOT NULL;
+      UPDATE storage_version SET version=10;
+    `);
     db.exec(`
       CREATE INDEX IF NOT EXISTS revision_kind_object_version ON object_revisions(kind,object_id,version);
       CREATE INDEX IF NOT EXISTS revision_source ON object_revisions(json_extract(snapshot_json,'$.source'),object_id,version) WHERE kind='relationship';

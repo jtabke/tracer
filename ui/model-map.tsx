@@ -23,6 +23,7 @@ export function ModelMap({
   scale = 1,
   frameRequest = 0,
   workflowOnly = false,
+  workflowParticipantsOnly,
   onSelectRoute,
   selectedRouteKey = "",
 }: {
@@ -37,6 +38,7 @@ export function ModelMap({
   scale?: number;
   frameRequest?: number;
   workflowOnly?: boolean;
+  workflowParticipantsOnly?: boolean;
   onSelectRoute?(route: FlowRoute): void;
   selectedRouteKey?: string;
   onSelectType(name: string): void;
@@ -48,9 +50,10 @@ export function ModelMap({
     relationship,
     positions,
     workflowOnly,
+    workflowParticipantsOnly,
   );
   const scroll = useFlowScroll(
-    flowSelectionPoint(layout.nodes, active, selectedType || focus, relationship, selectedRouteKey),
+    flowSelectionPoint(layout.nodes, active, selectedType, relationship, selectedRouteKey, focus),
     scale,
     frameRequest,
   );
@@ -65,6 +68,10 @@ export function ModelMap({
         relationship={relationship}
         onMode={setPreferred}
         onSelectRelationship={onSelectRelationship}
+      />
+      <WorkflowContext
+        count={Object.keys(schema.entityTypes).length - whole.nodes.length}
+        onShow={() => setPreferred("trace")}
       />
       <ModelFlowViewport
         scroll={scroll}
@@ -94,6 +101,19 @@ export function ModelMap({
         </p>
       </div>
     </div>
+  );
+}
+
+function WorkflowContext({ count, onShow }: { count: number; onShow(): void }) {
+  if (!count) return null;
+  return (
+    <p className="model-context-note">
+      {count} supporting types are available in{" "}
+      <button type="button" aria-label="Show supporting types" onClick={onShow}>
+        Trace connections
+      </button>
+      . Run results are available in Evaluations.
+    </p>
   );
 }
 
@@ -133,7 +153,9 @@ function flowSelectionPoint(
   name: string,
   relationship: string,
   selectedRouteKey: string,
+  focus = "",
 ) {
+  name ||= focus;
   if (name) return nodes.find((node) => node.name === name);
   if (!relationship || !routes.length) return undefined;
   const route = routes.find((route) => route.key === selectedRouteKey) ?? routes[0];
@@ -259,13 +281,14 @@ function useModelProjection(
   relationship: string,
   positions: Record<string, { x: number; y: number }>,
   workflowOnly: boolean,
+  workflowParticipantsOnly = false,
 ) {
   const hasWorkflow = Object.values(schema.relationshipTypes).some(
     (definition) => definition.workflow?.length,
   );
   const [preferred, setPreferred] = useState<"workflow" | "trace">("workflow");
   const mode = workflowOnly ? "workflow" : hasWorkflow ? preferred : "trace";
-  const whole = modelFlow(schema, mode);
+  const whole = modelFlow(schema, mode, workflowParticipantsOnly);
   const layout = moveFlow(focusFlow(whole, focus), positions);
   const active = displayedRoutes(layout, focus, relationship, mode);
   return { hasWorkflow, mode, setPreferred, whole, layout, active };
@@ -327,8 +350,10 @@ function ModelMapControls({
                 >
                   <strong>{name.replaceAll("_", " ")}</strong>
                   <small>
-                    {endpointSummary(definition.source, "source")} →{" "}
+                    {endpointSummary(definition.source, "source")}
+                    {definition.resourceSource ? " + native resources" : ""} →{" "}
                     {endpointSummary(definition.target, "target")}
+                    {definition.resourceTarget ? " + native resources" : ""}
                   </small>
                 </button>
               </li>

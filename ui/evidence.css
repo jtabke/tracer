@@ -71,7 +71,7 @@
   font: 600 12px var(--font-mono);
   color: var(--color-text);
   margin: 0;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .evidence-input-identity > span {
   font-size: 13px;
@@ -364,4 +364,78 @@
   border-top: 1px solid var(--color-divider);
   border-radius: 0;
   padding: 16px 0 0;
+}
+
+.evidence-resource-identity,
+.evidence-reference-summary,
+.evidence-content-states dl {
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.evidence-resource-identity div,
+.evidence-reference-summary div,
+.evidence-content-states dl div {
+  margin: 8px 0;
+}
+.evidence-workspace dt {
+  color: var(--color-muted);
+}
+.evidence-workspace dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.evidence-workspace .evidence-observed-content,
+.evidence-workspace .evidence-content-states > section,
+.evidence-workspace .evidence-relationships {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+}
+.evidence-observed-content > h5,
+.evidence-content-states h6 {
+  font-size: 13px;
+  margin: 16px 0 8px;
+}
+.evidence-content-states {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.evidence-content-states > section {
+  min-width: 0;
+}
+.evidence-content-states p,
+.evidence-content-limit,
+.evidence-input-usage,
+.evidence-relationship p,
+.evidence-relationship li {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.evidence-content-limit {
+  color: var(--color-muted);
+}
+.evidence-workspace .evidence-relationships {
+  margin-top: 24px;
+}
+.evidence-relationships h3 {
+  font-size: 13px;
+}
+.evidence-relationship {
+  padding: 12px 0;
+  border-top: 1px solid var(--color-divider);
+  overflow-wrap: anywhere;
+}
+.evidence-relationship > summary {
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (max-width: 760px) {
+  .evidence-content-states {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
 }

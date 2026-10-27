@@ -283,7 +283,7 @@ test("offline requirement: stable identities, scoped commits, paths, unknowns, r
     }
     const db = new DatabaseSync(path);
     try {
-      assert.equal(db.prepare("SELECT version FROM storage_version").get()?.version, 8);
+      assert.equal(db.prepare("SELECT version FROM storage_version").get()?.version, 10);
       assert.throws(
         () => db.prepare("UPDATE evidence SET payload_json='{}'").run(),
         /Immutable evidence/,
@@ -517,13 +517,13 @@ test("format 2 upgrades transactionally without rewriting native history", () =>
     repo.close();
     const db = new DatabaseSync(path);
     db.exec(
-      "DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE evidence; DROP TABLE workspace_views; DROP TABLE configurations; UPDATE storage_version SET version=2",
+      "DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE evidence; DROP TABLE workspace_views; DROP TABLE configurations; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=2",
     );
     db.close();
     const upgraded = new SQLiteRepository(path);
     upgraded.close();
     const verify = new DatabaseSync(path);
-    assert.equal(verify.prepare("SELECT version FROM storage_version").get()?.version, 8);
+    assert.equal(verify.prepare("SELECT version FROM storage_version").get()?.version, 10);
     assert.equal(verify.prepare("SELECT COUNT(*) AS n FROM evidence").get()?.n, 0);
     verify.close();
   } finally {

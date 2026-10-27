@@ -187,6 +187,11 @@ endpoint({
   response: object({id: number}),
 });
 
+void client.checkCompatibility({features: ["changeset-command-recovery"], minimumLimits: {maxChangesetOperations: 1000}});
+// @ts-expect-error advertised limit names are specific to this API
+void client.checkCompatibility({minimumLimits: {anything: 1000}});
+// @ts-expect-error capabilities have no project schema query
+void client.read("/api/capabilities", {schemaVersion: 1});
 // @ts-expect-error headless queries obey the same endpoint contract
 void client.read("/api/native-pin", {id: "item"});
 // @ts-expect-error headless writes require captured version guards

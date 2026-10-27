@@ -64,7 +64,7 @@ async function recordedReceipts(tx: Transaction) {
     const page = await tx.evidence("receipt", { after, limit: 100 });
     account(page.items);
     for (const receipt of page.items as Receipt[]) {
-      inputs += receipt.inputs.length;
+      inputs += receipt.inputs.length + (receipt.relationshipInputs?.length ?? 0);
       links += receipt.inputs.reduce((sum, input) => sum + input.links.length, 0);
       receipts.push(receipt);
     }

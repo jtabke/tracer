@@ -1,3 +1,4 @@
+import { decodeEntity, decodeRelationship as decodeLink } from "./native-codec.ts";
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import type { Entity, Relationship } from "../core/model.ts";
 import { ensure } from "../core/model.ts";
@@ -27,25 +28,6 @@ function routeSql(query: WorkingRouteNativeQuery) {
     values.push(step.relationshipType, step.type);
   });
   return { with: "WITH " + ctes.join(","), terminal: `s${query.steps.length}`, values };
-}
-function decodeEntity(row: Record<string, unknown>): Entity {
-  return {
-    id: String(row.id),
-    version: Number(row.version),
-    type: String(row.type),
-    ...(row.human_key === null ? {} : { key: String(row.human_key) }),
-    fields: JSON.parse(String(row.attributes_json)),
-  };
-}
-function decodeLink(row: Record<string, unknown>): Relationship {
-  return {
-    id: String(row.id),
-    version: Number(row.version),
-    type: String(row.type),
-    source: String(row.source_entity_id),
-    target: String(row.target_entity_id),
-    fields: JSON.parse(String(row.attributes_json)),
-  };
 }
 function predecessor(
   db: DatabaseSync,
@@ -177,8 +159,8 @@ function receiptPage(db: DatabaseSync, query: WorkingReceiptNativeQuery) {
   const rows = db
     .prepare(
       `${sql.with} SELECT e.sequence,
-    json_remove(e.payload_json,'$.inputs','$.schema') AS header_json,
-    json_array_length(e.payload_json,'$.inputs') AS input_count,
+    json_remove(e.payload_json,'$.inputs','$.relationshipInputs','$.schema') AS header_json,
+    (json_array_length(e.payload_json,'$.inputs')+COALESCE(json_array_length(e.payload_json,'$.relationshipInputs'),0)) AS input_count,
     (SELECT json_group_array(json_object('entityId',json_extract(i.value,'$.entityId'),
        'capturedVersion',json_extract(i.value,'$.entity.version')))
      FROM json_each(e.payload_json,'$.inputs') i

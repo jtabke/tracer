@@ -53,15 +53,47 @@ function ProjectTools({
   register(show: (task?: NativeTask) => void): void;
   onDirty(task: string, value: boolean): void;
 }) {
-  const [activated, setActivated] = useState(false);
-  const [task, setTask] = useState<NativeTask | null>(null);
+  const [activated, setActivated] = useState(window.location.hash === "#model");
+  const [task, setTask] = useState<NativeTask | null>(
+    window.location.hash === "#model" ? "schema" : null,
+  );
+  const selectTask = (next: NativeTask | null) => {
+    if (next === "schema" && window.location.hash !== "#model") {
+      window.history.pushState(
+        null,
+        "",
+        `${window.location.pathname}${window.location.search}#model`,
+      );
+    } else if (next !== "schema" && window.location.hash === "#model") {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+    }
+    setTask(next);
+  };
+  useEffect(() => {
+    const route = () => {
+      setActivated(true);
+      setTask(window.location.hash === "#model" ? "schema" : null);
+    };
+    window.addEventListener("popstate", route);
+    return () => window.removeEventListener("popstate", route);
+  }, []);
+  useEffect(() => {
+    const workspace = document.getElementById("app");
+    const overflow = document.body.style.overflow;
+    if (workspace) workspace.inert = task === "schema";
+    if (task === "schema") document.body.style.overflow = "hidden";
+    return () => {
+      if (workspace) workspace.inert = false;
+      document.body.style.overflow = overflow;
+    };
+  }, [task]);
   const [menu, setMenu] = useState(false);
   const [error, setError] = useState("");
   const mutation = useSyncExternalStore(native.mutations.subscribe, native.mutations.snapshot);
   register((next) => {
     if (next) {
       setActivated(true);
-      setTask(next);
+      selectTask(next);
     } else setMenu(true);
   });
   const busy = !options.current() || ["saving", "unknown"].includes(mutation.status);
@@ -106,7 +138,12 @@ function ProjectTools({
   return (
     <div
       onInputCapture={() => {
-        if (task && !["schema", "create", "item", "import", "export", "next-work"].includes(task))
+        if (
+          task &&
+          !["schema", "create", "item", "references", "import", "export", "next-work"].includes(
+            task,
+          )
+        )
           onDirty(task, true);
       }}
     >
@@ -121,6 +158,7 @@ function ProjectTools({
             [
               ["next-work", "Next work"],
               ["item", "Edit item and connections"],
+              ["references", "References for selected record"],
               ["create", "New item"],
               ["import", "Import CSV"],
               ["export", "Export project"],
@@ -133,7 +171,7 @@ function ProjectTools({
             <button
               key={name}
               disabled={
-                name === "item" &&
+                ["item", "references"].includes(name) &&
                 !native.projectSnapshot.entities.some(
                   (entity) => (entity.key ?? entity.id) === options.selected(),
                 )
@@ -141,7 +179,7 @@ function ProjectTools({
               onClick={() => {
                 setMenu(false);
                 setActivated(true);
-                setTask(name);
+                selectTask(name);
               }}
             >
               {title}
@@ -170,7 +208,7 @@ function ProjectTools({
             )}
             editing={editing}
             onClose={() => {
-              setTask(null);
+              selectTask(null);
               options.settled();
               requestAnimationFrame(() =>
                 document.querySelector<HTMLButtonElement>('[data-action="project-tools"]')?.focus(),
@@ -181,7 +219,7 @@ function ProjectTools({
             }}
             onSchema={saveSchema}
             onTaskDirty={onDirty}
-            onTask={setTask}
+            onTask={selectTask}
           />
         </MutationControllerContext>
       )}

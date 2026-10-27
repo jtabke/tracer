@@ -26,18 +26,20 @@ function receiptScope(
   const states = inputs.map((input) =>
     scopedInputState(input, entityIds.has(input.entityId), relationshipIds),
   );
-  const hasChanged = states.some((state) => state.hasChanged),
-    hasUnknown = states.some((state) => state.hasUnknown);
+  const direct = (comparison.relationshipInputs ?? []).filter((r) => relationshipIds.has(r.id));
+  const hasChanged = direct.some((r) => r.hasChanged) || states.some((state) => state.hasChanged),
+    hasUnknown = direct.some((r) => r.hasUnknown) || states.some((state) => state.hasUnknown);
   return {
     inputIds: inputs.map((input) => input.entityId),
     relationshipIds: [
-      ...new Set(
-        inputs.flatMap((input) =>
+      ...new Set([
+        ...direct.map((r) => r.id),
+        ...inputs.flatMap((input) =>
           input.recorded.links
             .filter((link) => relationshipIds.has(link.id))
             .map((link) => link.id),
         ),
-      ),
+      ]),
     ].sort(),
     hasChanged,
     hasUnknown,
@@ -86,8 +88,11 @@ export class ChangeImpactService {
         limit,
       });
       ensure(
-        page.items.reduce((count, receipt) => count + receipt.inputs.length, 0) <=
-          impactLimits.inputs,
+        page.items.reduce(
+          (count, receipt) =>
+            count + receipt.inputs.length + (receipt.relationshipInputs?.length ?? 0),
+          0,
+        ) <= impactLimits.inputs,
         "validation",
         `Impact page exceeds ${impactLimits.inputs} captured inputs; reduce the evaluation page limit`,
       );

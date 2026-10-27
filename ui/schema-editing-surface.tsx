@@ -16,6 +16,7 @@ type SurfaceProps = {
   onText(value: string): void;
   onChange(value: Schema): void;
   initialSelection?: DefinitionSelection;
+  flowOverview?: boolean;
 };
 
 export function SchemaEditingSurface(props: SurfaceProps) {
@@ -54,6 +55,7 @@ export function SchemaEditingSurface(props: SurfaceProps) {
       >
         <div hidden={!visual || inspecting}>
           <SchemaVisualCanvas
+            flowOverview={props.flowOverview}
             draft={draft}
             version={version}
             selection={selection}

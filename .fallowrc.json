@@ -23,27 +23,39 @@
     "zones": [
       {
         "name": "headless-client",
-        "patterns": ["src/client.ts"]
+        "patterns": [
+          "src/client.ts"
+        ]
       },
       {
         "name": "public-api",
-        "patterns": ["src/index.ts"]
+        "patterns": [
+          "src/index.ts"
+        ]
       },
       {
         "name": "core",
-        "patterns": ["src/core/**"]
+        "patterns": [
+          "src/core/**"
+        ]
       },
       {
         "name": "repository-contract",
-        "patterns": ["src/application/ports/**"]
+        "patterns": [
+          "src/application/ports/**"
+        ]
       },
       {
         "name": "application",
-        "patterns": ["src/application/**"]
+        "patterns": [
+          "src/application/**"
+        ]
       },
       {
         "name": "persistence",
-        "patterns": ["src/persistence/**"]
+        "patterns": [
+          "src/persistence/**"
+        ]
       },
       {
         "name": "api-contract",
@@ -55,106 +67,195 @@
           "src/interfaces/api-errors.ts",
           "src/interfaces/api-endpoints.ts",
           "src/interfaces/api-models.ts",
-          "src/interfaces/api/**"
+          "src/interfaces/api/**",
+          "src/interfaces/api-capabilities.ts",
+          "src/interfaces/api-compatibility.ts",
+          "src/interfaces/api-reference.ts"
         ]
       },
       {
         "name": "launcher",
-        "patterns": ["src/interfaces/serve.ts"]
+        "patterns": [
+          "src/interfaces/serve.ts"
+        ]
       },
       {
         "name": "interfaces",
-        "patterns": ["src/interfaces/**"]
+        "patterns": [
+          "src/interfaces/**"
+        ]
       },
       {
         "name": "http-transport",
-        "patterns": ["ui/http-transport.ts", "ui/write-transport.ts"]
+        "patterns": [
+          "ui/http-transport.ts",
+          "ui/write-transport.ts"
+        ]
       },
       {
         "name": "api-client",
-        "patterns": ["ui/api.ts"]
+        "patterns": [
+          "ui/api.ts"
+        ]
       },
       {
         "name": "mutation-owner",
-        "patterns": ["ui/use-mutation.ts"]
+        "patterns": [
+          "ui/use-mutation.ts"
+        ]
       },
       {
         "name": "ui",
-        "patterns": ["ui/**"]
+        "patterns": [
+          "ui/**"
+        ]
       },
       {
         "name": "examples",
-        "patterns": ["examples/**"]
+        "patterns": [
+          "examples/**"
+        ]
       },
       {
         "name": "tests",
-        "patterns": ["test/**"]
+        "patterns": [
+          "test/**"
+        ]
       },
       {
         "name": "tooling",
-        "patterns": ["eslint.config.js", "vite.config.ts", "playwright.config.ts"]
+        "patterns": [
+          "eslint.config.js",
+          "vite.config.ts",
+          "playwright.config.ts"
+        ]
       }
     ],
     "rules": [
       {
         "from": "public-api",
-        "allow": ["core", "application"],
-        "allowTypeOnly": ["repository-contract"]
+        "allow": [
+          "core",
+          "application"
+        ],
+        "allowTypeOnly": [
+          "repository-contract"
+        ]
       },
       {
         "from": "core",
-        "allow": ["core"]
+        "allow": [
+          "core"
+        ]
       },
       {
         "from": "application",
-        "allow": ["core", "application"],
-        "allowTypeOnly": ["repository-contract"]
+        "allow": [
+          "core",
+          "application"
+        ],
+        "allowTypeOnly": [
+          "repository-contract"
+        ]
       },
       {
         "from": "repository-contract",
         "allow": [],
-        "allowTypeOnly": ["core"]
+        "allowTypeOnly": [
+          "core"
+        ]
       },
       {
         "from": "persistence",
-        "allow": ["core", "persistence"],
-        "allowTypeOnly": ["repository-contract"]
+        "allow": [
+          "core",
+          "persistence"
+        ],
+        "allowTypeOnly": [
+          "repository-contract"
+        ]
       },
       {
         "from": "api-contract",
-        "allow": ["core", "api-contract"],
-        "allowTypeOnly": ["application", "interfaces"]
+        "allow": [
+          "core",
+          "api-contract"
+        ],
+        "allowTypeOnly": [
+          "application",
+          "interfaces"
+        ]
       },
       {
         "from": "interfaces",
-        "allow": ["core", "application", "persistence", "interfaces", "api-contract"],
-        "allowTypeOnly": ["repository-contract"]
+        "allow": [
+          "core",
+          "application",
+          "persistence",
+          "interfaces",
+          "api-contract"
+        ],
+        "allowTypeOnly": [
+          "repository-contract"
+        ]
       },
       {
         "from": "ui",
-        "allow": ["core", "api-contract", "ui", "api-client", "mutation-owner"],
-        "allowTypeOnly": ["application", "interfaces"]
+        "allow": [
+          "core",
+          "api-contract",
+          "ui",
+          "api-client",
+          "mutation-owner"
+        ],
+        "allowTypeOnly": [
+          "application",
+          "interfaces"
+        ]
       },
       {
         "from": "launcher",
-        "allow": ["core", "application", "persistence", "interfaces", "examples"],
-        "allowTypeOnly": ["repository-contract"]
+        "allow": [
+          "core",
+          "application",
+          "persistence",
+          "interfaces",
+          "examples"
+        ],
+        "allowTypeOnly": [
+          "repository-contract"
+        ]
       },
       {
         "from": "http-transport",
-        "allow": ["core", "api-contract", "http-transport", "headless-client"]
+        "allow": [
+          "core",
+          "api-contract",
+          "http-transport",
+          "headless-client"
+        ]
       },
       {
         "from": "api-client",
-        "allow": ["core", "api-contract", "http-transport"]
+        "allow": [
+          "core",
+          "api-contract",
+          "http-transport"
+        ]
       },
       {
         "from": "mutation-owner",
-        "allow": ["ui", "http-transport"]
+        "allow": [
+          "ui",
+          "http-transport"
+        ]
       },
       {
         "from": "headless-client",
-        "allow": ["core", "api-contract"]
+        "allow": [
+          "core",
+          "api-contract"
+        ]
       }
     ],
     "coverage": {
@@ -162,8 +263,12 @@
       "allowUnmatched": []
     }
   },
-  "rulePacks": ["config/fallow-policy.json"],
-  "ignorePatterns": ["docs/ux-artifacts/**"],
+  "rulePacks": [
+    "config/fallow-policy.json"
+  ],
+  "ignorePatterns": [
+    "docs/ux-artifacts/**"
+  ],
   "health": {
     "coverage": ".fallow/coverage/raw"
   }

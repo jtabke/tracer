@@ -1,3 +1,5 @@
+import { apiContractVersion, apiIdentity, apiLimits } from "./api-capabilities.ts";
+import type { ApiCapabilities } from "./api-capabilities.ts";
 import type { Tracer } from "../application/service.ts";
 import type { Provenance } from "../core/model.ts";
 import { TracerError, ensure, json } from "../core/model.ts";
@@ -27,6 +29,30 @@ export const readEndpoints = {
   ...sessionReads,
 };
 export const writeEndpoints = { ...nativeWrites, ...analysisWrites, ...evidenceWrites };
+/** Discovery and reference inventory derive from the same registered handlers as dispatch. */
+export function describeApi(): ApiCapabilities {
+  const operations = [
+    ...Object.keys(readEndpoints)
+      .sort()
+      .map((path) => ({ method: "GET", path })),
+    ...Object.keys(writeEndpoints)
+      .sort()
+      .map((path) => ({ method: "POST", path })),
+  ];
+  const features = [
+    ...new Set([
+      ...Object.values(readEndpoints).flatMap((endpoint) => endpoint.features),
+      ...Object.values(writeEndpoints).flatMap((endpoint) => endpoint.features),
+    ]),
+  ].sort();
+  return {
+    api: apiIdentity,
+    contractVersion: apiContractVersion,
+    features,
+    operations,
+    limits: { ...apiLimits },
+  };
+}
 const reads: { [K in ReadPath]: ReadEndpoint<ReadQuery<K>, ReadResponse<K>> } = readEndpoints;
 const writes: { [K in WritePath]: WriteEndpoint<WriteInput<K>, WriteResponse<K>> } = writeEndpoints;
 export function encodeQuery<K extends ReadPath>(path: K, value: ReadQuery<K>) {
@@ -65,12 +91,16 @@ async function executeWrite<K extends WritePath>(
 export async function readQuery(
   tracer: Tracer,
   url: URL,
-  context: Omit<ReadContext, "tracer">,
+  context: Omit<ReadContext, "tracer" | "capabilities">,
 ): Promise<{ handled: true; value: unknown } | { handled: false }> {
   if (!Object.hasOwn(readEndpoints, url.pathname)) return { handled: false };
   return {
     handled: true,
-    value: await executeRead({ ...context, tracer }, url.pathname as ReadPath, url),
+    value: await executeRead(
+      { ...context, tracer, capabilities: describeApi },
+      url.pathname as ReadPath,
+      url,
+    ),
   };
 }
 export async function mutation(

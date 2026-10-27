@@ -17,6 +17,8 @@ export async function resolveReceiptInput(
       Object.keys(declaration).every((key) =>
         [
           "entityId",
+          "facet",
+          "role",
           "expectedVersion",
           "revision",
           "observationId",
@@ -27,6 +29,17 @@ export async function resolveReceiptInput(
       ),
     "validation",
     "Invalid input declaration",
+  );
+  ensure(
+    declaration.facet === undefined || ["native", "content"].includes(declaration.facet),
+    "validation",
+    "Invalid input facet",
+  );
+  ensure(
+    declaration.role === undefined ||
+      (typeof declaration.role === "string" && declaration.role.trim()),
+    "validation",
+    "Invalid input usage role",
   );
   if (configuration || declaration.revision !== undefined) {
     ensure(
@@ -40,7 +53,12 @@ export async function resolveReceiptInput(
     );
     const pin = configuration
       ? configuration.members.find((member) => member.entity.id === declaration.entityId)
-      : await pinEntity(tx, declaration.entityId, declaration.revision!);
+      : await pinEntity(
+          tx,
+          declaration.entityId,
+          declaration.revision!,
+          declaration.facet === "native",
+        );
     ensure(pin, "validation", "Input is not a member of the selected configuration");
     return { value: pin.entity, schema: pin.schema, pin };
   }

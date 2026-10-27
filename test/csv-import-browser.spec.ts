@@ -89,7 +89,7 @@ for (const width of [1440, 680]) {
       expect(
         (await tracer.history()).items.filter((item) => item.projectRevision === revision.head),
       ).toHaveLength(4);
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.reload();
       dialog = await openImport(page);
       await upload(page, "source,target,scope\nREQ-1,DES-1,duplicate");

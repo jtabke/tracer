@@ -1,3 +1,7 @@
+import { referenceContext } from "./reference-query.ts";
+import { createReference, checkResourceIdentity } from "./reference-command.ts";
+import { changesetLimits } from "../core/command-limits.ts";
+import { changesetCommandId, changesetIntent } from "./changeset-command.ts";
 import { validateNativeEntity, validateNativeRelationship } from "./native-validation.ts";
 import { previewSchema } from "./schema-preview.ts";
 import type { SchemaPreviewInput } from "../core/schema-preview.ts";
@@ -114,6 +118,9 @@ export class Tracer {
     this.impact = new ChangeImpactService(repository);
   }
   /** Read an exact native revision and its historical schema without creating a capture. */
+  getReference(id: string) {
+    return referenceContext(this.repository, id);
+  }
   getNativePin(id: string, version: number) {
     return this.repository.transaction((tx) => pinEntity(tx, id, version));
   }
@@ -194,11 +201,25 @@ export class Tracer {
         input.expectedSchemaVersion > 0 &&
         Array.isArray(input.operations) &&
         input.operations.length > 0 &&
-        input.operations.length <= 1000,
+        input.operations.length <= changesetLimits.maxOperations,
       "validation",
       "Changeset needs an expected schema version and 1–1000 operations",
     );
+    if (input.commandId !== undefined) changesetCommandId(input.commandId);
+    const intent = input.commandId === undefined ? undefined : changesetIntent(input, origin);
     return this.repository.transaction(async (tx) => {
+      if (input.commandId !== undefined) {
+        const previous = await tx.getChangesetCommand(input.commandId);
+        if (previous) {
+          ensure(
+            previous.intent === intent,
+            "conflict",
+            "Command ID already belongs to a different changeset command",
+            { path: ["commandId"] },
+          );
+          return previous.result;
+        }
+      }
       const schema = await this.schema(tx, input.expectedSchemaVersion);
       if (input.expectedProjectRevision !== undefined)
         expectProjectRevision(await tx.headRevision(), input.expectedProjectRevision);
@@ -206,8 +227,20 @@ export class Tracer {
       const results: (Entity | Relationship | Deletion)[] = [];
       for (const operation of input.operations)
         results.push(await this.apply(tx, schema, operation));
-      return { changeset, results };
+      const result = { changeset, results };
+      if (input.commandId !== undefined)
+        await tx.appendChangesetCommand(input.commandId, intent!, result);
+      return result;
     });
+  }
+  /** Read a committed command result; null means no success was visible in this snapshot.
+   * It does not prove an in-flight command failed. No new revision is allocated.
+   */
+  async getChangesetOutcome(commandId: string): Promise<ChangesetResult | null> {
+    changesetCommandId(commandId);
+    return this.repository.transaction(
+      async (tx) => (await tx.getChangesetCommand(commandId))?.result ?? null,
+    );
   }
   private async apply(
     tx: Transaction,
@@ -215,6 +248,8 @@ export class Tracer {
     operation: Operation,
   ): Promise<Entity | Relationship | Deletion> {
     ensure(record(operation), "validation", "Invalid operation");
+    if (operation.op === "reference.create")
+      return createReference(tx, schema, operation, () => this.runtime.newId());
     if (operation.op === "entity.create" || operation.op === "relationship.create") {
       return this.createObject(tx, schema, operation);
     }
@@ -232,15 +267,7 @@ export class Tracer {
     this.expected(current.version, operation.expectedVersion, false, { kind, id: current.id });
     if (operation.op === "entity.update") {
       ensure(record(operation.input), "validation", "Object input is required");
-      const value: Entity = {
-        ...(current as Entity),
-        fields: operation.input.fields,
-        ...(operation.input.key === undefined ? {} : { key: operation.input.key }),
-        version: current.version + 1,
-      };
-      validateNativeEntity(schema, value);
-      await tx.save("entity", value, current.version);
-      return value;
+      return this.updateNativeEntity(tx, schema, current as Entity, operation.input);
     }
     if (operation.op === "relationship.update") {
       ensure(record(operation.input), "validation", "Object input is required");
@@ -250,6 +277,9 @@ export class Tracer {
         source: operation.input.source,
         target: operation.input.target,
         fields: operation.input.fields,
+        ...(operation.input.reference === undefined
+          ? {}
+          : { reference: operation.input.reference }),
         version: current.version + 1,
       };
       await validateNativeRelationship(tx, schema, value);
@@ -261,6 +291,40 @@ export class Tracer {
     }
     await tx.remove(kind, current.id, current.version);
     return { id: current.id, version: current.version + 1, deleted: true };
+  }
+  private async updateNativeEntity(
+    tx: Transaction,
+    schema: SchemaObject,
+    current: Entity,
+    input: EntityEdit,
+  ): Promise<Entity> {
+    ensure(
+      input.type === undefined || input.type === current.type || current.type === "@resource",
+      "validation",
+      "Only resource-only identities can be promoted through this edit",
+    );
+    const value: Entity = {
+      ...(current as Entity),
+      fields: input.fields,
+      ...(input.type === undefined ? {} : { type: input.type }),
+      ...(input.resource === undefined ? {} : { resource: input.resource }),
+      ...(input.key === undefined ? {} : { key: input.key }),
+      version: current.version + 1,
+    };
+    validateNativeEntity(schema, value);
+    const previousResource = (current as Entity).resource;
+    ensure(
+      !previousResource ||
+        (previousResource.source?.system === value.resource?.source?.system &&
+          previousResource.source?.externalId === value.resource?.source?.externalId),
+      "validation",
+      "Resource source identity is immutable",
+    );
+    await checkResourceIdentity(tx, value);
+    await tx.save("entity", value, current.version);
+    for (const link of await nativeObjects(tx, "relationship", { incident: value.id }))
+      await validateNativeRelationship(tx, schema, link as Relationship);
+    return value;
   }
   private async createObject(
     tx: Transaction,
@@ -281,9 +345,11 @@ export class Tracer {
         version: 1,
         type: operation.input.type,
         fields: operation.input.fields,
+        ...(operation.input.resource === undefined ? {} : { resource: operation.input.resource }),
         ...(operation.input.key === undefined ? {} : { key: operation.input.key }),
       };
       validateNativeEntity(schema, value);
+      await checkResourceIdentity(tx, value);
       await tx.save("entity", value, 0);
       return value;
     }
@@ -294,6 +360,7 @@ export class Tracer {
       source: operation.input.source,
       target: operation.input.target,
       fields: operation.input.fields,
+      ...(operation.input.reference === undefined ? {} : { reference: operation.input.reference }),
     };
     await validateNativeRelationship(tx, schema, value);
     await this.checkConnectionCapture(tx, value, operation);

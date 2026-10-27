@@ -114,6 +114,12 @@ export function SchemaDefinitionForm({
             onChange={(types) => endpoint(side, types)}
           />
         ))}
+      {relationship && (
+        <ReferencePermissions
+          definition={definition as RelationshipDefinition}
+          onChange={onChange}
+        />
+      )}
       <h4>Fields</h4>
       <SchemaFields definition={definition} onChange={patchField} />
       <form
@@ -144,5 +150,35 @@ export function SchemaDefinitionForm({
         constraints.
       </p>
     </section>
+  );
+}
+
+function ReferencePermissions({
+  definition,
+  onChange,
+}: {
+  definition: RelationshipDefinition;
+  onChange(value: RelationshipDefinition): void;
+}) {
+  return (
+    <fieldset>
+      <legend>Resource and reference permissions</legend>
+      {(
+        [
+          ["reference", "Qualified contextual reference"],
+          ["resourceSource", "Permit resources as sources"],
+          ["resourceTarget", "Permit resources as targets"],
+        ] as const
+      ).map(([field, label]) => (
+        <label key={field}>
+          <input
+            type="checkbox"
+            checked={definition[field] ?? false}
+            onChange={(e) => onChange({ ...definition, [field]: e.target.checked })}
+          />
+          {label}
+        </label>
+      ))}
+    </fieldset>
   );
 }

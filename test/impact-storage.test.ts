@@ -118,16 +118,15 @@ test("directed incident filtering happens before limits, uses endpoint indexes, 
     migrate(db);
     for (const id of ["root", "input", "other"]) {
       db.prepare("INSERT INTO identities VALUES (?,'entity',1,1)").run(id);
-      db.prepare("INSERT INTO entities VALUES (?,'item',NULL,1,'{}')").run(id);
+      db.prepare(
+        "INSERT INTO entities (id,type,human_key,version,attributes_json) VALUES (?,'item',NULL,1,'{}')",
+      ).run(id);
     }
     const store = (value: Relationship) => {
       db.prepare("INSERT INTO identities VALUES (?,'relationship',1,1)").run(value.id);
-      db.prepare("INSERT INTO relationships VALUES (?,?,?,?,1,'{}')").run(
-        value.id,
-        value.source,
-        value.target,
-        value.type,
-      );
+      db.prepare(
+        "INSERT INTO relationships (id,source_entity_id,target_entity_id,type,version,attributes_json) VALUES (?,?,?,?,1,'{}')",
+      ).run(value.id, value.source, value.target, value.type);
     };
     for (let index = 0; index < 300; index++)
       store(link(`irrelevant-${index}`, "root", "input", "other"));
@@ -246,7 +245,7 @@ test("format7 backfills immutable receipt dependencies and subsequent receipt ap
     const downgrade = new DatabaseSync(path);
     const json = downgrade.prepare("SELECT payload_json FROM evidence").get()!.payload_json;
     downgrade.exec(
-      "DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; UPDATE storage_version SET version=7",
+      "DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=7",
     );
     downgrade.close();
     repository = new SQLiteRepository(path);
@@ -277,7 +276,7 @@ test("format7 backfills immutable receipt dependencies and subsequent receipt ap
     repository.close();
     repository = undefined;
     const inspect = new DatabaseSync(path);
-    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 8);
+    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 10);
     assert.equal(
       inspect.prepare("SELECT payload_json FROM evidence WHERE id='original'").get()!.payload_json,
       json,

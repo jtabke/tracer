@@ -73,7 +73,7 @@ for (const width of [1440, 680]) {
         `tracer-r${before.projectRevision}-e${before.evidenceRevision}.json`,
       );
       expect(readFileSync((await download.path())!, "utf8")).toBe(serializeProjectExport(before));
-      await dialog.getByRole("button", { name: "Return to map", exact: true }).click();
+      await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Project tools", exact: true }).click();
       await page.getByRole("button", { name: "Export project", exact: true }).click();
       await expect(dialog.getByRole("status")).toContainText(

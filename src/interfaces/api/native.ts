@@ -18,6 +18,7 @@ import {
 } from "../api-models.ts";
 import {
   array,
+  boolean,
   integer,
   literal,
   nullable,
@@ -31,7 +32,37 @@ import {
 import { read, write } from "./definition.ts";
 import { inputSchema, operation, strictObject } from "./input.ts";
 import * as q from "./query.ts";
+const changesetResult = object({
+  changeset,
+  results: array(
+    union(
+      relationship,
+      union(entity, object({ id: text, version: number, deleted: literal(true) })),
+    ),
+  ),
+});
 export const nativeReads = {
+  "/api/reference": read({
+    features: ["qualified-references"],
+    query: q.query({ id: q.textParam }),
+    response: object({
+      relationship,
+      resource: entity,
+      selectedObservation: nullable(observation),
+      latestObservation: nullable(observation),
+      nativeVersion: number,
+      sourceChanged: nullable(boolean),
+      availability: literal("available", "unknown"),
+      contentRetention: text,
+      passage: text,
+    }),
+    handle: ({ tracer }, input) => tracer.getReference(input.id),
+  }),
+  "/api/changeset-outcome": read({
+    query: q.query({ commandId: q.textParam }),
+    response: nullable(changesetResult),
+    handle: ({ tracer }, input) => tracer.getChangesetOutcome(input.commandId),
+  }),
   "/api/project-export": read({
     query: q.query({}, { empty: "Project export accepts no filters" }),
     response: object({
@@ -336,19 +367,13 @@ export const nativeWrites = {
   }),
   "/api/changesets": write(
     {
+      commandId: optional(text),
       expectedSchemaVersion: number,
       expectedProjectRevision: optional(number),
       operations: array(operation),
     },
-    object({
-      changeset,
-      results: array(
-        union(
-          relationship,
-          union(entity, object({ id: text, version: number, deleted: literal(true) })),
-        ),
-      ),
-    }),
+    changesetResult,
+    { features: ["changeset-command-recovery", "native-resources", "qualified-references"] },
   )(({ tracer, provenance }, input) =>
     tracer.applyChangeset(input, { reason: "Interactive edit", ...provenance }),
   ),

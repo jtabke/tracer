@@ -12,3 +12,13 @@ export function recordedDependencyPath(input: InputComparison, output: Entity): 
     })
     .join(" → ");
 }
+
+export function inputIdentity(input: InputComparison): string {
+  return JSON.stringify([
+    input.entityId,
+    input.recorded.facet ?? "",
+    input.recorded.role ?? "",
+    input.recorded.observationId ?? input.recorded.revision ?? "current",
+    input.recorded.fields ?? [],
+  ]);
+}

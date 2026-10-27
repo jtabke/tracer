@@ -3,7 +3,8 @@ import type { Evidence, Receipt } from "../core/evidence.ts";
 import type { ImpactIncidentQuery, ImpactReceiptQuery } from "../core/impact.ts";
 import type { Relationship } from "../core/model.ts";
 import type { Transaction } from "../application/ports/repository.ts";
-import { jsonPage } from "./pages.ts";
+import { jsonPage, page } from "./pages.ts";
+import { decodeRelationship } from "./native-codec.ts";
 
 /** Derived lookup only: immutable receipt JSON remains the captured dependency authority. */
 export function indexReceiptDependencies(db: DatabaseSync, sequence?: number) {
@@ -16,8 +17,11 @@ export function indexReceiptDependencies(db: DatabaseSync, sequence?: number) {
     UNION
     SELECT 'relationship',json_extract(link.value,'$.id'),e.sequence
       FROM evidence e,json_each(e.payload_json,'$.inputs') input,
-        json_each(input.value,'$.links') link WHERE ${where}`,
-  ).run(...values, ...values);
+        json_each(input.value,'$.links') link WHERE ${where}
+    UNION
+    SELECT 'relationship',json_extract(input.value,'$.relationship.id'),e.sequence
+      FROM evidence e,json_each(e.payload_json,'$.relationshipInputs') input WHERE ${where}`,
+  ).run(...values, ...values, ...values);
 }
 
 function endpoints(direction: ImpactIncidentQuery["direction"]) {
@@ -26,9 +30,7 @@ function endpoints(direction: ImpactIncidentQuery["direction"]) {
   return ["source", "target"];
 }
 function currentIncident(endpoint: string) {
-  return `SELECT id,json_object('id',id,'version',version,'type',type,
-      'source',source_entity_id,'target',target_entity_id,'fields',json(attributes_json)) AS payload_json
-    FROM relationships WHERE ${endpoint}_entity_id=?
+  return `SELECT * FROM relationships WHERE ${endpoint}_entity_id=?
       AND type IN (SELECT value FROM json_each(?))`;
 }
 function historicalIncident(endpoint: string) {
@@ -57,7 +59,9 @@ function incidentPage(db: DatabaseSync, query: ImpactIncidentQuery) {
       ORDER BY id COLLATE BINARY LIMIT ?`,
     )
     .all(...values, query.limit + 1);
-  return jsonPage<Relationship>(rows, query.limit, "payload_json", "id");
+  if (historical) return jsonPage<Relationship>(rows, query.limit, "payload_json", "id");
+  const selected = page(rows, query.limit, (row) => String(row.id));
+  return { ...selected, items: selected.items.map(decodeRelationship) };
 }
 function receiptPage(db: DatabaseSync, query: ImpactReceiptQuery) {
   const rows = db

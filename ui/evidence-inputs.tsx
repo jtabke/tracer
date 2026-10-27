@@ -1,10 +1,12 @@
+import { RelationshipEvidence } from "./relationship-evidence.tsx";
 import { useEffect, useRef, useState } from "react";
-import type { Comparison, InputComparison, Observation, Receipt } from "../src/core/evidence.ts";
+import type { Comparison, InputComparison, Receipt } from "../src/core/evidence.ts";
 import { canonical } from "../src/core/evidence.ts";
 import { label } from "./entity-label.ts";
-import { recordedDependencyPath } from "./evidence-path.ts";
+import { recordedDependencyPath, inputIdentity } from "./evidence-path.ts";
 import "./evidence.css";
 import { NativePinProvenance } from "./native-pin-provenance.tsx";
+import { ObservedContent, ResourceIdentity } from "./resource-evidence.tsx";
 
 export function EvidenceInputs({
   comparison,
@@ -18,7 +20,15 @@ export function EvidenceInputs({
   mode?: "all" | "focused";
 }) {
   if (mode === "focused")
-    return <FocusedInputs comparison={comparison} receipt={receipt} focusInputId={focusInputId} />;
+    return (
+      <>
+        <FocusedInputs comparison={comparison} receipt={receipt} focusInputId={focusInputId} />
+        <RelationshipEvidence
+          inputs={comparison.relationshipInputs}
+          contentInputs={comparison.inputs}
+        />
+      </>
+    );
   return (
     <div className="evidence-inputs" aria-label="Captured input comparisons">
       {receipt?.configuration && (
@@ -30,12 +40,16 @@ export function EvidenceInputs({
         .sort((a, b) => inputPriority(a, focusInputId) - inputPriority(b, focusInputId))
         .map((value) => (
           <EvidenceInput
-            key={value.entityId}
+            key={inputIdentity(value)}
             value={value}
             receipt={receipt}
             focused={value.entityId === focusInputId}
           />
         ))}
+      <RelationshipEvidence
+        inputs={comparison.relationshipInputs}
+        contentInputs={comparison.inputs}
+      />
     </div>
   );
 }
@@ -52,8 +66,18 @@ function FocusedInputs({
   const detail = useRef<HTMLElement>(null);
   useEffect(() => setSelectedId(focusInputId), [comparison.receiptId, focusInputId]);
   const inputs = [...comparison.inputs].sort((a, b) => inputPriority(a) - inputPriority(b));
-  const selected = inputs.find((value) => value.entityId === selectedId) ?? inputs[0];
-  if (!selected) return <p>No declared inputs in this receipt.</p>;
+  const selected =
+    inputs.find((value) => inputIdentity(value) === selectedId) ??
+    inputs.find((value) => value.entityId === selectedId) ??
+    inputs[0];
+  if (!selected)
+    return (
+      <p>
+        {comparison.relationshipInputs?.length
+          ? "No declared object inputs; relationship inputs are shown below."
+          : "No declared inputs in this receipt."}
+      </p>
+    );
   return (
     <div className="evidence-inputs evidence-input-browser" aria-label="Captured input comparisons">
       <section
@@ -68,11 +92,11 @@ function FocusedInputs({
         <h3>Declared inputs · {inputs.length}</h3>
         {inputs.map((value) => (
           <button
-            key={value.entityId}
-            aria-pressed={selected.entityId === value.entityId}
+            key={inputIdentity(value)}
+            aria-pressed={inputIdentity(selected) === inputIdentity(value)}
             aria-label={`Compare input ${label(value.recorded.entity)}`}
             onClick={() => {
-              setSelectedId(value.entityId);
+              setSelectedId(inputIdentity(value));
               detail.current?.focus({ preventScroll: true });
               detail.current?.scrollIntoView({ block: "start" });
             }}
@@ -110,6 +134,12 @@ function EvidenceInput({
       aria-label={focused ? `Selected input ${label(value.recorded.entity)}` : undefined}
     >
       <InputHeader value={value} />
+      {(value.recorded.entity.resource || value.recorded.observation) && (
+        <ResourceIdentity entity={value.recorded.entity} />
+      )}
+      {value.recorded.role && (
+        <p className="evidence-input-usage">Use in this evaluation: {value.recorded.role}</p>
+      )}
       {needsAttention(value) && <DependencyPath value={value} receipt={receipt} />}
       <FieldChanges differences={differences} />
       <InputReasons value={value} hasFieldChanges={!!differences.length} />
@@ -129,6 +159,10 @@ function InputHeader({ value }: { value: InputComparison }) {
         {typeof title === "string" && title !== identity && <span>{title}</span>}
       </div>
       <span className="evidence-input-versions">
+        {(value.recorded.entity.resource ||
+          value.recorded.observation ||
+          value.recorded.facet === "native") &&
+          "Native record · "}
         Captured v{value.recorded.entity.version} →{" "}
         {value.current.entity ? `Current v${value.current.entity.version}` : "Current unavailable"}
       </span>
@@ -177,9 +211,6 @@ function InputProvenance({
         <summary>Original native fields and relationship records</summary>
         <pre>{JSON.stringify({ captured: value.recorded, current: value.current }, null, 2)}</pre>
       </details>
-      {value.recorded.observation && (
-        <ObservedInput recorded={value.recorded.observation} current={value.current.observation} />
-      )}
       {!showReasons(value, hasFieldChanges) && (
         <ul>
           {value.reasons.map((reason) => (
@@ -253,29 +284,6 @@ function displayValue(value: unknown) {
   return typeof value === "string" ? value : JSON.stringify(value, null, 2);
 }
 
-function ObservedInput({
-  recorded,
-  current,
-}: {
-  recorded: Observation;
-  current: Observation | null;
-}) {
-  return (
-    <>
-      <p>
-        Recorded: {recorded.commit ?? "file"} · {recorded.hash ?? "unknown"}
-      </p>
-      <p>
-        Last observed: {current?.commit ?? "file"} · {current?.hash ?? "unknown"} · {current?.at}
-      </p>
-      <details>
-        <summary>Observation records</summary>
-        <pre>{JSON.stringify({ recorded, lastObserved: current }, null, 2)}</pre>
-      </details>
-    </>
-  );
-}
-
 function StatementComparison({
   value,
   expanded = false,
@@ -283,6 +291,10 @@ function StatementComparison({
   value: InputComparison;
   expanded?: boolean;
 }) {
+  if (value.recorded.observation)
+    return (
+      <ObservedContent recorded={value.recorded.observation} current={value.current.observation} />
+    );
   const content = (
     <div className="evidence-statement-comparison">
       <p>

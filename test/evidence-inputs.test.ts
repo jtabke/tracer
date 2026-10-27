@@ -74,8 +74,11 @@ test("external recorded versus latest observations remain separately named with 
   };
   value.inputs[0].current.entity = { ...entity, version: 4 };
   const markup = render(value);
-  assert.match(markup, /Recorded: file · captured/);
-  assert.match(markup, /Last observed: file · unknown/);
+  assert.match(markup, /Captured for this evaluation/);
+  assert.match(markup, /Content hash<.*captured/);
+  assert.match(markup, /No latest observation is recorded/);
+  assert.match(markup, /passage relevance remains unknown/);
+  assert.doesNotMatch(markup, /evidence-statement-comparison/);
   assert.match(markup, /v4/);
   assert.doesNotMatch(markup, /satisfied|passing/);
 });

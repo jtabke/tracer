@@ -12,7 +12,7 @@ async function projectTask(page: Page, name: string) {
     .getByRole("dialog", { name: "Project tools", exact: true })
     .getByRole("button", { name, exact: true })
     .click();
-  return page.getByRole("dialog", { name: "Project task", exact: true });
+  return page.locator(".native-task:visible");
 }
 
 for (const width of [1440, 680])
@@ -54,7 +54,7 @@ for (const width of [1440, 680])
       );
       await task.getByRole("button", { name: "Save model", exact: true }).click();
       await expect.poll(async () => (await tracer.getSchema())?.version).toBe(1);
-      await task.getByRole("button", { name: "Return to map", exact: true }).click();
+      await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await projectTask(page, "New item");
       for (const [key, title, statement] of [
         ["REQ", "Response criterion", "Response within 10 ms"],
@@ -66,7 +66,7 @@ for (const width of [1440, 680])
         await task.getByRole("button", { name: "Create item", exact: true }).click();
         await expect(task.getByLabel("New item key", { exact: true })).toHaveValue("");
       }
-      await task.getByRole("button", { name: "Return to map", exact: true }).click();
+      await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Search", exact: false }).first().click();
       await page.locator("#search").fill("REQ");
       await page.locator('[data-result="REQ"]').click();
@@ -92,7 +92,7 @@ for (const width of [1440, 680])
       await task.getByRole("button", { name: "Record receipt", exact: true }).click();
       await expect.poll(async () => (await tracer.evidence.list("receipt")).items.length).toBe(1);
       const receipt = (await tracer.evidence.list("receipt")).items[0];
-      await task.getByRole("button", { name: "Return to map", exact: true }).click();
+      await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.locator('[data-action="search"]').click();
       await page.locator("#search").fill("REQ");
       await page.locator('[data-result="REQ"]').click();

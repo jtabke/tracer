@@ -27,7 +27,7 @@ for (const domain of ["integrated", "medical"] as const) {
       await page.goto(server.origin + "/?workspace=map");
       await findItem(page, subject.key!);
       await page.getByRole("button", { name: "Edit item and connections", exact: true }).click();
-      const task = page.getByRole("dialog", { name: "Project task" });
+      const task = page.locator(".native-task:visible");
       await task.getByRole("button", { name: "Edit item", exact: true }).click();
       await task.getByLabel("Item title", { exact: true }).fill("Workflow reviewed title");
       await task.getByRole("button", { name: "Save item", exact: true }).click();
@@ -62,7 +62,7 @@ for (const domain of ["integrated", "medical"] as const) {
           ),
         )
         .toBe(true);
-      await task.getByRole("button", { name: "Return to map", exact: true }).click();
+      await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Evaluations", exact: true }).click();
       await task.getByLabel("Evaluation receipt", { exact: true }).selectOption(receipt.id);
       const stage = task.getByLabel("Captured result review", { exact: true });

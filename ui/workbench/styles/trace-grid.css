@@ -445,6 +445,9 @@
 .canvas.fitted-titles:not(.density-overview) .node {
   min-height: calc(62px / var(--camera-zoom));
 }
+.canvas.fitted-titles.density-expanded .node {
+  min-height: calc(90px / var(--camera-zoom));
+}
 .canvas.fitted-titles:not(.density-overview) .node .node-meta .mono {
   font-size: max(10px, calc(9px / var(--camera-zoom)));
 }

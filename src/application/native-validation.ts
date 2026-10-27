@@ -1,4 +1,5 @@
-import { ensure, json, validateFields, TracerError } from "../core/model.ts";
+import { resourceType, validateResource, validateReference } from "../core/references.ts";
+import { ensure, json, record, validateFields, TracerError } from "../core/model.ts";
 import type { Entity, Relationship, Schema, Kind, TypeDefinition } from "../core/model.ts";
 import type { Transaction } from "./ports/repository.ts";
 
@@ -18,10 +19,27 @@ export function validateNativeEntity(schema: Schema, entity: Entity) {
     "Entity type must be nonempty text",
     { kind: "entity", id: entity.id, path: ["type"] },
   );
+  if (entity.resource !== undefined) validateResource(entity.resource);
+  ensure(
+    entity.type !== resourceType || entity.resource !== undefined,
+    "validation",
+    "Resource-only identity requires its descriptor",
+  );
   objectFields(
     "entity",
     entity,
-    Object.hasOwn(schema.entityTypes, entity.type) ? schema.entityTypes[entity.type] : undefined,
+    entity.type === resourceType
+      ? {
+          fields: Object.fromEntries(
+            Object.keys(record(entity.fields) ? entity.fields : {}).map((key) => [
+              key,
+              { type: "json" as const },
+            ]),
+          ),
+        }
+      : Object.hasOwn(schema.entityTypes, entity.type)
+        ? schema.entityTypes[entity.type]
+        : undefined,
   );
   ensure(
     entity.key === undefined ||
@@ -52,15 +70,57 @@ export async function validateNativeRelationship(
   const target = (await tx.get("entity", link.target)) as Entity | undefined;
   ensure(source && target, "referential_integrity", "Both endpoints must be active");
   ensure(
-    !definition!.source || definition!.source.includes(source.type),
+    (source.resource !== undefined && definition!.resourceSource === true) ||
+      (source.type !== resourceType &&
+        (!definition!.source || definition!.source.includes(source.type))),
     "validation",
     "Invalid source type",
     { kind: "relationship", id: link.id, path: ["source"] },
   );
   ensure(
-    !definition!.target || definition!.target.includes(target.type),
+    (target.resource !== undefined && definition!.resourceTarget === true) ||
+      (target.type !== resourceType &&
+        (!definition!.target || definition!.target.includes(target.type))),
     "validation",
     "Invalid target type",
     { kind: "relationship", id: link.id, path: ["target"] },
   );
+  await validateReferenceTarget(tx, link, definition!, target);
+}
+
+async function validateReferenceTarget(
+  tx: Transaction,
+  link: Relationship,
+  definition: import("../core/model.ts").RelationshipDefinition,
+  target: Entity,
+) {
+  ensure(
+    definition.reference === true ? link.reference !== undefined : link.reference === undefined,
+    "validation",
+    "Reference qualification requires an explicitly reference-capable relationship",
+  );
+  if (!link.reference) return;
+  validateReference(link.reference);
+  ensure(target.resource !== undefined, "validation", "Reference target needs resource capability");
+  const state = link.reference.state;
+  if (state.mode === "current") return;
+  if ("observationId" in state) {
+    const observation = (await tx.getEvidence("observation", state.observationId)) as
+      import("../core/evidence.ts").Observation | undefined;
+    ensure(
+      target.resource.source &&
+        observation?.entityId === target.id &&
+        observation.availability === "available" &&
+        observation.hash,
+      "validation",
+      "Pin needs an available observation of this resource",
+    );
+  } else {
+    const revision = await tx.getRevision("entity", target.id, state.revision);
+    ensure(
+      !target.resource.source && revision?.snapshot,
+      "validation",
+      "Pin needs an existing native content revision",
+    );
+  }
 }

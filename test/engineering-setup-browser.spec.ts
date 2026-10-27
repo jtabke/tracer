@@ -35,7 +35,7 @@ for (const width of [1440, 680])
         await expect(
           page.getByRole("navigation", { name: "Documentation topics", exact: true }),
         ).not.toBeVisible();
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Project tools", exact: true }).click();
       await page.getByRole("button", { name: "Configure model", exact: true }).click();
       const editor = page.getByLabel("Configure project model", { exact: true });
@@ -56,7 +56,7 @@ for (const width of [1440, 680])
         editor.getByRole("checkbox", { name: "Save 3 starter Matrix views with this model" }),
       ).toBeChecked();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-      const dialogBounds = page.getByRole("dialog", { name: "Project task", exact: true });
+      const dialogBounds = page.locator(".native-task:visible");
       await expect
         .poll(async () =>
           dialogBounds.evaluate((element) => element.scrollWidth - element.clientWidth),
@@ -67,7 +67,7 @@ for (const width of [1440, 680])
       await expect(editor.getByRole("status")).toContainText("with 3 Matrix views");
       await expect(editor.getByText("No changes", { exact: true })).toBeVisible();
       expect((await tracer.savedViews.list()).length).toBe(3);
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await expect(page.locator('[data-view="matrix"]')).toHaveAttribute("aria-pressed", "true");
       await expect(page.locator(".traceability-matrix thead th")).toHaveCount(3);
       await expect(page.locator(".traceability-matrix thead")).toContainText("tested by");
@@ -78,7 +78,7 @@ for (const width of [1440, 680])
       ).toHaveCount(0);
       await page.getByRole("button", { name: "Project tools", exact: true }).click();
       await page.getByRole("button", { name: "New item", exact: true }).click();
-      const task = page.getByRole("dialog", { name: "Project task", exact: true });
+      const task = page.locator(".native-task:visible");
       await task.getByLabel("New item type", { exact: true }).selectOption("test");
       await task.getByLabel("New item key", { exact: true }).fill("CO2-PLAN");
       await task
@@ -99,7 +99,7 @@ for (const width of [1440, 680])
         expected_result: "Within ±50 ppm across the selected range.",
         build: "Prototype A",
       });
-      await task.getByRole("button", { name: "Return to map", exact: true }).click();
+      await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.reload();
       await expect(
         page.locator(".workspace-notice").filter({ hasText: "unsaved drafts" }),

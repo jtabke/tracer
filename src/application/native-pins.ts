@@ -7,6 +7,7 @@ export async function pinEntity(
   tx: Transaction,
   id: string,
   version: number,
+  annotationsOnly = false,
 ): Promise<PinnedEntity> {
   ensure(
     typeof id === "string" && id.length > 0 && Number.isSafeInteger(version) && version > 0,
@@ -15,7 +16,8 @@ export async function pinEntity(
   );
   const pin = await nativeRevision(tx, "entity", id, version);
   ensure(
-    !(await tx.getEvidence("external", id)),
+    annotationsOnly ||
+      (!(await tx.getEvidence("external", id)) && !(pin.snapshot as Entity).resource?.source),
     "validation",
     "Native revision pins do not capture external content; use explicit observations",
   );

@@ -45,6 +45,27 @@ test("development flow can reverse a trace without reversing its native endpoint
   assert.deepEqual(schema.relationshipTypes.contributes_to.source, ["requirement"]);
 });
 
+test("a primary development projection excludes supporting types while the trace model preserves them", () => {
+  const schema = schemaWithRoute(reverseRoute);
+  schema.entityTypes.source = { fields: {} };
+  schema.entityTypes.goal = { fields: {} };
+  schema.relationshipTypes.sourced_from = { source: ["need"], target: ["source"], fields: {} };
+  schema.relationshipTypes.supports_goal = { source: ["need"], target: ["goal"], fields: {} };
+  const before = structuredClone(schema);
+  assert.deepEqual(
+    modelFlow(schema, "workflow", true).nodes.map((n) => n.name),
+    ["need", "requirement"],
+  );
+  assert.equal(modelFlow(schema, "workflow").nodes.length, 5);
+  const trace = modelFlow(schema, "trace", true);
+  assert.equal(trace.nodes.length, 5);
+  assert.ok(trace.routes.some((r) => r.source.name === "need" && r.target.name === "source"));
+  assert.ok(trace.routes.some((r) => r.source.name === "need" && r.target.name === "goal"));
+  assert.deepEqual(schema, before);
+  const noFlow = { ...schema, relationshipTypes: {} };
+  assert.equal(modelFlow(noFlow, "workflow", true).nodes.length, 5);
+});
+
 test("workflow metadata rejects invalid types, constraints, directions, labels and duplicate paths", () => {
   const invalid = [
     null,

@@ -18,7 +18,8 @@ Commands:
   relationship update ID VERSION JSON  {type, source, target, fields}
   relationship remove ID VERSION
   relationship list [QUERY_JSON]
-  changeset apply JSON                 {expectedSchemaVersion, operations}
+  changeset apply JSON                 {commandId?, expectedSchemaVersion, operations}
+  changeset outcome COMMAND_ID          original committed result, or null if not recorded
   changeset list [AFTER_REVISION] [LIMIT]
   external bind JSON                   {entityId,system:git|file,externalId,ownership:external}
   observation record JSON              {entityId,locator:{system,path,repository?,ref?}}

@@ -266,7 +266,7 @@ test("format 4 migration preserves saved views, native history and existing rece
     closeRepository();
     const old = new DatabaseSync(path);
     old.exec(
-      "DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE configurations; UPDATE storage_version SET version=4",
+      "DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE configurations; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=4",
     );
     old.close();
     const upgraded = new SQLiteRepository(path);
