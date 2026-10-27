@@ -20,7 +20,7 @@ Native provenance is everything recorded by this database. A migrated legacy dat
 
 The file includes original external identities and observation locators, availability, observed SHA-256 hashes, Git commit IDs and unknown-state reasons where recorded. Export never reads files, contacts Git or creates a new observation. An unobserved external identity stays unobserved; an unknown observation stays unknown.
 
-**External file contents and Git repositories are not bundled.** Preserve referenced files separately and retain the recorded Git commits and repository content. Preserve the original locator-to-file mapping when moving a project. A recorded hash identifies observed content; it does not prove the file is still available. This JSON is a portable data export, not a rendered design-review package or an implemented restore/import format. Continue using a SQLite backup when you need to reopen the database directly.
+**External file contents and Git repositories are not bundled.** Preserve referenced files separately and retain the recorded Git commits and repository content. Preserve the original locator-to-file mapping when moving a project. A recorded hash identifies observed content; it does not prove the file is still available. This JSON is a portable data export, not a rendered design-review package or an implemented restore/import format. Continue using a SQLite backup when you need to reopen the database directly. Operational changeset command IDs/outcomes are excluded from JSON export; the database backup preserves durable retry recovery.
 
 ## CLI, API and application API
 

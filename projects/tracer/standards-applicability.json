@@ -1,0 +1,177 @@
+{
+  "formatVersion": 1,
+  "status": "Design applicability inventory, not a compliance matrix or implementation authorization.",
+  "owner": "docs/development-flow.md#standards-applicability-and-conformance",
+  "rule": "Named standards inform design unless a separately selected profile defines applicable normative provisions, implementation scope and verification. Empty provisions means clause review pending, not no obligations.",
+  "entries": [
+    {
+      "id": "ISO-29148",
+      "edition": "ISO/IEC/IEEE 29148:2018",
+      "url": "https://www.iso.org/standard/72089.html",
+      "use": "requirements_semantics_reference",
+      "reviewBasis": "Official public abstract/catalogue only; full normative clauses not reviewed. Published 2018 edition is current; ISO reports a forthcoming replacement.",
+      "provisions": [],
+      "mapsTo": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-013",
+        "REQ-014",
+        "REQ-027",
+        "REQ-028",
+        "REQ-029",
+        "REQ-030"
+      ],
+      "designQuestions": [
+        "Can requirements retain independent identity, source/rationale and verification context?",
+        "Can typed traces distinguish reference support from execution evidence?"
+      ],
+      "verificationPlan": "Review chosen applicable clauses from authorized normative text; map each to exact Tracer criteria and evidence before any conformance claim.",
+      "gaps": [
+        "No clause-level coverage determination",
+        "No process or tool conformance established"
+      ],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "REQIF",
+      "edition": "OMG ReqIF 1.2",
+      "url": "https://www.omg.org/spec/ReqIF/1.2",
+      "use": "candidate_interchange_target",
+      "reviewBasis": "Official specification index and normative artifact availability; no complete interchange mapping or implementation reviewed.",
+      "provisions": [],
+      "mapsTo": ["REQ-018", "REQ-020", "REQ-027", "REQ-028"],
+      "designQuestions": [
+        "How will identities, typed attributes, relationships, hierarchy and unsupported contextual-reference data map to ReqIF?",
+        "Which data is outside the interchange profile and how will any loss be disclosed?"
+      ],
+      "verificationPlan": "Before selecting ReqIF delivery, define a versioned supported profile and normative mapping, validate files against its schemas, test representative cross-tool round trips and report unsupported/lost semantics.",
+      "gaps": [
+        "No ReqIF import/export implementation or conformance target selected",
+        "Core recorded-project JSON export is not ReqIF",
+        "Full history and evaluation evidence must not be promised through an unreviewed exchange mapping"
+      ],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "WEB-ANNOTATION",
+      "edition": "W3C Web Annotation Data Model, Recommendation 2017-02-23",
+      "url": "https://www.w3.org/TR/annotation-model/",
+      "use": "conceptual_mapping",
+      "reviewBasis": "Primary specification source/selector/state and textual selector sections reviewed.",
+      "provisions": [
+        "https://www.w3.org/TR/annotation-model/#specific-resources",
+        "https://www.w3.org/TR/annotation-model/#selectors",
+        "https://www.w3.org/TR/annotation-model/#states",
+        "https://www.w3.org/TR/annotation-model/#text-quote-selector",
+        "https://www.w3.org/TR/annotation-model/#text-position-selector"
+      ],
+      "mapsTo": ["REQ-028", "REQ-030", "VER-028", "VER-030"],
+      "designQuestions": [
+        "Are resource identity, selected part and selected state distinct?",
+        "Are unsupported or ambiguous selectors preserved without silent scope broadening?"
+      ],
+      "verificationPlan": "Exercise typed selector/state round-trip preservation and unknown/ambiguous resolution; richer selector support remains a separately selected capability.",
+      "gaps": [
+        "No W3C annotation serialization/profile conformance claimed",
+        "No automatic reanchoring or content retention guarantee"
+      ],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "PROV-O",
+      "edition": "W3C PROV-O, Recommendation 2013-04-30",
+      "url": "https://www.w3.org/TR/prov-o/",
+      "use": "conceptual_mapping",
+      "reviewBasis": "Primary specification qualified usage and provenance-role patterns reviewed.",
+      "provisions": [
+        "https://www.w3.org/TR/prov-o/#description-qualified-terms",
+        "https://www.w3.org/TR/prov-o/#Usage",
+        "https://www.w3.org/TR/prov-o/#qualifiedUsage"
+      ],
+      "mapsTo": ["REQ-013", "REQ-029", "REQ-030", "VER-029"],
+      "designQuestions": [
+        "Can captured content state, native interpretation/reference and the activity using them remain separately identifiable?",
+        "Are actor/time/outcome and explicitly declared usage roles retained without implying content ownership?"
+      ],
+      "verificationPlan": "Inspect explicit input role/state capture, immutable outcome and actor/time provenance; distinguish relation role from resource classification.",
+      "gaps": [
+        "No PROV RDF/OWL serialization or interchange conformance claimed",
+        "Native records/resources do not automatically map one-to-one to PROV classes"
+      ],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "OSLC-RM",
+      "edition": "OSLC Core 3.0 and Requirements Management 2.1",
+      "url": "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/os/requirements-management-spec.html",
+      "use": "future_integration_reference",
+      "reviewBasis": "Official Core/RM overview and RM conformance boundary reviewed.",
+      "provisions": [],
+      "mapsTo": ["REQ-024", "REQ-027", "REQ-028"],
+      "designQuestions": [
+        "Can stable source identities and locators be mapped without coupling native identity to a URL?"
+      ],
+      "verificationPlan": "Select client/server capabilities and applicable normative Core/RM requirements only with an actual integration slice.",
+      "gaps": [
+        "No OSLC endpoint/client implementation or conformance selected",
+        "HTTP API and stable identifiers alone do not establish OSLC conformance"
+      ],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "LIFECYCLE",
+      "edition": "ISO/IEC/IEEE 15288:2023; ISO/IEC/IEEE 12207:2026",
+      "url": "https://www.iso.org/standard/81702.html",
+      "additionalUrls": ["https://www.iso.org/standard/90219.html"],
+      "use": "development_process_reference",
+      "reviewBasis": "Official public scope summaries; normative clauses not reviewed.",
+      "provisions": [],
+      "mapsTo": ["docs/development-flow.md"],
+      "designQuestions": [
+        "Can the configurable model support engineering activities without imposing one universal lifecycle?"
+      ],
+      "verificationPlan": "Tailor applicable process outcomes deliberately if a project adopts these standards; keep process evidence separate from product behavior.",
+      "gaps": ["No organization/project process conformity assessment"],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "QUALITY-SECURITY",
+      "edition": "ISO/IEC 25010:2023; NIST SSDF SP 800-218",
+      "url": "https://www.iso.org/standard/78176.html",
+      "additionalUrls": ["https://csrc.nist.gov/projects/ssdf"],
+      "use": "quality_and_secure_development_reference",
+      "reviewBasis": "Official public quality-model and secure-development guidance summaries. SSDF edition/status must be selected explicitly for any detailed mapping.",
+      "provisions": [],
+      "mapsTo": ["docs/development-flow.md"],
+      "designQuestions": [
+        "Are relevant product-quality and security requirements explicit and testable for each selected slice?"
+      ],
+      "verificationPlan": "Use as review prompts; select exact applicable quality/security criteria and checks rather than adding blanket compliance requirements.",
+      "gaps": ["No product-quality certification or SSDF assessment"],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    },
+    {
+      "id": "SYSML",
+      "edition": "OMG SysML 2.0",
+      "url": "https://www.omg.org/spec/SysML/2.0",
+      "use": "future_semantic_integration_reference",
+      "reviewBasis": "Official published scope/specification index.",
+      "provisions": [],
+      "mapsTo": ["REQ-002", "REQ-027", "REQ-028"],
+      "designQuestions": [
+        "Can semantic relationship mappings remain meaningful without adopting the entire modeling language?"
+      ],
+      "verificationPlan": "Specify any future mapping/API capability independently, with declared supported scope.",
+      "gaps": ["No SysML language/API implementation or conformance selected"],
+      "conformanceStatus": "not_assessed_or_claimed",
+      "reviewedAt": "2026-10-24"
+    }
+  ]
+}

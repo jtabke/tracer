@@ -111,6 +111,8 @@ Open the resulting file in the shared UI with `npm start -- --db desk-light-api.
 
 One SQLite repository represents one project. Its parent directory must exist. Reuse the repository/service for that project's lifetime, await outstanding operations before closing it, and close it in `finally`. The adapter serializes its transactions; SQLite's synchronous driver still blocks the Node event loop. For an alternate backend, implement the application-owned [Repository contract](../src/application/ports/repository.ts) and register a fresh-project factory with `repositoryContract` in `test/repository-contract.ts`. This initial shared suite supplements the existing SQLite tests; full transaction/history and cross-connection parity still require verification. SQLite is the implemented adapter.
 
+Use `Tracer.applyChangeset` for an atomic group of application changes. Inside a low-level repository callback, call the supplied transaction handle rather than another `Tracer` or repository transaction on that same instance; a nested call now rejects with `storage` instead of waiting for itself. Independent callers continue to queue. Drain operations before close; later calls reject with `storage`, and reopening requires a new repository instance. The shared adapter suite checks rollback, transaction lifetime, command outcomes, queue recovery and closed-handle behavior. These contracts keep adapter changes separate from engineering semantics; they do not establish another backend's parity or multi-user throughput.
+
 ### API map
 
 | Task                                               | Service entry point                                                                                         | Contract/source                                                                                                 |
@@ -165,6 +167,30 @@ There are no automatic retries. `ApiError.code` preserves structured server fail
 
 These are local process interfaces, not authenticated organizational hosting. Direct embedding through `Tracer`, the CLI, the headless HTTP server and the browser share application behavior. SQLite remains the only backend.
 
+### Discover capabilities and check compatibility
+
+`GET /api/capabilities` accepts no query parameters and reads no project storage. It returns API identity `tracer-http`, `contractVersion`, registered `{method,path}` operations, supported feature IDs and enforced limits (`maxChangesetOperations`, `maxCommandIdCharacters`, `maxRequestBodyBytes`). The advertised limits are a supported subset; query-specific bounds remain in their owning guides. Discovery keeps the normal Host/origin, project-selection and no-cache protections. The API contract version is independent of logical project schemas, physical database formats and package versions.
+
+Contract version 2 allows additive routes, features and response fields. Incompatible request/response or behavioral changes require a new contract version. The client currently supports exactly version 2. Unknown feature IDs and extra response fields do not cause incompatibility by themselves; malformed discovery is a failed read, not proof of compatibility. Features are compatibility promises, not authentication permissions or backend certifications. Current features are `changeset-command-recovery`, `native-resources`, `qualified-references` and `relationship-evaluation-inputs`.
+
+```ts
+const client = createClient({
+  baseUrl: "http://127.0.0.1:4317",
+  require: {
+    features: ["changeset-command-recovery"],
+    operations: [{ method: "POST", path: "/api/changesets" }],
+    minimumLimits: { maxChangesetOperations: 1000 },
+  },
+});
+await client.connect(); // Checks discovery before obtaining a session or allowing writes.
+```
+
+Alternatively, call `await client.checkCompatibility(requirements, {signal})` explicitly; it returns the validated capabilities. Requirements are captured before IO. Every explicit check also enforces configured requirements, so it cannot weaken them. Unsupported versions, required features/operations, insufficient limits or a missing discovery route produce client-only `ApiError.code === "incompatible_api"`. Malformed/unavailable/cancelled reads preserve their read/server error. Failed or pending checks block new writes locally; an older successful check cannot authorize writes after a newer check. A later successful check restores compatibility readiness. This does not cancel a write already sent.
+
+Checks are uncached snapshots, not reservations or automatic retries. Reconnect/check after changing the server; configured `require` runs again on each `connect()`. Existing clients without `require` retain their connection behavior until they explicitly invoke a check. All callers still need a session for writes, and the server remains authoritative for limits and guards.
+
+The [generated endpoint reference](api-reference.md) lists every registered GET/POST, query encoding/requiredness and accepted top-level JSON key. Run `npm run api:reference` after endpoint changes; the unit suite rejects stale generated content. Nested request/response types derive through `ReadApi`/`WriteApi`; the generated index does not claim to be a complete semantic schema.
+
 ### Versions, errors and paging
 
 `getSchema()` returns `undefined` for a new direct-service project. Initial `setSchema` expects version `0`; later calls use the actual version returned by `getSchema()`. Schema replacement validates all live records and relationships. It does not rename or backfill existing data.
@@ -181,7 +207,31 @@ Paged record queries return `{items, nextAfter?}`. Consume all required pages wi
 
 For a create that might lose its response, generate and retain a lowercase UUID before calling `createEntity({...input, id, expectedSchemaVersion, provenance})` or `createRelationship({...input, id, ...})`. After an uncertain result, use the exact-ID getter and history to compare what was actually saved. Reusing an existing ID conflicts rather than creating another record or silently treating different input as a successful replay. A missing current record is not proof that a previous creation never committed: it may have been deleted; consult its history before deciding what to do next. Identities cannot be reused after deletion.
 
-Relationship commands may include `expectedEndpoints:{sourceVersion,targetVersion}` and `rejectExisting:true`; both are checked atomically with creation. Duplicate endpoint/type links remain permitted when that explicit policy is omitted. These conveniences use the existing batch-operation path; failed guards roll back the whole transaction. There is no general idempotency-key ledger or automatic write retry.
+Relationship commands may include `expectedEndpoints:{sourceVersion,targetVersion}` and `rejectExisting:true`; both are checked atomically with creation. Duplicate endpoint/type links remain permitted when that explicit policy is omitted. These conveniences use the existing batch-operation path; failed guards roll back the whole transaction. Durable command recovery is available for explicitly identified changesets as described below; other write types do not share a general command ledger. There are no automatic write retries.
+
+### Recover an identified changeset
+
+Retain a caller-generated `commandId` and the complete request before submitting `applyChangeset` or `POST /api/changesets`. IDs are project-scoped, case-sensitive text of 1–200 characters without surrounding whitespace; a UUID is suitable. Omitting the ID preserves ordinary write behavior without deduplication.
+
+```ts
+// Persist this ID and request in the caller before sending; reuse both for recovery.
+const input = {
+  commandId: crypto.randomUUID(),
+  expectedSchemaVersion: 1,
+  operations: [{ op: "entity.create" as const, input: { type: "item", fields: {} } }],
+};
+await client.write("/api/changesets", input);
+// After outcome_unknown or a process restart:
+const outcome = await client.read("/api/changeset-outcome", { commandId: input.commandId });
+// An explicit repeat of the original input safely returns the original result.
+const confirmed = outcome ?? (await client.write("/api/changesets", input));
+```
+
+`Tracer.getChangesetOutcome(commandId)` and `changeset outcome COMMAND_ID` return the same original committed `{changeset, results}` or `null` when no successful outcome is visible. `null` does not prove that an in-flight command failed. A lookup failure likewise establishes nothing about the write. Retrying the exact identified request is safe; the client never does so automatically.
+
+The application checks a recorded ID before current schema/head/object guards. The same payload and trusted actor/reason return the original result, including generated IDs, intermediate operation results and deletion tombstones, even after subsequent edits, deletion, schema changes or restart. Changing guards, operations, order, caller IDs or provenance under a successful ID rejects with `conflict` and `details.path:["commandId"]`. Object-key order and omitted versus undefined optional object fields are equivalent. Retain the same trusted host provenance when repeating over HTTP; caller-supplied provenance remains forbidden. An identified command is not a request to adopt current versions.
+
+Only successes are recorded, atomically with native changes/history/revision allocation. Rejected or rolled-back commands reserve no ID. Concurrent transactions cannot commit the same ID twice; a competing SQLite connection may return `busy`, after which the caller can explicitly repeat the same request. Outcomes are immutable and retained without expiry in the database. They are operational recovery records excluded from project JSON export; preserve the SQLite backup for recovery across database moves. Schema, evidence, metadata and convenience single-object writes do not acquire command IDs in this slice.
 
 ### Preview a model change
 
@@ -205,15 +255,7 @@ The authoritative typed wire contract is [ReadApi / WriteApi](../src/interfaces/
 
 Start a persistent project with `npm start -- --db desk-light.sqlite` and use its exact printed origin. GET `/api/session` returns `{token}`. POST requires `Content-Type: application/json`, `Origin` equal to the server's printed origin and `X-Tracer-Token` from that session. `X-Tracer-Project` selects a configured project ID (`default` if omitted; GET `/api/projects` lists choices). It never accepts a filesystem path as the project ID. These same-origin controls are local protections, not organizational authentication or a hosted API.
 
-Core endpoints:
-
-| Method/path                               | Request                               | Result                                      |
-| ----------------------------------------- | ------------------------------------- | ------------------------------------------- |
-| GET `/api/schema`                         | No query                              | `SchemaObject` or `null` for a new database |
-| POST `/api/schema`                        | `{schema, expectedVersion}`           | Saved `SchemaObject`                        |
-| GET `/api/entities`, `/api/relationships` | `ObjectQuery` as URL query parameters | `{items, nextAfter?}`                       |
-| POST `/api/changesets`                    | `{expectedSchemaVersion, operations}` | `{changeset, results}`                      |
-| GET `/api/project-snapshot`               | No query                              | Bounded transactional native snapshot       |
+See the [generated endpoint reference](api-reference.md) for all registered GET/POST routes and their wire inputs.
 
 For example, after saving the tutorial model, this JavaScript runs in the application's browser console and creates one component in the selected project:
 
@@ -283,6 +325,93 @@ Shared selection reveals off-page Table/Matrix items through indexed anchors. Bu
 
 Family/chain recipes persist as presentation metadata; controller layouts are session-local. Undo/restoration and whole-project historical Table/Matrix are absent. The loopback interface uses the printed origin and no organizational authentication.
 
+## Local resources and contextual references
+
+The local resource/reference slice shares native UUIDs, versions and commands. Use the current client/server together (HTTP contract 2). Resources are not a mandatory project-defined Source type. Define a reference family through Model → Text (the resource/reference permission checkboxes) or schema JSON, for example:
+
+```json
+{
+  "cites": {
+    "source": ["need"],
+    "target": [],
+    "resourceTarget": true,
+    "reference": true,
+    "fields": {}
+  }
+}
+```
+
+Here `need` is an existing configured source type. Empty `target` permits no managed classification through the type list; `resourceTarget:true` explicitly permits resource-capable targets. `resourceSource:true` can separately permit resource-capable sources. Ordinary relationships are not automatically references.
+
+Select a record in the shared workbench, open **References and supporting material**, and add a new local resource or choose an existing one. Author a role, section/passage label and explanation, plus any configured relationship fields. Save creates/reuses the identity and reference in one guarded command. Enter the local file path and choose **Observe file**. Edit the saved reference to pin the displayed observed state; retaining a previous pin and adopting a newer observation are deliberate choices. Section labels and unknown selector kinds are preserved, but passage comparison remains unknown. Returning to the map retains drafts; source/version conflicts keep proposals for correction.
+
+In **Assess evidence**, choose an input to compare its captured state with the latest recorded observation. Resource names use their captured label when no engineering key/title exists. **Native record** versions identify Tracer annotations; the **Observed content** panels identify external hashes, locations, times, availability and Git commits where recorded. Equal native versions can accompany changed external content. Observations retain metadata rather than source text, so passage relevance remains unknown. Expand a declared relationship to read its role, scope, explanation and source selection. A pin's metadata appears only when that exact observation is a declared content input in this evaluation; captured endpoint context alone does not create a content dependency. Browsing these views does not change the original result or record an applicability decision.
+
+Headless authoring uses the same operation inside `applyChangeset` or CLI `changeset apply`:
+
+```ts
+const result = await tracer.applyChangeset(
+  {
+    commandId: "reference-proposal-unique-id",
+    expectedSchemaVersion: schema.version,
+    operations: [
+      {
+        op: "reference.create",
+        input: {
+          type: "cites",
+          source: subject.id,
+          sourceVersion: subject.version,
+          resource: {
+            label: "User-needs document",
+            source: { system: "file", externalId: "project:document:user-needs" },
+          },
+          fields: {},
+          reference: {
+            role: "definition",
+            explanation: "Defines the intended outcome",
+            selector: { kind: "section", value: "PN-01" },
+            state: { mode: "current" },
+          },
+        },
+      },
+    ],
+  },
+  provenance,
+);
+```
+
+`schema`, `subject`, `tracer` and `provenance` are captured caller context. An existing target uses `target` and `targetVersion` instead of `resource`. Reusing an external identity returns its active object; a removed/conflicting owner rejects. Native resource-only objects carry the internal `@resource` discriminator and optional JSON fields; add a configured `type` through guarded `entity.update` to manage that same UUID as a record. Promotion must satisfy its fields and every incident link permission. Source IDs should be stable opaque/namespaced identities, not inferred from titles/hashes; choose an existing identity after a move. The app generates local opaque IDs rather than automatically merging similar files.
+
+Use the local server/CLI observer or inject the bounded local observer as in the offline evaluation walkthrough. `evidence.observe` records file/Git state and mutable location; it does not store file bytes. Pin external content with `{mode:"pinned",observationId}` or native content with `{mode:"pinned",revision}`. `getReference(id)` / GET `/api/reference` explains selected versus latest state, retention and passage uncertainty. A pin is not automatically retargeted or invalidated when a later source differs.
+
+An evaluation explicitly declares content and references independently:
+
+```ts
+await tracer.evidence.recordReceipt(
+  {
+    outputId: output.id,
+    expectedOutputVersion: output.version,
+    outcome: "Simulated assessment under the stated conditions; no product verification claimed",
+    inputs: [
+      { entityId: subject.id, expectedVersion: subject.version, role: "criteria subject" },
+      { entityId: resource.id, observationId: observation.id, role: "definition source" },
+    ],
+    relationshipInputs: [
+      {
+        id: reference.id,
+        expectedVersion: reference.version,
+        role: "specific supporting assertion",
+      },
+    ],
+  },
+  provenance,
+);
+```
+
+A relationship input may instead select `revision` for an exact historical snapshot; it does not require a path from `output`. Its endpoints are captured context, not inferred content dependencies. Use `facet:"native"` with optional field scope for native annotations on an external object, separately from its observed content. Different explicit roles/facets/states can coexist for one resource. Relationship-only receipts use `inputs:[]` and nonempty `relationshipInputs`; total declarations are bounded to 100. Captured content retention and the original outcome remain inspectable after current changes/removal. The existing impact and review owners include explicitly declared relationship drift.
+
+For actual verification, declare the product candidate, requirement/criteria, check and conditions used; merely citing a report proves no pass. The reference task offers explicit additional native inputs and records outcome/conditions without changing requirement status. Native history, JSON export and backups retain these primitives; external bytes, rich passage reanchoring, document-system integrations and standards interchange remain outside this slice. Do not bulk-merge historical source-claim records into resources.
+
 ## Offline evaluation workflow
 
 Open **Evaluations** after creating your native requirement, artifact and output entities and links. Bind each artifact to a stable external ID (`git` or `file`, external ownership), then explicitly observe its local content. Create a receipt with an outcome and declared native/entity or external/observation inputs. Change an input, record a new observation for external sources, and compare the affected receipt. Record an accepted, acknowledged or needs-reevaluation decision with rationale.
@@ -291,7 +420,7 @@ Open **Evaluations** after creating your native requirement, artifact and output
 - **Only declared inputs propagate review.** References/mentions alone do not. Native inputs default to exact entity revisions; optional field scopes ignore unrelated annotations. An explicit forward relationship path also pins those link snapshots.
 - Comparison means **last observed**, not “verified live now.” Both observation times, hashes/commits, native versions, dependency paths and the affected receipt are retained/displayed. Observe explicitly to establish a newer source state; there is no background sync.
 - Freshness (`current/changed/unknown`) and review applicability are separate. Acceptance never clears drift. Unknown recorded input states are never backfilled; acceptance is blocked while unknowns remain. A relevant later change retires the applicability of an earlier review, without modifying it.
-- New evaluations may explicitly supersede a prior receipt for the same output. The old receipt remains readable and comparable.
+- New evaluations may explicitly supersede a prior receipt for the same output. The old receipt remains readable and comparable. For repeated verification, use a stable assessment output and declare each run/conditions, article revision, procedure, criteria and material explicitly. A different run identity does not by itself authorize superseding a result for another output.
 - Evidence lists support up to 1000 records, with explicit overflow errors. Above 1000 native entities, creation/binding pickers are explicitly disabled; existing receipt comparison and review remain available. Large-project evidence creation still requires the CLI. Work is paginated separately. CLI evidence queries are paginated. Observations are bounded to 16 MiB and Git reads to five seconds; unresolved states are unknown, never guessed. Git must support `--no-lazy-fetch`; older Git fails safely to unknown instead of fetching missing objects.
 
 Run the non-requirements example: `node examples/research-receipt.ts`. It records a research conclusion supported by a dataset and analysis script, changes the dataset, explains the dependency and requests reevaluation—entirely offline in a cleaned-up fixture.
@@ -407,7 +536,7 @@ Malformed coverage/impact cursors fail validation before stale checks. Valid sta
 
 Identity/type/key/version and link endpoints are indexed relational columns; configurable fields and immutable snapshots use JSON. Permanent identities prevent reuse; foreign keys prevent dangling active links.
 
-Physical format **8** is independent of user-schema version. Supported formats 1–7 migrate transactionally on open, preserving native/evidence history, configurations, baselines and saved views. Unknown formats reject; failures roll back. Older builds cannot reopen unsupported upgraded formats. See [operational boundaries](architecture.md#7-operational-boundaries) and the feature-specific migration contracts.
+Physical format **10** is independent of user-schema version. Supported formats 1–9 migrate transactionally on open, preserving native/evidence history, configurations, baselines and saved views. Unknown formats reject; failures roll back. Older builds cannot reopen unsupported upgraded formats. See [operational boundaries](architecture.md#7-operational-boundaries) and the feature-specific migration contracts.
 
 Back up a closed database or use SQLite-aware tooling; copying only a live WAL main file is unsafe. Await outstanding work before closing. Transactions serialize per repository; competing connections may return `busy`, and the synchronous driver blocks the event loop.
 
@@ -512,3 +641,5 @@ The native baseline does not contain evidence. These evaluations use current evi
 Continue with exact `evaluations.nextAfter` and the same baseline/root/direction/type-set/depth. Page size may change. Any native write or evidence append—including observation/review writes without a native revision—invalidates continuation with `conflict`; restart from the first page. Optional `expectedProjectRevision` guards the initial native head. The query reads all context in one transaction and creates no engineering/evidence history.
 
 The service is `tracer.getChangeImpact(query)`. Typed local HTTP is GET `/api/impact?baselineId=...&rootId=...&direction=incoming&relationshipTypes=%5B%22depends_on%22%5D&depth=2&limit=10`; encode relationship types as a JSON string array using `URLSearchParams`, and include opaque `after` unchanged when continuing. Unknown/duplicate parameters reject; malformed/bounds/type errors 400, stale contexts 409 and missing baseline/root 404. A dedicated UI for this baseline-scoped impact query remains unimplemented.
+
+The disposable benchmark also measures five bounded impact reads before and after 5,000 unrelated receipts, using public commands and asserting that only the relevant receipt is returned. It reports individual samples, median and maximum on the running host. This measures a local synthetic workload, not concurrency, a service target or arbitrary-scale readiness.

@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-23",
+  "purpose": "Disposable characterization of current primitives; no proposed behavior implemented or product conformance established.",
+  "checks": [
+    "Untyped resource identity is not supported; a configured entity type is required.",
+    "One typed resource identity supports several native relationship identities with independent scopes and roles.",
+    "An evaluation cannot independently capture a reference on another subject: existing link capture requires a forward output-to-input path.",
+    "Externally bound inputs cannot independently select native annotation fields through the existing external-content declaration.",
+    "Whole-file drift is reported despite unchanged section text; recorded outcome and captured observation remain immutable.",
+    "An opaque external ID already permits observations at a new locator; path-based project binding conventions, not all bindings, cause move/duplication friction."
+  ],
+  "projectFriction": {
+    "needsDocumentSourceRows": 12,
+    "sharedWorkspaceFileRows": ["ART-CARD-RENDERER", "ART-COMP-WORKSPACE"]
+  },
+  "limits": [
+    "No representative-user validation",
+    "Simulated local inputs and outcome",
+    "No SharePoint, passage comparison, retention or resource-only capability implemented"
+  ],
+  "candidateFiles": [
+    {
+      "path": "src/core/model.ts",
+      "sha256": "b912473c69a00b88f4c4e5232bf45231c1b79df5210286abbd298c8ea8eea775"
+    },
+    {
+      "path": "src/core/evidence.ts",
+      "sha256": "b1afeef4735334df5121d8afb86d14a7baa1fe2c3336f88ed7ef5be64123665f"
+    },
+    {
+      "path": "src/application/evidence.ts",
+      "sha256": "92759283c44a93b96788913c1b4d1199a9310b796e83454113e62b861ab8cd5d"
+    },
+    {
+      "path": "src/application/receipt-inputs.ts",
+      "sha256": "ef7285c76074bb5d8f0338d1833ae066e8bc5b0faa9722f9cd8d1540290152fe"
+    },
+    {
+      "path": "src/application/receipt-comparison.ts",
+      "sha256": "ee2280f4501e6c5dcf0131b8255a7e38480f3f16390163a9c18a77dc12411d03"
+    }
+  ],
+  "method": [
+    "Create a disposable in-memory SQLite project with needs, requirements, report and document types and a scoped cites relationship.",
+    "Attempt an untyped resource; create three distinct references to the same typed resource.",
+    "Bind one opaque external identity and observe a local specification; record a simulated result with explicit observed input.",
+    "Attempt independent capture of another subject reference and external annotation field selection; confirm current rejections.",
+    "Modify only an appendix; observe file and compare without changing the section text or original receipt.",
+    "Observe the same identity at a moved locator; inspect current development-register paths read-only."
+  ],
+  "designContract": "docs/architecture.md#reference-primitives--specified-not-implemented",
+  "status": "Characterization and design evidence only; not verification of proposed behavior."
+}

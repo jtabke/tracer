@@ -1,0 +1,257 @@
+{
+  "date": "2026-10-24",
+  "workItem": "WORK-002",
+  "scope": "REQ-001 AC-1 and AC-2 only; actual schema-definition verification and one disposable source-change review. Broader requirement audits and human validation remain separate.",
+  "result": "passed",
+  "requirement": {
+    "key": "REQ-001",
+    "auditedVersion": 1,
+    "acceptance": "AC-1: Save and reopen a custom type with string, number, boolean and JSON fields. AC-2: Reject unknown schema properties and invalid field values without saving partial changes."
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "result": "passed",
+      "checks": [
+        "Required and optional definitions for all four kinds; false/zero/null/nested JSON preserved.",
+        "Schema/entity values and complete export are equal after closing/reopening SQLite.",
+        "Production Model page authors all four required kinds and an optional field; saves/reloads at 1440px and 390px."
+      ],
+      "implementation": [
+        "src/core/model.ts: typeDefinitions, validateSchema, validateFields",
+        "src/application/service.ts: setSchema, createEntity, updateEntity",
+        "ui/schema-editor.tsx: SchemaEditor save",
+        "ui/schema-definition-form.tsx and ui/schema-fields.tsx: configured field authoring"
+      ]
+    },
+    {
+      "id": "AC-2",
+      "result": "passed",
+      "checks": [
+        "Reject root/type/field schema typos with no saved native/evidence/history differences.",
+        "Reject wrong primitive kinds, NaN, unknown fields and missing required values on create and update.",
+        "A valid first operation followed by an invalid second operation rolls back the whole batch.",
+        "Production editor retains an unsupported-property proposal and blocks invalid saving without changing the project."
+      ],
+      "implementation": [
+        "src/core/model.ts: knownProperties, validateSchema, validateFields",
+        "src/application/service.ts: schema validation and changeset transaction",
+        "src/persistence/sqlite.ts: atomic transaction/history persistence"
+      ]
+    }
+  ],
+  "execution": {
+    "headless": {
+      "command": "NODE_V8_COVERAGE=.fallow/coverage/captures node --test test/requirement-schema.test.ts test/schema-properties.test.ts test/schema-draft.test.ts",
+      "passed": 7,
+      "failed": 0
+    },
+    "browser": {
+      "command": "npm run build && npx playwright test test/requirement-schema-browser.spec.ts test/model-page-browser.spec.ts",
+      "uniquePassed": 5,
+      "failed": 0,
+      "criterionWidths": [1440, 390],
+      "modelRegressionWidths": [1440, 680, 390],
+      "followUp": "Rebuilt documentation and reran the two criterion journeys: 2 passed."
+    },
+    "gates": {
+      "strictTypes": true,
+      "productionBuild": true,
+      "format": true,
+      "deadCode": true,
+      "duplicates": true,
+      "measuredCoverageHealth": true,
+      "thresholdsChanged": false
+    },
+    "changes": "Two criterion-focused regression files and documentation/register changes; no runtime source changes."
+  },
+  "referenceAdoption": {
+    "schemaVersion": 5,
+    "rehearsalPassed": true,
+    "qualifiedReferences": 9,
+    "uniqueResources": 8,
+    "referenceIds": [
+      "b1171f5f-254c-4f7c-a8fa-bfeb98b68db1",
+      "52b338f4-e8db-44ff-8b0c-678d8bc91caa",
+      "5093d7fe-1ed0-40b3-8c6f-407e206b1705",
+      "0d45b60a-a4c3-48e1-9108-113a3cb48424",
+      "305cd783-2135-4837-8794-9f42e9e0c687",
+      "d94ede25-2232-4270-81e6-7542098fc593",
+      "df66b5be-d73e-4af3-a948-78dbccb0e9f4",
+      "5a37c417-fe25-4575-bb2d-3b57434b56ca",
+      "05e2f2a7-73ec-46d8-96ca-1114fff7117e"
+    ],
+    "preservation": "All existing entity IDs/types/fields, relationships, historical snapshots and immutable evidence preserved; exact legacy file owners can gain resource capability without replacement.",
+    "meaning": "Definition passages, implementation locators and check procedures are contextual uses; component responsibility and requirement-to-plan domain traces remain distinct. References alone do not claim an executed pass."
+  },
+  "changeReview": {
+    "database": "output/req001-audit/review-exercise-complete.sqlite",
+    "agentDatabase": "output/req001-audit/fresh-agent.sqlite",
+    "receiptId": "e8ea344b-6d34-4bbe-aca5-379ae19c80b4",
+    "outputKey": "RUN-REQ001-AUDIT",
+    "baselineId": "59ac9207-1471-4fc6-837b-a15e3a3e5481",
+    "referenceIds": [
+      "b1171f5f-254c-4f7c-a8fa-bfeb98b68db1",
+      "52b338f4-e8db-44ff-8b0c-678d8bc91caa",
+      "5093d7fe-1ed0-40b3-8c6f-407e206b1705",
+      "0d45b60a-a4c3-48e1-9108-113a3cb48424",
+      "305cd783-2135-4837-8794-9f42e9e0c687",
+      "d94ede25-2232-4270-81e6-7542098fc593",
+      "df66b5be-d73e-4af3-a948-78dbccb0e9f4",
+      "5a37c417-fe25-4575-bb2d-3b57434b56ca",
+      "05e2f2a7-73ec-46d8-96ca-1114fff7117e"
+    ],
+    "selectedSourceUnchanged": true,
+    "sourceChanged": true,
+    "passage": "unknown",
+    "historicalResultUnchanged": true,
+    "reviewDecision": "needs_reevaluation",
+    "scope": "Actual technical result with a controlled source-change fixture. Agent copy taken before the scripted review; no live requirement source or result changed."
+  },
+  "modelingFindings": [
+    {
+      "finding": "Broad historical source summary did not identify the exact definition paragraphs used for this criterion audit.",
+      "resolution": "Kept the original source claim and added two distinct pinned definition uses of one shared architecture resource."
+    },
+    {
+      "finding": "The register had no configured family for the new reference capability.",
+      "resolution": "Rehearsed and added a scoped project family; no new engineering record type or automatic historical consolidation."
+    },
+    {
+      "finding": "Architecture/developer prose retained contract-1/initial-feature wording after contract 2 shipped.",
+      "resolution": "Corrected the owning current interface descriptions; prior result snapshots remain immutable and may report document drift."
+    }
+  ],
+  "limits": [
+    "This verifies only REQ-001 AC-1/AC-2 for the captured candidate.",
+    "No standards conformity or representative-human validation is established.",
+    "Fresh-agent UI inspection is recorded separately; agent timings/tool assistance are not human task evidence.",
+    "External bytes are not retained by resource observations; selectors are preserved but passage matching/relevance remains unknown.",
+    "The source-change exercise and review used disposable copies; the live definition file was not altered to simulate a change.",
+    "A first fixture-report attempt omitted a required artifact revision field and was correctly rejected; it was corrected in a new disposable copy."
+  ],
+  "candidateFiles": [
+    {
+      "path": "docs/architecture.md",
+      "sha256": "2eda177b01495be071c14878d310749d02de0af81a5706cede02f28118b49f81"
+    },
+    {
+      "path": "src/core/model.ts",
+      "sha256": "0108213c16aeae4dc783e18294b75952e3a86c22f305280e29e03f8a95c58aab"
+    },
+    {
+      "path": "src/application/service.ts",
+      "sha256": "2b5a6b5afe5d5ad6590de30a7b5351c23f7db12bfec2244e659501eb59d0eada"
+    },
+    {
+      "path": "ui/schema-editor.tsx",
+      "sha256": "370bee086dff8c2dac953c862a8a96a5337c721d40bddffaf965fbd78f35613e"
+    },
+    {
+      "path": "ui/schema-definition-form.tsx",
+      "sha256": "61555727dbe814c70d4371a3884c0ebec816ac5ed87f5411c896bf5d1a7673d1"
+    },
+    {
+      "path": "ui/schema-fields.tsx",
+      "sha256": "ee60845887fc9c8cee7e40ea303bbf5acd288bb7a25a94cac9da78cba8d45026"
+    },
+    {
+      "path": "test/requirement-schema.test.ts",
+      "sha256": "17066eb69194cbcf78eff4f04da01b068eb15a7c851e91a93ad925c29193c111"
+    },
+    {
+      "path": "test/requirement-schema-browser.spec.ts",
+      "sha256": "40e6d6f6aaa1692a2a2a0b9f6c27b7a1b455b6c31d72a1cb201aaaee9385464f"
+    },
+    {
+      "path": "src/application/native-validation.ts",
+      "sha256": "6bae675851b53cdaddc1744595b89e3c832b20dd0e1da5853909f0c078824077"
+    },
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "41da0474696a4d9c08d11fd6a5d326e6c1b291e9636774e1f25177a7bf9a8659"
+    },
+    {
+      "path": "src/persistence/native-codec.ts",
+      "sha256": "806e287624be8e90d5d729ed8be8409364535bfc80121f8ca91dc60e5ef61715"
+    },
+    {
+      "path": "test/schema-properties.test.ts",
+      "sha256": "88e53bcf98df49ed0d77d6605de05ff8a7ddfc225aa73548807c021da01770bd"
+    },
+    {
+      "path": "test/schema-draft.test.ts",
+      "sha256": "f44ea13d817585f0c83b79605d1f0bcc0623bf113f226552a520ebd96f6dd0f8"
+    },
+    {
+      "path": "test/model-page-browser.spec.ts",
+      "sha256": "9294ee3086747d818614781b54e473ddb8a9efc1eee3ea58066f58978f9577d7"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "5bff29745956879eff3ca86159b1d7e3713d7647dc4a082beee49d2ccf601ea6"
+    },
+    {
+      "path": "docs/development-model.md",
+      "sha256": "a418e9bf3b25ae76ae29c24376719fe3f42fefaab3969dadfb7796dd608060a1"
+    },
+    {
+      "path": "projects/tracer/README.md",
+      "sha256": "ea307e66a68202f217affaebda48b0b47e020ca58ff34ec6116d47aecc067a9f"
+    },
+    {
+      "path": "output/req001-audit/reference-setup.json",
+      "sha256": "b7c2b5a5097c9e36e131513cf8c489161c387e8cbb1b9ba53d70af20d1deb420"
+    },
+    {
+      "path": "output/req001-audit/change-review.json",
+      "sha256": "ddfa52f180b7e8d9ae7d2d235f721c805b26e146756f8550d345ea8b16b69fef"
+    },
+    {
+      "path": "output/req001-audit/headless.log",
+      "sha256": "ed43e5996d0cc1ef4be4e10ebdb0ab8be1ee5b9002d865a32e83d837ba2b94fc"
+    },
+    {
+      "path": "output/req001-audit/browser.log",
+      "sha256": "b90c90ef5fd3c62cdc3eedc4227ed45fa72d937883b9bae39d5538d398ff5893"
+    },
+    {
+      "path": "output/req001-audit/browser-final.log",
+      "sha256": "bb1b9b3143f5c62a14fbd7919e50a2a0a69a4ae84e43d176ef6af394d53bb075"
+    },
+    {
+      "path": "output/req001-audit/quality.log",
+      "sha256": "22e40b512e7f3ede14e8ab159fb6474cc5554306d4358438447aac02776d9b51"
+    },
+    {
+      "path": "output/req001-audit/types.log",
+      "sha256": "5e600a6c437263e35717d543f878a429e3b92d338d2cbee585a8a9574d6656d3"
+    }
+  ],
+  "sourceInputPaths": [
+    "docs/architecture.md",
+    "src/core/model.ts",
+    "src/application/service.ts",
+    "ui/schema-editor.tsx",
+    "ui/schema-definition-form.tsx",
+    "ui/schema-fields.tsx",
+    "test/requirement-schema.test.ts",
+    "test/requirement-schema-browser.spec.ts",
+    "src/application/native-validation.ts",
+    "src/persistence/sqlite.ts",
+    "src/persistence/native-codec.ts",
+    "test/schema-properties.test.ts",
+    "test/schema-draft.test.ts",
+    "test/model-page-browser.spec.ts",
+    "docs/developer-reference.md",
+    "docs/development-model.md",
+    "projects/tracer/README.md",
+    "output/req001-audit/reference-setup.json",
+    "output/req001-audit/change-review.json",
+    "output/req001-audit/headless.log",
+    "output/req001-audit/browser.log",
+    "output/req001-audit/browser-final.log",
+    "output/req001-audit/quality.log",
+    "output/req001-audit/types.log"
+  ]
+}

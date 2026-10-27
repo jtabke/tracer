@@ -1,0 +1,243 @@
+{
+  "date": "2026-10-25",
+  "workItem": "WORK-018",
+  "scope": "REQ-002 revision 1 AC-1 and AC-2, executed using VER-002 revision 1. Directed managed-record endpoint permissions and identity persistence; no broader core-conformance, standards-conformity or human-validation claim.",
+  "result": "passed",
+  "requirement": {
+    "key": "REQ-002",
+    "auditedVersion": 1,
+    "acceptance": "AC-1: Create a permitted directed link and preserve its identity. AC-2: Reject disallowed endpoints; distinguish unrestricted endpoints from an explicitly empty allowed set."
+  },
+  "verificationPlan": {
+    "key": "VER-002",
+    "auditedVersion": 1
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "result": "passed",
+      "methods": [
+        "Create a need→component link using a named permitted relationship; update annotations without replacing UUID/endpoints.",
+        "Close/reopen SQLite and compare complete export, schema definitions and saved link. Forward query returns the link; reverse query does not.",
+        "Author the relationship in the production Model page, save a permitted connection through shared authoring and reload its exact native UUID/endpoints at 1440px/390px."
+      ],
+      "implementation": [
+        {
+          "path": "src/application/native-validation.ts",
+          "selector": "validateNativeRelationship"
+        },
+        {
+          "path": "src/application/service.ts",
+          "selector": "setSchema, apply, createObject, updateNativeEntity"
+        },
+        {
+          "path": "src/persistence/sqlite.ts",
+          "selector": "SQLiteRepository.transaction, transaction save"
+        },
+        {
+          "path": "ui/schema-definition-form.tsx",
+          "selector": "EndpointGroup, SchemaDefinitionForm"
+        },
+        {
+          "path": "ui/workbench/authoring-dialogs.ts",
+          "selector": "createAuthoringDialogs, submitConnection"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "result": "passed",
+      "methods": [
+        "Exercise all 63 managed endpoint pairs across seven families: 16 permitted and 47 rejected. Cover directed, omitted/unrestricted, one-sided, empty source, empty target and both-empty constraints.",
+        "Two resource-only endpoint attempts remain rejected without explicit capability permissions; this is an adjacent guard, not a full REQ-027 re-audit.",
+        "Invalid relationship endpoint edits and model constraints, forbidden managed-type reclassification, undeclared endpoint types, missing endpoints and a mixed valid/invalid batch leave the complete recorded export unchanged.",
+        "Production authoring excludes restricted relationships for incompatible targets and reversed endpoints; Any remains available while empty-set families do not. A server-rejected target restriction retains the draft and exact saved project."
+      ],
+      "implementation": [
+        {
+          "path": "src/core/model.ts",
+          "selector": "relationshipDefinitions, validateSchema, validateFields"
+        },
+        {
+          "path": "src/application/native-validation.ts",
+          "selector": "validateNativeRelationship"
+        },
+        {
+          "path": "src/application/service.ts",
+          "selector": "setSchema, apply, createObject, updateNativeEntity"
+        },
+        {
+          "path": "src/persistence/sqlite.ts",
+          "selector": "SQLiteRepository.transaction, transaction save"
+        },
+        {
+          "path": "ui/schema-definition-form.tsx",
+          "selector": "EndpointGroup, SchemaDefinitionForm"
+        },
+        {
+          "path": "ui/schema-draft.ts",
+          "selector": "endpointMode, endpointSummary"
+        },
+        {
+          "path": "ui/workbench/relationship-policy.ts",
+          "selector": "allowedTypes"
+        },
+        {
+          "path": "ui/workbench/authoring-dialogs.ts",
+          "selector": "createAuthoringDialogs, submitConnection"
+        }
+      ]
+    }
+  ],
+  "execution": {
+    "command": "npm run check",
+    "log": "output/req002-audit/full-check.log",
+    "unit": {
+      "passed": 470,
+      "failed": 0,
+      "newCriterionTests": 3
+    },
+    "browser": {
+      "passed": 192,
+      "failed": 0,
+      "newCriterionJourneys": 2,
+      "widths": [1440, 390]
+    },
+    "workbench": {
+      "passed": true,
+      "galleryCaptures": 18
+    },
+    "gates": {
+      "format": true,
+      "strictTypes": true,
+      "lint": true,
+      "productionAndHarnessBuilds": true,
+      "deadCode": true,
+      "duplication": true,
+      "measuredCoverageHealth": true,
+      "thresholdsAndExclusionsChanged": false
+    },
+    "runtimeChanges": false
+  },
+  "verificationHistory": [
+    "Focused headless criterion tests passed 3/3.",
+    "The first UI attempt assumed title capitalization; changed to assert the selected native relationship value and option count.",
+    "An early reload occurred after native persistence but before UI confirmation; the existing uncertain-save lock correctly blocked model editing. The test now waits for the connection form to close after confirmed save. Both focused journeys then passed before the final full run."
+  ],
+  "candidateFiles": [
+    {
+      "path": "src/core/model.ts",
+      "selector": "relationshipDefinitions, validateSchema, validateFields",
+      "scope": "Named family definitions and configured endpoint-type validation.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "0108213c16aeae4dc783e18294b75952e3a86c22f305280e29e03f8a95c58aab"
+    },
+    {
+      "path": "src/application/native-validation.ts",
+      "selector": "validateNativeRelationship",
+      "scope": "Directed source/target permissions, active endpoints and separate resource capability permissions.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "6bae675851b53cdaddc1744595b89e3c832b20dd0e1da5853909f0c078824077"
+    },
+    {
+      "path": "src/application/service.ts",
+      "selector": "setSchema, apply, createObject, updateNativeEntity",
+      "scope": "Guarded commands, existing-object validation and atomic orchestration.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "2b5a6b5afe5d5ad6590de30a7b5351c23f7db12bfec2244e659501eb59d0eada"
+    },
+    {
+      "path": "src/persistence/sqlite.ts",
+      "selector": "SQLiteRepository.transaction, transaction save",
+      "scope": "Transactional identity/version/history persistence and rollback.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "41da0474696a4d9c08d11fd6a5d326e6c1b291e9636774e1f25177a7bf9a8659"
+    },
+    {
+      "path": "ui/schema-definition-form.tsx",
+      "selector": "EndpointGroup, SchemaDefinitionForm",
+      "scope": "Guided Any/Selected/No types authoring.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "61555727dbe814c70d4371a3884c0ebec816ac5ed87f5411c896bf5d1a7673d1"
+    },
+    {
+      "path": "ui/schema-draft.ts",
+      "selector": "endpointMode, endpointSummary",
+      "scope": "Omitted/empty/selected endpoint representation.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "ca3740370cd1faf5f0bd4a877f750da00fb3d83c4c11182708e62644eb16789c"
+    },
+    {
+      "path": "ui/workbench/relationship-policy.ts",
+      "selector": "allowedTypes",
+      "scope": "Compatible managed source/target choices in shared authoring.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "7b946b824bc0f8b9ace02b87bad3b261524c6b5e2a6f9f977d4a2c9f5d824c62"
+    },
+    {
+      "path": "ui/workbench/authoring-dialogs.ts",
+      "selector": "createAuthoringDialogs, submitConnection",
+      "scope": "User-confirmed guarded relationship save and UI compatibility checks.",
+      "role": "implementation locator",
+      "subject": "REQ-002",
+      "sha256": "ec3396fa72071f2bc9158a25fe3585d846a37e9027344da0c2049f5649e20020"
+    },
+    {
+      "path": "test/requirement-relationships.test.ts",
+      "selector": "REQ-002 AC-1 and AC-2",
+      "scope": "Executed criterion-specific verification procedure.",
+      "role": "verification method",
+      "subject": "VER-002",
+      "sha256": "b4ce5eb30447e0cd753db2c2549f0b0b0733e94078696147481a8716cebd5e96"
+    },
+    {
+      "path": "test/requirement-relationships-browser.spec.ts",
+      "selector": "REQ-002 production rule and link authoring",
+      "scope": "Executed criterion-specific verification procedure.",
+      "role": "verification method",
+      "subject": "VER-002",
+      "sha256": "65a577d8f2a07a5937b15b16fa7a06ae9d18a46bf22a1a0a683568aa1fb19356"
+    }
+  ],
+  "supportingDocumentation": [
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "88bda035ea6c0220b1811a539661b8e08df78de8017770b832de9e91e2acc084"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "output/req002-audit/connection-1440.png",
+      "sha256": "50f9f4c709e93206f377eef1291a65496b1b58a2af4834240e7b060877320791"
+    },
+    {
+      "path": "output/req002-audit/connection-390.png",
+      "sha256": "7ff72b0aac09d7cc2210e6b33a6bd10117dc3df656a563d3fa7b37837088390d"
+    },
+    {
+      "path": "output/req002-audit/rejected-model-1440.png",
+      "sha256": "8a289e6487bf2c3c7165f7ea66f96e87b78cd571801244934bac6a15ac8e0600"
+    },
+    {
+      "path": "output/req002-audit/rejected-model-390.png",
+      "sha256": "a34f44c7aecc3088b35506ae439a93605497f180b4b15b2660bfb34d6f184e9f"
+    }
+  ],
+  "logSha256": "4ede848beb7026d5fa058f1fd404d6bb5efd13388533bd273473fa21595b2aa7",
+  "limits": [
+    "No runtime change was required; this audit adds criterion evidence and regressions for existing behavior.",
+    "The matrix covers configured managed types; explicit resource permissions and reference qualification have their own prior verification.",
+    "Managed types cannot be arbitrarily changed through ordinary entity edit; rejection of that attempt must not be read as type-migration support.",
+    "Stable relationship identity is tested through annotations and reopen. Endpoint direction is stored direction, independent of workflow display order.",
+    "Technical checks and primary-agent screenshot inspection do not establish representative-user validation.",
+    "Working tree includes earlier uncommitted work. Exact hashes identify assessed bytes, not a clean commit.",
+    "Older claims, snapshots and immutable evidence remain historical; observing edited supporting documents can reveal drift without rewriting outcomes."
+  ]
+}

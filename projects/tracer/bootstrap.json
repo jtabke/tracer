@@ -1,0 +1,2377 @@
+{
+  "format": "tracer-development-bootstrap",
+  "formatVersion": 1,
+  "capturedAt": "2026-10-20",
+  "sourceCommit": "d42404dba49fa4408e7364d3089980f6a9679dc3",
+  "sourceState": "Working tree contained pre-existing uncommitted implementation and documentation changes. Per-source SHA-256 identifies captured bytes; commit alone does not.",
+  "schema": {
+    "entityTypes": {
+      "source": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "kind": {
+            "type": "string",
+            "required": true
+          },
+          "path": {
+            "type": "string",
+            "required": true
+          },
+          "heading": {
+            "type": "string",
+            "required": true
+          },
+          "sha256": {
+            "type": "string",
+            "required": true
+          },
+          "excerpt": {
+            "type": "string",
+            "required": true
+          },
+          "evidenceClass": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "goal": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "statement": {
+            "type": "string",
+            "required": true
+          },
+          "evidenceClass": {
+            "type": "string",
+            "required": true
+          },
+          "validationStatus": {
+            "type": "string",
+            "required": true
+          },
+          "sourcePath": {
+            "type": "string",
+            "required": true
+          },
+          "sourceHeading": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "user_need": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "statement": {
+            "type": "string",
+            "required": true
+          },
+          "evidenceClass": {
+            "type": "string",
+            "required": true
+          },
+          "validationStatus": {
+            "type": "string",
+            "required": true
+          },
+          "sourcePath": {
+            "type": "string",
+            "required": true
+          },
+          "sourceHeading": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "story": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "statement": {
+            "type": "string",
+            "required": true
+          },
+          "selection": {
+            "type": "string",
+            "required": true
+          },
+          "sourcePath": {
+            "type": "string",
+            "required": true
+          },
+          "sourceHeading": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "requirement": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "statement": {
+            "type": "string",
+            "required": true
+          },
+          "acceptance": {
+            "type": "string",
+            "required": true
+          },
+          "selection": {
+            "type": "string",
+            "required": true
+          },
+          "deliveryStatus": {
+            "type": "string",
+            "required": true
+          },
+          "verificationStatus": {
+            "type": "string",
+            "required": true
+          },
+          "validationStatus": {
+            "type": "string",
+            "required": true
+          },
+          "remaining": {
+            "type": "string",
+            "required": true
+          },
+          "statusBasis": {
+            "type": "string",
+            "required": true
+          },
+          "scopeNote": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "work_item": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "deliveryStatus": {
+            "type": "string",
+            "required": true
+          },
+          "horizon": {
+            "type": "string",
+            "required": true
+          },
+          "selection": {
+            "type": "string",
+            "required": true
+          },
+          "rationale": {
+            "type": "string",
+            "required": true
+          },
+          "nextAction": {
+            "type": "string",
+            "required": true
+          },
+          "completionEvidence": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "decision": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "statement": {
+            "type": "string",
+            "required": true
+          },
+          "selection": {
+            "type": "string",
+            "required": true
+          },
+          "rationale": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
+      "artifact": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "kind": {
+            "type": "string",
+            "required": true
+          },
+          "path": {
+            "type": "string",
+            "required": true
+          },
+          "revision": {
+            "type": "string",
+            "required": true
+          },
+          "sha256": {
+            "type": "string",
+            "required": true
+          },
+          "scope": {
+            "type": "string",
+            "required": true
+          }
+        }
+      }
+    },
+    "relationshipTypes": {
+      "sourced_from": {
+        "source": [
+          "goal",
+          "user_need",
+          "requirement",
+          "decision",
+          "story",
+          "work_item",
+          "artifact"
+        ],
+        "target": ["source", "artifact"],
+        "fields": {}
+      },
+      "contributes_to": {
+        "source": ["user_need"],
+        "target": ["goal"],
+        "fields": {}
+      },
+      "addresses": {
+        "source": ["story", "requirement"],
+        "target": ["user_need"],
+        "fields": {}
+      },
+      "supports_story": {
+        "source": ["requirement"],
+        "target": ["story"],
+        "fields": {}
+      },
+      "advances": {
+        "source": ["work_item"],
+        "target": ["requirement"],
+        "fields": {}
+      },
+      "implemented_by": {
+        "source": ["requirement"],
+        "target": ["artifact"],
+        "fields": {}
+      },
+      "checked_by": {
+        "source": ["requirement"],
+        "target": ["artifact"],
+        "fields": {}
+      }
+    },
+    "coverageExpectations": {
+      "requirement_need": {
+        "name": "requirement need",
+        "subject": {
+          "type": "requirement"
+        },
+        "relationshipType": "addresses",
+        "direction": "outgoing",
+        "related": {
+          "type": "user_need"
+        },
+        "minimumDistinctTargets": 1
+      },
+      "requirement_source": {
+        "name": "requirement source",
+        "subject": {
+          "type": "requirement"
+        },
+        "relationshipType": "sourced_from",
+        "direction": "outgoing",
+        "related": {
+          "type": "source"
+        },
+        "minimumDistinctTargets": 1
+      },
+      "work_requirement": {
+        "name": "work requirement",
+        "subject": {
+          "type": "work_item"
+        },
+        "relationshipType": "advances",
+        "direction": "outgoing",
+        "related": {
+          "type": "requirement"
+        },
+        "minimumDistinctTargets": 1
+      }
+    }
+  },
+  "entities": [
+    {
+      "type": "source",
+      "key": "SRC-NEEDS",
+      "fields": {
+        "title": "Product vision",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "## Product vision",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "## Product vision\n\n**Status:** owner-authored direction from the initial brief; not representative-user evidence or implementation approval.\n\nMake structured engineering information as easy to create, connect and edit as a spreadsheet, with typed relationships, traceability, history and meaningful change context. The owner's experience of navigation and process overhead in enterprise requirements tools motivates this hypothesis.\n\nUse one domain-independent model for humans and agents. Begin locally with a project database, minimal setup and no cloud account. Deeper traceability and team use should grow from the same semantics without complicating ordinary authoring. Shared servers, PostgreSQL, permissions and broad collaboration remain future work.\n\nThe original need IDs remain stable:\n\n### UN-001 — Organize structured information\n\nConfigure familiar information types—requirements, designs, components, tests, risks, decisions, tasks, experiments and evidence—without changing Tracer's source. Templates are optional; a task tracker should not require requirements-management vocabulary.\n\n### UN-002 — Connect information\n\nCreate typed, directed relationships with their own identity, fields and history. Navigate in either direction across hierarchies, shared contributions and cross-domain networks without forcing a tree.\n\n### UN-003 — Understand completeness and impact\n\nFind gaps and possible change consequences under explicit project expectations. Reachability, structural completeness, assessed impact and successful execution are distinct; links and coverage counts do not establish satisfaction or readiness.\n\n### UN-004 — Track changes and preserve history\n\nExplain what changed, when, why and by whom, including relationships. Reconstruct reproducible baselines and compare logical states through semantic and deterministic textual differences. Full export/diff/restoration workflows remain undelivered.\n\n### UN-005 — Work through the most appropriate interface\n\nUse tables, graphs, matrices or document-like views over the same information, validation and history. The selected map experience is shared across examples. This goal does not imply every view currently supports every edit.\n\n### Scope, generality and limits\n\nMedical devices, software, aerospace, manufacturing/quality, research and regulatory evidence use the same primitives and may coexist in one project. Optional schemas express vocabulary and policy; they neither establish compliance nor impose universal approval stages. See [industry workflows](industry-workflows/README.md).\n\nStart with a useful local engineering foundation. Enterprise requirements-tool parity, PLM/ERP, specialized compliance, distributed storage, comprehensive workflow automation and an elaborate plugin ecosystem are outside initial scope. Add infrastructure when its value is demonstrated.\n\n[Vision scenarios](user-journeys.md#vision-scenarios-and-remaining-proof) make the ambition testable; [validation milestones](development-flow.md#validation-milestones) define the required evidence.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-DELIVERY",
+      "fields": {
+        "title": "5. Small readiness/completion decisions",
+        "kind": "document",
+        "path": "docs/development-flow.md",
+        "heading": "## 5. Small readiness/completion decisions",
+        "sha256": "b4444c66b04d9f6a3107bdc8991a34cd37fd155ac26f2821a71e6bd9f3e50577",
+        "excerpt": "## 5. Small readiness/completion decisions\n\n- **Ready to implement:** selected task/concept, bounded scope, sufficient evidence, failure handling, checks and validation plan. Experiment on risky unknowns.\n- **Implemented/verified:** agreed behavior passes checks; candidate and limits are reviewable.\n- **Validated:** representative task evidence supports a stated use/context. Owner walkthroughs remain provisional.\n- **Release-ready:** appropriate usefulness, correctness and operational evidence, resolved critical dependencies and explicit authority.\n\nAfter sustaining changes, reassess affected specs, checks and scenarios. Retain passing evidence where its coverage remains applicable.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-LIMITS",
+      "fields": {
+        "title": "Current limits",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Current limits",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Current limits\n\n- The production map reads a transactional native snapshot bounded to 10,000 artifacts and 100,000 relationships. Drawing/query bounds are disclosed separately.\n- The workbench draws up to 50 artifacts and projects up to 500 trace rows or 100 terminal links per grouped cell. It is not virtualized.\n- Assessment discovery follows declared input/captured-output scope, five evaluations per page. Ordinary graph connectivity is not an assessed dependency or proof of impact.\n- Unsaved drafts remain tab-local and are deliberately excluded from recovery. Leaving/reloading warns; uncertain writes restore a pause without replay. Spatial and investigation recovery uses browser local storage, keyed by project identity and tied to the same browser/origin. Saved engineering records, review decisions and named Matrix path recipes persist in SQLite.\n- Spreadsheet paste/bulk mutation, portable workspace context and arbitrary two-revision comparison remain open. Matrix saved recipes currently support outgoing path columns; receipt creation pickers remain bounded to 1,000 items.\n- PostgreSQL parity, authenticated collaboration, hosted integrations, restoration and standalone packaging remain future work.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-VALIDATION",
+      "fields": {
+        "title": "Open work",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Open work",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Open work\n\nEvaluate complete create → connect → modify → investigate → assess tasks with representative users in more than one domain. An unfamiliar-user session has not been run. Use observed next-action choices, completion time, assistance, errors and context loss to prioritize larger-dataset interaction, clearer review context and remaining authoring friction. Automated checks and visual consistency are supporting evidence, not substitutes for task validation.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-OWNER-SELF",
+      "fields": {
+        "title": "Owner selects headless Tracer self-development project",
+        "kind": "owner_request",
+        "path": "conversation:2026-10-20",
+        "heading": "Current request",
+        "sha256": "",
+        "excerpt": "Well what if we make a database that's tracers requirements and user needs and what? We can make it all headless and then we can use that going forward.",
+        "evidenceClass": "owner_report_not_user_validation"
+      }
+    },
+    {
+      "type": "goal",
+      "key": "UN-001",
+      "fields": {
+        "title": "Organize structured information",
+        "statement": "Configure familiar information types—requirements, designs, components, tests, risks, decisions, tasks, experiments and evidence—without changing Tracer's source. Templates are optional; a task tracker should not require requirements-management vocabulary.",
+        "evidenceClass": "owner_direction",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### UN-001 — Organize structured information"
+      }
+    },
+    {
+      "type": "goal",
+      "key": "UN-002",
+      "fields": {
+        "title": "Connect information",
+        "statement": "Create typed, directed relationships with their own identity, fields and history. Navigate in either direction across hierarchies, shared contributions and cross-domain networks without forcing a tree.",
+        "evidenceClass": "owner_direction",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### UN-002 — Connect information"
+      }
+    },
+    {
+      "type": "goal",
+      "key": "UN-003",
+      "fields": {
+        "title": "Understand completeness and impact",
+        "statement": "Find gaps and possible change consequences under explicit project expectations. Reachability, structural completeness, assessed impact and successful execution are distinct; links and coverage counts do not establish satisfaction or readiness.",
+        "evidenceClass": "owner_direction",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### UN-003 — Understand completeness and impact"
+      }
+    },
+    {
+      "type": "goal",
+      "key": "UN-004",
+      "fields": {
+        "title": "Track changes and preserve history",
+        "statement": "Explain what changed, when, why and by whom, including relationships. Reconstruct reproducible baselines and compare logical states through semantic and deterministic textual differences. Full export/diff/restoration workflows remain undelivered.",
+        "evidenceClass": "owner_direction",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### UN-004 — Track changes and preserve history"
+      }
+    },
+    {
+      "type": "goal",
+      "key": "UN-005",
+      "fields": {
+        "title": "Work through the most appropriate interface",
+        "statement": "Use tables, graphs, matrices or document-like views over the same information, validation and history. The selected map experience is shared across examples. This goal does not imply every view currently supports every edit.",
+        "evidenceClass": "owner_direction",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### UN-005 — Work through the most appropriate interface"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-01",
+      "fields": {
+        "title": "Start from recognizable engineering work",
+        "statement": "Begin useful work in familiar terminology with little setup; know what information is present or missing. **Basis:** VI-1; onboarding preference is HY. Investigate scratch authoring, import/paste, templates, type ownership and inconsistent source data before selecting an entry flow.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-01 — Start from recognizable engineering work"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-02",
+      "fields": {
+        "title": "Author and revise coherent design information",
+        "statement": "Express intent with surrounding rationale, revise related items and distinguish drafts from established information. **Basis:** UR-2/4/14; VI-1. Investigate statement length, cell/batch versus long-form work, attributes and review states. Preserve existing software source artifacts; compulsory grammar and per-item editors are unproven.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-02 — Author and revise coherent design information"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-03",
+      "fields": {
+        "title": "Understand and manipulate relationships across levels",
+        "statement": "Work with parents, children, siblings and cross-cutting relationships together; explain contributions, navigate whole/detail and recognize shared identity. **Basis:** UR-1/2/4/7/14; VI-1. Investigate direction, multiple parents, link attributes, dense branches and branch-level actions. Software may connect needs, modules and tests without successive requirement levels; no strict tree is required. The Jama criticism is owner experience, not a claim about every version.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-03 — Understand and manipulate relationships across levels"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-04",
+      "fields": {
+        "title": "Identify meaningful completeness gaps and next work",
+        "statement": "Explain an unresolved obligation under declared project expectations and choose the next action. **Basis:** UR-4/15; VI-1. An approved requirement lacking an implementation link is a candidate gap: code may exist but be unlinked. Planned, partial, outdated and current realization must remain distinguishable, including relevant requirement/version scope. Approval, implementation coverage, test coverage and execution results are separate. Investigate applicability and priority; automatic scheduling/ownership remain HY.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-04 — Identify meaningful completeness gaps and next work"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-05",
+      "fields": {
+        "title": "Understand a proposed change before committing it",
+        "statement": "Start from one modification/removal, compare intent and see candidate consequences with recorded paths or stated reasoning. Retain system requirements whether preserved or explicitly revised. **Basis:** UR-4/6/11/14; VI-1. Motor/load/timing examples are user reports without supplied design/test artifacts. Investigate proposal staging, review, removal, old evidence and unaffected links; no impact algorithm or approval workflow is selected. Missing paths cannot prove no impact.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-05 — Understand a proposed change before committing it"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-06",
+      "fields": {
+        "title": "Track important quantitative meaning without forcing formalization",
+        "statement": "Explain limits, allocations and derivations while preserving prose and judgment. Avoid coupling identical numbers or silently rewriting children. **Basis:** UR-5; structured parameters/computation are HY; no real quantitative artifact yet. Investigate references, inheritance, budgets, formulas, independent choices, units, overhead, uncertainty and conditions. Formula editing and extraction are not requirements.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-06 — Track important quantitative meaning without forcing formalization"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-07",
+      "fields": {
+        "title": "Judge evidence and record a defensible decision",
+        "statement": "Inspect relevant inputs/evidence, understand changed or unknown conditions and retain reasoning. **Basis:** VI-1, existing evidence semantics, UR-14; detailed reviewer tasks are HY. Investigate review packages, comparisons, handoffs and authority. A test file, code link and revision-specific result are separate facts; none alone proves need satisfaction. Local review does not imply organizational or medical sign-off.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-07 — Judge evidence and record a defensible decision"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-08",
+      "fields": {
+        "title": "Trust history and recover safely",
+        "statement": "Know what changed/saved, preserve attempted proposals and reconcile interruptions or conflicts without silent loss. Distinguish current, draft and historical information. **Basis:** VI-1, UR-2; preferred recovery is HY. Investigate undo scope, autosave, offline work, interruptions and restoration; history is not undo.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-08 — Trust history and recover safely"
+      }
+    },
+    {
+      "type": "user_need",
+      "key": "PN-09",
+      "fields": {
+        "title": "Keep orientation while changing working level or representation",
+        "statement": "Retain scope, selection, drafts and a return path across overview, branch, item and evidence work. **Basis:** UR-1–3/7–8/33/37; VI-1. Investigate persistent state, simultaneous context, keyboard/accessibility, narrow layouts, categorization and direct/contextual actions. Tabs, panels and styling are solutions to evaluate.",
+        "evidenceClass": "owner_report_and_hypothesis",
+        "validationStatus": "not_validated",
+        "sourcePath": "docs/user-needs.md",
+        "sourceHeading": "### PN-09 — Keep orientation while changing working level or representation"
+      }
+    },
+    {
+      "type": "story",
+      "key": "ND-01",
+      "fields": {
+        "title": "begin without an extensive setup detour",
+        "statement": "### ND-01 — begin without an extensive setup detour\n\n> As an author starting a design, I want to work with recognizable information so I can begin expressing the design instead of learning the tool's internal model.\n\n**Needs:** PN-01, PN-02. **Basis:** vision plus hypothesis; preferred onboarding method unknown.\n\n**Candidate acceptance:** users recognize the available information and what is missing; they can start one meaningful item without first constructing a complete project ontology. Existing data brought into the project is not silently lost or falsely represented as validated.\n\n**Investigate:** write from scratch, paste/import or start from a template? Prototype these alternatives rather than implementing all three now.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### ND-01 — begin without an extensive setup detour"
+      }
+    },
+    {
+      "type": "story",
+      "key": "ND-02",
+      "fields": {
+        "title": "author in context and move between levels",
+        "statement": "### ND-02 — author in context and move between levels\n\n> As an author, I want to inspect the relevant parent intent while writing a child requirement so I can explain how the child contributes without repeatedly reconstructing context.\n\n**Needs:** PN-02, PN-03, PN-09. **Basis:** UR-1, UR-2, UR-4.\n\n**Candidate acceptance:** free text is usable without compulsory formal syntax; an item can relate to an existing parent or remain explicitly unlinked; applicable field/relationship actions are reachable in the working context; changing scope does not silently lose the draft.\n\n**Exceptions:** long statements, optional attributes, multiple parents, uncertain relationships and a parent that changed while drafting.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### ND-02 — author in context and move between levels"
+      }
+    },
+    {
+      "type": "story",
+      "key": "ND-03",
+      "fields": {
+        "title": "inspect siblings and shared identity",
+        "statement": "### ND-03 — inspect siblings and shared identity\n\n> As an engineer reviewing decomposition, I want to see the other items contributing under the relevant parent so I can judge the family together rather than inspect isolated statements.\n\n**Needs:** PN-03, PN-09. **Basis:** UR-1.\n\n**Candidate acceptance:** the parent and relationship defining the family are explainable; shared children remain recognizable as the same underlying item; editing one identity does not create divergence among its appearances; users can return to the wider scope with drafts intact.\n\n**Exceptions:** a child belongs to two parents, appears along several paths, or has different kinds of sibling relationships. Test whether the user wants immediate siblings or the whole branch; do not assume they are equivalent.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### ND-03 — inspect siblings and shared identity"
+      }
+    },
+    {
+      "type": "story",
+      "key": "ND-04",
+      "fields": {
+        "title": "resolve one meaningful completeness gap",
+        "statement": "### ND-04 — resolve one meaningful completeness gap\n\n> As an engineer building a design, I want to know which obligation is unresolved and why so I can choose the next appropriate work.\n\n**Needs:** PN-04, PN-03, PN-07. **Basis:** UR-4, UR-15; exact scope/policies are HY.\n\n**Candidate acceptance:** a displayed gap has an explainable expectation and scope; the user can inspect existing candidates before creating duplicate information; an appropriate new connection resolves that structural gap without falsely declaring the design/evidence valid; other unresolved obligations remain visible.\n\n**Software acceptance example (UR-15):** where the project marks a requirement approved, see whether an actual implementation artifact is linked. With no such link, show implementation as not traced and likely outstanding; offer the task choices of implementing it, linking existing code or investigating uncertainty. Do not force a new implementation when the code already exists. A link to a planned task/design is not an actual-code realization link; partial or outdated mappings retain their unresolved scope. Adding an appropriate link closes the trace gap, not automatically the implementation/verification judgment.\n\n**Exceptions:** an item is intentionally not applicable, the expectation is unknown, existing implementation is unlinked, a link covers only part of the requirement or refers to older behavior, or old evidence uses different inputs. Represent uncertainty rather than inventing a complete/incomplete judgment.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### ND-04 — resolve one meaningful completeness gap"
+      }
+    },
+    {
+      "type": "story",
+      "key": "SC-01",
+      "fields": {
+        "title": "see impact before accepting a change",
+        "statement": "### SC-01 — see impact before accepting a change\n\n> As an engineer proposing a modification, I want to compare it with the established state and inspect explainable consequences so I can review the proposal before changing the authoritative design.\n\n**Needs:** PN-05, PN-03, PN-08. **Basis:** UR-4, UR-6, UR-11; specific staging mechanisms are HY.\n\n**Candidate acceptance:** proposed versus committed information is distinguishable; impact candidates show the paths/reasons that make them relevant; browsing does not write changes; connection alone is not presented as proof that the connected item must change; unmodeled consequences remain explicitly possible.\n\n**Exceptions:** cyclic or dense networks, shared children, changed schema, missing/deleted items and incomplete source knowledge. A bounded result must explain its scope, not imply a complete impact census.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### SC-01 — see impact before accepting a change"
+      }
+    },
+    {
+      "type": "story",
+      "key": "SC-02",
+      "fields": {
+        "title": "reason about removal",
+        "statement": "### SC-02 — reason about removal\n\n> As an engineer considering removing information, I want to see what relies on it so I can decide how to address those obligations without losing the established history.\n\n**Needs:** PN-05, PN-03, PN-08. **Basis:** UR-4.\n\n**Candidate acceptance:** removing, filtering out, disconnecting and superseding are distinguishable; references and unresolved obligations are explained; no silent cascade; established history remains inspectable; users know whether anything was committed.\n\n**Investigate:** actual review/approval authority and the semantics of retirement versus deletion. Do not introduce automatic cascade or organizational approval merely because it would simplify a mockup.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### SC-02 — reason about removal"
+      }
+    },
+    {
+      "type": "story",
+      "key": "SC-03",
+      "fields": {
+        "title": "reassess evidence without rewriting its past",
+        "statement": "### SC-03 — reassess evidence without rewriting its past\n\n> As a reviewer, I want to inspect changed inputs and the original evidence so I can record why the evidence does or does not support the decision now.\n\n**Needs:** PN-07, PN-05, PN-08. **Basis:** vision/existing evidence model; detailed reviewer task is HY.\n\n**Candidate acceptance:** coverage, freshness, uncertainty and review decision remain separate; original snapshots/rationale remain accessible; the comparison used while drafting is identifiable; a relevant intervening change requires an explicit new assessment rather than silent token adoption; acceptance does not erase drift.\n\n**Exceptions:** missing observations, unrelated edits, relevant later changes, superseded evidence and conflicting reviewer assumptions. Local provenance labels are not authenticated approval authority.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "### SC-03 — reassess evidence without rewriting its past"
+      }
+    },
+    {
+      "type": "story",
+      "key": "Q-01",
+      "fields": {
+        "title": "quantitative meaning without overconstraint",
+        "statement": "## 4. Cross-cutting story Q-01 — quantitative meaning without overconstraint\n\n> As an engineer changing an important specification, I want to understand where the value comes from and where it is used so I can assess the consequences without forcing every requirement into a formal model.\n\n**Needs:** PN-06, PN-02, PN-05. **Basis:** UR-5; representation and computation are HY.\n\n**Toy scenario:** an overall timing limit is 100 ms, with explicitly declared 60 ms and 40 ms allocations. Propose changing the total to 80 ms. These are not medical specifications. Any arithmetic requires explicit combination and overhead assumptions.\n\n**Candidate acceptance examples:**\n\n- Free-text-only requirements remain authorable and reviewable.\n- If a value is deliberately shared, its confirmed consumers are identifiable; an unrelated identical number is not automatically coupled.\n- An explicitly modeled calculation may report a result/violation under its declared assumptions, with units and explanation.\n- A parent limit change exposes the allocation question but does not silently proportionally scale or rewrite children.\n- A child allocation change can raise a feasibility question for the parent without rewriting the parent's intent.\n- Missing derivation knowledge is not represented as a satisfied constraint or no impact.\n- Declared constraints, possible engineering impact and review decisions are distinguishable.\n\n**Alternatives to test:** ordinary prose with annotated values, optional named typed values, linked value references, and human-authored derivation explanations. A general formula language or extraction engine is not assumed.\n\n**Additional cases:** inconsistent units, rounding, tolerances, ranges, conditions, repeated values, independent choices and removal of a referenced value. Replace the toy example with one real artifact before specifying storage or arithmetic behavior.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "## 4. Cross-cutting story Q-01 — quantitative meaning without overconstraint"
+      }
+    },
+    {
+      "type": "story",
+      "key": "R-01",
+      "fields": {
+        "title": "resume and recover safely",
+        "statement": "## 5. Cross-cutting story R-01 — resume and recover safely\n\n> As an engineer interrupted during work, I want to retain my proposal and orientation so I can resume or reconcile it without losing information or overwriting someone else's change.\n\n**Needs:** PN-08, PN-09. **Basis:** vision; preferred saving/recovery model is HY.\n\n**Candidate acceptance:** context/selection and save status are understandable; switching level or representation does not silently discard drafts; a failed read cannot authorize editing stale information as if current; object/schema conflicts preserve the attempt; historical inspection does not masquerade as editing current state.\n\n**Investigate:** autosave versus explicit save, reopening after shutdown, undo, and what should be retained across sessions. Prototype and actual repository safety capabilities may differ; label unsupported recovery behavior honestly.",
+        "selection": "candidate",
+        "sourcePath": "docs/user-journeys.md",
+        "sourceHeading": "## 5. Cross-cutting story R-01 — resume and recover safely"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-001",
+      "fields": {
+        "title": "Local configurable engineering model",
+        "statement": "Authors can define typed records and directed relationships in a persistent local project without an account.",
+        "acceptance": "Define a custom model, author and connect records, reopen the same database and retain identities and data.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Representative-user validation and broader backend/team portability remain separate.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-001",
+      "fields": {
+        "title": "Native application",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Native application",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Native application\n\nNormal launch opens `ui/workbench/` Graph / Matrix / History over the selected database. Orbit, Aster and empty projects share this UI/core. Project tools retains full item/link editing, model configuration, receipt authoring, configurations, documentation and the Development map.\n\nSQLite supports version-guarded atomic writes, immutable history, directed links, saved views, exact configurations, baselines, structural coverage and scoped change investigation. Captured inputs, current freshness and review decisions remain separate.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-002",
+      "fields": {
+        "title": "Guarded contextual authoring",
+        "statement": "Authors can create/edit records and relationships with schema/version guards and retained in-session proposals.",
+        "acceptance": "A confirmed save persists; stale saves conflict; unchanged edits create no revision; other pending fields survive a single-field save.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Bulk paste/mutation and portable unsaved drafts are excluded.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-002",
+      "fields": {
+        "title": "Inspector and contextual editing polish",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Inspector and contextual editing polish",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Inspector and contextual editing polish\n\n2026-10-17: text editors expose actual draft state, keyboard save/cancel and saving locks. Focus returns to the edited control; resize retains caret, and artifact/relationship reading positions survive rerenders and Graph/Matrix/History returns. Unchanged optional fields remain absent and clean editors do not warn on reload. Saving or cancelling one field retains other unsaved values; only a confirmed save advances the captured version, using its own returned version even if another actor edits before refresh. Readers offer explicit resume/discard actions. Drafts and reading positions stay tab-local.\n\nRelationship creation now searches compatible targets by identifier or title with bounded keyboard-operable suggestions and exact key selection, readable source/target context, scope requirements and explicit Cancel. Relationship inspection returns directly to the artifact and its connection control, remains usable in narrow sheets and offers scope editing only for declared text fields. Unchanged scope saves add no revision. Existing version/schema/endpoint guards, unknown-save inspection and native write paths remain authoritative.\n\nFocused checks cover 1440px/680px/390px (844px phone height), retained drafts/partial saves, independent reading positions, caret/focus, no-op revisions, clean reload, compatible title search, exact target selection and pending-save cancellation/duplicate prevention. Desktop and phone screenshots were inspected. The final `npm run check` passed formatting, strict types, lint, 408 unit tests, 165 browser tests, production/harness builds, all workbench journeys and dependency/duplication/complexity gates. Additional cases cover intervening edits between save and refresh, and locked connection proposals during pending writes. No quality limits or exclusions changed. The fresh-user task script is recorded in the UX plan; no unfamiliar participant session has been run, so these checks establish browser behavior rather than usability validation.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-003",
+      "fields": {
+        "title": "Connected navigation across representations",
+        "statement": "Engineers can inspect connected records through the shared Graph, Matrix and History workspace while retaining context.",
+        "acceptance": "Follow connected items, switch representations and return with canonical identity, selection and bounded scope explained.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Larger-dataset usability and richer temporal comparison need further work.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-003",
+      "fields": {
+        "title": "Integrated workflow",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Integrated workflow",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Integrated workflow\n\n`npm start`/demo use production sources; `npm run workbench` launches disposable Aster/Gatherline review databases. The [review guide](ux-artifacts/product-identity/README.md) owns regression orchestration. Studies re-export production modules; production cannot import studies.\n\nImplemented workflows include:\n\n- Create artifacts from a title-first Matrix row, revealing schema-required fields before commit.\n- Link compatible existing artifacts or atomically create an artifact and its connection.\n- Edit fields in floating editors while preserving table geometry, scroll and canonical shared identity.\n- Retain artifact, relationship, revision and investigation scope across Graph, Matrix and History.\n- Explore recorded dependency paths with stable positions, readable fitted titles and contextual actions.\n- Author an ordinary evaluation receipt with exact input items/fields or historical pins, then compare captured/current inputs and record an immutable assessment with rationale. No fixture preparation is required for ordinary authoring.\n- Save named Matrix row/path/search recipes in SQLite; recover graph positions, view settings, selected revision and investigation scope in the same browser/origin after reload.\n- Preserve drafts across view changes, reject stale versions/tokens and inspect uncertain saves without automatic replay.\n- Use a docked inspector, drawer or compact/partial sheet according to available workspace; historical states are read-only.\n\nThe fresh-project browser journey defines a small custom model, creates and connects two records, authors a selected-field receipt, changes the captured statement, investigates its exact link, records Needs reevaluation, saves a Matrix recipe and reloads the same decision, investigation and graph positions. It passes at 1440px and 680px.\n\nThe established Aster assessment scenario modifies PRS-02 from 10–40°C to 5–45°C at r400, retains twenty exact recorded links across views, identifies changed captured inputs, records Needs reevaluation and reloads the same decision. The receipt and native project revision remain unchanged by the review. All example outcomes are explicitly simulated.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-004",
+      "fields": {
+        "title": "Separate actionable work queues",
+        "statement": "Engineers can distinguish missing statements, zero-target allocations/plans, changed inputs and unresolved reviews.",
+        "acceptance": "Each queue has complete bounded counts and direct actions; missing configuration or read failure cannot appear as zero work.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Assignment, linked follow-ups, closure criteria and user validation remain separate.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-004",
+      "fields": {
+        "title": "Separate next-work queues",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Separate next-work queues",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Separate next-work queues\n\n2026-10-17: [UR-62](user-needs.md) adds **Next work** in the shared workspace header and Project tools, plus `Tracer.getNextWork`, CLI `next-work get` and typed `GET /api/next-work`. Missing statements, unallocated requirements, missing verification plans, changed evidence inputs and unresolved reviews have independent counts, explanations and direct existing edit/review actions. Each complete bounded snapshot retains native/model/evidence context; local ten-row paging never truncates counts. Missing configuration and failed reads cannot masquerade as zero work.\n\nEngineering starter policies supply compatible defaults. Custom models choose declared type/text-field and saved policy roles explicitly, without model changes; resetting defaults recovers from removed policies. Structural queues identify zero qualifying targets under complete directional/population rules, leaving other minimum-count deficits in Coverage. Evidence reuses declared-input comparison and review applicability. Confirmed drift, unknown inputs, outcomes and judgments remain separate; Accepted/Acknowledged resolves review work only, Needs reevaluation remains open and explicitly superseded results leave current work queues.\n\nHidden editors/reviews retain drafts, conflicting selection preserves their owners, and returning refreshes queues. Fresh record/comparison reads retain schema/version/token guards and uncertain-write pauses. No migration, observation, new task store or alternate write path is introduced. The [next-work guide](next-work.md) owns full membership rules, configuration, engineering budgets and interface formats; linked follow-up work remains separate scope.\n\nFocused verification passed eight unit/integration cases and five browser journeys at 1440/680/390px. Cases cover queue independence, complete paging, policy filters/directions, selected-field drift, unknowns, retired reviews, supersession, read/budget errors, snapshot isolation, CLI/HTTP parity/project selection, edits/connections/review decisions, retained drafts, reload and custom-model recovery. Screenshots were inspected at all three widths and 153 local file links resolved. The final `npm run check` passed formatting, strict types, lint, 404 unit tests, 152 browser tests, production/harness builds, all workbench journeys and dependency/duplication/complexity gates. Queue refresh/draft ownership and rendering were split into cohesive components to meet the existing complexity limits. No quality limits, baselines or exclusions changed.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-005",
+      "fields": {
+        "title": "Evidence reassessment and recorded judgment",
+        "statement": "Reviewers can inspect immutable results, compare declared inputs and record a version-scoped judgment.",
+        "acceptance": "Changed/unknown inputs and technical outcomes remain distinct; decisions preserve original receipts and do not clear drift.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Organizational approval authority and representative reviewer validation remain absent.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-005",
+      "fields": {
+        "title": "Integrated workflow",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Integrated workflow",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Integrated workflow\n\n`npm start`/demo use production sources; `npm run workbench` launches disposable Aster/Gatherline review databases. The [review guide](ux-artifacts/product-identity/README.md) owns regression orchestration. Studies re-export production modules; production cannot import studies.\n\nImplemented workflows include:\n\n- Create artifacts from a title-first Matrix row, revealing schema-required fields before commit.\n- Link compatible existing artifacts or atomically create an artifact and its connection.\n- Edit fields in floating editors while preserving table geometry, scroll and canonical shared identity.\n- Retain artifact, relationship, revision and investigation scope across Graph, Matrix and History.\n- Explore recorded dependency paths with stable positions, readable fitted titles and contextual actions.\n- Author an ordinary evaluation receipt with exact input items/fields or historical pins, then compare captured/current inputs and record an immutable assessment with rationale. No fixture preparation is required for ordinary authoring.\n- Save named Matrix row/path/search recipes in SQLite; recover graph positions, view settings, selected revision and investigation scope in the same browser/origin after reload.\n- Preserve drafts across view changes, reject stale versions/tokens and inspect uncertain saves without automatic replay.\n- Use a docked inspector, drawer or compact/partial sheet according to available workspace; historical states are read-only.\n\nThe fresh-project browser journey defines a small custom model, creates and connects two records, authors a selected-field receipt, changes the captured statement, investigates its exact link, records Needs reevaluation, saves a Matrix recipe and reloads the same decision, investigation and graph positions. It passes at 1440px and 680px.\n\nThe established Aster assessment scenario modifies PRS-02 from 10–40°C to 5–45°C at r400, retains twenty exact recorded links across views, identifies changed captured inputs, records Needs reevaluation and reloads the same decision. The receipt and native project revision remain unchanged by the review. All example outcomes are explicitly simulated.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-006",
+      "fields": {
+        "title": "History, baselines and change investigation",
+        "statement": "Engineers can inspect history and scoped baseline comparisons while preserving recorded identities and evidence.",
+        "acceptance": "Inspect exact earlier native states and explain the bounded relationships used in change investigation.",
+        "selection": "existing_scope",
+        "deliveryStatus": "partial",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Arbitrary two-revision comparison, complete project diff/restoration and general proposed-change review remain open.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-007",
+      "fields": {
+        "title": "Create-only CSV import",
+        "statement": "Authors can map CSV columns to a model, resolve exact keys, preview all errors and atomically create records/links.",
+        "acceptance": "Any invalid row blocks the batch; intervening changes require a fresh preview; existing records are not overwritten.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Workbook import, overwrite/merge, saved mapping recipes and receipt import are excluded.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-007",
+      "fields": {
+        "title": "Practical CSV import",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Practical CSV import",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Practical CSV import\n\n2026-10-17: [UR-60](user-needs.md) adds **Project tools → Import CSV** with file/paste input, schema-aware column mapping, optional outgoing links and a separate existing-record link mode. Exact case-sensitive active keys resolve existing records and later rows in the same file. Duplicate keys/connections, malformed rows, missing targets, invalid endpoints and required/typed cell errors block the entire import; ignored columns are explicit. Preview rows/errors page locally without truncating validation. CSV drafts remain tab-local.\n\nThe portable parser/planner exports feed the existing guarded changeset route; there is no staging store, alternate write path or storage migration. Explicit create IDs, model/endpoint captures and duplicate-link guards preserve native validation and unknown-outcome inspection. Optional native changeset `expectedProjectRevision` is checked inside the transaction before writes; CSV commits supply the exact preview head, so any intervening native change requires a new preview. Preview also rejects files whose resulting counts would exceed the shared complete-workspace bounds. Confirmed saves identify one revision and clear the draft; failed/uncertain saves retain data/mapping without replay or partial records/history.\n\nThe final `npm run check` passed formatting, strict types, lint, 391 unit tests, 144 browser tests, production/harness builds, all workbench journeys and dependency/duplication/complexity gates. Eleven CSV unit cases cover quoting/physical lines, typed values, forward/existing keys, duplicate and missing links, mapping/batch/byte/population limits, captured-head checks, stale endpoints/schema and full rollback. Four browser journeys cover desktop/680px mapping/error/commit/read-back/reload, stale-preview rejection and lost-response locking. Additional browser checks verified malformed UTF-8/CSV, complete error/row pagination and successful link-only import with metadata. Preview/error screenshots were inspected at both widths; 140 local file/heading links resolved. The full run also caught and corrected the retained desk-light journey's old documentation path; it now reads the customization guide. No quality limits or exclusions changed.\n\nOne file imports one record type or one relationship type; record mode can add up to eight outgoing key-column link mappings. Existing records are never overwritten. Workbook parsing, updates/merges, saved mapping recipes, multi-key cells and evidence/file import remain outside this slice. The [CSV import guide](csv-import.md) owns formats, bounds and the reusable script workflow.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-008",
+      "fields": {
+        "title": "Deterministic recorded-project export",
+        "statement": "Users and agents can export current native data, recorded history and evidence references with exact versions and provenance.",
+        "acceptance": "An unchanged database exports identical JSON bytes; preparation is read-only; external contents are explicitly excluded.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Restore, selected-baseline packages and human-readable review packages remain separate.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-008",
+      "fields": {
+        "title": "Deterministic project export",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Deterministic project export",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Deterministic project export\n\n2026-10-17: [UR-61](user-needs.md) adds **Project tools → Export project**, `project export` CLI and typed `GET /api/project-export` through `Tracer.exportProject()` and the shared canonical serializer. One transaction captures current schema/records/links, all recorded native changesets/revisions (including tombstones), immutable evidence/configurations/baselines and current saved views. Exact native versions, historical schemas, original actor/reason/time, captured paths/pins, external observations and review decisions remain unchanged. Evidence/capture boundaries stay separate from native revision; external content is referenced rather than read or bundled.\n\nUnchanged stored content produces identical UTF-8 JSON bytes across interfaces and restarts. Prepared browser bytes remain fixed after later changes; re-preparation explicitly adopts new content, while a failed preparation clears the download. Exhaustive paging is independent of rendering bounds and rejects beyond 250,000 entries / 64 MiB without a partial response. The [export guide](project-export.md) owns format, ordering, preservation instructions and budgets. Selected-baseline packages and restore remain separate scope.\n\nFocused verification passed five unit/integration cases and three browser journeys at 1440/680px, covering byte parity/restart, historical/deleted inputs, unknown/observed external references, every collection's pagination, queued writes, read/capacity failures, fixed downloads, retry and malformed-response rejection. The final `npm run check` passed formatting, strict types, lint, 396 unit tests, 147 browser tests, production/harness builds, all workbench journeys and dependency/duplication/complexity gates. The serializer also rejects non-JSON values; its focused cases passed after that final guard was added. Desktop/narrow screenshots were inspected, 155 local file links resolved and an additional HTTP check confirmed selected-project export isolation. No quality limits or exclusions changed. No storage migration or new write path is introduced.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-009",
+      "fields": {
+        "title": "Useful persistent Engineering starter",
+        "statement": "New users can start with an editable engineering model, structural policies and optional named Matrix recipes.",
+        "acceptance": "First setup saves atomically; reopening retains model/data/views and never reseeds an existing project.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "The starter is optional; no representative-user usefulness claim.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-009",
+      "fields": {
+        "title": "Persistent Engineering starter",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Persistent Engineering starter",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Persistent Engineering starter\n\n2026-10-17: the fresh-project slice adds optional acceptance criteria, verification methods/expected results and subsystem/build text references to the Engineering starter. Four explicit structural policies distinguish intent trace, design allocation, requirement-to-plan mapping and design-under-test mapping. Basic mappings no longer require review/version metadata. Existing stored models remain authoritative and are not upgraded on reopen.\n\nFirst model save optionally installs three named outgoing Matrix recipes in the same transaction as schema/coverage. Invalid or duplicate paths roll back all setup, and stale/repeated setup cannot duplicate recipes. Empty configured projects enter the longest supported saved trace and offer New requirement. Model/create/item dirty reporting clears confirmed forms. The launcher prints an exact, quoted resume command preserving database, guides, companion project and port.\n\nAdded three setup contract cases and desktop/680px journeys: UI-save the starter, reload without false unsaved warnings, author a plan with method/expected result/build, create/link a requirement and design, save acceptance, restart the server and load the same recipe in a clean browser. Unit tests also distinguish direct requirement-plan coverage from design-to-test reachability and verify rollback, customization and database reopen. The final `npm run check` passed formatting, strict types, lint, 380 unit tests, 140 browser tests, production/harness builds, all workbench journeys and dependency/duplication/complexity gates. The additional method/expected-result/build read-back checks pass at both widths. Setup and trace screenshots were inspected at desktop and 680px, including dialog overflow. A launcher smoke check verified the resume command with quoted database paths and the actual origin port. The [Engineering walkthrough](getting-started.md#start-your-own-project) documents starting and resuming real work with a stable database file.\n\nSubsystem/build fields are references, not separate versioned identities. Saved model/coverage/recipes are database-backed; spatial context remains browser/origin-local, and unsaved forms are not persisted. No storage format or quality limits changed.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-010",
+      "fields": {
+        "title": "Headless application access",
+        "statement": "Programs can query and mutate the same project through the public service, CLI and typed local HTTP API.",
+        "acceptance": "Operate without frontend assets; shared validation and project selection apply; uncertain writes are not automatically retried.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Local interface only; authentication, hosted integration and MCP remain future work.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-010",
+      "fields": {
+        "title": "Shared API and first-class headless HTTP",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Shared API and first-class headless HTTP",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Shared API and first-class headless HTTP\n\n2026-10-18: extracted typed API dispatch from local HTTP/static hosting. Exhaustive handler, request-decoder and query-codec tables follow the wire contract; application services retain semantic validation and transaction ownership. Shared query codecs fix the impact relationship-type array mismatch. Strict request objects reject unsupported fields, including actor/provenance injection; schema/session reads now reject query parameters. Shared error codes feed client decoding and exhaustive HTTP status mapping.\n\nAdded the separate `@tracer-local/core/client` source entry point and routed browser adapters through it without bypassing the mutation controller. Each client fixes its server/project/header configuration, owns its session, captures read queries, accepts fetch injection/cancellation and never automatically retries writes. `@tracer-local/core/server` exposes a loopback headless host with trusted process provenance and allowlisted projects. `npm run serve:api -- --db PATH` starts without frontend assets/builds and prints a headless resume command.\n\nIntegration checks exercise real client/server edits, conflicts, provenance, evidence/reviews/captures/views/export, project/server/session isolation, query-codec round trips, malformed input/response handling and caller-mutated queries. A committed write whose response is lost yields `outcome_unknown` and one saved record. A separate launcher smoke test runs outside the checkout without `dist`, writes through the client and confirms no static pages are served. Readiness for organizational hosting and PostgreSQL parity remain separate future work. The architecture and developer reference own the contracts, usage and recovery guidance.\n\nStrict validation exposed the shared object editor sending stored relationship `id`/`version` metadata inside an update's `input`. It now constructs the declared type/source/target/fields payload, keeping identity/version guards at operation level. Route-specific guards also replace a branching query guard without changing rejection behavior or quality limits.\n\nVerification passed: 433 unit tests, 178 browser tests on the corrected editor, all workbench journeys, production/harness builds, strict types, lint, formatting and merged-coverage dependency/duplication/complexity gates. Focused final-source API/launcher/contract/transport checks also passed (21 tests), refreshing coverage after module moves. No quality thresholds or exclusions changed.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-011",
+      "fields": {
+        "title": "Recover uncertain changeset outcomes",
+        "statement": "Clients can identify a committed changeset by a stable command identity and avoid duplicate mutation.",
+        "acceptance": "Resolve the original committed outcome; changed payloads cannot silently reuse a command identity.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Documentation reports implementation; audit the current uncommitted changes before stronger verification claims.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-011",
+      "fields": {
+        "title": "Durable changeset command recovery",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## Durable changeset command recovery",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## Durable changeset command recovery\n\n2026-10-18: added optional project-scoped `commandId` to changeset input and `Tracer.getChangesetOutcome`, with shared HTTP/client and CLI access. Commands retain invocation-time input/provenance, compare canonical intent before current-state guards, and return the original committed result for an exact repeat. Different content, guards, operation order or trusted provenance under a successful identity conflict. Unidentified calls preserve their existing behavior. Result types moved to core with their public application re-exports retained.\n\nApplication-owned transaction operations persist successful outcomes atomically with native state, history and revision allocation. SQLite physical format 9 adds immutable outcomes with unique command/changeset identities; older-format migrations preserve existing data/history. Rejections and rollbacks reserve no command ID. Outcomes survive restart and later edits/deletion/schema changes. A missing lookup does not prove an in-flight command failed. There is no automatic retry or expiry, and other mutation types remain outside this changeset-only ledger. The database backup preserves operational outcomes; project JSON export excludes them. Architecture and developer guidance own contracts and recovery examples.\n\nRegression checks cover commit → lost response → server/repository restart → exact lookup/repeat without duplication, concurrent same/different intent, project isolation, cross-connection contention and explicit recovery, full rollback after inserting an outcome, ordered intermediate results/tombstones, invocation capture and CLI recovery across processes. Existing migration fixtures now remove the new table when reconstructing older formats and reject the next unsupported format.\n\nVerification passed: 446 unit tests, strict types, lint, formatting, production/harness builds, all workbench journeys and final merged-coverage dependency/duplication/complexity gates. The full browser run passed 177 of 178 scenarios; the remaining narrow CSV scenario timed out waiting for its initial Project tools button before any mutation. All four CSV scenarios passed an isolated rerun, including that case. No source workaround, quality threshold or exclusion changed.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-012",
+      "fields": {
+        "title": "Discover HTTP compatibility",
+        "statement": "Clients can discover API contract, operations, features and limits before writes.",
+        "acceptance": "Required incompatible or unavailable capabilities block configured client writes; stale checks cannot restore readiness.",
+        "selection": "existing_scope",
+        "deliveryStatus": "implemented",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Documentation reports implementation; no authenticated server or exhaustive semantic schema implied.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-TR-012",
+      "fields": {
+        "title": "API capability discovery and generated reference",
+        "kind": "document",
+        "path": "docs/checkpoint.md",
+        "heading": "## API capability discovery and generated reference",
+        "sha256": "a894efb6484749c52a99b96b244b5b2d2042780130c546f5e97cf8ad111ffa5b",
+        "excerpt": "## API capability discovery and generated reference\n\n2026-10-19: added typed `GET /api/capabilities` with independent `tracer-http` contract version 1, registry-derived operations/features and limits shared with changeset/HTTP enforcement. Discovery needs no model or storage transaction and preserves origin/project/no-cache guards. The first feature promise is `changeset-command-recovery`. Additive operations/features/response fields retain contract 1; incompatible wire or behavior changes require a new contract version.\n\nClients can opt into captured `require` settings on construction or call `checkCompatibility` explicitly. Checks verify identity, exact supported version, features, operations and minimum limits before writes; configured clients check before obtaining a session. Pending/failed checks block new writes, stale checks cannot restore readiness, and explicit requirements cannot weaken configured ones. Legacy discovery absence reports client-only `incompatible_api`; invalid/unavailable/cancelled reads retain their read/server errors. Existing clients keep their connection behavior until opting in. No automatic retries or per-write negotiation were added.\n\nQuery codecs and write helpers expose request metadata used by `npm run api:reference` to generate `docs/api-reference.md`. The unit suite rejects reference drift. This is an endpoint/request index; nested types and semantic guards retain their existing owners. The architecture and developer reference document usage, version policy, scope and recovery.\n\nVerification passed: 455 unit tests, strict types, lint, formatting, production/harness builds, all workbench journeys and final merged-coverage dependency/duplication/complexity gates. New checks cover empty/model-changed discovery without storage reads, origin/project guards, actual advertised-limit enforcement, incompatible/missing/malformed discovery with zero POSTs, captured requirements, additive extensions and stale-check ordering. After removing duplicate capability type declarations, 18 focused API tests passed against the final source. The full browser run passed 177 of 178 scenarios; the remaining Engineering setup case timed out waiting for the Matrix button after reopening the server. Both desktop/narrow setup cases passed an isolated rerun. No source workaround, quality threshold or exclusion changed.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-013",
+      "fields": {
+        "title": "Quantitative reasoning with explicit assumptions",
+        "statement": "Engineers can understand important quantitative dependencies without forcing all statements into formal syntax.",
+        "acceptance": "Select a real artifact and define unit, dependency and uncertainty semantics before selecting an implementation.",
+        "selection": "candidate",
+        "deliveryStatus": "not_implemented",
+        "verificationStatus": "not_verified",
+        "validationStatus": "not_validated",
+        "remaining": "Representation, arithmetic and validation remain discovery work; no formula engine is approved.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-014",
+      "fields": {
+        "title": "Backend and authenticated team portability",
+        "statement": "Concurrent permitted clients can share the same semantics across SQLite and a server backend.",
+        "acceptance": "Demonstrate adapter parity and authenticated concurrent tasks before claiming team readiness.",
+        "selection": "candidate",
+        "deliveryStatus": "not_implemented",
+        "verificationStatus": "not_verified",
+        "validationStatus": "not_validated",
+        "remaining": "PostgreSQL, authentication, permissions and organizational hosting remain future work.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-015",
+      "fields": {
+        "title": "Spreadsheet bulk authoring",
+        "statement": "Authors can efficiently bring or modify multiple items in context.",
+        "acceptance": "Select concrete paste/bulk operations and specify atomicity, conflicts and recovery from actual task evidence.",
+        "selection": "candidate",
+        "deliveryStatus": "not_implemented",
+        "verificationStatus": "not_verified",
+        "validationStatus": "not_validated",
+        "remaining": "Paste and bulk mutation are unselected candidates; CSV creation does not complete this scope.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-016",
+      "fields": {
+        "title": "Portable workspace recovery",
+        "statement": "Engineers can resume investigations across browser/origin boundaries with explicit saved-state semantics.",
+        "acceptance": "Recover selected scope and navigation on another supported client while explaining which drafts are excluded.",
+        "selection": "candidate",
+        "deliveryStatus": "partial",
+        "verificationStatus": "documented_not_reverified",
+        "validationStatus": "not_validated",
+        "remaining": "Current recovery is browser/origin-local; portable context is a candidate, not an approved extension.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "requirement",
+      "key": "TR-017",
+      "fields": {
+        "title": "Use Tracer as the headless product register",
+        "statement": "Maintain Tracer goals, needs, requirements, status, evidence references and next actions in a persistent Tracer project.",
+        "acceptance": "Reopen and query need-to-requirement-to-work traces headlessly; distinguish delivery, verification and validation; preserve and export changes.",
+        "selection": "selected",
+        "deliveryStatus": "in_progress",
+        "verificationStatus": "not_verified",
+        "validationStatus": "not_validated",
+        "remaining": "Create and verify the database, document ownership and future-session commands.",
+        "statusBasis": "Imported documentation assessment on 2026-10-20; no fresh implementation audit.",
+        "scopeNote": "Bounded summary; follow linked source for exact semantics. Extensions require selection."
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-001",
+      "fields": {
+        "title": "Establish and verify the headless product register",
+        "deliveryStatus": "in_progress",
+        "horizon": "now",
+        "selection": "selected",
+        "rationale": "Explicit owner request in this conversation.",
+        "nextAction": "Bootstrap persistent project, verify persistence/traces and establish maintenance instructions.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-002",
+      "fields": {
+        "title": "Audit requirement-to-code and check mappings",
+        "deliveryStatus": "not_started",
+        "horizon": "next",
+        "selection": "proposed",
+        "rationale": "Imported delivery claims are documented reports, including dirty working-tree changes; a scoped audit can establish firmer evidence.",
+        "nextAction": "Select one requirement, inspect implementation/tests and attach precise artifacts plus actual verification results.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-003",
+      "fields": {
+        "title": "Run an unfamiliar-user task walkthrough",
+        "deliveryStatus": "not_started",
+        "horizon": "next",
+        "selection": "proposed",
+        "rationale": "The documented user-validation gap prevents claiming demonstrated usefulness.",
+        "nextAction": "Arrange a representative participant and run the existing UX task script; record observations against need IDs.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-004",
+      "fields": {
+        "title": "Scope comparison and restoration gaps",
+        "deliveryStatus": "not_started",
+        "horizon": "later",
+        "selection": "candidate",
+        "rationale": "History/export exist but do not fulfill complete diff or restoration.",
+        "nextAction": "Choose a concrete compare/restore task before specifying behavior.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-005",
+      "fields": {
+        "title": "Investigate quantitative task semantics",
+        "deliveryStatus": "not_started",
+        "horizon": "later",
+        "selection": "candidate",
+        "rationale": "PN-06 has no real quantitative artifact or selected representation.",
+        "nextAction": "Collect one artifact with units and assumptions; compare lightweight alternatives.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-006",
+      "fields": {
+        "title": "Prove backend and team semantics",
+        "deliveryStatus": "not_started",
+        "horizon": "later",
+        "selection": "candidate",
+        "rationale": "Repository boundaries exist but PostgreSQL and team behavior are not demonstrated.",
+        "nextAction": "Select a portability proof and define concurrent operation/failure cases.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-007",
+      "fields": {
+        "title": "Investigate bulk authoring friction",
+        "deliveryStatus": "not_started",
+        "horizon": "later",
+        "selection": "candidate",
+        "rationale": "Bulk editing is outside current implementation and needs task evidence.",
+        "nextAction": "Observe repetitive authoring and select one bounded operation.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "work_item",
+      "key": "WORK-008",
+      "fields": {
+        "title": "Scope portable investigation recovery",
+        "deliveryStatus": "not_started",
+        "horizon": "later",
+        "selection": "candidate",
+        "rationale": "Current recovery depends on the same browser/origin.",
+        "nextAction": "Identify cross-client resumption needs and data ownership before implementation.",
+        "completionEvidence": ""
+      }
+    },
+    {
+      "type": "decision",
+      "key": "DEC-001",
+      "fields": {
+        "title": "Use a real headless project for Tracer development",
+        "statement": "Use this database for ongoing capability delivery status, work selection and trace relationships. Repository documents retain detailed specifications, research and technical evidence; bootstrap data is an immutable starting point, not a second live backlog.",
+        "selection": "selected",
+        "rationale": "Owner requested a persistent headless database for continued use. Initial links and requirement summaries are an assistant-curated migration, not new feature authorization."
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-ND-01",
+      "fields": {
+        "title": "ND-01 — begin without an extensive setup detour",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### ND-01 — begin without an extensive setup detour",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### ND-01 — begin without an extensive setup detour\n\n> As an author starting a design, I want to work with recognizable information so I can begin expressing the design instead of learning the tool's internal model.\n\n**Needs:** PN-01, PN-02. **Basis:** vision plus hypothesis; preferred onboarding method unknown.\n\n**Candidate acceptance:** users recognize the available information and what is missing; they can start one meaningful item without first constructing a complete project ontology. Existing data brought into the project is not silently lost or falsely represented as validated.\n\n**Investigate:** write from scratch, paste/import or start from a template? Prototype these alternatives rather than implementing all three now.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-ND-02",
+      "fields": {
+        "title": "ND-02 — author in context and move between levels",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### ND-02 — author in context and move between levels",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### ND-02 — author in context and move between levels\n\n> As an author, I want to inspect the relevant parent intent while writing a child requirement so I can explain how the child contributes without repeatedly reconstructing context.\n\n**Needs:** PN-02, PN-03, PN-09. **Basis:** UR-1, UR-2, UR-4.\n\n**Candidate acceptance:** free text is usable without compulsory formal syntax; an item can relate to an existing parent or remain explicitly unlinked; applicable field/relationship actions are reachable in the working context; changing scope does not silently lose the draft.\n\n**Exceptions:** long statements, optional attributes, multiple parents, uncertain relationships and a parent that changed while drafting.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-ND-03",
+      "fields": {
+        "title": "ND-03 — inspect siblings and shared identity",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### ND-03 — inspect siblings and shared identity",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### ND-03 — inspect siblings and shared identity\n\n> As an engineer reviewing decomposition, I want to see the other items contributing under the relevant parent so I can judge the family together rather than inspect isolated statements.\n\n**Needs:** PN-03, PN-09. **Basis:** UR-1.\n\n**Candidate acceptance:** the parent and relationship defining the family are explainable; shared children remain recognizable as the same underlying item; editing one identity does not create divergence among its appearances; users can return to the wider scope with drafts intact.\n\n**Exceptions:** a child belongs to two parents, appears along several paths, or has different kinds of sibling relationships. Test whether the user wants immediate siblings or the whole branch; do not assume they are equivalent.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-ND-04",
+      "fields": {
+        "title": "ND-04 — resolve one meaningful completeness gap",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### ND-04 — resolve one meaningful completeness gap",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### ND-04 — resolve one meaningful completeness gap\n\n> As an engineer building a design, I want to know which obligation is unresolved and why so I can choose the next appropriate work.\n\n**Needs:** PN-04, PN-03, PN-07. **Basis:** UR-4, UR-15; exact scope/policies are HY.\n\n**Candidate acceptance:** a displayed gap has an explainable expectation and scope; the user can inspect existing candidates before creating duplicate information; an appropriate new connection resolves that structural gap without falsely declaring the design/evidence valid; other unresolved obligations remain visible.\n\n**Software acceptance example (UR-15):** where the project marks a requirement approved, see whether an actual implementation artifact is linked. With no such link, show implementation as not traced and likely outstanding; offer the task choices of implementing it, linking existing code or investigating uncertainty. Do not force a new implementation when the code already exists. A link to a planned task/design is not an actual-code realization link; partial or outdated mappings retain their unresolved scope. Adding an appropriate link closes the trace gap, not automatically the implementation/verification judgment.\n\n**Exceptions:** an item is intentionally not applicable, the expectation is unknown, existing implementation is unlinked, a link covers only part of the requirement or refers to older behavior, or old evidence uses different inputs. Represent uncertainty rather than inventing a complete/incomplete judgment.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-SC-01",
+      "fields": {
+        "title": "SC-01 — see impact before accepting a change",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### SC-01 — see impact before accepting a change",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### SC-01 — see impact before accepting a change\n\n> As an engineer proposing a modification, I want to compare it with the established state and inspect explainable consequences so I can review the proposal before changing the authoritative design.\n\n**Needs:** PN-05, PN-03, PN-08. **Basis:** UR-4, UR-6, UR-11; specific staging mechanisms are HY.\n\n**Candidate acceptance:** proposed versus committed information is distinguishable; impact candidates show the paths/reasons that make them relevant; browsing does not write changes; connection alone is not presented as proof that the connected item must change; unmodeled consequences remain explicitly possible.\n\n**Exceptions:** cyclic or dense networks, shared children, changed schema, missing/deleted items and incomplete source knowledge. A bounded result must explain its scope, not imply a complete impact census.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-SC-02",
+      "fields": {
+        "title": "SC-02 — reason about removal",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### SC-02 — reason about removal",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### SC-02 — reason about removal\n\n> As an engineer considering removing information, I want to see what relies on it so I can decide how to address those obligations without losing the established history.\n\n**Needs:** PN-05, PN-03, PN-08. **Basis:** UR-4.\n\n**Candidate acceptance:** removing, filtering out, disconnecting and superseding are distinguishable; references and unresolved obligations are explained; no silent cascade; established history remains inspectable; users know whether anything was committed.\n\n**Investigate:** actual review/approval authority and the semantics of retirement versus deletion. Do not introduce automatic cascade or organizational approval merely because it would simplify a mockup.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-SC-03",
+      "fields": {
+        "title": "SC-03 — reassess evidence without rewriting its past",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "### SC-03 — reassess evidence without rewriting its past",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "### SC-03 — reassess evidence without rewriting its past\n\n> As a reviewer, I want to inspect changed inputs and the original evidence so I can record why the evidence does or does not support the decision now.\n\n**Needs:** PN-07, PN-05, PN-08. **Basis:** vision/existing evidence model; detailed reviewer task is HY.\n\n**Candidate acceptance:** coverage, freshness, uncertainty and review decision remain separate; original snapshots/rationale remain accessible; the comparison used while drafting is identifiable; a relevant intervening change requires an explicit new assessment rather than silent token adoption; acceptance does not erase drift.\n\n**Exceptions:** missing observations, unrelated edits, relevant later changes, superseded evidence and conflicting reviewer assumptions. Local provenance labels are not authenticated approval authority.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-Q-01",
+      "fields": {
+        "title": "4. Cross-cutting story Q-01 — quantitative meaning without overconstraint",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "## 4. Cross-cutting story Q-01 — quantitative meaning without overconstraint",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "## 4. Cross-cutting story Q-01 — quantitative meaning without overconstraint\n\n> As an engineer changing an important specification, I want to understand where the value comes from and where it is used so I can assess the consequences without forcing every requirement into a formal model.\n\n**Needs:** PN-06, PN-02, PN-05. **Basis:** UR-5; representation and computation are HY.\n\n**Toy scenario:** an overall timing limit is 100 ms, with explicitly declared 60 ms and 40 ms allocations. Propose changing the total to 80 ms. These are not medical specifications. Any arithmetic requires explicit combination and overhead assumptions.\n\n**Candidate acceptance examples:**\n\n- Free-text-only requirements remain authorable and reviewable.\n- If a value is deliberately shared, its confirmed consumers are identifiable; an unrelated identical number is not automatically coupled.\n- An explicitly modeled calculation may report a result/violation under its declared assumptions, with units and explanation.\n- A parent limit change exposes the allocation question but does not silently proportionally scale or rewrite children.\n- A child allocation change can raise a feasibility question for the parent without rewriting the parent's intent.\n- Missing derivation knowledge is not represented as a satisfied constraint or no impact.\n- Declared constraints, possible engineering impact and review decisions are distinguishable.\n\n**Alternatives to test:** ordinary prose with annotated values, optional named typed values, linked value references, and human-authored derivation explanations. A general formula language or extraction engine is not assumed.\n\n**Additional cases:** inconsistent units, rounding, tolerances, ranges, conditions, repeated values, independent choices and removal of a referenced value. Replace the toy example with one real artifact before specifying storage or arithmetic behavior.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-R-01",
+      "fields": {
+        "title": "5. Cross-cutting story R-01 — resume and recover safely",
+        "kind": "document",
+        "path": "docs/user-journeys.md",
+        "heading": "## 5. Cross-cutting story R-01 — resume and recover safely",
+        "sha256": "c4533829d068fd6e74e278996ee20f1fa8adc342cf189ffe1dccffed0ce96d9a",
+        "excerpt": "## 5. Cross-cutting story R-01 — resume and recover safely\n\n> As an engineer interrupted during work, I want to retain my proposal and orientation so I can resume or reconcile it without losing information or overwriting someone else's change.\n\n**Needs:** PN-08, PN-09. **Basis:** vision; preferred saving/recovery model is HY.\n\n**Candidate acceptance:** context/selection and save status are understandable; switching level or representation does not silently discard drafts; a failed read cannot authorize editing stale information as if current; object/schema conflicts preserve the attempt; historical inspection does not masquerade as editing current state.\n\n**Investigate:** autosave versus explicit save, reopening after shutdown, undo, and what should be retained across sessions. Prototype and actual repository safety capabilities may differ; label unsupported recovery behavior honestly.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-01",
+      "fields": {
+        "title": "PN-01 — Start from recognizable engineering work",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-01 — Start from recognizable engineering work",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-01 — Start from recognizable engineering work\n\nBegin useful work in familiar terminology with little setup; know what information is present or missing. **Basis:** VI-1; onboarding preference is HY. Investigate scratch authoring, import/paste, templates, type ownership and inconsistent source data before selecting an entry flow.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-02",
+      "fields": {
+        "title": "PN-02 — Author and revise coherent design information",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-02 — Author and revise coherent design information",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-02 — Author and revise coherent design information\n\nExpress intent with surrounding rationale, revise related items and distinguish drafts from established information. **Basis:** UR-2/4/14; VI-1. Investigate statement length, cell/batch versus long-form work, attributes and review states. Preserve existing software source artifacts; compulsory grammar and per-item editors are unproven.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-03",
+      "fields": {
+        "title": "PN-03 — Understand and manipulate relationships across levels",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-03 — Understand and manipulate relationships across levels",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-03 — Understand and manipulate relationships across levels\n\nWork with parents, children, siblings and cross-cutting relationships together; explain contributions, navigate whole/detail and recognize shared identity. **Basis:** UR-1/2/4/7/14; VI-1. Investigate direction, multiple parents, link attributes, dense branches and branch-level actions. Software may connect needs, modules and tests without successive requirement levels; no strict tree is required. The Jama criticism is owner experience, not a claim about every version.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-04",
+      "fields": {
+        "title": "PN-04 — Identify meaningful completeness gaps and next work",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-04 — Identify meaningful completeness gaps and next work",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-04 — Identify meaningful completeness gaps and next work\n\nExplain an unresolved obligation under declared project expectations and choose the next action. **Basis:** UR-4/15; VI-1. An approved requirement lacking an implementation link is a candidate gap: code may exist but be unlinked. Planned, partial, outdated and current realization must remain distinguishable, including relevant requirement/version scope. Approval, implementation coverage, test coverage and execution results are separate. Investigate applicability and priority; automatic scheduling/ownership remain HY.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-05",
+      "fields": {
+        "title": "PN-05 — Understand a proposed change before committing it",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-05 — Understand a proposed change before committing it",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-05 — Understand a proposed change before committing it\n\nStart from one modification/removal, compare intent and see candidate consequences with recorded paths or stated reasoning. Retain system requirements whether preserved or explicitly revised. **Basis:** UR-4/6/11/14; VI-1. Motor/load/timing examples are user reports without supplied design/test artifacts. Investigate proposal staging, review, removal, old evidence and unaffected links; no impact algorithm or approval workflow is selected. Missing paths cannot prove no impact.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-06",
+      "fields": {
+        "title": "PN-06 — Track important quantitative meaning without forcing formalization",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-06 — Track important quantitative meaning without forcing formalization",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-06 — Track important quantitative meaning without forcing formalization\n\nExplain limits, allocations and derivations while preserving prose and judgment. Avoid coupling identical numbers or silently rewriting children. **Basis:** UR-5; structured parameters/computation are HY; no real quantitative artifact yet. Investigate references, inheritance, budgets, formulas, independent choices, units, overhead, uncertainty and conditions. Formula editing and extraction are not requirements.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-07",
+      "fields": {
+        "title": "PN-07 — Judge evidence and record a defensible decision",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-07 — Judge evidence and record a defensible decision",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-07 — Judge evidence and record a defensible decision\n\nInspect relevant inputs/evidence, understand changed or unknown conditions and retain reasoning. **Basis:** VI-1, existing evidence semantics, UR-14; detailed reviewer tasks are HY. Investigate review packages, comparisons, handoffs and authority. A test file, code link and revision-specific result are separate facts; none alone proves need satisfaction. Local review does not imply organizational or medical sign-off.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-08",
+      "fields": {
+        "title": "PN-08 — Trust history and recover safely",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-08 — Trust history and recover safely",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-08 — Trust history and recover safely\n\nKnow what changed/saved, preserve attempted proposals and reconcile interruptions or conflicts without silent loss. Distinguish current, draft and historical information. **Basis:** VI-1, UR-2; preferred recovery is HY. Investigate undo scope, autosave, offline work, interruptions and restoration; history is not undo.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    },
+    {
+      "type": "source",
+      "key": "SRC-PN-09",
+      "fields": {
+        "title": "PN-09 — Keep orientation while changing working level or representation",
+        "kind": "document",
+        "path": "docs/user-needs.md",
+        "heading": "### PN-09 — Keep orientation while changing working level or representation",
+        "sha256": "0f24e5260d6d503bd519c5a6d36311ba1a222bd75fe9a1c50dd6e1a6855295cc",
+        "excerpt": "### PN-09 — Keep orientation while changing working level or representation\n\nRetain scope, selection, drafts and a return path across overview, branch, item and evidence work. **Basis:** UR-1–3/7–8/33/37; VI-1. Investigate persistent state, simultaneous context, keyboard/accessibility, narrow layouts, categorization and direct/contextual actions. Tabs, panels and styling are solutions to evaluate.",
+        "evidenceClass": "documented_not_reverified"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "type": "sourced_from",
+      "source": "UN-001",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "UN-002",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "UN-003",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "UN-004",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "UN-005",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-01",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-02",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-03",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-04",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-05",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-06",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-07",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-08",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-09",
+      "target": "SRC-NEEDS",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-01",
+      "target": "UN-001",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-02",
+      "target": "UN-001",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-02",
+      "target": "UN-005",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-03",
+      "target": "UN-002",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-03",
+      "target": "UN-005",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-04",
+      "target": "UN-003",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-05",
+      "target": "UN-003",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-05",
+      "target": "UN-004",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-06",
+      "target": "UN-001",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-06",
+      "target": "UN-003",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-07",
+      "target": "UN-003",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-07",
+      "target": "UN-004",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-08",
+      "target": "UN-004",
+      "fields": {}
+    },
+    {
+      "type": "contributes_to",
+      "source": "PN-09",
+      "target": "UN-005",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-01",
+      "target": "PN-01",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-01",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-02",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-02",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-02",
+      "target": "PN-09",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-03",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-03",
+      "target": "PN-09",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-04",
+      "target": "PN-04",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-04",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "ND-04",
+      "target": "PN-07",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-01",
+      "target": "PN-05",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-01",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-01",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-02",
+      "target": "PN-05",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-02",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-02",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-03",
+      "target": "PN-07",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-03",
+      "target": "PN-05",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "SC-03",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "Q-01",
+      "target": "PN-06",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "Q-01",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "Q-01",
+      "target": "PN-05",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "R-01",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "R-01",
+      "target": "PN-09",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-001",
+      "target": "PN-01",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-001",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-001",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-001",
+      "target": "ND-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-001",
+      "target": "SRC-TR-001",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-002",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-002",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-002",
+      "target": "ND-02",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-002",
+      "target": "SRC-TR-002",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-003",
+      "target": "PN-03",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-003",
+      "target": "PN-09",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-003",
+      "target": "ND-03",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-003",
+      "target": "SRC-TR-003",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-004",
+      "target": "PN-04",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-004",
+      "target": "PN-07",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-004",
+      "target": "ND-04",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-004",
+      "target": "SRC-TR-004",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-005",
+      "target": "PN-05",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-005",
+      "target": "PN-07",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-005",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-005",
+      "target": "SC-03",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-005",
+      "target": "SRC-TR-005",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-006",
+      "target": "PN-05",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-006",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-006",
+      "target": "SC-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-006",
+      "target": "SRC-LIMITS",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-007",
+      "target": "PN-01",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-007",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-007",
+      "target": "ND-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-007",
+      "target": "SRC-TR-007",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-008",
+      "target": "PN-07",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-008",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-008",
+      "target": "R-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-008",
+      "target": "SRC-TR-008",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-009",
+      "target": "PN-01",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-009",
+      "target": "PN-04",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-009",
+      "target": "ND-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-009",
+      "target": "SRC-TR-009",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-010",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-010",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-010",
+      "target": "SRC-TR-010",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-011",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-011",
+      "target": "R-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-011",
+      "target": "SRC-TR-011",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-012",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-012",
+      "target": "SRC-TR-012",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-013",
+      "target": "PN-06",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-013",
+      "target": "Q-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-013",
+      "target": "SRC-LIMITS",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-014",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-014",
+      "target": "SRC-LIMITS",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-015",
+      "target": "PN-02",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-015",
+      "target": "ND-02",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-015",
+      "target": "SRC-LIMITS",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-016",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-016",
+      "target": "PN-09",
+      "fields": {}
+    },
+    {
+      "type": "supports_story",
+      "source": "TR-016",
+      "target": "R-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-016",
+      "target": "SRC-LIMITS",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-017",
+      "target": "PN-04",
+      "fields": {}
+    },
+    {
+      "type": "addresses",
+      "source": "TR-017",
+      "target": "PN-08",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-017",
+      "target": "SRC-LIMITS",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "TR-017",
+      "target": "SRC-OWNER-SELF",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-001",
+      "target": "TR-017",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-001",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-002",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-003",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-004",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-005",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-006",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-007",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-008",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-009",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-010",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-011",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-002",
+      "target": "TR-012",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-003",
+      "target": "TR-002",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-003",
+      "target": "TR-003",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-003",
+      "target": "TR-004",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-003",
+      "target": "TR-005",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-003",
+      "target": "TR-009",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-004",
+      "target": "TR-006",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-004",
+      "target": "TR-008",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-005",
+      "target": "TR-013",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-006",
+      "target": "TR-014",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-007",
+      "target": "TR-015",
+      "fields": {}
+    },
+    {
+      "type": "advances",
+      "source": "WORK-008",
+      "target": "TR-016",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "DEC-001",
+      "target": "SRC-OWNER-SELF",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "DEC-001",
+      "target": "SRC-DELIVERY",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "ND-01",
+      "target": "SRC-ND-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "ND-02",
+      "target": "SRC-ND-02",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "ND-03",
+      "target": "SRC-ND-03",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "ND-04",
+      "target": "SRC-ND-04",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "SC-01",
+      "target": "SRC-SC-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "SC-02",
+      "target": "SRC-SC-02",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "SC-03",
+      "target": "SRC-SC-03",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "Q-01",
+      "target": "SRC-Q-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "R-01",
+      "target": "SRC-R-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-01",
+      "target": "SRC-PN-01",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-02",
+      "target": "SRC-PN-02",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-03",
+      "target": "SRC-PN-03",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-04",
+      "target": "SRC-PN-04",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-05",
+      "target": "SRC-PN-05",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-06",
+      "target": "SRC-PN-06",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-07",
+      "target": "SRC-PN-07",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-08",
+      "target": "SRC-PN-08",
+      "fields": {}
+    },
+    {
+      "type": "sourced_from",
+      "source": "PN-09",
+      "target": "SRC-PN-09",
+      "fields": {}
+    }
+  ]
+}

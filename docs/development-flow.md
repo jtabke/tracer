@@ -6,11 +6,27 @@ Use [needs](user-needs.md), [journeys](user-journeys.md), [UX direction](ux-plan
 
 ## 1. The flow: a feedback loop, not a one-way document chain
 
+Begin by establishing or checking the development model for the task: what information means, how it connects and how progress will be judged. Use one concrete example before authoring or importing many records. A valid schema establishes permitted data; a semantic review establishes whether that structure fits the work. Reuse a suitable model and revisit it when the work changes, rather than requiring a comprehensive up-front specification.
+
+The owner selected this model-first direction on 2026-10-21 and the [Tracer development model](development-model.md) on 2026-10-23. The [audit](development-model-plan.md) explains its rationale. Current work selection stays in the [live register](../projects/tracer/README.md); requirements allocate to system components and verification plans identify acceptance checks separately from executed evidence.
+
 **Context → needs → journeys → alternatives → selected slice/specification → implementation → verification → user validation → learning.**
 
 Revisit decisions when evidence challenges them. Validate assumptions through tasks/prototypes before specifying the whole product; plan checks while defining behavior. Discovery and delivery inform each other.
 
 Compare formal medical/aerospace and lighter software tasks from the outset. Rigor follows task, risk and obligations. [Industry guides](industry-workflows/README.md) supply reference contexts; they do not impose Tracer's process, schema or backlog.
+
+## Standards applicability and conformance
+
+**Selected documentation direction, 2026-10-24:** use established engineering standards to challenge Tracer's semantics and make future interoperability explicit. The [applicability inventory](../projects/tracer/standards-applicability.json) owns editions, source URLs, reviewed material, mapped requirements/plans, design questions and known gaps. It is a design review inventory, not a clause-complete compliance matrix or an approved integration backlog. The register owns delivery selection and verification status.
+
+Distinguish design reference, future interchange/integration target, and an explicitly selected normative conformance profile. A standard appearing in the inventory creates no blanket product obligation. Process standards concern how a project/organization works; tool support is not proof that a customer's process conforms. Standards used as design references do not mandate Tracer's internal storage schema, universal record types or one engineering lifecycle.
+
+Prioritize ISO/IEC/IEEE 29148:2018 for requirements-engineering questions, ReqIF 1.2 for future exchange compatibility, W3C Web Annotation for source/selector/state separation, and PROV-O for qualified usage/provenance. Public ISO summaries establish scope only: applicable clauses require review of authorized normative text before a clause-level assessment. The ISO catalogue currently identifies 29148:2018 as current and under revision; retain the selected edition and assess a successor deliberately rather than silently changing requirements. ReqIF remains a candidate exchange target; native recorded-project JSON export is neither ReqIF nor a claim of lossless cross-tool exchange.
+
+For a selected conformance capability, record exact standard/edition, applicable normative provisions, supported profile/direction, exclusions and rationale, mapped Tracer criteria, candidate/version-specific checks and actual results. Report unsupported or lost semantics explicitly. Keep partial mapping and unknown coverage separate from conformity. Cross-tool exchange needs external fixtures/round trips as well as schema validity; reference passage/state semantics and native history/evaluations may require a declared extension or remain outside a chosen profile.
+
+ISO/IEC/IEEE 15288/12207, ISO/IEC 25010 and NIST SSDF inform process, quality and secure-development reviews. OSLC and SysML remain future integration references. Industry-specific obligations are selected by intended use/customer context; example projects do not adopt them automatically. Use the inventory to identify relevant gaps during slice specification, without requiring implementation of every referenced standard before useful local work.
 
 ## 2. Practical stages and outputs
 
@@ -83,6 +99,12 @@ Use unit, integration, browser, accessibility, security, performance or inspecti
 - **Release-ready:** appropriate usefulness, correctness and operational evidence, resolved critical dependencies and explicit authority.
 
 After sustaining changes, reassess affected specs, checks and scenarios. Retain passing evidence where its coverage remains applicable.
+
+### Foundation changes and efficient growth
+
+**Owner-selected direction, 2026-10-25:** build on the [primitive contracts](architecture.md#primitive-contracts-for-extension) and the executable repository contract. Each foundation slice must identify the engineering task or concrete failure it improves, retain stable identity/history and scoped evidence semantics, and include success, rejection and recovery checks at the owning boundary. A failed transaction must leave both recorded state and the next transaction usable. Domain/application modules stay portable; platform scheduling, files, databases and transport remain behind their existing boundaries.
+
+Use measured task workloads to choose indexing, pagination, batching or another adapter. Record bounds and partial/unknown results explicitly. Preserve shared human/agent commands and queries as deployment grows. A new provider must satisfy the same identity, atomicity, concurrency, history and evidence contracts before support is claimed. Improve maintainability through focused ownership changes backed by regression evidence; keep quality thresholds and dependency gates intact. Record future delivery selection in the register rather than turning architectural possibilities into an automatic implementation queue.
 
 ## 6. Foundational reading and deliberate synthesis
 
