@@ -26,6 +26,10 @@ All example targets and results are invented. Saved edits remain in the printed 
 
 ## Start your own project
 
+Use the [primitive guide](workspace-guide.md#primitives-what-to-create-and-when) to decide what belongs in a record, when to reference supporting material, and how to capture a result separately from a plan.
+
+Begin by checking what your development model needs to represent: one real outcome, the behavior that supports it, the design/components and how you will check them. The starter below is an editable starting point. Use **Model** in the workspace navigation to inspect the type-level model on its dedicated page; **Project tools → Configure model** opens the same page.
+
 Use a stable database file for your own work:
 
 ```sh

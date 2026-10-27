@@ -2,6 +2,84 @@
 
 Start with [Explore an example](getting-started.md#explore-an-example) or [Start your own project](getting-started.md#start-your-own-project). This reference covers additional editing, evidence, configurations and the retained Development map.
 
+## Primitives: what to create and when
+
+Tracer uses one model for engineering information and its supporting context. **Model what you need to manage independently. Reference supporting material. Capture exactly what a conclusion used.** Your project chooses its vocabulary; requirements, components, risks and test plans are examples, not mandatory built-in types.
+
+| Concept                  | What it means                                                                                                                                             | Use it for                                                                                                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Model / schema**       | The project's record types, fields and allowed relationship types/directions.                                                                             | Define what a requirement contains and which types it may connect to. Permissions describe allowed data; they do not prove completeness or success.                                         |
+| **Engineering record**   | A managed item with stable identity, typed fields and native history. The API calls it an entity; screens also call it an item or artifact.               | A requirement, component, decision, test plan or assessment you need to find, revise and connect independently. Renaming it does not create a new identity.                                 |
+| **Resource**             | A reusable information identity with a label and optional stable external source identity. It need not have a project engineering type.                   | A specification, interview, repository file or test report referenced by several records. A resource capability can also belong to a managed record; these are not competing copies.        |
+| **Relationship**         | A typed, directed connection with its own identity, fields and history.                                                                                   | “Requirement allocated to component” or “requirement checked by plan.” Your schema defines the vocabulary and allowed endpoints. A link does not prove satisfaction.                        |
+| **Contextual reference** | A relationship qualified with the material's role, an optional selector/explanation and current or pinned state.                                          | “This requirement uses section 4.2 of this specification as its definition source.” Two passages may have separate reference identities pointing to the same resource.                      |
+| **Captured state**       | The exact native version or external observation selected for a use. An observation records availability, location, time and hash/commit where available. | Explain which requirement revision or report content was used. A hash identifies observed bytes; it does not store those bytes or establish their meaning.                                  |
+| **Evaluation receipt**   | An immutable recorded outcome with captured output, explicitly declared inputs, schema and provenance.                                                    | Record a test, analysis or engineering conclusion against identified criteria, article, procedure and supporting material. A test plan or cited report alone is not an executed evaluation. |
+| **Review decision**      | A reasoned judgment tied to a particular comparison of a receipt's inputs.                                                                                | Record Accepted, Acknowledged or Needs reevaluation without rewriting the original result or clearing detected changes.                                                                     |
+
+These meanings share native identity and history. A reference is a qualified relationship, not a second citation database. A resource can later become a managed record under the same identity if the project's fields and link permissions allow it. There is no need to create a universal “Evidence” type or one managed record per excerpt.
+
+### Decide where information belongs
+
+- **Put text in a field** when it is part of the record's own definition: a requirement statement, rationale or acceptance criterion. Use the project's declared fields; there are no mandatory universal field names.
+- **Create a separate record** when the thing needs its own identity, edits, ownership context or relationships: a component, decision, reusable test plan or independently tracked document.
+- **Add a resource and reference** when material explains or defines something but does not need a separate engineering lifecycle. Reuse the existing resource for another passage or another record; explain why each use matters.
+- **Record an evaluation** when you have an actual outcome to preserve. Declare what was used; citing material, linking a plan or reaching a record through the graph does not automatically make it an evaluation input.
+- **Record a review** when deciding whether a captured result still applies. Keep that judgment separate from both the original outcome and the detected changes.
+
+For example, copy the engineering requirement you intend to manage into its statement field, then reference the authoritative source section. An interview passage can support a user need without becoming another requirement. If the specification itself needs controlled ownership and links, manage it as a record with resource capability rather than creating a duplicate document identity.
+
+### Example: a power requirement and its verification
+
+This is a modeling example with simulated results, not product verification. Type and relationship names are illustrative and must be defined in your project model.
+
+| Information                                                                       | Representation                                                                                                | Why                                                                                                                                                                        |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| “The product shall consume no more than 20 W in normal operation.”                | Requirement record `REQ-POWER`, with statement, acceptance criterion and rationale.                           | Engineers manage and revise the obligation.                                                                                                                                |
+| Customer specification, revision C, section 4.2                                   | One resource plus a **definition** reference from the requirement, pinned to the observed revision C content. | Retain the authoritative source and the reason for this use without duplicating the document.                                                                              |
+| Product revision A                                                                | Component/article record with the tested revision explicitly declared.                                        | Identify the candidate that was assessed.                                                                                                                                  |
+| Power measurement procedure P1                                                    | Verification-plan record linked to the requirement and article as appropriate.                                | Preserve the planned method separately from an execution.                                                                                                                  |
+| Run A at 23 °C in normal mode                                                     | A test-run record with conditions, if runs need independent management.                                       | Conditions and activities can differ between executions.                                                                                                                   |
+| Report showing a measured peak of 19 W                                            | Resource plus a **supporting result** reference from the run.                                                 | Preserve the reported material and its interpretation.                                                                                                                     |
+| “SIMULATED PASS: 19 W ≤ 20 W for article A under P1 and the recorded conditions.” | Evaluation receipt for a managed power-assessment record.                                                     | Preserve the conclusion with explicit inputs: criterion, article revision, procedure, run/conditions, source/report observations and any relevant reference relationships. |
+
+Keep a stable assessment output if a later receipt will explicitly supersede this one. A repeat run can have its own record and conditions as inputs. Supersession requires the same output identity and retains the original receipt; unrelated run identities do not automatically replace each other. These project record types are optional modeling choices, not extra core primitives.
+
+### Use the primitives in the application
+
+1. Open **Model** to inspect the project's types, fields and allowed connections. Create the requirement, article and plan using those definitions. Use **Add relationship** to connect independently managed records.
+2. To cite material, first configure a relationship family that explicitly permits references and resource targets. See the [reference-family example](developer-reference.md#local-resources-and-contextual-references); the Engineering starter does not automatically supply every reference family. Select the subject and open **References and supporting material**. Choose an existing resource or create one, give the use a role and explanation, and identify the section or passage.
+3. For a local file, enter its path and choose **Observe file**. Choose current or deliberately pin an observed state. Location is separate from identity: after a move, keep the resource identity and observe its new location. Similar titles, paths or hashes do not automatically merge resources.
+4. When recording an evaluation, select its output and explicitly declare the actual inputs and their state/field scope. **Project tools → Evaluations → Record native-input receipt** handles native inputs; the reference task and [headless reference/evaluation API](developer-reference.md#local-resources-and-contextual-references) also support captured content and direct relationship inputs. Record a real outcome, or clearly label a simulated one.
+5. After changing a native input or explicitly observing changed external content, open **Assess evidence** on an affected item. Inspect captured/current inputs, then **Review receipt** and record a reasoned decision. Returning to the graph or opening another view does not itself record a judgment.
+
+Saving creates guarded native changes; rejected/conflicting saves retain proposals for deliberate correction. Finish or discard drafts before reloading. File/Git observations are explicit local operations, not continuous synchronization or a general cloud-document integration. See the [developer reference](developer-reference.md#offline-evaluation-workflow) for exact API/CLI selectors, guards and limits.
+
+### Understand versions, change and uncertainty
+
+**Identity answers “which thing?”; captured state answers “which version or content?”** A resource's native version covers its Tracer annotations. Its external content can change while that native version stays the same.
+
+| Selection or result    | Meaning                                                                                              | What to do                                                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Current reference**  | Uses the latest recorded/observed state. It does not promise a live source check.                    | Observe external content explicitly when you need a newer state.                                                                  |
+| **Pinned reference**   | Selects an exact native revision or external observation; later changes do not silently retarget it. | Inspect selected versus latest state and deliberately adopt a different pin if appropriate.                                       |
+| **Evaluation capture** | Freezes the declared inputs/output and outcome used for that conclusion.                             | Capture a new receipt for a new execution; preserve the old one.                                                                  |
+| **Freshness: changed** | Declared input scope differs from what the receipt captured.                                         | Assess relevance. Change is not an automatic failed test or invalid historical result.                                            |
+| **Freshness: unknown** | Available recorded information cannot establish the comparison. Known changes may also be present.   | Resolve missing information or record Needs reevaluation; unknown input state cannot be accepted as known.                        |
+| **Review: accepted**   | A reviewer accepted the explained comparison context.                                                | Read the rationale and scope. Acceptance does not erase drift, change the outcome or automatically mark the requirement verified. |
+
+In the power example, changing the criterion from 20 W to 18 W leaves the original “19 W ≤ 20 W” outcome intact and makes the relevant input comparison changed. That receipt still explains the original assessment; applicability to the new criterion needs review or another execution. An unrelated rationale edit can leave a field-scoped comparison unchanged. A later relevant change requires renewed assessment even if an earlier comparison was accepted.
+
+A different whole-file hash does not prove that section 4.2 changed, and an unchanged native annotation does not prove external content is current. Passage resolution remains unknown in the local slice. Observations retain metadata, not external file bytes: preserve the source content separately when reproducibility requires it. Pinning a hash is not a document archive.
+
+### Reuse information across views and milestones
+
+Graph, Matrix, History and evidence views project the same identities and links. A different presentation does not create another engineering model or infer an evidence dependency. Structural coverage means qualifying connections exist; it does not mean the requirement passed a test.
+
+A **configuration** captures selected exact native members/relationships. A **baseline** captures a committed native project state, including schema and topology. Use these to reconstruct declared native context; neither captures external file bytes or proves release readiness. A named **Matrix configuration** is instead a saved presentation recipe for row/path/search choices. It does not pin the engineering versions shown.
+
+For implementation contracts, see [primitive contracts for extension](architecture.md#primitive-contracts-for-extension). For exact source/state selectors, receipt inputs and commands, use the [developer reference](developer-reference.md#local-resources-and-contextual-references).
+
 ## Graph, Matrix and History
 
 The normal launch opens **Graph**. Search for an artifact, use **Matrix** for title-first creation and direct connections, then edit a statement and open **History** to read its saved diff. **Explore potential impact** follows exact recorded paths; connectivity alone does not establish an assessed effect.

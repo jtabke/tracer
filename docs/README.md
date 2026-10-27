@@ -9,6 +9,7 @@ In the application, **Project tools → Documentation** opens these guides witho
 
 ## After getting started
 
+- [Primitives and how to use them](workspace-guide.md#primitives-what-to-create-and-when): choose records, resources, references, captured states, evaluations and reviews; follow a worked power-verification example.
 - [Workspace reference](workspace-guide.md): editing, evidence, configurations, multiple projects and the retained Development map.
 - [CSV import](csv-import.md): map columns, resolve links by exact keys, preview errors and commit one atomic batch.
 - [Next work](next-work.md): separate statement/allocation/plan gaps, changed evidence and unresolved reviews with direct editing/review actions.
@@ -23,9 +24,12 @@ The [industry guides](industry-workflows/README.md) compare medical devices, sof
 
 ## Build and contribute
 
+- [Tracer development register](../projects/tracer/README.md): persistent headless needs, requirements, delivery status and work selection for developing Tracer itself.
 - [Contributing](../CONTRIBUTING.md): setup, checks and change expectations.
 - [Architecture](architecture.md): core contracts, adapters, query boundaries and temporal behavior.
 - [Development flow](development-flow.md): implementation and design principles.
+- [Development model audit and plan](development-model-plan.md): findings from Tracer's own needs/requirements register, proposed organization and a model-establishment pilot.
+- [Tracer development model](development-model.md): the selected project model, component responsibilities, trace meanings and evidence/status conventions.
 
 ## Product direction and design history
 

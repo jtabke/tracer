@@ -327,6 +327,8 @@ Family/chain recipes persist as presentation metadata; controller layouts are se
 
 ## Local resources and contextual references
 
+Read [primitives and how to use them](workspace-guide.md#primitives-what-to-create-and-when) for modeling choices and a worked engineering example. This section specifies the schema, commands and capture semantics.
+
 The local resource/reference slice shares native UUIDs, versions and commands. Use the current client/server together (HTTP contract 2). Resources are not a mandatory project-defined Source type. Define a reference family through Model → Text (the resource/reference permission checkboxes) or schema JSON, for example:
 
 ```json

@@ -11,6 +11,10 @@ Tracer is a local-first engineering knowledge and traceability workspace. Define
 
 This is a working source preview. It includes a CLI and browser workspace, with explicit limits described below.
 
+Read [primitives and how to use them](docs/workspace-guide.md#primitives-what-to-create-and-when) for the core concepts, modeling choices and a worked requirement/source/test/review example.
+
+Local contextual references reuse native resource identities and qualified relationships. Select an item and open **References and supporting material** to reference a document, observe/pin a local source and capture its use in an evaluation. See the [local reference guide](docs/developer-reference.md#local-resources-and-contextual-references) for explicit schema permissions, identity and version semantics. This slice preserves source states and uncertainty; it does not retain external bytes or automatically assess document passages.
+
 ## Get started
 
 Use Node.js **24.15+**. Install dependencies from the repository root:
@@ -74,7 +78,7 @@ To serve the API without a browser or frontend build:
 npm run serve:api -- --db my-project.sqlite
 ```
 
-Scripts can import `createClient` from `@tracer-local/core/client`. Each client has its own server, project and session; it uses the same typed contracts and response validation as the browser. See [headless HTTP operation](docs/developer-reference.md#headless-http-operation) for connection and recovery details.
+Scripts can import `createClient` from `@tracer-local/core/client`. Each client has its own server, project and session; it uses the same typed contracts and response validation as the browser. See [headless HTTP operation](docs/developer-reference.md#headless-http-operation) for connection and recovery details. `GET /api/capabilities` reports API version, supported operations/features and limits; clients can [check compatibility before writes](docs/developer-reference.md#discover-capabilities-and-check-compatibility). The [endpoint reference](docs/api-reference.md) is generated from the shared definitions.
 
 ## Development
 
