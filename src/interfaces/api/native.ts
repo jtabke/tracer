@@ -1,3 +1,6 @@
+import type { ExactConfigurationInput } from "../../core/configuration.ts";
+import { exactConfigurationInputFields } from "./configuration-input.ts";
+import { canonical } from "../../core/evidence.ts";
 import { viewDefinition } from "../../core/presentation.ts";
 import {
   baseline,
@@ -34,6 +37,12 @@ import { read, write } from "./definition.ts";
 import { inputSchema, operation, strictObject } from "./input.ts";
 import * as q from "./query.ts";
 export const nativeReads = {
+  "/api/configuration-capture-context": read({
+    features: ["exact-configuration-captures"],
+    query: q.query({}, { empty: "Configuration capture context accepts no filters" }),
+    response: object({ schema, projectRevision: integer(1), evidenceRevision: integer() }),
+    handle: ({ tracer }) => tracer.configurations.captureContext(),
+  }),
   "/api/reference": read({
     features: ["qualified-references"],
     query: q.query({ id: q.textParam }),
@@ -141,7 +150,12 @@ export const nativeReads = {
       { id: q.textParam },
       { exact: { code: "validation", message: "Configuration requires id" } },
     ),
-    response: configuration,
+    response: (value, query) => {
+      const captured = configuration(value);
+      if (captured.id !== query.id)
+        throw new Error("Configuration does not match requested identity");
+      return captured;
+    },
     handle: ({ tracer }, q) => tracer.configurations.get(q.id),
   }),
   "/api/native-pin": read({
@@ -369,6 +383,16 @@ export const nativeWrites = {
   )(({ tracer, provenance }, input) =>
     tracer.applyChangeset(input, { reason: "Interactive edit", ...provenance }),
   ),
+  "/api/configuration-captures": write(
+    exactConfigurationInputFields,
+    (value: unknown, input?: ExactConfigurationInput) => {
+      const captured = configuration(value);
+      if (!captured.capture || (input && canonical(captured.capture.intent) !== canonical(input)))
+        throw new Error("Configuration result does not match original intent");
+      return captured;
+    },
+    { features: ["exact-configuration-captures", "evidence-revision-guards"] },
+  )(({ tracer, provenance }, input) => tracer.configurations.captureExact(input, provenance)),
   "/api/configurations": write(
     {
       name: text,

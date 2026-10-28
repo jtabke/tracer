@@ -1,3 +1,4 @@
+import { validateRelationshipEndpoints } from "../core/relationship-endpoints.ts";
 import { resourceType, validateResource, validateReference } from "../core/references.ts";
 import { ensure, json, record, validateFields, TracerError } from "../core/model.ts";
 import type { Entity, Relationship, Schema, Kind, TypeDefinition } from "../core/model.ts";
@@ -69,22 +70,7 @@ export async function validateNativeRelationship(
   const source = await tx.get("entity", link.source);
   const target = await tx.get("entity", link.target);
   ensure(source && target, "referential_integrity", "Both endpoints must be active");
-  ensure(
-    (source.resource !== undefined && definition!.resourceSource === true) ||
-      (source.type !== resourceType &&
-        (!definition!.source || definition!.source.includes(source.type))),
-    "validation",
-    "Invalid source type",
-    { kind: "relationship", id: link.id, path: ["source"] },
-  );
-  ensure(
-    (target.resource !== undefined && definition!.resourceTarget === true) ||
-      (target.type !== resourceType &&
-        (!definition!.target || definition!.target.includes(target.type))),
-    "validation",
-    "Invalid target type",
-    { kind: "relationship", id: link.id, path: ["target"] },
-  );
+  validateRelationshipEndpoints(definition!, link, source, target);
   await validateReferenceTarget(tx, link, definition!, target);
 }
 

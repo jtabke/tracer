@@ -1,3 +1,4 @@
+import { canonical } from "../src/core/evidence.ts";
 import type { ChangesetInput } from "../src/application/commands.ts";
 import type { Baseline, BaselineInput } from "../src/core/baseline.ts";
 import type { Revision } from "../src/core/model.ts";
@@ -61,6 +62,17 @@ async function evaluationRecords(input: { commandId: string }): Promise<Reconcil
   };
 }
 const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliation> } = {
+  "/api/configuration-captures": async (input) => {
+    const value = await read("/api/configuration", { id: input.id });
+    if (!value.capture || canonical(value.capture.intent) !== canonical(input))
+      throw new Error("Recorded configuration does not match the retained proposal.");
+    return records([value], (captured) => ({
+      id: captured.id,
+      heading: `Exact configuration ${captured.name}`,
+      description: "Original native, topology and observed-content selection; no automatic retry.",
+      value: captured,
+    }));
+  },
   "/api/verifications/open": evaluationRecords,
   "/api/verifications/execute": evaluationRecords,
   "/api/verifications/select": evaluationRecords,

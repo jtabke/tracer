@@ -47,6 +47,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "change-assessment-scope-refresh",
     "changeset-command-recovery",
     "evidence-revision-guards",
+    "exact-configuration-captures",
     "native-resources",
     "pinned-application-models",
     "qualified-references",

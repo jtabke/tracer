@@ -1,9 +1,10 @@
+import { validateConfigurationCapture } from "../core/configuration-capture-validation.ts";
 import { captureRelationships } from "./relationship-inputs.ts";
 import { ensure, json, record } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject, Provenance } from "../core/model.ts";
 import type { Observation, ReceiptInput, Receipt, CapturedInput } from "../core/evidence.ts";
 import type { Transaction } from "./ports/repository.ts";
-import { resolveReceiptInput } from "./receipt-inputs.ts";
+import { resolveReceiptInput, configurationRelationshipDeclarations } from "./receipt-inputs.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { evidenceText as text, evidenceEntity as entity } from "./evidence-validation.ts";
 
@@ -16,7 +17,9 @@ async function captureDeclaredInput(
 ): Promise<CapturedInput> {
   const resolved = await resolveReceiptInput(tx, declaration, schema, configuration);
   const value = resolved.value;
-  const observation = resolved.pin ? undefined : await captureObservation(tx, declaration, value);
+  const observation =
+    resolved.observation ??
+    (resolved.pin ? undefined : await captureObservation(tx, declaration, value));
   validateFieldScope(declaration, value, resolved.schema);
   const { path, links } = await captureDependencyPath(tx, declaration, output, value);
   return {
@@ -37,6 +40,7 @@ async function receiptConfiguration(tx: Transaction, id: string | undefined) {
   text(id, "Configuration ID");
   const configuration = await tx.getConfiguration(id);
   ensure(configuration, "not_found", "Configuration not found");
+  validateConfigurationCapture(configuration);
   return configuration;
 }
 
@@ -60,12 +64,18 @@ async function captureObservation(
       "validation",
       "External dependencies use scoped observed content, not annotation fields",
     );
-  } else
+  } else {
+    ensure(
+      declaration.facet !== "content",
+      "validation",
+      "Content inputs require an external observed state",
+    );
     ensure(
       declaration.observationId === undefined,
       "validation",
       "Native inputs have no external observation",
     );
+  }
   return observation;
 }
 
@@ -228,7 +238,10 @@ export async function captureReceipt(
     seen.add(identity);
     captured.push(recorded);
   }
-  const relationshipInputs = await captureRelationships(tx, input.relationshipInputs);
+  const relationshipInputs = await captureRelationships(
+    tx,
+    configurationRelationshipDeclarations(configuration, input.relationshipInputs),
+  );
   ensure(
     captured.length + relationshipInputs.length > 0 &&
       captured.length + relationshipInputs.length <= 100,

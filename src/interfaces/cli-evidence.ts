@@ -1,4 +1,4 @@
-import type { ConfigurationInput } from "../core/configuration.ts";
+import type { ConfigurationInput, ExactConfigurationInput } from "../core/configuration.ts";
 import type {
   EvidenceKind,
   EvidenceQuery,
@@ -15,6 +15,10 @@ type BindInput = {
   ownership: "external";
 };
 export const evidenceCommands: Record<string, CliCommand> = {
+  "configuration context": ({ tracer, args }) => {
+    arity(args, 0);
+    return tracer.configurations.captureContext();
+  },
   "external bind": ({ tracer, args, origin }) =>
     tracer.evidence.bindExternal(requiredInput<BindInput>(args), origin),
   "observation record": ({ tracer, args, origin }) =>
@@ -38,6 +42,8 @@ export const evidenceCommands: Record<string, CliCommand> = {
       args[1] ? jsonInput<EvidenceQuery>(args[1]) : {},
     );
   },
+  "configuration capture-exact": ({ tracer, args, origin }) =>
+    tracer.configurations.captureExact(requiredInput<ExactConfigurationInput>(args), origin),
   "configuration capture": ({ tracer, args, origin }) =>
     tracer.configurations.capture(requiredInput<ConfigurationInput>(args), origin),
   "configuration get": ({ tracer, args }) => {

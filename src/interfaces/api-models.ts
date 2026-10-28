@@ -1,3 +1,6 @@
+import { exactConfigurationInputFields } from "./api/configuration-input.ts";
+import { strictObject } from "./api/input.ts";
+import { validateConfigurationCapture } from "../core/configuration-capture-validation.ts";
 import { resourceInput, referenceInput } from "./api/input.ts";
 import type { Baseline } from "../core/baseline.ts";
 import type { Configuration, PinnedEntity } from "../core/configuration.ts";
@@ -78,23 +81,6 @@ export const pin: Decoder<PinnedEntity> = object({
   projectRevision: number,
   schema,
 });
-export const configuration: Decoder<Configuration> = object({
-  ...provenance,
-  name: text,
-  subject: entity,
-  members: array(pin),
-  relationships: optional(
-    array(
-      object({
-        relationship,
-        revisionId: text,
-        changesetId: text,
-        projectRevision: number,
-        schema,
-      }),
-    ),
-  ),
-});
 export const baseline: Decoder<Baseline> = object({
   ...provenance,
   name: text,
@@ -130,6 +116,39 @@ export const observation: Decoder<Observation> = object({
   commit: optional(text),
   hash: optional(text),
 });
+const configurationShape = object({
+  ...provenance,
+  name: text,
+  subject: entity,
+  members: array(pin),
+  capture: optional(
+    object({
+      contract: literal("configuration_capture"),
+      version: literal(1),
+      intent: strictObject(exactConfigurationInputFields),
+      context: object({ schema, projectRevision: integer(), evidenceRevision: integer() }),
+      content: array(
+        object({ entityId: text, observation: nullable(observation), reason: optional(text) }),
+      ),
+    }),
+  ),
+  relationships: optional(
+    array(
+      object({
+        relationship,
+        revisionId: text,
+        changesetId: text,
+        projectRevision: number,
+        schema,
+      }),
+    ),
+  ),
+});
+export const configuration: Decoder<Configuration> = (value) => {
+  const decoded = configurationShape(value);
+  validateConfigurationCapture(decoded);
+  return decoded;
+};
 const capturedInput: Decoder<CapturedInput> = object({
   contentRetention: optional(literal("native-history", "external-content-not-retained")),
   entityId: text,

@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
+Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `exact-configuration-captures`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -33,6 +33,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/changeset-outcome` | `commandId`* (text) |
 | GET | `/api/comparison` | `receiptId`* (text) |
 | GET | `/api/configuration` | `id`* (text) |
+| GET | `/api/configuration-capture-context` | — |
 | GET | `/api/configurations` | `after` (text), `limit` (integer), `subject` (text) |
 | GET | `/api/connections` | `after` (text), `limit` (integer), `id`* (text), `type` (text) |
 | GET | `/api/coverage` | `after` (text), `limit` (integer), `baselineId` (text), `expectationId`* (text), `expectedProjectRevision` (integer) |
@@ -74,6 +75,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | POST | `/api/change-assessments/refresh` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
 | POST | `/api/change-assessments/reopen` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
 | POST | `/api/changesets` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `operations` |
+| POST | `/api/configuration-captures` | `id`, `name`, `subjectId`, `expectedSubjectVersion`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `members`, `relationships`, `content`, `scope` |
 | POST | `/api/configurations` | `name`, `subjectId`, `expectedSubjectVersion`, `members`, `relationships` |
 | POST | `/api/coverage-expectations` | `expectations`, `expectedSchemaVersion` |
 | POST | `/api/evaluation-commands` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `operations`, `receipt` |

@@ -1,10 +1,19 @@
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure, json, record, validateProvenance } from "../core/model.ts";
-import type { Configuration, ConfigurationInput } from "../core/configuration.ts";
+import type {
+  Configuration,
+  ConfigurationInput,
+  ExactConfigurationInput,
+} from "../core/configuration.ts";
 import type { EvidenceQuery } from "../core/evidence.ts";
 import type { Repository } from "./ports/repository.ts";
 import type { Provenance } from "../core/model.ts";
-import { pinEntity } from "./native-pins.ts";
+import { configurationMembers } from "./configuration-members.ts";
+import { captureExactConfiguration, configurationCaptureContext } from "./configuration-capture.ts";
+import {
+  validateExactConfiguration,
+  validateConfigurationCapture,
+} from "../core/configuration-capture-validation.ts";
 import { captureRelationships } from "./configuration-relationships.ts";
 
 function validateCapture(input: ConfigurationInput) {
@@ -72,6 +81,15 @@ export class Configurations {
     this.repository = repository;
     this.newId = newId;
   }
+  captureContext() {
+    return this.repository.transaction((tx) => configurationCaptureContext(tx));
+  }
+  async captureExact(input: ExactConfigurationInput, origin: Provenance): Promise<Configuration> {
+    const actor = validateProvenance(origin);
+    input = snapshotInput(input);
+    validateExactConfiguration(input);
+    return this.repository.transaction((tx) => captureExactConfiguration(tx, input, actor));
+  }
   async capture(input: ConfigurationInput, origin: Provenance): Promise<Configuration> {
     const actor = validateProvenance(origin);
     input = snapshotInput(input);
@@ -84,19 +102,7 @@ export class Configurations {
         "conflict",
         "Configuration subject changed before capture",
       );
-      const members = [];
-      const seen = new Set<string>();
-      for (const member of input.members) {
-        ensure(
-          record(member) &&
-            Object.keys(member).every((key) => ["entityId", "version"].includes(key)),
-          "validation",
-          "Invalid configuration member",
-        );
-        ensure(!seen.has(member.entityId), "validation", "Declare each configuration member once");
-        seen.add(member.entityId);
-        members.push(await pinEntity(tx, member.entityId, member.version));
-      }
+      const members = await configurationMembers(tx, input.members);
       const value: Configuration = {
         ...actor,
         id: this.newId(),
@@ -119,12 +125,17 @@ export class Configurations {
     return this.repository.transaction(async (tx) => {
       const value = await tx.getConfiguration(id);
       ensure(value, "not_found", "Configuration not found");
+      validateConfigurationCapture(value);
       return value;
     });
   }
   async list(query: EvidenceQuery = {}) {
     query = snapshotInput(query);
     validateConfigurationQuery(query);
-    return this.repository.transaction((tx) => tx.configurations(query));
+    return this.repository.transaction(async (tx) => {
+      const page = await tx.configurations(query);
+      page.items.forEach(validateConfigurationCapture);
+      return page;
+    });
   }
 }

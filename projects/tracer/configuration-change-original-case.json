@@ -1,0 +1,261 @@
+{
+  "date": "2026-10-28",
+  "scope": "Genuine pre-implementation engineering/source states retained before changing the selected configuration capture implementation.",
+  "originalNativeRevision": 115,
+  "schemaVersion": 7,
+  "originalCommit": "d8f3865531e2caa0644a39b968e5ca1fb03c0aea",
+  "legacyConfiguration": {
+    "id": "8d55e049-0a70-468f-88af-0efebfdbb453",
+    "name": "Original Tracer configuration capture before REQ-035 implementation",
+    "at": "2026-10-28T22:45:24.218Z",
+    "subject": {
+      "id": "b9beeac8-4051-48a2-8062-85aa7b7d7000",
+      "version": 1
+    },
+    "members": [
+      {
+        "entityId": "b9beeac8-4051-48a2-8062-85aa7b7d7000",
+        "version": 1,
+        "revisionId": "105bfcc5-1848-4f51-ae51-e41e0fb6bea3",
+        "changesetId": "b30608ff-3a72-4dd3-ab80-bfe05c5e5a9a",
+        "projectRevision": 8,
+        "schemaVersion": 2
+      },
+      {
+        "entityId": "90e3162a-a959-4d3f-95f0-c8c5e9324757",
+        "version": 1,
+        "revisionId": "4545a49f-bea9-4c7e-993c-d1cdbf6162a1",
+        "changesetId": "7663207e-72cb-49f3-a7d3-d540e57f7525",
+        "projectRevision": 114,
+        "schemaVersion": 7
+      },
+      {
+        "entityId": "334a7cda-5fe0-4068-b8af-8a8060138e3a",
+        "version": 1,
+        "revisionId": "e1fbf8fc-30db-45cb-bcc3-d20c05e5a77f",
+        "changesetId": "7663207e-72cb-49f3-a7d3-d540e57f7525",
+        "projectRevision": 114,
+        "schemaVersion": 7
+      }
+    ],
+    "relationships": [
+      {
+        "relationshipId": "a4ef7fbe-f5c3-4056-a507-c3e1cd883bf7",
+        "version": 1,
+        "revisionId": "51b687ce-5361-47ae-bd5c-5c0eac97c02f",
+        "changesetId": "7663207e-72cb-49f3-a7d3-d540e57f7525",
+        "projectRevision": 114,
+        "schemaVersion": 7
+      },
+      {
+        "relationshipId": "bb891084-4e98-4f8a-95b8-5a09b4015ed3",
+        "version": 1,
+        "revisionId": "025386d0-3c19-47ad-bbad-54d03816dd67",
+        "changesetId": "7663207e-72cb-49f3-a7d3-d540e57f7525",
+        "projectRevision": 114,
+        "schemaVersion": 7
+      }
+    ]
+  },
+  "sourceStates": [
+    {
+      "id": "2b2b7281-04a9-4ad3-82c3-1fbc88419801",
+      "path": "src/application/configurations.ts",
+      "sha256": "d33032b2afc6924d69786066a445ff1235c8493718e4fbe7de39cb2d8b1c962e",
+      "observationId": "7c2131aa-1051-43b9-a1be-408c7888fe1d"
+    },
+    {
+      "id": "344a5597-55f4-4c6a-b7a2-c7e9ae8c58f6",
+      "path": "src/core/configuration.ts",
+      "sha256": "85f6baacad49ab0ab3b8fa288e817252e1ca2e15e74f340126d43aefb83d17f4",
+      "observationId": "501acdc4-0b94-4bcd-908a-71faecd41322"
+    },
+    {
+      "id": "ce23c452-a166-478e-85a9-a4ce4b1d89dc",
+      "path": "src/application/configuration-relationships.ts",
+      "sha256": "5788210a35b5947272c1d1c5642461a849ba22ba812cb22c64809d006443a3a2",
+      "observationId": "a7c1ffff-0bd3-4d18-94ec-80ed337c2b84"
+    },
+    {
+      "id": "7eac21ca-dd28-4964-8437-e61d29de9012",
+      "path": "src/persistence/configurations.ts",
+      "sha256": "a2a7d5662ca427786ad6b79e4f49919d7e47d47e737a586a147df9d71c6dca38",
+      "observationId": "b395e359-1f10-4589-ae8b-80fb9f4c8009"
+    },
+    {
+      "id": "1692c82b-2a2f-47ee-a794-7b62a5931152",
+      "path": "src/interfaces/api-models.ts",
+      "sha256": "2b4f7c1fba2f5cc70a3b0bc2f20a65590aa362ece8c5cf4dd475303aaab0eb56",
+      "observationId": "3f2420cb-299a-48dc-a576-c438d5732c3a"
+    },
+    {
+      "id": "236e233b-deb7-424f-b1e2-de7fe236d058",
+      "path": "src/interfaces/api/native.ts",
+      "sha256": "7c3748a159d1bb045b7e871840f2215e3d67353e4325b6d42e4fe3dc6505c202",
+      "observationId": "07fa5cbf-2c3e-476d-859a-76455d80c9aa"
+    },
+    {
+      "id": "2ef4c505-1fec-4fec-b03a-84db80f35b91",
+      "path": "src/interfaces/cli-evidence.ts",
+      "sha256": "7629823c49713f11091e6b20a8da1154694922a5c2ac25927cb05a307b1eb42b",
+      "observationId": "8d33cef0-b0bb-4c14-8d6f-cd94d9950273"
+    }
+  ],
+  "observations": [
+    {
+      "availability": "available",
+      "hash": "sha256:d33032b2afc6924d69786066a445ff1235c8493718e4fbe7de39cb2d8b1c962e",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "7c2131aa-1051-43b9-a1be-408c7888fe1d",
+      "entityId": "2b2b7281-04a9-4ad3-82c3-1fbc88419801",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/application/configurations.ts"
+      },
+      "at": "2026-10-28T22:45:24.213Z"
+    },
+    {
+      "availability": "available",
+      "hash": "sha256:85f6baacad49ab0ab3b8fa288e817252e1ca2e15e74f340126d43aefb83d17f4",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "501acdc4-0b94-4bcd-908a-71faecd41322",
+      "entityId": "344a5597-55f4-4c6a-b7a2-c7e9ae8c58f6",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/core/configuration.ts"
+      },
+      "at": "2026-10-28T22:45:24.214Z"
+    },
+    {
+      "availability": "available",
+      "hash": "sha256:5788210a35b5947272c1d1c5642461a849ba22ba812cb22c64809d006443a3a2",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "a7c1ffff-0bd3-4d18-94ec-80ed337c2b84",
+      "entityId": "ce23c452-a166-478e-85a9-a4ce4b1d89dc",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/application/configuration-relationships.ts"
+      },
+      "at": "2026-10-28T22:45:24.214Z"
+    },
+    {
+      "availability": "available",
+      "hash": "sha256:a2a7d5662ca427786ad6b79e4f49919d7e47d47e737a586a147df9d71c6dca38",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "b395e359-1f10-4589-ae8b-80fb9f4c8009",
+      "entityId": "7eac21ca-dd28-4964-8437-e61d29de9012",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/persistence/configurations.ts"
+      },
+      "at": "2026-10-28T22:45:24.215Z"
+    },
+    {
+      "availability": "available",
+      "hash": "sha256:2b4f7c1fba2f5cc70a3b0bc2f20a65590aa362ece8c5cf4dd475303aaab0eb56",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "3f2420cb-299a-48dc-a576-c438d5732c3a",
+      "entityId": "1692c82b-2a2f-47ee-a794-7b62a5931152",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/interfaces/api-models.ts"
+      },
+      "at": "2026-10-28T22:45:24.215Z"
+    },
+    {
+      "availability": "available",
+      "hash": "sha256:7c3748a159d1bb045b7e871840f2215e3d67353e4325b6d42e4fe3dc6505c202",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "07fa5cbf-2c3e-476d-859a-76455d80c9aa",
+      "entityId": "236e233b-deb7-424f-b1e2-de7fe236d058",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/interfaces/api/native.ts"
+      },
+      "at": "2026-10-28T22:45:24.215Z"
+    },
+    {
+      "availability": "available",
+      "hash": "sha256:7629823c49713f11091e6b20a8da1154694922a5c2ac25927cb05a307b1eb42b",
+      "actor": "tracer-configuration-change",
+      "reason": "Preserve genuine pre-implementation capture source and engineering scope before editing the selected real Tracer change. Legacy capture contains native/link states only; observations remain explicitly separate. No new capability verification claimed.",
+      "id": "8d33cef0-b0bb-4c14-8d6f-cd94d9950273",
+      "entityId": "2ef4c505-1fec-4fec-b03a-84db80f35b91",
+      "locator": {
+        "system": "file",
+        "path": "/Users/jeremytabke/Documents/Coding/tracer/src/interfaces/cli-evidence.ts"
+      },
+      "at": "2026-10-28T22:45:24.215Z"
+    }
+  ],
+  "qualification": "Original legacy capture pins native members/topology. Explicit contemporaneous file observations are preserved separately; legacy content completeness is unknown, not retroactively asserted.",
+  "sourceRecovery": "The existing Git commit retains these source bytes independently; Tracer observations identify them but do not retain external file bytes. Original observation identities/provenance and immutable native configuration remain in SQLite/export.",
+  "implementationAndFullAcceptancePending": true,
+  "scopeExtension": {
+    "nativeRevision": 115,
+    "reason": "Receipt/configuration interoperability gap found after capture tests: preserve original receipt input/capture bytes before fixing their integration. Resource endpoint permissions must also be shared between native validation and configuration topology.",
+    "sourceStates": [
+      {
+        "id": "b3696b68-b3d3-4e61-b7dc-977993b4c3ec",
+        "path": "src/application/receipt-inputs.ts",
+        "sha256": "d42bbb323cd7e8726915228c47fd8bec1f595a764b9652c0ddd0d6745eb7aa53",
+        "observation": {
+          "availability": "available",
+          "hash": "sha256:d42bbb323cd7e8726915228c47fd8bec1f595a764b9652c0ddd0d6745eb7aa53",
+          "actor": "tracer-configuration-change",
+          "reason": "Explicitly extend the real-case source scope before editing receipt integration; preserve actual original bytes and all earlier captures. The original source bytes match the pre-change Git base.",
+          "id": "4d3aded5-ac94-4fac-9746-343b9e86ecd1",
+          "entityId": "b3696b68-b3d3-4e61-b7dc-977993b4c3ec",
+          "locator": {
+            "system": "file",
+            "path": "/Users/jeremytabke/Documents/Coding/tracer/src/application/receipt-inputs.ts"
+          },
+          "at": "2026-10-28T23:07:12.502Z"
+        }
+      },
+      {
+        "id": "7704ba45-9cf1-49e6-9e9d-ce962360fed0",
+        "path": "src/application/receipt-capture.ts",
+        "sha256": "2515bcb0d1ca9ea787d3b64fe7bc4957a771c82255f870c48b470928ffd2c9f8",
+        "observation": {
+          "availability": "available",
+          "hash": "sha256:2515bcb0d1ca9ea787d3b64fe7bc4957a771c82255f870c48b470928ffd2c9f8",
+          "actor": "tracer-configuration-change",
+          "reason": "Explicitly extend the real-case source scope before editing receipt integration; preserve actual original bytes and all earlier captures. The original source bytes match the pre-change Git base.",
+          "id": "71a7bc91-f77f-41df-9829-bd351551b5b7",
+          "entityId": "7704ba45-9cf1-49e6-9e9d-ce962360fed0",
+          "locator": {
+            "system": "file",
+            "path": "/Users/jeremytabke/Documents/Coding/tracer/src/application/receipt-capture.ts"
+          },
+          "at": "2026-10-28T23:07:12.512Z"
+        }
+      },
+      {
+        "id": "d8a303d2-f243-49cb-a640-c0699cb2ceae",
+        "path": "src/application/native-validation.ts",
+        "sha256": "2aa2ac8bac4eb80715665bda7796b3cd4de100cd882828862b172b61de5b9fe8",
+        "observation": {
+          "availability": "available",
+          "hash": "sha256:2aa2ac8bac4eb80715665bda7796b3cd4de100cd882828862b172b61de5b9fe8",
+          "actor": "tracer-configuration-change",
+          "reason": "Preserve original shared endpoint permission validator before extracting unchanged source/target capability rules for exact configurations.",
+          "id": "ca97d65b-72f8-4105-b99a-e964b24be1f9",
+          "entityId": "d8a303d2-f243-49cb-a640-c0699cb2ceae",
+          "locator": {
+            "system": "file",
+            "path": "/Users/jeremytabke/Documents/Coding/tracer/src/application/native-validation.ts"
+          },
+          "at": "2026-10-28T23:15:47.159Z"
+        }
+      }
+    ],
+    "qualification": "Seven original observations precede initial capture implementation. Three additional corresponding files were observed before their respective integration/refactor edits; all ten source byte states match the original committed Git base. Existing configurations remain unchanged."
+  }
+}

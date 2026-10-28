@@ -52,6 +52,8 @@ Commands:
   receipt compare ID                   last-observed scoped freshness; no automatic polling
   review record JSON                   {receiptId,decision,rationale,expectedComparison}
   evidence list KIND [QUERY_JSON]       external|observation|receipt|review; {subject?,after?,limit?}
+  configuration context               current schema/native/evidence capture guards; read only
+  configuration capture-exact JSON     guarded native/content capture with caller identity and exact recovery
   configuration capture JSON           {name,subjectId,expectedSubjectVersion,members:[{entityId,version}],relationships?:[{relationshipId,version}]}
   configuration get ID                 exact immutable capture, including archived native schemas
   configuration list [QUERY_JSON]      {subject?,after?,limit?}; limit 1–100, default 25

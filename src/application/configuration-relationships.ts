@@ -1,3 +1,4 @@
+import { validateRelationshipEndpoints } from "../core/relationship-endpoints.ts";
 import { ensure, record } from "../core/model.ts";
 import type {
   ConfigurationInput,
@@ -19,7 +20,7 @@ export async function captureRelationships(
     "validation",
     "Configuration allows at most 200 explicit relationships",
   );
-  const memberTypes = new Map(members.map((pin) => [pin.entity.id, pin.entity.type]));
+  const selected = new Map(members.map((pin) => [pin.entity.id, pin.entity]));
   const seen = new Set<string>(),
     pins: PinnedRelationship[] = [];
   for (const declaration of declarations) {
@@ -38,22 +39,21 @@ export async function captureRelationships(
     const pin = await pinRelationship(tx, declaration.relationshipId, declaration.version);
     const { relationship, schema } = pin;
     ensure(
-      memberTypes.has(relationship.source) && memberTypes.has(relationship.target),
+      selected.has(relationship.source) && selected.has(relationship.target),
       "validation",
       "Configuration relationship endpoints must be captured members",
     );
-    const definition = schema.relationshipTypes[relationship.type];
-    ensure(
-      definition &&
-        compatible(definition.source, memberTypes.get(relationship.source)!) &&
-        compatible(definition.target, memberTypes.get(relationship.target)!),
-      "validation",
-      "Captured members do not satisfy the relationship revision's endpoint types",
+    const definition = Object.hasOwn(schema.relationshipTypes, relationship.type)
+      ? schema.relationshipTypes[relationship.type]
+      : undefined;
+    ensure(definition, "validation", "Captured relationship type is unavailable in its schema");
+    validateRelationshipEndpoints(
+      definition,
+      relationship,
+      selected.get(relationship.source)!,
+      selected.get(relationship.target)!,
     );
     pins.push(pin);
   }
   return pins;
-}
-function compatible(allowed: string[] | undefined, type: string) {
-  return allowed === undefined || allowed.includes(type);
 }
