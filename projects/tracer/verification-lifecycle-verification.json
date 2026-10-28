@@ -1,0 +1,588 @@
+{
+  "date": "2026-10-28",
+  "scope": "Headless verification result accounting, scoped applicability, immutable conclusions, reopening and explicit basis revision; partial REQ-034 evidence with shared UI and real later-change reassessment still pending.",
+  "status": "phase_passed_full_requirement_pending",
+  "work": "WORK-026",
+  "requirement": "REQ-034",
+  "implementationCommit": "dd688dbac3c046b624ad4dfb933cab0d123391b6",
+  "candidateFiles": [
+    {
+      "path": "src/application/assessment-facts.ts",
+      "sha256": "6535c9514e56314fd703a6c3abc41c0f83adebc0ac6baef4755eda0a29e571ac"
+    },
+    {
+      "path": "src/application/captured-facts.ts",
+      "sha256": "9882be8196cc9716d8c117f1501a386e40d9616ba9a9d5ea26f4f0db0dfd9873"
+    },
+    {
+      "path": "src/application/fact-digest.ts",
+      "sha256": "3c92e9c2a6d1fd25f01a49209f1727a49f906b9ad35d5466b2d50ecb4367f63c"
+    },
+    {
+      "path": "src/application/verification-analysis.ts",
+      "sha256": "691f7739d5bfa860903d65dc936864720cf8d88bd1009e084fe4a42d17b91dd4"
+    },
+    {
+      "path": "src/application/verification-context.ts",
+      "sha256": "fbab42d0d6b06c9605b42871ef4df5be5793980d2dcde66d7f04d2c30d4ee5ba"
+    },
+    {
+      "path": "src/application/verification-execute.ts",
+      "sha256": "405f0af74a43593fbf73c30bed46c91e14ad6fb3d8bca8aaff460850244bb389"
+    },
+    {
+      "path": "src/application/verification-execution-read.ts",
+      "sha256": "b7d277a3d6b6bd9e06a56f406bf7e9648de94088577bb397603444233a7168dd"
+    },
+    {
+      "path": "src/application/verification-governing.ts",
+      "sha256": "9131200f2b091095533308619175e1d2e9a782d35636ab1b0c801063f130672e"
+    },
+    {
+      "path": "src/application/verification-inputs.ts",
+      "sha256": "015c77c841da0f4f91f8aa25dc370c656004f7e7318e51735361e62880973cdd"
+    },
+    {
+      "path": "src/application/verification-mutation.ts",
+      "sha256": "6ec0ea063f55f3b07c20afb369a1354bf5b14dcb0de5e05655feb8f88e0202cf"
+    },
+    {
+      "path": "src/application/verification-results.ts",
+      "sha256": "98fe130474cbd6fa41c4153dc932a15c845c96b232f3a7bb1d0ac6dae13447fa"
+    },
+    {
+      "path": "src/application/verification-revise.ts",
+      "sha256": "1310d568a4e3084df83ac480aca0c0f247f0a8fd54ae4ab564552cd23255d99e"
+    },
+    {
+      "path": "src/application/verification-support.ts",
+      "sha256": "c34a4cc2d1671167edfad4beb8b36a8b6ff07a4d279c5cc6de7f612f691c97b7"
+    },
+    {
+      "path": "src/application/verification.ts",
+      "sha256": "39a0d1ac2a6ae7036eb32575d1fe3c53da8427fd8dc6c0ff60b26a98915e363d"
+    },
+    {
+      "path": "src/core/evaluation-command.ts",
+      "sha256": "0823a4ac401cb6c902a073aec53cb070d9b132fb4680ea608cb0caaa88db035c"
+    },
+    {
+      "path": "src/core/verification-case-validation.ts",
+      "sha256": "aee4ce3b8c5695e3f31fd17399b77a0ffa7663492e948d981905cb9a99d034d3"
+    },
+    {
+      "path": "src/core/verification-case.ts",
+      "sha256": "8d009c76f53f21d8978133bb45ad700a8adc0035b8794992187f553b180ee331"
+    },
+    {
+      "path": "src/core/verification-lifecycle-validation.ts",
+      "sha256": "c88259d0c1f1910f4091e254c15451bb6e33ea32e1cd3053e875c8c6125d04c6"
+    },
+    {
+      "path": "src/core/verification-lifecycle.ts",
+      "sha256": "dd08ba22e69c9d6c7f270e74d8700bd0ac58d1ddda1b16fbe36fc4a939346985"
+    },
+    {
+      "path": "src/index.ts",
+      "sha256": "2800066a0b060a51fa2ab7e7967cb3075b095e93c861cfc3514c61b03fce087a"
+    },
+    {
+      "path": "src/interfaces/api-endpoints.ts",
+      "sha256": "23147899ada4234dac91d35ce82ec922558201f1723d7a2709ce238a6b0c5316"
+    },
+    {
+      "path": "src/interfaces/api/verification-case-responses.ts",
+      "sha256": "cca7fbb75e03e749ebb851832b6d47e5bd8a159f5ea91c64aece21396adcc9b7"
+    },
+    {
+      "path": "src/interfaces/api/verification-cases.ts",
+      "sha256": "2636e66160d4a2fb7f1062d5dfe63ebf5ee702ecac2207951a17df416bf3933d"
+    },
+    {
+      "path": "src/interfaces/api/verification-lifecycle-responses.ts",
+      "sha256": "76da025baaa1a3f4f4a77b70d827b975d732732fbc06204223a64a4ac972dd88"
+    },
+    {
+      "path": "src/interfaces/api/verification-lifecycle.ts",
+      "sha256": "ced9ceb35fc5504c3e1e8b98f654ab832865656b07469b0d63f64b0294895b34"
+    },
+    {
+      "path": "src/interfaces/cli-data.ts",
+      "sha256": "5a00577a0a86f25888889e414c0acdfaf5930f2eda0c1b2250d0771895af35f5"
+    },
+    {
+      "path": "src/interfaces/cli-help.ts",
+      "sha256": "dcf3e64fd98c2ca6df46eabafe1d182398bfd61c7b7368bb76d2bce15b0c2a3d"
+    },
+    {
+      "path": "test/api-capabilities.test.ts",
+      "sha256": "ad00070843f063ab7475f4735c6560a0075b6bbb14f7a9a8bde5e583d9f1c324"
+    },
+    {
+      "path": "test/api-client.test.ts",
+      "sha256": "9e06eff5ec3de56c15ed427fa39c67c26047d702dc72afbbb735ce3ae8e5b0b4"
+    },
+    {
+      "path": "test/verification-fixture.ts",
+      "sha256": "f8276f42b06d934cb04649eeb9251314ba68c68bb12df64d4f1642d3d022cc32"
+    },
+    {
+      "path": "test/verification-lifecycle-interfaces.test.ts",
+      "sha256": "7816a5606e9a2634aa0ba1d771817bd2154fcfc89e336ba614e72bf6339952ba"
+    },
+    {
+      "path": "test/verification-lifecycle.test.ts",
+      "sha256": "7e85519699b9e7519ce6aa480de3d154243319889fcd006b94176f02a06ecc0e"
+    },
+    {
+      "path": "ui/reconcile-mutation.ts",
+      "sha256": "09b99d2ed30e7503465b0c5c188666dfaac56b63a30f35e63f5820a82d1a5624"
+    }
+  ],
+  "specification": {
+    "path": "projects/tracer/requirement-verification-specification.json",
+    "sha256": "700b68752d49af8ab9ece5ed3fec064b92f7f08d0bb5d9ca3ab084054f8e7be8"
+  },
+  "implemented": [
+    "Complete bounded registered population; independent outcome, governing semantics, support drift/unknown/review/supersession, explicit accounting, readiness and historical/current conclusion meaning.",
+    "Rationale-bearing choices and selected/historical/superseded decisions for every execution. New unassessed activities require fresh accounting; unselected historical support drift alone does not retire selected passing evidence.",
+    "Guarded atomic selection/conclusion/reopen/revise operations through core, typed HTTP/client and CLI, plus existing UI outcome inspection. Exact recovery remains before current guards, with no implicit retries.",
+    "Exact state references, absences and applicable review IDs in controlled selections. Pinned policy permits assessed design changes only where known and explicitly accepted; governing criteria/method changes cannot be reviewed away.",
+    "Typed immutable conclusion and explicit reopening/basis lineage; unchanged mapped criteria may reuse original execution, changed criterion/statement/method semantics require new execution. Self-changing support and post-journal failures roll back all native/evidence/outcome state.",
+    "Common bounded fact capture/digests extracted from assessment ownership; no new structural primitive, storage migration, external source IO or rule framework."
+  ],
+  "verification": {
+    "focused": {
+      "tests": 15,
+      "result": "passed",
+      "domains": ["engineering", "research"],
+      "scope": "Actual production software/application/transport contracts on synthetic domain fixtures; no physical/scientific validity claim."
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "unitTests": 609,
+      "browserTests": 203,
+      "workbenchCaptures": 18,
+      "allFormatTypesLintArchitectureQualityPassed": true,
+      "thresholdsUnchanged": true
+    },
+    "logs": [
+      {
+        "path": "output/verification-capability/lifecycle-final-check.log",
+        "sha256": "39b8f97edc5df9ebc89f93afc2c5e4d055330c430498db028a2e68db91cdc7a0"
+      },
+      {
+        "path": "output/verification-capability/lifecycle-refactor-tests.log",
+        "sha256": "e42d059453e27fbcbf62a2230dde9d190e6c4c7a0a188d749fcbf54e713b06a4"
+      },
+      {
+        "path": "output/verification-capability/lifecycle-workload-tests.log",
+        "sha256": "d30c75931d2b4d33fff61fbcaeef99079691c1c98c884d190c3a133a73ee16aa"
+      }
+    ],
+    "developmentFindings": [
+      "Separated combined control/basis/readiness/support branches after unchanged complexity inspection; final-source coverage/gates refreshed.",
+      "Corrected two invalid test expectations: storage errors expose the public storage contract, and superseding receipts require an input. Production guards unchanged."
+    ],
+    "bounds": {
+      "registeredExecutions": 100,
+      "criterionMethodObligations": 100,
+      "selectionConclusionBytes": 65536,
+      "analysisBytes": 262144,
+      "deduplicatedDirectCaptureFacts": 80,
+      "scopeRevisions": 25,
+      "examinedReceiptBytes": 16777216,
+      "examinedDeclaredDependencies": 10000,
+      "examinedPathLinks": 20000
+    },
+    "syntheticWorkload": {
+      "executions": 100,
+      "complete": true,
+      "readOnly": true,
+      "overflowAtomic": true,
+      "note": "Exact observed timing/bytes are retained in the workload/final-check logs; no arbitrary-scale or team throughput claim."
+    }
+  },
+  "realCase": {
+    "caseId": "823f8a49-117c-4c85-81d1-cee87bc1892d",
+    "openingCommandId": "req011-verification-case-open-2026-10-28",
+    "nativeRevision": 100,
+    "caseVersion": 5,
+    "conclusionState": "verified",
+    "conclusion": {
+      "contract": "verification_conclusion",
+      "version": 1,
+      "commandId": "req011-verification-conclusion-2026-10-28",
+      "openingCommandId": "req011-verification-case-open-2026-10-28",
+      "rationale": "Conclude the explicitly scoped unchanged REQ-011 AC-1/AC-2 basis using the selected original corrected passing activity and complete execution accounting. This is software verification using synthetic engineering fixture data, not user validation or full REQ-034 acceptance.",
+      "at": {
+        "projectRevision": 99,
+        "evidenceRevision": 736
+      },
+      "evidenceDigest": "sha256:a925f6154bb974895b0a6b312637a388b6fe0e203d0aad26b47254240ee0b37b",
+      "basisDigest": "sha256:4b7de43595bf386d787ee2f051732c60867b7b51ad6816168e80bdf2da6461cd",
+      "obligations": [
+        {
+          "criterionId": "AC-1",
+          "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+          "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2"
+        },
+        {
+          "criterionId": "AC-2",
+          "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+          "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2"
+        }
+      ]
+    },
+    "selection": {
+      "contract": "verification_result_selection",
+      "version": 1,
+      "reason": "Use the original corrected complete AC-1/AC-2 activity. Retain the earlier actual failing AC-1 and unexecuted AC-2 as superseded historical results; no outcome is rewritten.",
+      "selections": [
+        {
+          "criterionId": "AC-1",
+          "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+          "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2"
+        },
+        {
+          "criterionId": "AC-2",
+          "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+          "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2"
+        }
+      ],
+      "accounting": [
+        {
+          "executionId": "8da56304-4f6b-4231-8a18-e9746d65b12f",
+          "decision": "superseded",
+          "replacementId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+          "rationale": "The corrected activity exercised both unchanged criteria with the same declared method after the genuine production correction. Original failure and unexecuted scope remain inspectable."
+        },
+        {
+          "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+          "decision": "selected",
+          "rationale": "Original corrected full-criterion activity has current captured source support and explicit passing results."
+        }
+      ],
+      "facts": {
+        "basisDigest": "sha256:4b7de43595bf386d787ee2f051732c60867b7b51ad6816168e80bdf2da6461cd",
+        "state": "current",
+        "inputs": [
+          {
+            "entityId": "3ca1c5ad-7f3e-4e32-9185-a157c75f9f8b",
+            "facet": "native",
+            "revision": 1,
+            "fields": ["definition"],
+            "role": "verification interpretation model"
+          },
+          {
+            "entityId": "823f8a49-117c-4c85-81d1-cee87bc1892d",
+            "facet": "native",
+            "revision": 3,
+            "fields": ["model"],
+            "role": "application fact 1"
+          },
+          {
+            "entityId": "8695fe57-7b5f-4bf2-82b2-f053b03346e2",
+            "facet": "native",
+            "revision": 3,
+            "fields": ["statement", "acceptance"],
+            "role": "application fact 2"
+          },
+          {
+            "entityId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+            "facet": "native",
+            "revision": 5,
+            "fields": ["method", "expectedResult"],
+            "role": "application fact 3"
+          },
+          {
+            "entityId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+            "facet": "native",
+            "revision": 1,
+            "fields": ["result"],
+            "role": "application fact 4"
+          },
+          {
+            "entityId": "1ea5dfce-0c09-4bf5-b776-afb688a6466f",
+            "role": "application fact 5",
+            "facet": "content",
+            "observationId": "bbab8659-7e25-4c3c-a07c-6f4db70f0094"
+          },
+          {
+            "entityId": "677820b2-c78e-4471-942b-7c23a6e13077",
+            "role": "application fact 6",
+            "facet": "content",
+            "observationId": "b719f207-4c1e-4568-9980-099ef433ffce"
+          },
+          {
+            "entityId": "66c8a85a-71f0-470b-93d5-4baa3f2d32aa",
+            "role": "application fact 7",
+            "facet": "content",
+            "observationId": "2a3cd457-28c8-4864-a983-e12e7abf2376"
+          },
+          {
+            "entityId": "9d32e550-6f4c-47d5-8e78-2e2fd914ffc5",
+            "role": "application fact 8",
+            "facet": "content",
+            "observationId": "e15cd868-5c7d-44ff-8bc8-6814baec5f96"
+          },
+          {
+            "entityId": "fbdae562-18b9-46aa-8ce9-61f752c0b81a",
+            "role": "application fact 9",
+            "facet": "content",
+            "observationId": "22e20284-550b-424f-81aa-9ea04e7bff26"
+          },
+          {
+            "entityId": "8716236f-b8a7-42f9-b9e2-9431610cd617",
+            "role": "application fact 10",
+            "facet": "content",
+            "observationId": "b1c36ddc-78aa-466c-a2f0-4fade2d1a6e5"
+          },
+          {
+            "entityId": "5c1f6974-d51a-4ed5-ac7f-60db0dc84d78",
+            "role": "application fact 11",
+            "facet": "content",
+            "observationId": "f2ec7333-9f92-4d07-92d5-4ee0267410f4"
+          },
+          {
+            "entityId": "66d6cdc2-65c0-4941-b83f-194c9cbf75cb",
+            "role": "application fact 12",
+            "facet": "content",
+            "observationId": "aa8f6378-1622-429e-bae8-f351a0425892"
+          },
+          {
+            "entityId": "61b6990d-5bc2-4ee9-8d4e-3f2582949389",
+            "role": "application fact 13",
+            "facet": "content",
+            "observationId": "c7fea6fe-d3aa-4e66-af63-049ca95581ca"
+          },
+          {
+            "entityId": "8b28d849-df9c-4dad-a320-573646037baf",
+            "role": "application fact 14",
+            "facet": "content",
+            "observationId": "5eda7357-0782-400d-a9c3-f0237d59e456"
+          },
+          {
+            "entityId": "eae143fe-e65c-468d-b264-33b3a9ba5dd4",
+            "role": "application fact 15",
+            "facet": "content",
+            "observationId": "525eea39-4db1-4972-a390-fb12a9da408f"
+          },
+          {
+            "entityId": "da5fe566-03e0-484c-b4f4-0e3128f6401e",
+            "role": "application fact 16",
+            "facet": "content",
+            "observationId": "a0c0719b-fb1f-4ebe-a7ef-6e3e982e2023"
+          },
+          {
+            "entityId": "3f0d2b93-d84b-46d0-93fd-fecb2e3e3957",
+            "role": "application fact 17",
+            "facet": "content",
+            "observationId": "dcd0f67f-2a62-455b-86a3-51d704e2c729"
+          },
+          {
+            "entityId": "b6df0e3e-4046-4491-9bc9-a1f4216123f0",
+            "role": "application fact 18",
+            "facet": "content",
+            "observationId": "01d120f2-e0a8-4675-8949-6523e2035fa2"
+          },
+          {
+            "entityId": "4e871524-93c2-4720-9286-a7ba0d526182",
+            "role": "application fact 19",
+            "facet": "content",
+            "observationId": "64e81137-2cd7-4a8b-8482-485098308179"
+          },
+          {
+            "entityId": "40d252dd-3349-4337-a5c2-625af9ec9720",
+            "role": "application fact 20",
+            "facet": "content",
+            "observationId": "c6a7c8c1-278a-4b72-9ca0-28222e7e11af"
+          },
+          {
+            "entityId": "8695fe57-7b5f-4bf2-82b2-f053b03346e2",
+            "role": "application fact 21",
+            "fields": ["title", "scopeNote"],
+            "facet": "native",
+            "revision": 3
+          },
+          {
+            "entityId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+            "role": "application fact 22",
+            "fields": ["criterionScope"],
+            "facet": "native",
+            "revision": 5
+          }
+        ],
+        "relationshipInputs": [
+          {
+            "id": "bb917aad-c7e3-4a83-b409-db4ebdfe5c85",
+            "revision": 1
+          },
+          {
+            "id": "60981e55-8b18-4dfd-bbb8-b6937fca0b56",
+            "revision": 1
+          },
+          {
+            "id": "af381662-7846-4433-afcd-0f57bf970498",
+            "revision": 1
+          }
+        ],
+        "executions": [
+          {
+            "id": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+            "receiptId": "a6530a0f-2569-4af1-bbee-459923f82642",
+            "stateDigest": "sha256:f1207f1e8a00a1166b978b856fdbeddfcb4ff49774fff70064b125dc844b9a26",
+            "reviewIds": [],
+            "absences": []
+          }
+        ]
+      },
+      "evidenceDigest": "sha256:a925f6154bb974895b0a6b312637a388b6fe0e203d0aad26b47254240ee0b37b"
+    },
+    "executions": [
+      {
+        "id": "8da56304-4f6b-4231-8a18-e9746d65b12f",
+        "receiptId": "6bef81d5-9b37-4d18-99bc-2783c7ac2bd4",
+        "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+        "immutableDigest": "sha256:16b842594866fefd64717b05f256be5580710b80c82a8eb3c7a7d72f32a7fdc9",
+        "stateDigest": "sha256:20eaaf97f88839cd87896edf722431927740e9d2bf2320e6f77397c5e693c48e",
+        "current": true,
+        "eligibleCriterionIds": ["AC-1", "AC-2"],
+        "results": [
+          {
+            "criterionId": "AC-1",
+            "currentCriterionId": "AC-1",
+            "outcome": "failed"
+          },
+          {
+            "criterionId": "AC-2",
+            "currentCriterionId": "AC-2",
+            "outcome": "not_run"
+          }
+        ],
+        "support": {
+          "changed": true,
+          "unknown": false,
+          "assessed": false,
+          "reviewRequired": false,
+          "superseded": false
+        }
+      },
+      {
+        "id": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+        "receiptId": "a6530a0f-2569-4af1-bbee-459923f82642",
+        "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+        "immutableDigest": "sha256:2b6ef3662bf048f39a74af07b8dc6cb7e35c518ee859a0be627513bc0bce8830",
+        "stateDigest": "sha256:f1207f1e8a00a1166b978b856fdbeddfcb4ff49774fff70064b125dc844b9a26",
+        "current": true,
+        "eligibleCriterionIds": ["AC-1", "AC-2"],
+        "results": [
+          {
+            "criterionId": "AC-1",
+            "currentCriterionId": "AC-1",
+            "outcome": "passed"
+          },
+          {
+            "criterionId": "AC-2",
+            "currentCriterionId": "AC-2",
+            "outcome": "passed"
+          }
+        ],
+        "support": {
+          "changed": false,
+          "unknown": false,
+          "assessed": false,
+          "reviewRequired": false,
+          "superseded": false
+        }
+      }
+    ],
+    "obligations": [
+      {
+        "criterionId": "AC-1",
+        "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+        "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+        "outcome": "passed",
+        "applicability": "current",
+        "reasons": []
+      },
+      {
+        "criterionId": "AC-2",
+        "methodId": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+        "executionId": "0cbb9e27-78d4-421f-b37e-2b6685e3d9f2",
+        "outcome": "passed",
+        "applicability": "current",
+        "reasons": []
+      }
+    ],
+    "commands": [
+      {
+        "operation": "select",
+        "commandId": "req011-verification-result-selection-2026-10-28",
+        "receiptId": "df349c27-b731-4f80-b417-ea5e5ec3a466",
+        "nativeRevision": 99
+      },
+      {
+        "operation": "conclude",
+        "commandId": "req011-verification-conclusion-2026-10-28",
+        "receiptId": "bec01819-81b8-4b49-95d2-1eb1a30a5df0",
+        "nativeRevision": 100
+      }
+    ],
+    "originalFailureAndNotRunUnchanged": true,
+    "originalCorrectedActivitySelected": true,
+    "exactReplayWithoutWrites": true,
+    "interpretation": "A controlled conclusion from explicit interpretation of the original genuine failure and original corrected passing activity, not a new execution of those activities. The later relevant-change/reassessment sequence remains required."
+  },
+  "procedures": [
+    {
+      "path": "output/verification-capability/conclude-real.mjs",
+      "sha256": "12e4eed4614f73ea02220708037c49c1a27f9da4051730b0a77e5b67ececdc9b"
+    },
+    {
+      "path": "output/verification-capability/lifecycle-final-rehearsal.json",
+      "sha256": "9af7960b5c759fd598222c63c6856b05e73e6c509f671916ad9625d65ac48619"
+    },
+    {
+      "path": "output/verification-capability/lifecycle-real.json",
+      "sha256": "e1e1589a124837f33b220c033c4a51ca6298cc9a1a49bbaf4d64fd0f2a78a785"
+    }
+  ],
+  "documentation": [
+    {
+      "path": "docs/architecture.md",
+      "sha256": "4f24044b43e06842b63afd721ebb9a0310e6fb17bace435965969c6e2d06416f"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "20bf80afc7ea70c456dab4078786865e51f30eb3622e59f679a9ca7eb08626a2"
+    },
+    {
+      "path": "docs/api-reference.md",
+      "sha256": "ae4a11d6f34f49d5aa2ea70093a459b771fcb9c76631e389e13c53d44326d272"
+    },
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "a6ae53ceefec63d78ef3514bae0ebf59c94ab0c45a1b355ecf7b8a9d8158ca2d"
+    },
+    {
+      "path": "projects/tracer/README.md",
+      "sha256": "45ae7f8f1fff5596b1b9cc776db44a24da18453466c63c33a0c246d476e3ca98"
+    }
+  ],
+  "remaining": [
+    "Relevant change after the real controlled conclusion, observed source drift and explicit new current execution/reselection/reconclusion while preserving original failure and conclusion.",
+    "Shared verification UI for authoring/inspection, retained drafts and uncertain-save recovery through these same domain services.",
+    "Independent fresh-agent comprehension after UI exists, material findings addressed and representative-human validation explicitly separate.",
+    "Complete unchanged REQ-034 AC-1–10 and final full goal/quality/preservation audit."
+  ],
+  "validation": "not_validated: these are software contract checks and actual software-requirement verification using synthetic engineering data, not representative-human, physical-domain or regulatory/backend readiness evidence.",
+  "publicationCorrection": {
+    "reason": "Publish canonical JSON formatting and record its explicit revision; engineering candidate, execution results and acceptance remain unchanged.",
+    "originalReport": {
+      "path": "output/verification-capability/lifecycle-report-before-format.json",
+      "sha256": "b4c86714b7e146e2b53c66ec2501c03953c328bdf735cfa9c8dcfb3ea7f85900"
+    },
+    "originalPhaseReceiptId": "e2e1230b-66ec-4dff-a6bd-3d711174ab5f"
+  }
+}
