@@ -517,11 +517,11 @@ The implemented contract is `change_assessment`, version 1. It binds assessment/
 
 A selected definition is validated against its original governing schema and is retained through later profile edits/deletion. Current compatibility is reported separately; additional required record fields are surfaced. `requiredFields` is `null` when complete metadata is unavailable, and incompatible bindings cannot be treated as write-ready. Resolution uses native annotations and performs no external source IO. Limits are 64 KiB per definition, 128 KiB per serialized resolution, 1,000 fields per bound type/membership and 50 additional required fields per role. Reads reject malformed or unsupported rules/versions and never choose a newer model silently.
 
-This read service prepares shared application configuration. Assessment scope, disposition/action operations and controlled completion remain under implementation; a writable compatibility result does not establish those capabilities or an engineering conclusion.
+This read service prepares shared application configuration. Headless scope, disposition/action operations and controlled completion use the services below; a writable compatibility result alone establishes no engineering conclusion.
 
 ## Open a scoped change assessment
 
-Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. Opening and explicit scope refresh are implemented; dispositions, closure and dedicated UI authoring remain under implementation.
+Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. Opening, explicit scope refresh, dispositions/actions and closure/reopen are implemented headlessly. Dedicated UI authoring remains pending.
 
 A request contains:
 
@@ -533,7 +533,7 @@ A request contains:
 
 The result is the same native-plus-receipt shape as an evaluation command. The assessment's configured scope field retains its exact population, reasons/reachability and read basis. The opening receipt captures that assessment output and the native model version, and establishes no engineering conclusion. Discovery rejects above 25 candidates, 25 examined receipt rows or 64 KiB, retaining the existing impact traversal bounds. Narrow the declared investigation explicitly rather than treating a truncated page as complete.
 
-After an uncertain response, read `/api/evaluation-outcome?commandId=...` or run `evaluation outcome COMMAND_ID`. `null` means no visible success and does not prove an in-flight request failed. A deliberate exact repeat recovers the original result before current guards; clients never retry automatically. Never use an ordinary edited closed status as proof that the pending closure contract has been executed.
+After an uncertain response, read `/api/evaluation-outcome?commandId=...` or run `evaluation outcome COMMAND_ID`. `null` means no visible success and does not prove an in-flight request failed. A deliberate exact repeat recovers the original result before current guards; clients never retry automatically. Never use an ordinary edited closed status as proof that the controlled closure contract has been executed.
 
 ## Read and refresh an assessment
 
@@ -555,11 +555,56 @@ const result = await tracer.changeAssessments.refresh(
 );
 ```
 
-POST `/api/change-assessments/refresh` and CLI `assessment refresh JSON` use the same input. Refresh uses the original purpose/query; it adds new candidates and keeps prior candidates that no longer appear, with their earlier basis explicitly retained. It never clears obligations merely because a link was removed. The combined population remains limited to 25 candidates/64 KiB, and discovery examines at most 25 receipt rows including excluded own-output results. Overflow leaves the original assessment unchanged. Scope refresh records no dispositions or controlled completion.
+POST `/api/change-assessments/refresh` and CLI `assessment refresh JSON` use the same input. Refresh uses the original purpose/query; it adds new candidates and keeps prior candidates that no longer appear, with their earlier basis explicitly retained. It never clears obligations merely because a link was removed. The combined population remains limited to 25 candidates/64 KiB, and discovery examines at most 25 receipt rows after repository exclusion of this assessment’s own-output results. Overflow leaves the original assessment unchanged. Scope refresh records no dispositions or controlled completion.
 
 The read service validates model/scope/state/closure against captured application-command outputs. A raw closed value, changed model pointer or authored scope cannot establish controlled state. Native title/project-field edits are preserved. Current model incompatibility is readable but blocks refresh. Reads return compact presentation/provenance and complete recorded scope, bounded to 256 KiB. They do not rediscover scope automatically or claim that the stored discovery basis is current merely because the read succeeded.
 
 After a conflict, obtain a new view and deliberately re-prepare. After an uncertain response, use the existing evaluation outcome lookup. Exact repeats recover the original result even after later refreshes or reopen. A refresh receipt captures the prior scope as an historical input; its generic drift must not be mistaken for a failed refresh or an engineering applicability conclusion.
+
+## Judge candidates and manage completion
+
+Use `tracer.changeAssessments.analyze(selection)`, GET `/api/assessment-analysis`, or CLI `assessment analyze JSON` before preparing judgments or closure. Basic `get` returns controlled recorded state; `analyze` checks effective applicability, discovery and each obligation. A stored closed state can therefore coexist with `completion.state === "needs_reassessment"`.
+
+```ts
+const analysis = await tracer.changeAssessments.analyze(selection);
+const obligation = analysis.obligations[0];
+const view = analysis.view;
+await tracer.changeAssessments.setDisposition(
+  {
+    ...selection,
+    commandId: crypto.randomUUID(),
+    expectedSchemaVersion: view.model.context.schemaVersion,
+    expectedProjectRevision: view.model.context.projectRevision,
+    expectedEvidenceRevision: view.model.context.evidenceRevision,
+    expectedAssessmentVersion: view.assessment.version,
+    subject: obligation.subject,
+    dispositionId: crypto.randomUUID(),
+    membershipId: crypto.randomUUID(),
+    expectedDispositionVersion: 0,
+    expectedBasisDigest: obligation.currentDigest,
+    title: "Retain historical result",
+    decision: "no_action",
+    rationale:
+      "This result remains a historical claim; no current-input applicability is asserted.",
+    actions: [],
+    support: [],
+    additionalFields: {},
+  },
+  provenance,
+);
+```
+
+This example is a proposal for a known candidate, not a recommendation to mark every candidate no-action. Unknown facts require resolution or explicit model-authorized acknowledgment. Always prepare from a fresh analysis; expected digests and version guards reject stale proposals. For an existing judgment, reuse its disposition/membership IDs and current version, obtained through `changeAssessments.disposition(selection, subject)` (GET `/api/assessment-disposition`, CLI `assessment disposition JSON` with `{...selection, subject}`). New records use expected version zero. Each candidate has one controlled judgment, represented by an ordinary native record and membership link.
+
+POST `/api/change-assessments/disposition` or CLI `assessment set-disposition JSON` accepts the same proposal. Decision tokens are `no_action`, `revise`, `reverify`, `investigate` and `acknowledge_unknown`; the service maps these fixed meanings to the pinned model's configured native aliases. Actions contain stable `id`, `kind` (`revise`, `reverify`, `investigate`), `title`, `state` (`open`, `done`, `waived`), `resolution` and `support`. Keep prior action IDs/kinds on updates. Required decision actions cannot be omitted, and no-action cannot hide open work.
+
+Support selects `{kind:"entity"|"relationship", id, version, mode}` or `{kind:"receipt"|"observation", id, mode}`. Choose `mode:"historical"` to retain that exact recorded fact, or `mode:"current"` when the judgment depends on its continued applicability. Current means current recorded state, not a new filesystem/provider observation. Done actions require a resolution and known support including at least one current selection. Done reverification additionally requires a current receipt explicitly declaring the candidate (or appropriate same/superseding result). Merely naming it as output or supplying a native-only report for unavailable external content is insufficient. Historical results remain readable after supersession; current support rejects superseded results. Waiver requires explicit `allowActionWaiver:true` in the selected model; omission denies it. Unknown acknowledgment requires `allowUnknown:true` and does not silently resolve unknown bytes.
+
+Analysis reports each obligation as `undisposed`, `open_actions`, `stale_basis`, `unknown` or `accounted`. Discovery is separately `current`, `changed` or `unknown`. A new verification receipt may add a candidate: refresh explicitly and judge the expanded population before closing. Removed candidates retain obligations. Known native absence is captured explicitly; repeated observations of unchanged bytes and unrelated counters do not themselves stale semantic basis. Stored inputs retain exact versions/observations even when those bookkeeping identities are excluded from semantic comparison.
+
+Call `changeAssessments.close(request, provenance)` or `reopen` with `{...selection, commandId, expectedSchemaVersion, expectedProjectRevision, expectedEvidenceRevision, expectedAssessmentVersion, reason}` from a fresh analysis/view. HTTP uses POST `/api/change-assessments/close` or `/reopen`; CLI uses `assessment close JSON` or `assessment reopen JSON`. Closure requires current discovery and complete accounting. It records an immutable certificate and receipt, and rejects self-invalidating current support atomically. Reopening records a reason and retains historical completion; it does not rewrite the old result. A conflict requires deliberate preparation; an uncertain response uses the same evaluation outcome lookup/exact-repeat recovery as opening.
+
+Require features `change-assessment-dispositions` and `change-assessment-closure` when depending on these routes. Limits are five actions, ten support selections per use/twenty aggregate uses, 32 KiB proposal, 48 KiB captured judgment, 64 KiB detail and 256 KiB analysis. Basis captures allow 80 input/link/absence facts and 16 KiB declaration metadata; fingerprint facts are bounded to 1 MiB. See [the architecture contract](architecture.md#candidate-judgments-actions-and-supporting-basis) for ownership, evidence semantics and remaining delivery limits.
 
 ## Atomic evaluation operations
 
