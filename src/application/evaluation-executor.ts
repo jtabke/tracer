@@ -11,6 +11,7 @@ import { changesetCommandId } from "./changeset-command.ts";
 import { projectSchema } from "./native-query-support.ts";
 import { expectProjectRevision, expectEvidenceRevision } from "./version-guard.ts";
 import { prepareReceipt, captureReceipt } from "./receipt-capture.ts";
+import type { AssessmentOperation } from "../core/change-assessment.ts";
 
 export type EvaluationGuards = {
   commandId: string;
@@ -24,7 +25,11 @@ export type NativeBatch = (
   operations: Operation[],
   actor: Provenance,
 ) => Promise<ChangesetResult>;
-type Composition = { operations: Operation[]; receipt: ReceiptInput };
+export type EvaluationComposition = {
+  operations: Operation[];
+  receipt: ReceiptInput;
+  assertResult?: (tx: Transaction) => Promise<void>;
+};
 
 /** Internal, fixed native-plus-receipt protocol. Application intent precedes derived writes. */
 export class EvaluationExecutor {
@@ -39,8 +44,8 @@ export class EvaluationExecutor {
   async execute<T extends EvaluationGuards>(
     input: T,
     origin: Provenance,
-    compose: (tx: Transaction, request: T) => Promise<Composition>,
-    operation?: "change-assessment.open" | "change-assessment.refresh",
+    compose: (tx: Transaction, request: T) => Promise<EvaluationComposition>,
+    operation?: AssessmentOperation,
   ): Promise<EvaluationResult> {
     input = snapshotInput(input);
     const actor = validateProvenance(origin);
@@ -81,6 +86,7 @@ export class EvaluationExecutor {
       const native = proposal.operations.length
         ? await this.nativeBatch(tx, schema, proposal.operations, actor)
         : null;
+      await proposal.assertResult?.(tx);
       const receipt = await captureReceipt(tx, receiptInput, actor, this.newId);
       const result = { commandId: input.commandId, native, receipt };
       await tx.appendEvaluationCommand(input.commandId, intent, result);

@@ -88,7 +88,16 @@ function linkVersions(value: unknown) {
   }
 }
 function receiptCandidate(value: Record<string, unknown>) {
-  knownProperties(value, ["kind", "id", "scope", "supersession", "inputs", "relationshipInputs"]);
+  knownProperties(value, [
+    "kind",
+    "id",
+    "contentIds",
+    "scope",
+    "supersession",
+    "inputs",
+    "relationshipInputs",
+  ]);
+  if (value.contentIds !== undefined) ids(value.contentIds, 100);
   const scope = value.scope;
   object(scope, ["inputIds", "relationshipIds", "hasChanged", "hasUnknown", "state"]);
   ids(scope.inputIds, 100);
@@ -153,6 +162,45 @@ function metadata(value: Record<string, unknown>, keys: Set<string>) {
     seen.add(key);
   }
 }
+function registrationMetadata(value: Record<string, unknown>, keys: Set<string>) {
+  if (value.dispositions !== undefined) {
+    list(value.dispositions, changeAssessmentLimits.candidates);
+    const subjects = new Set<string>(),
+      records = new Set<string>(),
+      members = new Set<string>();
+    for (const entry of value.dispositions) {
+      object(entry, ["subject", "id", "membershipId", "commandId"]);
+      object(entry.subject, ["kind", "id"]);
+      text(entry.subject.id);
+      text(entry.id);
+      text(entry.membershipId);
+      text(entry.commandId);
+      const subject = String(entry.subject.kind) + ":" + entry.subject.id;
+      ensure(
+        keys.has(subject) &&
+          !subjects.has(subject) &&
+          !records.has(entry.id) &&
+          !members.has(entry.membershipId),
+        "validation",
+        "Invalid disposition registry",
+      );
+      subjects.add(subject);
+      records.add(entry.id);
+      members.add(entry.membershipId);
+    }
+  }
+  if (value.reopened !== undefined) {
+    object(value.reopened, ["fromCommandId", "reason"]);
+    text(value.reopened.fromCommandId);
+    ensure(
+      typeof value.reopened.reason === "string" &&
+        value.reopened.reason.trim().length > 0 &&
+        value.reopened.reason.length <= 4000,
+      "validation",
+      "Reopen needs rationale",
+    );
+  }
+}
 /** Validate stored and wire scope data without treating a JSON status as engineering proof. */
 export function parseAssessmentScope(value: unknown): AssessmentScope {
   ensure(
@@ -173,6 +221,8 @@ export function parseAssessmentScope(value: unknown): AssessmentScope {
     "control",
     "retained",
     "refresh",
+    "dispositions",
+    "reopened",
   ]);
   ensure(
     value.contract === "change_assessment_scope" &&
@@ -231,5 +281,6 @@ export function parseAssessmentScope(value: unknown): AssessmentScope {
   }
   ensure(keys.has("entity:" + query.rootId), "validation", "Scope omits its selected root");
   metadata(value, keys);
+  registrationMetadata(value, keys);
   return value as AssessmentScope;
 }

@@ -1,9 +1,12 @@
+import { assessmentText, parseCandidate } from "../core/assessment-disposition.ts";
 import { ensure, json, knownProperties, record } from "../core/model.ts";
 import type { Provenance } from "../core/model.ts";
 import type {
   AssessmentSelection,
   RefreshChangeAssessment,
   OpenChangeAssessment,
+  SetAssessmentDisposition,
+  CandidateKey,
 } from "../core/change-assessment.ts";
 import type { Repository } from "./ports/repository.ts";
 import { prepareAssessmentSelection, assessmentContext } from "./assessment-context.ts";
@@ -15,6 +18,11 @@ import { EvaluationExecutor } from "./evaluation-executor.ts";
 import { prepareModelPin, resolveApplicationModel } from "./application-models.ts";
 import { impactQuery } from "./impact-context.ts";
 import { discoverAssessmentScope } from "./assessment-scope.ts";
+import { prepareDisposition, prepareAssessmentMutation } from "./assessment-disposition-input.ts";
+import { setAssessmentDisposition, assessmentDispositions } from "./assessment-dispositions.ts";
+import { analyzeAssessment } from "./assessment-analysis.ts";
+import { concludeAssessment } from "./assessment-closure.ts";
+import { candidateKey } from "./assessment-facts.ts";
 
 function prepareOpen(input: OpenChangeAssessment) {
   input = snapshotInput(input);
@@ -67,6 +75,63 @@ export class ChangeAssessments {
     this.repository = repository;
     this.executor = executor;
   }
+  async analyze(input: AssessmentSelection) {
+    input = prepareAssessmentSelection(input);
+    return this.repository.transaction(async (tx) => {
+      const result = (await analyzeAssessment(tx, input)).analysis;
+      ensure(
+        new TextEncoder().encode(JSON.stringify(result)).byteLength <=
+          changeAssessmentLimits.viewBytes,
+        "validation",
+        "Assessment analysis exceeds 256 KiB",
+      );
+      return result;
+    });
+  }
+  async disposition(input: AssessmentSelection, subject: CandidateKey) {
+    input = prepareAssessmentSelection(input);
+    subject = parseCandidate(snapshotInput(subject));
+    return this.repository.transaction(async (tx) => {
+      const { view } = await assessmentContext(tx, input);
+      ensure(
+        view.scope.candidates.some(
+          (candidate) => candidateKey(candidate) === candidateKey(subject),
+        ),
+        "validation",
+        "Candidate is outside the declared assessment population",
+      );
+      return (
+        (await assessmentDispositions(tx, view)).find(
+          (item) => candidateKey(item.disposition.data.subject) === candidateKey(subject),
+        )?.disposition ?? null
+      );
+    });
+  }
+  async setDisposition(input: SetAssessmentDisposition, actor: Provenance) {
+    input = prepareDisposition(input);
+    return this.executor.execute(
+      input,
+      actor,
+      setAssessmentDisposition,
+      "change-assessment.disposition",
+    );
+  }
+  async close(input: RefreshChangeAssessment, actor: Provenance) {
+    return this.conclude(input, actor, false);
+  }
+  async reopen(input: RefreshChangeAssessment, actor: Provenance) {
+    return this.conclude(input, actor, true);
+  }
+  private conclude(input: RefreshChangeAssessment, actor: Provenance, reopen: boolean) {
+    input = prepareAssessmentMutation(input, ["reason"]);
+    assessmentText(input.reason);
+    return this.executor.execute(
+      input,
+      actor,
+      (tx, request) => concludeAssessment(tx, request, reopen),
+      reopen ? "change-assessment.reopen" : "change-assessment.close",
+    );
+  }
   async get(input: AssessmentSelection) {
     input = prepareAssessmentSelection(input);
     return this.repository.transaction(async (tx) => {
@@ -81,37 +146,8 @@ export class ChangeAssessments {
     });
   }
   async refresh(input: RefreshChangeAssessment, actor: Provenance) {
-    input = snapshotInput(input);
-    ensure(record(input) && json(input), "validation", "Invalid assessment refresh");
-    knownProperties(input, [
-      "assessmentId",
-      "openingCommandId",
-      "commandId",
-      "expectedSchemaVersion",
-      "expectedProjectRevision",
-      "expectedEvidenceRevision",
-      "expectedAssessmentVersion",
-      "reason",
-    ]);
-    prepareAssessmentSelection({
-      assessmentId: input.assessmentId,
-      openingCommandId: input.openingCommandId,
-    });
-    for (const key of ["expectedProjectRevision", "expectedEvidenceRevision"] as const)
-      ensure(
-        Number.isSafeInteger(input[key]) && input[key] >= 0,
-        "validation",
-        "Refresh requires exact native and evidence guards",
-      );
-    ensure(
-      Number.isSafeInteger(input.expectedAssessmentVersion) &&
-        input.expectedAssessmentVersion > 0 &&
-        typeof input.reason === "string" &&
-        input.reason.trim().length > 0 &&
-        input.reason.length <= 4000,
-      "validation",
-      "Refresh requires an assessment version and rationale",
-    );
+    input = prepareAssessmentMutation(input, ["reason"]);
+    assessmentText(input.reason);
     return this.executor.execute(input, actor, refreshAssessment, "change-assessment.refresh");
   }
   async open(input: OpenChangeAssessment, actor: Provenance) {

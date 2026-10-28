@@ -1,3 +1,5 @@
+import { expectVersion } from "./version-guard.ts";
+import { parseAssessmentClosure } from "../core/assessment-closure.ts";
 import { ensure, json, knownProperties, record } from "../core/model.ts";
 import { canonical } from "../core/evidence.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
@@ -33,7 +35,14 @@ async function command(
   const intent: unknown = JSON.parse(stored.intent);
   ensure(record(intent) && record(intent.input), "storage", "Invalid assessment command intent");
   ensure(
-    intent.operation === (opening ? "change-assessment.open" : "change-assessment.refresh") &&
+    (opening
+      ? intent.operation === "change-assessment.open"
+      : [
+          "change-assessment.refresh",
+          "change-assessment.disposition",
+          "change-assessment.close",
+          "change-assessment.reopen",
+        ].includes(String(intent.operation))) &&
       intent.input.assessmentId === selection.assessmentId &&
       (opening || intent.input.openingCommandId === selection.openingCommandId),
     "conflict",
@@ -48,7 +57,11 @@ async function command(
 }
 
 /** Direct journal lookups, not a search through historical receipts or authored status values. */
-export async function assessmentContext(tx: Transaction, selection: AssessmentSelection) {
+export async function assessmentContext(
+  tx: Transaction,
+  selection: AssessmentSelection,
+  expectedVersion?: number,
+) {
   const opening = await command(tx, selection.openingCommandId, selection, true);
   ensure(record(opening.intent.model), "storage", "Opening model selection is missing");
   const pin = prepareModelPin(
@@ -64,6 +77,8 @@ export async function assessmentContext(tx: Transaction, selection: AssessmentSe
   );
   const entity = await tx.get("entity", selection.assessmentId);
   ensure(entity, "not_found", "Assessment is unavailable");
+  if (expectedVersion !== undefined)
+    expectVersion(entity.version, expectedVersion, false, { kind: "entity", id: entity.id });
   ensure(
     entity.type === binding.type &&
       canonical(entity.fields[binding.fields.model]) === canonical(pin),
@@ -122,5 +137,20 @@ export async function assessmentContext(tx: Transaction, selection: AssessmentSe
     },
     scope,
   };
-  return { entity, view };
+  const certificate =
+    state === model.definition.states.closed
+      ? parseAssessmentClosure(
+          entity.fields[binding.fields.closure],
+          scope,
+          controlId,
+          selection.openingCommandId,
+        )
+      : null;
+  if (certificate)
+    ensure(
+      control.result.native?.changeset.projectRevision === certificate.at.projectRevision + 1,
+      "conflict",
+      "Closure context does not match its committed revision",
+    );
+  return { entity, view, certificate };
 }

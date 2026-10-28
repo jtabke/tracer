@@ -25,6 +25,8 @@ export type ImpactReceiptQuery = {
   relationshipIds: string[];
   after?: string;
   limit: number;
+  /** Exclude one output before paging, for nonrecursive application discovery. */
+  excludeOutputId?: string;
 };
 export type ImpactDelta<T> = {
   id: string;

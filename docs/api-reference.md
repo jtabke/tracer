@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`.
+Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -21,6 +21,8 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | Method | Path | Query parameters or JSON keys |
 | --- | --- | --- |
 | GET | `/api/application-model` | `entityId`* (text), `version`* (integer), `field`* (text) |
+| GET | `/api/assessment-analysis` | `assessmentId`* (text), `openingCommandId`* (text) |
+| GET | `/api/assessment-disposition` | `assessmentId`* (text), `openingCommandId`* (text), `kind`* (text), `id`* (text) |
 | GET | `/api/baseline` | `id`* (text) |
 | GET | `/api/baseline-contents` | `after` (text), `limit` (integer), `baselineId`* (text), `kind`* (text) |
 | GET | `/api/baselines` | `after` (text), `limit` (integer) |
@@ -60,8 +62,11 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/work` | `after` (text), `limit` (integer), `type` (text), `key` (text), `search` (text), `field` (text), `value` (text), `without` (text), `targetType` (text) |
 | GET | `/api/working-context` | `query`* (json) |
 | POST | `/api/baselines` | `id`, `name`, `expectedProjectRevision`, `projectRevision` |
+| POST | `/api/change-assessments/close` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
+| POST | `/api/change-assessments/disposition` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `subject`, `dispositionId`, `membershipId`, `expectedDispositionVersion`, `expectedBasisDigest`, `title`, `decision`, `rationale`, `actions`, `support`, `additionalFields` |
 | POST | `/api/change-assessments/open` | `commandId`, `assessmentId`, `title`, `purpose`, `model`, `query`, `additionalFields`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision` |
 | POST | `/api/change-assessments/refresh` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
+| POST | `/api/change-assessments/reopen` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
 | POST | `/api/changesets` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `operations` |
 | POST | `/api/configurations` | `name`, `subjectId`, `expectedSubjectVersion`, `members`, `relationships` |
 | POST | `/api/coverage-expectations` | `expectations`, `expectedSchemaVersion` |

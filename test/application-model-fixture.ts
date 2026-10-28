@@ -1,3 +1,9 @@
+import type {
+  AssessmentSelection,
+  RefreshChangeAssessment,
+  CandidateKey,
+  SetAssessmentDisposition,
+} from "../src/core/change-assessment.ts";
 import type { OpenChangeAssessment } from "../src/core/change-assessment.ts";
 import { evaluationFixture, evaluationActor } from "./evaluation-fixture.ts";
 import type { ChangeAssessmentModel, ApplicationModelPin } from "../src/core/application-model.ts";
@@ -161,4 +167,46 @@ export async function assessmentOpenRequest(
     expectedProjectRevision: model.context.projectRevision,
     expectedEvidenceRevision: model.context.evidenceRevision,
   } satisfies OpenChangeAssessment;
+}
+
+export async function assessmentCommand(
+  f: Awaited<ReturnType<typeof applicationModelFixture>>,
+  selection: AssessmentSelection,
+): Promise<RefreshChangeAssessment> {
+  const view = await f.tracer.changeAssessments.get(selection);
+  return {
+    ...selection,
+    commandId: crypto.randomUUID(),
+    expectedSchemaVersion: view.model.context.schemaVersion,
+    expectedProjectRevision: view.model.context.projectRevision,
+    expectedEvidenceRevision: view.model.context.evidenceRevision,
+    expectedAssessmentVersion: view.assessment.version,
+    reason: "Synthetic explicit controlled assessment conclusion",
+  };
+}
+export async function dispositionProposal(
+  f: Awaited<ReturnType<typeof applicationModelFixture>>,
+  selection: AssessmentSelection,
+  subject: CandidateKey,
+): Promise<SetAssessmentDisposition> {
+  const analysis = await f.tracer.changeAssessments.analyze(selection),
+    prior = await f.tracer.changeAssessments.disposition(selection, subject);
+  const basis = analysis.obligations.find(
+    (item) => item.subject.kind === subject.kind && item.subject.id === subject.id,
+  )!;
+  const { reason: _reason, ...base } = await assessmentCommand(f, selection);
+  return {
+    ...base,
+    subject,
+    dispositionId: prior?.id ?? crypto.randomUUID(),
+    membershipId: prior?.membershipId ?? crypto.randomUUID(),
+    expectedDispositionVersion: prior?.version ?? 0,
+    expectedBasisDigest: basis.currentDigest,
+    title: "Candidate assessment",
+    decision: "no_action",
+    rationale: "Synthetic known current basis is accounted for; no release approval asserted",
+    actions: prior?.actions ?? [],
+    support: [],
+    additionalFields: {},
+  };
 }

@@ -7,6 +7,11 @@ Commands:
   assessment open JSON                guarded model-bound scope; recover with evaluation outcome COMMAND_ID
   assessment get JSON                 assessmentId + openingCommandId; controlled scope and exact model
   assessment refresh JSON             guarded rediscovery retains prior obligations; no automatic retry
+  assessment analyze JSON             bounded obligations, discovery and effective completion
+  assessment disposition JSON         selection + subject; full controlled judgment or null
+  assessment set-disposition JSON     guarded judgment/actions/support; explicit assessed basis
+  assessment close JSON               complete accounted scope; records immutable conclusion
+  assessment reopen JSON              explicit reassessment; preserves historical closure
   evaluation commit JSON              atomic native operations plus receipt; required commandId/schema guard
   evaluation outcome COMMAND_ID       original committed evaluation result or null; no automatic retry
   next-work get [QUERY_JSON]            five separate current-work queues; requirementType/statementField/allocationExpectationId/verificationExpectationId

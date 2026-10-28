@@ -276,7 +276,7 @@ test("refresh refuses an oversized union rather than deleting earlier obligation
   }
 });
 
-test("excluded own-output receipts consume the work budget without reading a twenty-sixth row", async () => {
+test("own-output receipts are excluded before pagination so assessment history cannot exhaust discovery", async () => {
   const f = await applicationModelFixture();
   try {
     const opening = await assessmentOpenRequest(f);
@@ -303,10 +303,14 @@ test("excluded own-output receipts consume the work budget without reading a twe
         };
         return work(tx);
       });
-    await assert.rejects(f.tracer.changeAssessments.refresh(request, actor), /exceeds 25 rows/);
-    assert.equal(examined, 25);
-    assert.deepEqual(await f.tracer.exportProject(), before);
-    assert.equal(await f.tracer.evaluations.getOutcome(request.commandId), null);
+    await f.tracer.changeAssessments.refresh(request, actor);
+    assert.equal(examined, 1);
+    const view = await f.tracer.changeAssessments.get({
+      assessmentId: opening.assessmentId,
+      openingCommandId: opening.commandId,
+    });
+    assert.equal(view.scope.candidates.length, 1);
+    assert.equal(before.projectRevision + 1, (await f.tracer.exportProject()).projectRevision);
   } finally {
     f.close();
   }

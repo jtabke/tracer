@@ -153,6 +153,22 @@ export function repositoryEvaluationContract(name: string, open: () => Promise<R
     );
     fail = false;
     const result = await tracer.evaluations.commit(f.command, actor);
+    await f.fixture.repository.transaction(async (tx) => {
+      assert.equal(
+        (await tx.impactReceipts({ entityIds: [f.criterion.id], relationshipIds: [], limit: 1 }))
+          .items.length,
+        1,
+      );
+      assert.deepEqual(
+        await tx.impactReceipts({
+          entityIds: [f.criterion.id],
+          relationshipIds: [],
+          limit: 1,
+          excludeOutputId: result.receipt.output.id,
+        }),
+        { items: [] },
+      );
+    });
     await assert.rejects(
       f.fixture.repository.transaction((tx) =>
         tx.appendEvaluationCommand(f.command.commandId, "replace", result),

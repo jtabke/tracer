@@ -15,7 +15,10 @@ const view = object({
   control: object({ commandId: text, receiptId: text, assessmentVersion: integer(1) }),
   scope: parseAssessmentScope,
 });
-function response(value: unknown, input: AssessmentSelection): ChangeAssessmentView {
+export function assessmentViewResponse(
+  value: unknown,
+  input: AssessmentSelection,
+): ChangeAssessmentView {
   if (new TextEncoder().encode(JSON.stringify(value)).byteLength > changeAssessmentLimits.viewBytes)
     throw Error("Assessment view exceeds 256 KiB");
   const decoded = view(value);
@@ -32,7 +35,9 @@ function response(value: unknown, input: AssessmentSelection): ChangeAssessmentV
     model.context.schemaVersion < decoded.scope.basis.schemaVersion ||
     model.context.evidenceRevision < decoded.scope.basis.evidenceRevision ||
     decoded.assessment.type !== model.definition.assessment.type ||
-    decoded.assessment.state !== model.definition.states.open
+    ![model.definition.states.open, model.definition.states.closed].includes(
+      decoded.assessment.state,
+    )
   )
     throw Error("Assessment view does not match its selection or controlled context");
   return { ...decoded, model };
@@ -41,7 +46,7 @@ export const assessmentReads = {
   "/api/change-assessment": read({
     features: ["change-assessment-scope-refresh"],
     query: q.query({ assessmentId: q.textParam, openingCommandId: q.textParam }),
-    response,
+    response: assessmentViewResponse,
     handle: ({ tracer }, input) => {
       const assessments: ChangeAssessments = tracer.changeAssessments;
       return assessments.get(input);

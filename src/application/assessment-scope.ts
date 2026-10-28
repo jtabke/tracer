@@ -10,10 +10,17 @@ import type {
   OpenChangeAssessment,
 } from "../core/change-assessment.ts";
 
-function receiptCandidate(item: ImpactReceipt): AssessmentReceiptCandidate {
+function receiptCandidate(item: ImpactReceipt, entityIds: Set<string>): AssessmentReceiptCandidate {
   return {
     kind: "receipt",
     id: item.receipt.id,
+    contentIds: [
+      ...new Set(
+        item.comparison.inputs
+          .filter((input) => entityIds.has(input.entityId))
+          .map((input) => input.entityId),
+      ),
+    ],
     scope: item.scope,
     supersession: item.supersession,
     inputs: item.comparison.inputs.map((input) => ({
@@ -58,7 +65,7 @@ export async function discoverAssessmentScope(
   request: Pick<OpenChangeAssessment, "assessmentId" | "purpose" | "query">,
 ): Promise<AssessmentScope> {
   // One receipt per page bounds comparison work even for receipts with 100 declarations.
-  let impact = await readChangeImpact(tx, { ...request.query, limit: 1 });
+  let impact = await readChangeImpact(tx, { ...request.query, limit: 1 }, request.assessmentId);
   ensure(
     impact.native.entities.length + impact.native.relationships.length <=
       changeAssessmentLimits.candidates,
@@ -89,7 +96,9 @@ export async function discoverAssessmentScope(
   for (let rows = 1; ; rows++) {
     for (const item of impact.evaluations.items) {
       if (item.receipt.output.id === request.assessmentId) continue;
-      scope.candidates.push(receiptCandidate(item));
+      scope.candidates.push(
+        receiptCandidate(item, new Set(impact.native.entities.map((item) => item.id))),
+      );
     }
     ensure(
       scope.candidates.length <= changeAssessmentLimits.candidates,
@@ -102,11 +111,15 @@ export async function discoverAssessmentScope(
       "validation",
       "Assessment receipt discovery exceeds 25 rows; narrow the scope",
     );
-    impact = await readChangeImpact(tx, {
-      ...request.query,
-      limit: 1,
-      after: impact.evaluations.nextAfter,
-    });
+    impact = await readChangeImpact(
+      tx,
+      {
+        ...request.query,
+        limit: 1,
+        after: impact.evaluations.nextAfter,
+      },
+      request.assessmentId,
+    );
   }
   ensure(
     new TextEncoder().encode(JSON.stringify(scope)).byteLength <= changeAssessmentLimits.scopeBytes,

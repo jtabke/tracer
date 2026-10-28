@@ -12,7 +12,7 @@ import type {
 } from "../core/evidence.ts";
 import type { Transaction } from "./ports/repository.ts";
 
-function nativeState(value: Entity, fields?: string[]) {
+export function nativeState(value: Entity, fields?: string[]) {
   return fields
     ? fields.map((name) => ({
         name,

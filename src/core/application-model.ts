@@ -30,7 +30,7 @@ export type ChangeAssessmentModel = {
   relationships: { member: string };
   states: { open: string; closed: string };
   decisions: Record<AssessmentDecision, string>;
-  policy: { allowUnknown: boolean };
+  policy: { allowUnknown: boolean; allowActionWaiver?: boolean };
 };
 export const applicationModelFieldTypes = {
   assessment: { title: "string", state: "string", model: "json", scope: "json", closure: "json" },
@@ -145,12 +145,19 @@ export function parseChangeAssessmentModel(value: unknown): ChangeAssessmentMode
   labels(result.relationships, ["member"], ["relationships"]);
   labels(result.states, ["open", "closed"], ["states"]);
   labels(result.decisions, assessmentDecisions, ["decisions"]);
-  const policy = shape(result.policy, ["allowUnknown"], ["policy"]);
+  ensure(record(result.policy), "validation", "Application policy needs an object");
+  knownProperties(result.policy, ["allowUnknown", "allowActionWaiver"], ["policy"]);
+  const policy = result.policy;
   ensure(
     typeof policy.allowUnknown === "boolean",
     "validation",
     "Unknown-state policy must be explicit",
     { path: ["policy", "allowUnknown"] },
+  );
+  ensure(
+    policy.allowActionWaiver === undefined || typeof policy.allowActionWaiver === "boolean",
+    "validation",
+    "Invalid action waiver policy",
   );
   return result as ChangeAssessmentModel;
 }

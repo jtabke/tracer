@@ -2,6 +2,8 @@ import type { ApplicationModelPin } from "./application-model.ts";
 import type { ChangeImpact, ChangeImpactQuery, ImpactReceipt } from "./impact.ts";
 import type { Fields } from "./model.ts";
 import type { ResolvedApplicationModel } from "./application-model.ts";
+import type { AssessmentDecision } from "./application-model.ts";
+import type { InputDeclaration, RelationshipDeclaration } from "./evidence.ts";
 
 export const changeAssessmentLimits = { candidates: 25, scopeBytes: 65536, viewBytes: 262144 };
 export type AssessmentScopeQuery = Pick<
@@ -31,6 +33,7 @@ export type AssessmentNativeCandidate = {
 export type AssessmentReceiptCandidate = {
   kind: "receipt";
   id: string;
+  contentIds?: string[];
   scope: ImpactReceipt["scope"];
   supersession: ImpactReceipt["supersession"];
   inputs: {
@@ -68,7 +71,114 @@ export type AssessmentScope = {
     basis: AssessmentScope["basis"];
   }[];
   refresh?: { reason: string; previousAssessmentVersion: number };
+  dispositions?: DispositionRegistration[];
+  reopened?: { fromCommandId: string; reason: string };
 };
+
+export type CandidateKey = { kind: "entity" | "relationship" | "receipt"; id: string };
+export type DispositionRegistration = {
+  subject: CandidateKey;
+  id: string;
+  membershipId: string;
+  commandId: string;
+};
+export type SupportReference = (
+  | { kind: "entity" | "relationship"; id: string; version: number }
+  | { kind: "receipt" | "observation"; id: string }
+) & { mode: "historical" | "current" };
+export type AssessmentAction = {
+  id: string;
+  kind: "revise" | "reverify" | "investigate";
+  title: string;
+  state: "open" | "done" | "waived";
+  resolution: string;
+  support: SupportReference[];
+};
+export type CapturedBasis = {
+  contract: "assessment_basis";
+  version: 1;
+  digest: string;
+  hasUnknown: boolean;
+  at: { projectRevision: number; evidenceRevision: number };
+  inputs: InputDeclaration[];
+  relationshipInputs: RelationshipDeclaration[];
+  absences: CandidateKey[];
+};
+export type ResolvedSupport = CapturedBasis & { reference: SupportReference };
+export type DispositionData = {
+  subject: CandidateKey;
+  basis: CapturedBasis;
+  support: ResolvedSupport[];
+  actionSupport: { id: string; support: ResolvedSupport[] }[];
+};
+export type DispositionView = {
+  assessment: AssessmentSelection;
+  id: string;
+  version: number;
+  membershipId: string;
+  title: string;
+  decision: AssessmentDecision;
+  rationale: string;
+  actions: AssessmentAction[];
+  data: DispositionData;
+};
+export type SetAssessmentDisposition = Omit<RefreshChangeAssessment, "reason"> & {
+  subject: CandidateKey;
+  dispositionId: string;
+  membershipId: string;
+  expectedDispositionVersion: number;
+  expectedBasisDigest: string;
+  title: string;
+  decision: AssessmentDecision;
+  rationale: string;
+  actions: AssessmentAction[];
+  support: SupportReference[];
+  additionalFields: Fields;
+};
+export type AssessmentObligation = {
+  subject: CandidateKey;
+  currentDigest: string;
+  hasUnknown: boolean;
+  disposition: {
+    id: string;
+    version: number;
+    membershipId: string;
+    decision: AssessmentDecision;
+    rationalePreview: string;
+  } | null;
+  state: "undisposed" | "open_actions" | "stale_basis" | "unknown" | "accounted";
+  openActions: number;
+  waivedActions: number;
+};
+export type AssessmentAnalysis = {
+  view: ChangeAssessmentView;
+  obligations: AssessmentObligation[];
+  discovery: "current" | "changed" | "unknown";
+  discoveryReason: string | null;
+  completion: { state: "open" | "completed" | "needs_reassessment"; receiptId: string | null };
+};
+export type AssessmentClosure = {
+  contract: "change_assessment_closure";
+  version: 1;
+  commandId: string;
+  openingCommandId: string;
+  rationale: string;
+  at: { projectRevision: number; evidenceRevision: number };
+  population: { subject: CandidateKey; digest: string }[];
+  judgments: {
+    id: string;
+    version: number;
+    membershipId: string;
+    membershipVersion: number;
+    digest: string;
+  }[];
+};
+export type AssessmentOperation =
+  | "change-assessment.open"
+  | "change-assessment.refresh"
+  | "change-assessment.disposition"
+  | "change-assessment.close"
+  | "change-assessment.reopen";
 
 export type AssessmentSelection = { assessmentId: string; openingCommandId: string };
 export type RefreshChangeAssessment = AssessmentSelection & {

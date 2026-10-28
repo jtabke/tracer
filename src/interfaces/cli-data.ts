@@ -16,6 +16,33 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "assessment analyze": ({ tracer, args }) =>
+    tracer.changeAssessments.analyze(
+      requiredInput<import("../core/change-assessment.ts").AssessmentSelection>(args),
+    ),
+  "assessment disposition": ({ tracer, args }) => {
+    const { subject, ...selection } = requiredInput<
+      import("../core/change-assessment.ts").AssessmentSelection & {
+        subject: import("../core/change-assessment.ts").CandidateKey;
+      }
+    >(args);
+    return tracer.changeAssessments.disposition(selection, subject);
+  },
+  "assessment set-disposition": ({ tracer, args, origin }) =>
+    tracer.changeAssessments.setDisposition(
+      requiredInput<import("../core/change-assessment.ts").SetAssessmentDisposition>(args),
+      origin,
+    ),
+  "assessment close": ({ tracer, args, origin }) =>
+    tracer.changeAssessments.close(
+      requiredInput<import("../core/change-assessment.ts").RefreshChangeAssessment>(args),
+      origin,
+    ),
+  "assessment reopen": ({ tracer, args, origin }) =>
+    tracer.changeAssessments.reopen(
+      requiredInput<import("../core/change-assessment.ts").RefreshChangeAssessment>(args),
+      origin,
+    ),
   "assessment get": ({ tracer, args }) =>
     tracer.changeAssessments.get(
       requiredInput<import("../core/change-assessment.ts").AssessmentSelection>(args),

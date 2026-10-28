@@ -75,6 +75,7 @@ export class ChangeImpactService {
 export async function readChangeImpact(
   tx: Transaction,
   query: ChangeImpactQuery,
+  excludeOutputId?: string,
 ): Promise<ChangeImpact> {
   const { scope, limit } = impactQuery(query);
   const context = await impactContext(tx, query),
@@ -94,6 +95,7 @@ export async function readChangeImpact(
     relationshipIds: [...relationshipIds],
     after,
     limit,
+    ...(excludeOutputId === undefined ? {} : { excludeOutputId }),
   });
   ensure(
     page.items.reduce(

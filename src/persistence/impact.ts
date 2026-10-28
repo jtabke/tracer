@@ -74,12 +74,15 @@ function receiptPage(db: DatabaseSync, query: ImpactReceiptQuery) {
         WHERE dependency_kind='relationship' AND object_id IN (SELECT value FROM json_each(?))
     ) SELECT e.sequence,e.payload_json FROM selected CROSS JOIN evidence e
       WHERE e.sequence=selected.receipt_sequence AND e.sequence>?
+        AND (? IS NULL OR e.subject_id<>?)
       ORDER BY e.sequence LIMIT ?`,
     )
     .all(
       JSON.stringify(query.entityIds),
       JSON.stringify(query.relationshipIds),
       Number(query.after ?? 0),
+      query.excludeOutputId ?? null,
+      query.excludeOutputId ?? null,
       query.limit + 1,
     );
   return jsonPage<Receipt>(rows, query.limit);

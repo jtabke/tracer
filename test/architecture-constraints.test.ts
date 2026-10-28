@@ -249,6 +249,12 @@ void assessmentResult;
 const assessmentSelection = {assessmentId: "assessment", openingCommandId: "open-command"};
 const assessmentView: Promise<import("../src/core/change-assessment.ts").ChangeAssessmentView> = client.read("/api/change-assessment", assessmentSelection);
 void assessmentView;
+const analysis: Promise<import("../src/core/change-assessment.ts").AssessmentAnalysis> = client.read("/api/assessment-analysis", assessmentSelection);
+void analysis;
+// @ts-expect-error disposition operations require explicit candidate basis and action/support declarations
+void client.write("/api/change-assessments/disposition", {...assessmentSelection, commandId: "judgment"});
+// @ts-expect-error closure requires exact native/evidence/record guards and rationale
+void client.write("/api/change-assessments/close", assessmentSelection);
 // @ts-expect-error controlled assessment selection requires original opening command identity
 void client.read("/api/change-assessment", {assessmentId: "assessment"});
 // @ts-expect-error refresh needs explicit native/evidence/assessment guards and rationale

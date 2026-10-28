@@ -20,6 +20,7 @@ import type {
 import { applicationModelReads } from "./api/application-models.ts";
 import { changeAssessmentWrites } from "./api/change-assessments.ts";
 import { assessmentReads } from "./api/assessment-reads.ts";
+import { assessmentLifecycleReads, assessmentLifecycleWrites } from "./api/assessment-lifecycle.ts";
 import { nativeReads, nativeWrites } from "./api/native.ts";
 import { analysisReads, analysisWrites } from "./api/analysis.ts";
 import { evidenceReads, evidenceWrites } from "./api/evidence.ts";
@@ -27,6 +28,7 @@ import { evaluationReads, evaluationWrites } from "./api/evaluations.ts";
 import { sessionReads } from "./api/session.ts";
 
 export const readEndpoints = {
+  ...assessmentLifecycleReads,
   ...assessmentReads,
   ...applicationModelReads,
   ...nativeReads,
@@ -36,6 +38,7 @@ export const readEndpoints = {
   ...evaluationReads,
 };
 export const writeEndpoints = {
+  ...assessmentLifecycleWrites,
   ...changeAssessmentWrites,
   ...nativeWrites,
   ...analysisWrites,

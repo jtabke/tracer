@@ -4,7 +4,6 @@ import type { AssessmentScope, RefreshChangeAssessment } from "../core/change-as
 import type { Transaction } from "./ports/repository.ts";
 import { assessmentContext } from "./assessment-context.ts";
 import { discoverAssessmentScope } from "./assessment-scope.ts";
-import { expectVersion } from "./version-guard.ts";
 import type { Operation } from "./commands.ts";
 import type { ReceiptInput } from "../core/evidence.ts";
 
@@ -38,6 +37,8 @@ function retain(
   });
   return parseAssessmentScope({
     ...next,
+    ...(previous.dispositions ? { dispositions: previous.dispositions } : {}),
+    ...(previous.reopened ? { reopened: previous.reopened } : {}),
     candidates: [...candidates, ...discovered.values()],
     retained,
     control: { commandId: request.commandId, openingCommandId: request.openingCommandId },
@@ -51,11 +52,7 @@ export async function refreshAssessment(
   tx: Transaction,
   request: RefreshChangeAssessment,
 ): Promise<{ operations: Operation[]; receipt: ReceiptInput }> {
-  const { entity, view } = await assessmentContext(tx, request);
-  expectVersion(entity.version, request.expectedAssessmentVersion, false, {
-    kind: "entity",
-    id: entity.id,
-  });
+  const { entity, view } = await assessmentContext(tx, request, request.expectedAssessmentVersion);
   const model = view.model.definition,
     fields = model.assessment.fields;
   ensure(
