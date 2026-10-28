@@ -16,6 +16,15 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "assessment get": ({ tracer, args }) =>
+    tracer.changeAssessments.get(
+      requiredInput<import("../core/change-assessment.ts").AssessmentSelection>(args),
+    ),
+  "assessment refresh": ({ tracer, args, origin }) =>
+    tracer.changeAssessments.refresh(
+      requiredInput<import("../core/change-assessment.ts").RefreshChangeAssessment>(args),
+      origin,
+    ),
   "assessment open": ({ tracer, args, origin }) =>
     tracer.changeAssessments.open(
       requiredInput<import("../core/change-assessment.ts").OpenChangeAssessment>(args),

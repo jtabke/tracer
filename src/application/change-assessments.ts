@@ -1,6 +1,15 @@
 import { ensure, json, knownProperties, record } from "../core/model.ts";
 import type { Provenance } from "../core/model.ts";
-import type { OpenChangeAssessment } from "../core/change-assessment.ts";
+import type {
+  AssessmentSelection,
+  RefreshChangeAssessment,
+  OpenChangeAssessment,
+} from "../core/change-assessment.ts";
+import type { Repository } from "./ports/repository.ts";
+import { prepareAssessmentSelection, assessmentContext } from "./assessment-context.ts";
+import { refreshAssessment } from "./assessment-refresh.ts";
+import { changeAssessmentLimits } from "../core/change-assessment.ts";
+import { parseAssessmentScope } from "../core/assessment-scope-validation.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { EvaluationExecutor } from "./evaluation-executor.ts";
 import { prepareModelPin, resolveApplicationModel } from "./application-models.ts";
@@ -53,8 +62,57 @@ function prepareOpen(input: OpenChangeAssessment) {
 /** Engineering lifecycle rules belong here; native schema and capture protocols remain shared. */
 export class ChangeAssessments {
   private executor: EvaluationExecutor;
-  constructor(executor: EvaluationExecutor) {
+  private repository: Repository;
+  constructor(repository: Repository, executor: EvaluationExecutor) {
+    this.repository = repository;
     this.executor = executor;
+  }
+  async get(input: AssessmentSelection) {
+    input = prepareAssessmentSelection(input);
+    return this.repository.transaction(async (tx) => {
+      const view = (await assessmentContext(tx, input)).view;
+      ensure(
+        new TextEncoder().encode(JSON.stringify(view)).byteLength <=
+          changeAssessmentLimits.viewBytes,
+        "validation",
+        "Assessment view exceeds 256 KiB",
+      );
+      return view;
+    });
+  }
+  async refresh(input: RefreshChangeAssessment, actor: Provenance) {
+    input = snapshotInput(input);
+    ensure(record(input) && json(input), "validation", "Invalid assessment refresh");
+    knownProperties(input, [
+      "assessmentId",
+      "openingCommandId",
+      "commandId",
+      "expectedSchemaVersion",
+      "expectedProjectRevision",
+      "expectedEvidenceRevision",
+      "expectedAssessmentVersion",
+      "reason",
+    ]);
+    prepareAssessmentSelection({
+      assessmentId: input.assessmentId,
+      openingCommandId: input.openingCommandId,
+    });
+    for (const key of ["expectedProjectRevision", "expectedEvidenceRevision"] as const)
+      ensure(
+        Number.isSafeInteger(input[key]) && input[key] >= 0,
+        "validation",
+        "Refresh requires exact native and evidence guards",
+      );
+    ensure(
+      Number.isSafeInteger(input.expectedAssessmentVersion) &&
+        input.expectedAssessmentVersion > 0 &&
+        typeof input.reason === "string" &&
+        input.reason.trim().length > 0 &&
+        input.reason.length <= 4000,
+      "validation",
+      "Refresh requires an assessment version and rationale",
+    );
+    return this.executor.execute(input, actor, refreshAssessment, "change-assessment.refresh");
   }
   async open(input: OpenChangeAssessment, actor: Provenance) {
     input = prepareOpen(input);
@@ -81,6 +139,8 @@ export class ChangeAssessments {
           "Additional fields cannot replace application-controlled fields",
         );
         const scope = await discoverAssessmentScope(tx, request);
+        scope.control = { commandId: request.commandId, openingCommandId: request.commandId };
+        parseAssessmentScope(scope);
         return {
           operations: [
             {

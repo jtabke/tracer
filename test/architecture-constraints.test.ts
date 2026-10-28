@@ -246,6 +246,13 @@ const assessmentRequest: import("../src/core/change-assessment.ts").OpenChangeAs
 };
 const assessmentResult: typeof evaluationResult = client.write("/api/change-assessments/open", assessmentRequest);
 void assessmentResult;
+const assessmentSelection = {assessmentId: "assessment", openingCommandId: "open-command"};
+const assessmentView: Promise<import("../src/core/change-assessment.ts").ChangeAssessmentView> = client.read("/api/change-assessment", assessmentSelection);
+void assessmentView;
+// @ts-expect-error controlled assessment selection requires original opening command identity
+void client.read("/api/change-assessment", {assessmentId: "assessment"});
+// @ts-expect-error refresh needs explicit native/evidence/assessment guards and rationale
+void client.write("/api/change-assessments/refresh", {...assessmentSelection, commandId: "refresh"});
 // @ts-expect-error assessment basis is mandatory
 void client.write("/api/change-assessments/open", {...assessmentRequest, expectedEvidenceRevision: undefined});
 // @ts-expect-error a paged population cannot be claimed as complete assessment scope

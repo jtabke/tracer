@@ -62,6 +62,7 @@ async function evaluationRecords(input: { commandId: string }): Promise<Reconcil
 }
 const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliation> } = {
   "/api/change-assessments/open": evaluationRecords,
+  "/api/change-assessments/refresh": evaluationRecords,
   "/api/evaluation-commands": evaluationRecords,
   "/api/coverage-expectations": async () => {
     const value = await read("/api/coverage-expectations", {});

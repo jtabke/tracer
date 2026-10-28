@@ -40,7 +40,7 @@ export class EvaluationExecutor {
     input: T,
     origin: Provenance,
     compose: (tx: Transaction, request: T) => Promise<Composition>,
-    operation?: "change-assessment.open",
+    operation?: "change-assessment.open" | "change-assessment.refresh",
   ): Promise<EvaluationResult> {
     input = snapshotInput(input);
     const actor = validateProvenance(origin);

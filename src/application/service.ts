@@ -118,7 +118,7 @@ export class Tracer {
       () => this.runtime.newId(),
     );
     this.evaluations = new Evaluations(evaluations);
-    this.changeAssessments = new ChangeAssessments(evaluations);
+    this.changeAssessments = new ChangeAssessments(repository, evaluations);
     this.queries = new NativeQueries(repository, this.evidence);
     this.workingContext = new WorkingContextService(repository);
     this.savedViews = new SavedViews(repository, () => this.runtime.newId());

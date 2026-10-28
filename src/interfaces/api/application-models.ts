@@ -47,7 +47,10 @@ const resolved = object({
   }),
   requiredFields: object({ assessment: requiredFields, disposition: requiredFields }),
 });
-function response(value: unknown, input: ApplicationModelPin): ResolvedApplicationModel {
+export function applicationModelResponse(
+  value: unknown,
+  input: ApplicationModelPin,
+): ResolvedApplicationModel {
   if (
     new TextEncoder().encode(JSON.stringify(value)).byteLength >
     applicationModelLimits.responseBytes
@@ -81,7 +84,7 @@ export const applicationModelReads = {
   "/api/application-model": read({
     features: ["pinned-application-models"],
     query: q.query({ entityId: q.textParam, version: q.positive, field: q.textParam }),
-    response,
+    response: applicationModelResponse,
     handle: ({ tracer }, input) => tracer.applicationModels.resolve(input),
   }),
 };

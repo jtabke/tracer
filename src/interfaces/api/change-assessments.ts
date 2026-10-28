@@ -4,6 +4,7 @@ import { write } from "./definition.ts";
 import { strictObject } from "./input.ts";
 import { evaluation } from "./evaluations.ts";
 import type { OpenChangeAssessment } from "../../core/change-assessment.ts";
+import type { RefreshChangeAssessment } from "../../core/change-assessment.ts";
 
 function opened(value: unknown, input?: OpenChangeAssessment) {
   const result = evaluation(value, input);
@@ -21,6 +22,42 @@ function opened(value: unknown, input?: OpenChangeAssessment) {
 }
 
 export const changeAssessmentWrites = {
+  "/api/change-assessments/refresh": write(
+    {
+      commandId: text,
+      assessmentId: text,
+      openingCommandId: text,
+      expectedSchemaVersion: number,
+      expectedProjectRevision: number,
+      expectedEvidenceRevision: number,
+      expectedAssessmentVersion: number,
+      reason: text,
+    },
+    (value: unknown, input?: RefreshChangeAssessment) => {
+      const result = evaluation(value, input);
+      if (
+        !result.native ||
+        result.native.results.length !== 1 ||
+        result.native.results[0].id !== result.receipt.output.id ||
+        (input &&
+          (result.receipt.output.id !== input.assessmentId ||
+            result.receipt.output.version !== input.expectedAssessmentVersion + 1 ||
+            result.native.changeset.projectRevision !== input.expectedProjectRevision + 1))
+      )
+        throw Error("Refresh result does not match its command");
+      return result;
+    },
+    {
+      features: [
+        "change-assessment-scope-refresh",
+        "atomic-evaluation-commands",
+        "evidence-revision-guards",
+      ],
+    },
+  )(({ tracer, provenance }, input) => {
+    const assessments: ChangeAssessments = tracer.changeAssessments;
+    return assessments.refresh(input, provenance);
+  }),
   "/api/change-assessments/open": write(
     {
       commandId: text,

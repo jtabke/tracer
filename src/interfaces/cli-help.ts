@@ -5,6 +5,8 @@ Options (before command): --db project.sqlite --actor local --reason text
 Commands:
   application-model resolve JSON
   assessment open JSON                guarded model-bound scope; recover with evaluation outcome COMMAND_ID
+  assessment get JSON                 assessmentId + openingCommandId; controlled scope and exact model
+  assessment refresh JSON             guarded rediscovery retains prior obligations; no automatic retry
   evaluation commit JSON              atomic native operations plus receipt; required commandId/schema guard
   evaluation outcome COMMAND_ID       original committed evaluation result or null; no automatic retry
   next-work get [QUERY_JSON]            five separate current-work queues; requirementType/statementField/allocationExpectationId/verificationExpectationId

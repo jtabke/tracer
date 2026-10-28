@@ -55,7 +55,7 @@ async function nativeCandidates(tx: Transaction, native: ChangeImpact["native"])
 /** Exact selected traversal, not a claim of exhaustive engineering consequences. */
 export async function discoverAssessmentScope(
   tx: Transaction,
-  request: OpenChangeAssessment,
+  request: Pick<OpenChangeAssessment, "assessmentId" | "purpose" | "query">,
 ): Promise<AssessmentScope> {
   // One receipt per page bounds comparison work even for receipts with 100 declarations.
   let impact = await readChangeImpact(tx, { ...request.query, limit: 1 });
@@ -86,12 +86,7 @@ export async function discoverAssessmentScope(
     candidates: await nativeCandidates(tx, impact.native),
   };
   // Stop after a bounded number of examined rows, including excluded own-output receipts.
-  for (let rows = 0; ; rows++) {
-    ensure(
-      rows < changeAssessmentLimits.candidates,
-      "validation",
-      "Assessment receipt discovery exceeds 25 rows; narrow the scope",
-    );
+  for (let rows = 1; ; rows++) {
     for (const item of impact.evaluations.items) {
       if (item.receipt.output.id === request.assessmentId) continue;
       scope.candidates.push(receiptCandidate(item));
@@ -102,6 +97,11 @@ export async function discoverAssessmentScope(
       "Assessment exceeds 25 candidates; narrow the scope",
     );
     if (!impact.evaluations.nextAfter) break;
+    ensure(
+      rows < changeAssessmentLimits.candidates,
+      "validation",
+      "Assessment receipt discovery exceeds 25 rows; narrow the scope",
+    );
     impact = await readChangeImpact(tx, {
       ...request.query,
       limit: 1,
