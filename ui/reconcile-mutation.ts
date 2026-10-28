@@ -63,6 +63,11 @@ async function evaluationRecords(input: { commandId: string }): Promise<Reconcil
 const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliation> } = {
   "/api/verifications/open": evaluationRecords,
   "/api/verifications/execute": evaluationRecords,
+  "/api/verifications/select": evaluationRecords,
+  "/api/verifications/conclude": evaluationRecords,
+  "/api/verifications/reopen": evaluationRecords,
+  "/api/verifications/revise": evaluationRecords,
+
   "/api/change-assessments/open": evaluationRecords,
   "/api/change-assessments/refresh": evaluationRecords,
   "/api/change-assessments/disposition": evaluationRecords,

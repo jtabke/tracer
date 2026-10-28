@@ -66,3 +66,16 @@ export type * from "./core/verification-model.ts";
 export { verificationSchema } from "./core/verification-model.ts";
 export type * from "./core/verification-basis.ts";
 export type * from "./core/verification-case.ts";
+
+export type {
+  VerificationChoice,
+  VerificationAccounting,
+  VerificationMutation,
+  SelectVerificationResults,
+  ReviseVerificationBasis,
+  VerificationResultSelection,
+  VerificationConclusion,
+  VerificationObligation,
+  VerificationExecutionSummary,
+  VerificationAnalysis,
+} from "./core/verification-lifecycle.ts";

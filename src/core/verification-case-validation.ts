@@ -203,6 +203,8 @@ export function parseVerificationScope(value: unknown): VerificationCaseScope {
     "basis",
     "membershipId",
     "control",
+    "revisions",
+    "reopened",
   ]);
   ensure(
     scope.contract === "verification_case_scope" && scope.version === 1,
@@ -214,6 +216,34 @@ export function parseVerificationScope(value: unknown): VerificationCaseScope {
   const control = verificationObject(scope.control, ["commandId", "openingCommandId"]);
   verificationText(control.commandId, 200);
   verificationText(control.openingCommandId, 200);
+  if (scope.revisions !== undefined) {
+    ensure(
+      Array.isArray(scope.revisions) && scope.revisions.length <= 25,
+      "validation",
+      "Verification basis revision history exceeds 25 entries",
+    );
+    for (const item of scope.revisions) {
+      const revision = verificationObject(item, ["commandId", "caseVersion", "reason", "mapping"]);
+      verificationText(revision.commandId, 200);
+      verificationVersion(revision.caseVersion);
+      verificationText(revision.reason);
+      ensure(
+        Array.isArray(revision.mapping) && revision.mapping.length <= 25,
+        "validation",
+        "Invalid criterion revision mapping",
+      );
+      for (const item of revision.mapping) {
+        const entry = verificationObject(item, ["fromId", "toId"]);
+        verificationText(entry.fromId, 200);
+        if (entry.toId !== null) verificationText(entry.toId, 200);
+      }
+    }
+  }
+  if (scope.reopened !== undefined) {
+    const reopened = verificationObject(scope.reopened, ["commandId", "reason"]);
+    verificationText(reopened.commandId, 200);
+    verificationText(reopened.reason);
+  }
   basisShape(scope.basis);
   verificationBytes(scope, verificationCaseLimits.scopeBytes);
   return scope as VerificationCaseScope;

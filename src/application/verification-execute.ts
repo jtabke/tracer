@@ -24,6 +24,11 @@ export async function recordVerificationExecution(
     caseFields = definition.case.fields,
     executionFields = definition.execution.fields;
   ensure(
+    view.case.state === definition.states.open,
+    "conflict",
+    "Reopen a concluded verification before recording another execution",
+  );
+  ensure(
     view.model.compatibility.writable,
     "conflict",
     "Verification model is incompatible with the current schema",

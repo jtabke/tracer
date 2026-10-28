@@ -54,6 +54,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "verification-cases",
     "verification-executions",
     "verification-models",
+    "verification-results",
   ]);
   assert.deepEqual(
     capabilities.operations.filter((item) => item.method === "GET").map((item) => item.path),

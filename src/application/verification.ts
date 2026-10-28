@@ -1,3 +1,20 @@
+import type {
+  VerificationMutation,
+  SelectVerificationResults,
+  ReviseVerificationBasis,
+} from "../core/verification-lifecycle.ts";
+import {
+  prepareVerificationMutation,
+  prepareVerificationResults,
+  prepareVerificationRevision,
+} from "./verification-inputs.ts";
+import { analyzeVerification } from "./verification-analysis.ts";
+import {
+  selectVerificationResults,
+  concludeVerification,
+  reopenVerification,
+} from "./verification-results.ts";
+import { reviseVerificationBasis } from "./verification-revise.ts";
 import type { ApplicationModelPin } from "../core/application-model.ts";
 import type { PrepareVerificationBasis } from "../core/verification-basis.ts";
 import type { Repository } from "./ports/repository.ts";
@@ -46,6 +63,28 @@ export class Verification {
   async recordExecution(input: RecordVerificationExecution, actor: Provenance) {
     input = prepareVerificationExecution(input);
     return this.executor.execute(input, actor, recordVerificationExecution, "verification.execute");
+  }
+  async analyze(input: VerificationSelection) {
+    input = prepareVerificationSelection(input);
+    return this.repository.transaction(
+      async (tx) => (await analyzeVerification(tx, input)).analysis,
+    );
+  }
+  async selectResults(input: SelectVerificationResults, actor: Provenance) {
+    input = prepareVerificationResults(input);
+    return this.executor.execute(input, actor, selectVerificationResults, "verification.select");
+  }
+  async conclude(input: VerificationMutation, actor: Provenance) {
+    input = prepareVerificationMutation(input);
+    return this.executor.execute(input, actor, concludeVerification, "verification.conclude");
+  }
+  async reopen(input: VerificationMutation, actor: Provenance) {
+    input = prepareVerificationMutation(input);
+    return this.executor.execute(input, actor, reopenVerification, "verification.reopen");
+  }
+  async reviseBasis(input: ReviseVerificationBasis, actor: Provenance) {
+    input = prepareVerificationRevision(input);
+    return this.executor.execute(input, actor, reviseVerificationBasis, "verification.revise");
   }
   async get(input: VerificationSelection) {
     input = prepareVerificationSelection(input);

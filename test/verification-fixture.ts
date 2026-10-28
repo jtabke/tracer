@@ -253,3 +253,50 @@ export async function verificationExecution(
     expectedEvidenceRevision: view.model.context.evidenceRevision,
   };
 }
+
+import type { VerificationMutation, SelectVerificationResults } from "../src/index.ts";
+export async function verificationMutation(
+  f: Fixture,
+  selection: VerificationSelection,
+): Promise<VerificationMutation> {
+  const a = await f.tracer.verification.analyze(selection);
+  return {
+    ...selection,
+    commandId: randomUUID(),
+    expectedCaseVersion: a.view.case.version,
+    expectedSchemaVersion: a.view.model.context.schemaVersion,
+    expectedProjectRevision: a.view.model.context.projectRevision,
+    expectedEvidenceRevision: a.view.model.context.evidenceRevision,
+    expectedAnalysisDigest: a.proposalDigest,
+    reason:
+      "Explicit fixture engineering judgment; no representative-human or physical-product validation",
+  };
+}
+export async function verificationResults(
+  f: Fixture,
+  selection: VerificationSelection,
+  id: string,
+  older: string[] = [],
+): Promise<SelectVerificationResults> {
+  const a = await f.tracer.verification.analyze(selection);
+  return {
+    ...(await verificationMutation(f, selection)),
+    selections: a.view.scope.basis.methods.flatMap((m) =>
+      m.criterionIds.map((criterionId) => ({ criterionId, methodId: m.entityId, executionId: id })),
+    ),
+    accounting: [
+      ...older.map((executionId) => ({
+        executionId,
+        decision: "superseded" as const,
+        replacementId: id,
+        rationale:
+          "Retain prior results; this declared execution replaces the same criterion/method scope",
+      })),
+      {
+        executionId: id,
+        decision: "selected",
+        rationale: "Use this execution for the declared obligations",
+      },
+    ],
+  };
+}

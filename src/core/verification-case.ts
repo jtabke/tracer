@@ -36,6 +36,13 @@ export type VerificationCaseScope = {
   basis: VerificationBasis;
   membershipId: string;
   control: { commandId: string; openingCommandId: string };
+  revisions?: {
+    commandId: string;
+    caseVersion: number;
+    reason: string;
+    mapping: { fromId: string; toId: string | null }[];
+  }[];
+  reopened?: { commandId: string; reason: string };
 };
 export type VerificationExecutionRegistration = {
   executionId: string;

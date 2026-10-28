@@ -11,14 +11,14 @@ import {
   recordedVerificationResponse,
 } from "./verification-case-responses.ts";
 
-const guards = {
+export const verificationGuards = {
   commandId: text,
   expectedSchemaVersion: integer(1),
   expectedProjectRevision: integer(),
   expectedEvidenceRevision: integer(),
 };
 const pin = strictObject({ entityId: text, version: integer(1) });
-const basis = strictObject({
+export const verificationBasisInput = strictObject({
   model: strictObject({ entityId: text, version: integer(1), field: text }),
   requirement: pin,
   coverage: strictObject({ kind: literal("complete", "partial"), rationale: text }),
@@ -89,12 +89,12 @@ export const verificationReads = {
 export const verificationWrites = {
   "/api/verifications/open": write(
     {
-      ...guards,
+      ...verificationGuards,
       caseId: text,
       membershipId: text,
       title: text,
       purpose: text,
-      basis,
+      basis: verificationBasisInput,
       additionalFields: fields,
     },
     openedVerificationResponse,
@@ -105,7 +105,7 @@ export const verificationWrites = {
   }),
   "/api/verifications/execute": write(
     {
-      ...guards,
+      ...verificationGuards,
       caseId: text,
       openingCommandId: text,
       expectedCaseVersion: integer(1),

@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`.
+Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -60,6 +60,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/session` | — |
 | GET | `/api/table` | `after` (text), `limit` (integer), `type`* (text), `focusId` (text) |
 | GET | `/api/timeline` | `before` (integer) |
+| GET | `/api/verification-analysis` | `caseId`* (text), `openingCommandId`* (text) |
 | GET | `/api/verification-case` | `caseId`* (text), `openingCommandId`* (text) |
 | GET | `/api/verification-case-locate` | `caseId`* (text) |
 | GET | `/api/verification-execution` | `caseId`* (text), `openingCommandId`* (text), `executionId`* (text) |
@@ -83,5 +84,9 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | POST | `/api/saved-views` | `id`, `name`, `definition`, `expectedVersion`, `expectedSchemaVersion` |
 | POST | `/api/saved-views/remove` | `id`, `expectedVersion` |
 | POST | `/api/schema` | `schema`, `expectedVersion`, `initialViews` |
+| POST | `/api/verifications/conclude` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `caseId`, `openingCommandId`, `expectedCaseVersion`, `expectedAnalysisDigest`, `reason` |
 | POST | `/api/verifications/execute` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `caseId`, `openingCommandId`, `expectedCaseVersion`, `executionId`, `membershipId`, `title`, `methodId`, `source`, `conditions`, `results`, `inputs`, `relationshipInputs`, `additionalFields` |
 | POST | `/api/verifications/open` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `caseId`, `membershipId`, `title`, `purpose`, `basis`, `additionalFields` |
+| POST | `/api/verifications/reopen` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `caseId`, `openingCommandId`, `expectedCaseVersion`, `expectedAnalysisDigest`, `reason` |
+| POST | `/api/verifications/revise` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `caseId`, `openingCommandId`, `expectedCaseVersion`, `expectedAnalysisDigest`, `reason`, `basis`, `mapping` |
+| POST | `/api/verifications/select` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `caseId`, `openingCommandId`, `expectedCaseVersion`, `expectedAnalysisDigest`, `reason`, `selections`, `accounting` |

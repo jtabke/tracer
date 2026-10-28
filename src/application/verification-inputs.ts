@@ -120,3 +120,66 @@ export function prepareVerificationExecution(input: RecordVerificationExecution)
   }
   return input;
 }
+
+import type {
+  VerificationMutation,
+  SelectVerificationResults,
+  ReviseVerificationBasis,
+} from "../core/verification-lifecycle.ts";
+import {
+  verificationDigest,
+  verificationChoices,
+  verificationAccounting,
+} from "../core/verification-lifecycle-validation.ts";
+
+export function prepareVerificationMutation<T extends VerificationMutation>(
+  input: T,
+  extraKeys: string[] = [],
+): T {
+  input = snapshotInput(input);
+  verificationObject(input, [
+    ...guardKeys,
+    "caseId",
+    "openingCommandId",
+    "expectedCaseVersion",
+    "expectedAnalysisDigest",
+    "reason",
+    ...extraKeys,
+  ]);
+  verificationBytes(input, verificationCaseLimits.commandBytes);
+  guards(input);
+  prepareVerificationSelection({ caseId: input.caseId, openingCommandId: input.openingCommandId });
+  verificationVersion(input.expectedCaseVersion);
+  verificationDigest(input.expectedAnalysisDigest);
+  verificationText(input.reason);
+  return input;
+}
+export function prepareVerificationResults(input: SelectVerificationResults) {
+  input = prepareVerificationMutation(input, ["selections", "accounting"]);
+  verificationChoices(input.selections);
+  verificationAccounting(input.accounting);
+  return input;
+}
+export function prepareVerificationRevision(input: ReviseVerificationBasis) {
+  input = prepareVerificationMutation(input, ["basis", "mapping"]);
+  input.basis = prepareVerificationBasis(input.basis);
+  ensure(
+    Array.isArray(input.mapping) && input.mapping.length <= 25,
+    "validation",
+    "Explicitly map at most 25 previous criteria",
+  );
+  const ids = new Set<string>(),
+    targets = new Set<string>();
+  for (const item of input.mapping) {
+    verificationObject(item, ["fromId", "toId"]);
+    verificationText(item.fromId, 200);
+    ensure(!ids.has(item.fromId), "validation", "Duplicate previous criterion mapping");
+    ids.add(item.fromId);
+    if (item.toId !== null) {
+      verificationText(item.toId, 200);
+      ensure(!targets.has(item.toId), "validation", "Criterion mappings must be one to one");
+      targets.add(item.toId);
+    }
+  }
+  return input;
+}

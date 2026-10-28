@@ -15,6 +15,11 @@ import { expectVersion } from "./version-guard.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { prepareVerificationOpening } from "./verification-inputs.ts";
 import type { OpenVerificationCase } from "../core/verification-case.ts";
+import {
+  parseVerificationResultSelection,
+  parseVerificationConclusion,
+} from "../core/verification-lifecycle-validation.ts";
+import type { VerificationCaseScope } from "../core/verification-case.ts";
 
 export async function verificationCommand(
   tx: Transaction,
@@ -26,7 +31,14 @@ export async function verificationCommand(
   const intent: unknown = JSON.parse(stored.intent);
   ensure(record(intent) && record(intent.input), "storage", "Invalid verification command intent");
   ensure(
-    ["verification.open", "verification.execute"].includes(String(intent.operation)) &&
+    [
+      "verification.open",
+      "verification.execute",
+      "verification.select",
+      "verification.conclude",
+      "verification.reopen",
+      "verification.revise",
+    ].includes(String(intent.operation)) &&
       intent.input.caseId === selection.caseId &&
       (intent.operation === "verification.open"
         ? commandId === selection.openingCommandId
@@ -46,6 +58,64 @@ function controlledCase(result: EvaluationResult, caseId: string): Entity {
     "Verification command must retain one controlled case output",
   );
   return outputs[0] as Entity;
+}
+async function basisLineage(
+  tx: Transaction,
+  selection: VerificationSelection,
+  scope: VerificationCaseScope,
+  original: VerificationCaseScope,
+  field: string,
+) {
+  const revision = scope.revisions?.at(-1);
+  if (!revision) {
+    ensure(
+      canonical(scope.basis) === canonical(original.basis),
+      "conflict",
+      "Verification basis changed without a revision",
+    );
+    return;
+  }
+  const command = await verificationCommand(tx, revision.commandId, selection);
+  ensure(
+    command.operation === "verification.revise" &&
+      command.input.expectedCaseVersion === revision.caseVersion,
+    "conflict",
+    "Invalid verification basis revision origin",
+  );
+  const recorded = parseVerificationScope(
+    controlledCase(command.result, selection.caseId).fields[field],
+  );
+  ensure(
+    canonical(recorded.basis) === canonical(scope.basis) &&
+      canonical(recorded.revisions) === canonical(scope.revisions),
+    "conflict",
+    "Verification basis does not match its controlling revision",
+  );
+}
+function assertConclusion(
+  state: string,
+  closed: string,
+  certificate: ReturnType<typeof parseVerificationConclusion>,
+  selected: ReturnType<typeof parseVerificationResultSelection>,
+  command: Awaited<ReturnType<typeof verificationCommand>>,
+  scope: VerificationCaseScope,
+  selection: VerificationSelection,
+) {
+  if (state === closed) {
+    ensure(
+      certificate &&
+        selected &&
+        command.operation === "verification.conclude" &&
+        certificate.commandId === scope.control.commandId &&
+        certificate.openingCommandId === selection.openingCommandId &&
+        certificate.evidenceDigest === selected.evidenceDigest &&
+        canonical(certificate.obligations) === canonical(selected.selections) &&
+        command.result.native?.changeset.projectRevision === certificate.at.projectRevision + 1,
+      "conflict",
+      "Closed verification lacks a matching controlled conclusion",
+    );
+  } else
+    ensure(certificate === null, "conflict", "Open verification cannot carry a current conclusion");
 }
 export async function verificationContext(
   tx: Transaction,
@@ -101,8 +171,10 @@ export async function verificationContext(
     );
   }
   const original = parseVerificationScope(genesis.entity.fields[binding.fields.basis]);
+  await basisLineage(tx, selection, scope, original, binding.fields.basis);
   ensure(
-    canonical(scope.basis) === canonical(original.basis) &&
+    canonical(scope.basis.model) === canonical(original.basis.model) &&
+      scope.basis.requirement.entityId === original.basis.requirement.entityId &&
       scope.purpose === original.purpose &&
       scope.membershipId === request.membershipId,
     "conflict",
@@ -122,9 +194,22 @@ export async function verificationContext(
   const title = entity.fields[binding.fields.title],
     state = entity.fields[binding.fields.state];
   ensure(
-    typeof title === "string" && state === model.definition.states.open,
+    typeof title === "string" &&
+      typeof state === "string" &&
+      [model.definition.states.open, model.definition.states.closed].includes(state),
     "conflict",
     "Unsupported controlled verification state",
+  );
+  const selected = parseVerificationResultSelection(entity.fields[binding.fields.selection]);
+  const certificate = parseVerificationConclusion(entity.fields[binding.fields.conclusion]);
+  assertConclusion(
+    state,
+    model.definition.states.closed,
+    certificate,
+    selected,
+    command,
+    scope,
+    selection,
   );
   const view: VerificationCaseView = {
     case: { id: entity.id, type: entity.type, version: entity.version, title, state },
@@ -139,5 +224,5 @@ export async function verificationContext(
     executions: parseExecutionRegistry(entity.fields[binding.fields.executions]),
   };
   verificationBytes(view, verificationCaseLimits.viewBytes);
-  return { entity, view };
+  return { entity, view, selected, certificate };
 }

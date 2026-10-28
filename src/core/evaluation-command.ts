@@ -9,7 +9,11 @@ export type ApplicationOperation =
   | "change-assessment.close"
   | "change-assessment.reopen"
   | "verification.open"
-  | "verification.execute";
+  | "verification.execute"
+  | "verification.select"
+  | "verification.conclude"
+  | "verification.reopen"
+  | "verification.revise";
 
 /** Exact successful application result; operational recovery data, not a new engineering record. */
 export type EvaluationResult = {

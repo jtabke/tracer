@@ -5,6 +5,8 @@ import type {
   VerificationSelection,
   VerificationExecutionView,
   VerificationInputState,
+  VerificationCaseView,
+  VerificationExecutionRegistration,
 } from "../core/verification-case.ts";
 import {
   parseVerificationExecution,
@@ -34,6 +36,41 @@ export async function readVerificationExecution(
   const { view } = await verificationContext(tx, selection),
     registration = view.executions.find((x) => x.executionId === executionId);
   ensure(registration, "not_found", "Execution is outside this controlled case registry");
+  const { receipt, fields, current, data, membership, recorded, source } =
+    await verificationExecutionContext(tx, view, registration);
+  const result: VerificationExecutionView = {
+    caseId: selection.caseId,
+    openingCommandId: selection.openingCommandId,
+    execution: {
+      id: executionId,
+      type: receipt.output.type,
+      recordedVersion: receipt.output.version,
+      currentVersion: current?.version ?? null,
+      title: String(current?.fields[fields.title] ?? receipt.output.fields[fields.title]),
+    },
+    receiptId: receipt.id,
+    membership: {
+      id: registration.membershipId,
+      currentVersion: membership?.version ?? null,
+      current: !!membership && canonical(membership) === canonical(recorded),
+    },
+    data,
+    comparison: {
+      record: await state(tx, receipt),
+      source: source ? await state(tx, source) : null,
+    },
+  };
+  verificationBytes(result, verificationCaseLimits.viewBytes);
+  return result;
+}
+
+export async function verificationExecutionContext(
+  tx: Transaction,
+  view: VerificationCaseView,
+  registration: VerificationExecutionRegistration,
+) {
+  const selection = { caseId: view.case.id, openingCommandId: view.opening.commandId },
+    executionId = registration.executionId;
   const command = await verificationCommand(tx, registration.commandId, selection),
     receipt = command.result.receipt;
   ensure(
@@ -78,28 +115,5 @@ export async function readVerificationExecution(
     "Original execution source receipt is missing",
   );
   if (source) verificationBytes(source, verificationCaseLimits.priorReceiptBytes);
-  const result: VerificationExecutionView = {
-    caseId: selection.caseId,
-    openingCommandId: selection.openingCommandId,
-    execution: {
-      id: executionId,
-      type: receipt.output.type,
-      recordedVersion: receipt.output.version,
-      currentVersion: current?.version ?? null,
-      title: String(current?.fields[fields.title] ?? receipt.output.fields[fields.title]),
-    },
-    receiptId: receipt.id,
-    membership: {
-      id: registration.membershipId,
-      currentVersion: membership?.version ?? null,
-      current: !!membership && canonical(membership) === canonical(recorded),
-    },
-    data,
-    comparison: {
-      record: await state(tx, receipt),
-      source: source ? await state(tx, source) : null,
-    },
-  };
-  verificationBytes(result, verificationCaseLimits.viewBytes);
-  return result;
+  return { receipt, fields, current, data, membership, recorded, source };
 }

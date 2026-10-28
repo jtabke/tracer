@@ -1,3 +1,7 @@
+import {
+  verificationLifecycleReads,
+  verificationLifecycleWrites,
+} from "./api/verification-lifecycle.ts";
 import { apiContractVersion, apiIdentity, apiLimits } from "./api-capabilities.ts";
 import type { ApiCapabilities } from "./api-capabilities.ts";
 import type { Tracer } from "../application/service.ts";
@@ -31,6 +35,7 @@ import { sessionReads } from "./api/session.ts";
 
 export const readEndpoints = {
   ...verificationReads,
+  ...verificationLifecycleReads,
   ...verificationModelReads,
   ...assessmentLifecycleReads,
   ...assessmentReads,
@@ -43,6 +48,7 @@ export const readEndpoints = {
 };
 export const writeEndpoints = {
   ...verificationWrites,
+  ...verificationLifecycleWrites,
   ...assessmentLifecycleWrites,
   ...changeAssessmentWrites,
   ...nativeWrites,

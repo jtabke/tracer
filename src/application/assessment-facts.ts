@@ -19,45 +19,11 @@ import { compareCapturedInputs, comparisonToken, nativeState } from "./receipt-c
 export function candidateKey(value: CandidateKey) {
   return value.kind + ":" + value.id;
 }
-export async function factDigest(value: unknown) {
-  const bytes = new TextEncoder().encode(canonical(value));
-  ensure(
-    bytes.length <= 1048576,
-    "validation",
-    "Assessment fact exceeds 1 MiB; narrow the selected basis",
-  );
-  const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
-  return (
-    "sha256:" +
-    Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("")
-  );
-}
-export function declaredFacts(bases: Pick<CapturedBasis, "inputs" | "relationshipInputs">[]) {
-  const inputs = [
-    ...new Map(
-      bases.flatMap((basis) => basis.inputs).map((input) => [canonical(input), input]),
-    ).values(),
-  ];
-  const relationships = new Map<string, RelationshipDeclaration>();
-  for (const link of bases.flatMap((basis) => basis.relationshipInputs)) {
-    const prior = relationships.get(link.id);
-    ensure(
-      !prior || prior.revision === link.revision,
-      "validation",
-      "Receipt cannot declare two states of one relationship; split the supporting basis",
-    );
-    relationships.set(link.id, link);
-  }
-  ensure(
-    inputs.length + relationships.size <= 80,
-    "validation",
-    "Assessment capture exceeds 80 direct facts; narrow the supporting basis",
-  );
-  return {
-    inputs: inputs.map((input, index) => ({ ...input, role: "assessment fact " + index })),
-    relationshipInputs: [...relationships.values()],
-  };
-}
+export { factDigest } from "./fact-digest.ts";
+import { factDigest } from "./fact-digest.ts";
+export { declaredFacts } from "./captured-facts.ts";
+import { declaredFacts } from "./captured-facts.ts";
+
 async function fact(
   tx: Transaction,
   value: unknown,

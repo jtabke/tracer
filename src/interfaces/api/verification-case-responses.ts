@@ -20,10 +20,10 @@ import { verificationModelResponse } from "./verification-models.ts";
 import { evaluation } from "./evaluations.ts";
 import type { EvaluationResult } from "../../core/evaluation-command.ts";
 
-function same(actual: unknown, expected: unknown, message: string) {
+export function same(actual: unknown, expected: unknown, message: string) {
   if (canonical(actual) !== canonical(expected)) throw Error(message);
 }
-function matches(actual: object, expected: Record<string, unknown>, message: string) {
+export function matches(actual: object, expected: Record<string, unknown>, message: string) {
   for (const [key, value] of Object.entries(expected))
     same((actual as Record<string, unknown>)[key], value, message + ": " + key);
 }
@@ -45,9 +45,11 @@ export function verificationCaseResponse(
     basis = decoded.scope.basis;
   matches(
     decoded.case,
-    { id: input.caseId, type: model.definition.case.type, state: model.definition.states.open },
+    { id: input.caseId, type: model.definition.case.type },
     "Verification case selection",
   );
+  if (![model.definition.states.open, model.definition.states.closed].includes(decoded.case.state))
+    throw Error("Unsupported verification state");
   matches(decoded.opening, { commandId: input.openingCommandId }, "Verification opening");
   matches(
     decoded.scope.control,
@@ -135,7 +137,7 @@ export function verificationExecutionResponse(
     );
   return result;
 }
-function resultModel(result: EvaluationResult) {
+export function resultModel(result: EvaluationResult) {
   const captured = result.receipt.inputs.find(
     (x) => x.role === "verification interpretation model",
   );
@@ -150,7 +152,7 @@ function resultModel(result: EvaluationResult) {
     },
   };
 }
-function nativeResults(result: EvaluationResult, count: number) {
+export function nativeResults(result: EvaluationResult, count: number) {
   if (!result.native || result.native.results.length !== count)
     throw Error("Verification native operation count");
   same(

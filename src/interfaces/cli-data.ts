@@ -17,6 +17,40 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "verification analyze": ({ tracer, args }) => {
+    const verification: Verification = tracer.verification;
+    return verification.analyze(
+      requiredInput<import("../core/verification-case.ts").VerificationSelection>(args),
+    );
+  },
+  "verification select": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.selectResults(
+      requiredInput<import("../core/verification-lifecycle.ts").SelectVerificationResults>(args),
+      origin,
+    );
+  },
+  "verification conclude": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.conclude(
+      requiredInput<import("../core/verification-lifecycle.ts").VerificationMutation>(args),
+      origin,
+    );
+  },
+  "verification reopen": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.reopen(
+      requiredInput<import("../core/verification-lifecycle.ts").VerificationMutation>(args),
+      origin,
+    );
+  },
+  "verification revise-basis": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.reviseBasis(
+      requiredInput<import("../core/verification-lifecycle.ts").ReviseVerificationBasis>(args),
+      origin,
+    );
+  },
   "verification open": ({ tracer, args, origin }) => {
     const verification: Verification = tracer.verification;
     return verification.open(
