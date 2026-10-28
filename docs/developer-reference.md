@@ -498,6 +498,27 @@ Individual native writes require the observed `--schema-version`; edits also req
 
 Keys are unique across active project entities, case-sensitive. Lowercase UUID identity is permanent, even after deletion. Entity removal rejects active links unless the optional `cascade` argument is explicitly supplied; cascade records every incident link and entity tombstone together.
 
+## Pinned application models
+
+Schema defines permitted records, fields and relationships. A versioned application-model definition binds them to the roles of a particular application service. Store the definition in a normal native record's JSON field and retain its `{entityId, version, field}` selection.
+
+```ts
+const model = await tracer.applicationModels.resolve({
+  entityId: profile.id,
+  version: profile.version,
+  field: "definition",
+});
+console.log(model.definition, model.compatibility, model.requiredFields);
+```
+
+CLI uses `application-model resolve '{"entityId":"PROFILE_UUID","version":1,"field":"definition"}'`. Typed HTTP is GET `/api/application-model` with the same three required query fields; require `pinned-application-models` through capability discovery. Replace placeholder identities with the actual record UUID. The read returns native/evidence/schema context, pinned schema version, current profile version/deletion and current-schema compatibility without creating a revision or capture.
+
+The implemented contract is `change_assessment`, version 1. It binds assessment/disposition record fields, membership, state/decision values and the explicit unknown-state policy. The [Tracer installation template](../projects/tracer/change-assessment-model.json) is a complete example. `changeAssessmentSchema(definition)` from the root package generates its two record definitions and membership relationship. Explicitly combine that fresh fragment with your schema after checking for name collisions, then create the chosen model record with a schema-declared JSON descriptor field. Model carrier classification and field names are project choices.
+
+A selected definition is validated against its original governing schema and is retained through later profile edits/deletion. Current compatibility is reported separately; additional required record fields are surfaced. `requiredFields` is `null` when complete metadata is unavailable, and incompatible bindings cannot be treated as write-ready. Resolution uses native annotations and performs no external source IO. Limits are 64 KiB per definition, 128 KiB per serialized resolution, 1,000 fields per bound type/membership and 50 additional required fields per role. Reads reject malformed or unsupported rules/versions and never choose a newer model silently.
+
+This read service prepares shared application configuration. Assessment scope, disposition/action operations and controlled completion remain under implementation; a writable compatibility result does not establish those capabilities or an engineering conclusion.
+
 ## Atomic evaluation operations
 
 Use `tracer.evaluations.commit(command, provenance)` when native project updates and one execution/analysis receipt must succeed together. Separate `applyChangeset` and `evidence.recordReceipt` calls remain separate transactions. Project schema and captured roles define engineering meaning; the operation does not execute tests or infer verification status.

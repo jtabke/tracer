@@ -12,18 +12,23 @@ Components describe implementation responsibilities. `COMP-TRACER` is the system
 
 ## Information roles
 
-| Native type       | Meaning                                                                               |
-| ----------------- | ------------------------------------------------------------------------------------- |
-| goal              | Broad product direction; existing UN identities remain stable                         |
-| user_need         | Concise outcome with context, rationale and evidence kept separately                  |
-| story             | Scenario exercising several requirements; existing ND/SC/Q/R identities remain stable |
-| requirement       | Lasting product behavior, acceptance, applicability, area and independent status      |
-| component         | System or subcomponent responsibility and boundaries                                  |
-| verification_plan | Method, expected result, criterion scope and intended article under test              |
-| artifact          | Exact design/source/test/report reference; its role and version are explicit          |
-| work_item         | Bounded discovery, implementation, verification or maintenance activity               |
-| source            | Captured support for a claim or owner direction                                       |
-| decision          | Chosen direction and rationale                                                        |
+| Native type        | Meaning                                                                                       |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| goal               | Broad product direction; existing UN identities remain stable                                 |
+| user_need          | Concise outcome with context, rationale and evidence kept separately                          |
+| story              | Scenario exercising several requirements; existing ND/SC/Q/R identities remain stable         |
+| requirement        | Lasting product behavior, acceptance, applicability, area and independent status              |
+| component          | System or subcomponent responsibility and boundaries                                          |
+| verification_plan  | Method, expected result, criterion scope and intended article under test                      |
+| artifact           | Exact design/source/test/report reference; its role and version are explicit                  |
+| work_item          | Bounded discovery, implementation, verification or maintenance activity                       |
+| source             | Captured support for a claim or owner direction                                               |
+| decision           | Chosen direction and rationale                                                                |
+| application_model  | Versioned native application-role/policy definition selected by an exact record pin           |
+| change_assessment  | Independently managed assessment scope and completion data for the selected application model |
+| impact_disposition | Candidate-specific rationale and action data belonging to an assessment                       |
+
+Schema v6 adds the three application types above and `has_disposition` membership for the selected build-out. `MODEL-CHANGE-ASSESSMENT` is the installed native model record; its selected native version, rather than the installation template file, governs interpretation. [Pinned application-model resolution](architecture.md#pinned-application-model-resolution) owns descriptor/schema compatibility. Assessment lifecycle/closure services remain under implementation, so record-type presence and an authored status value do not establish controlled completion.
 
 Executed results remain native immutable receipts, with output references and declared inputs. A verification-plan record is not an executed test, and a report artifact is not a fresh result. Results already recorded before this reorganization retain their original identities and inputs.
 
