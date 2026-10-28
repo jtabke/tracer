@@ -4,6 +4,8 @@ Options (before command): --db project.sqlite --actor local --reason text
                          --schema-version N (required for individual data writes)
 Commands:
   application-model resolve JSON
+  verification resolve-model JSON    exact native verification model; no lifecycle conclusion
+  verification prepare-basis JSON    validate selected criteria/methods without writing a case
   assessment open JSON                guarded model-bound scope; recover with evaluation outcome COMMAND_ID
   assessment get JSON                 assessmentId + openingCommandId; controlled scope and exact model
   assessment locate ID                resolve controlled opening from a record identity

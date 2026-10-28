@@ -48,13 +48,15 @@ export const applicationModelFieldTypes = {
   >;
 };
 export type ApplicationModelIssue = { path: string[]; message: string };
-export type ResolvedApplicationModel = {
+export type ApplicationModelResolution = {
   pin: ApplicationModelPin;
-  definition: ChangeAssessmentModel;
   source: { id: string; type: string; version: number; currentVersion: number | null };
   context: { projectRevision: number; evidenceRevision: number; schemaVersion: number };
   pinnedSchemaVersion: number;
   compatibility: { writable: boolean; issues: ApplicationModelIssue[] };
+};
+export type ResolvedApplicationModel = ApplicationModelResolution & {
+  definition: ChangeAssessmentModel;
   requiredFields: {
     assessment: Record<string, Field> | null;
     disposition: Record<string, Field> | null;

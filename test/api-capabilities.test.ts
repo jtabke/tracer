@@ -51,6 +51,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "pinned-application-models",
     "qualified-references",
     "relationship-evaluation-inputs",
+    "verification-models",
   ]);
   assert.deepEqual(
     capabilities.operations.filter((item) => item.method === "GET").map((item) => item.path),

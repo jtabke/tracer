@@ -14,7 +14,7 @@ import type {
 import { snapshotInput } from "../core/input-snapshot.ts";
 import type { Repository, Transaction } from "./ports/repository.ts";
 import { pinEntity } from "./native-pins.ts";
-import { projectSchema } from "./native-query-support.ts";
+import { modelContext } from "./model-context.ts";
 
 function own<T>(values: Record<string, T>, name: string): T | undefined {
   return Object.hasOwn(values, name) ? values[name] : undefined;
@@ -124,23 +124,10 @@ export async function resolveApplicationModel(
     "Application model is incompatible with its governing schema",
     { path: historical.compatibility.issues[0]?.path },
   );
-  const schema = await projectSchema(tx),
-    current = await tx.get("entity", input.entityId);
+  const { schema, metadata } = await modelContext(tx, input, pin);
   const result = {
-    pin: input,
+    ...metadata,
     definition,
-    source: {
-      id: pin.entity.id,
-      type: pin.entity.type,
-      version: pin.entity.version,
-      currentVersion: current?.version ?? null,
-    },
-    pinnedSchemaVersion: pin.schema.version,
-    context: {
-      projectRevision: await tx.headRevision(),
-      evidenceRevision: await tx.impactEvidenceRevision(),
-      schemaVersion: schema.version,
-    },
     ...modelCompatibility(definition, schema),
   };
   ensure(

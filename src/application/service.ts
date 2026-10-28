@@ -1,4 +1,5 @@
 import { ChangeAssessments } from "./change-assessments.ts";
+import { Verification } from "./verification.ts";
 import { ApplicationModels } from "./application-models.ts";
 import { EvaluationExecutor } from "./evaluation-executor.ts";
 import { Evaluations } from "./evaluations.ts";
@@ -94,6 +95,7 @@ export class Tracer {
   readonly evaluations: Evaluations;
   readonly applicationModels: ApplicationModels;
   readonly changeAssessments: ChangeAssessments;
+  readonly verification: Verification;
   readonly savedViews: SavedViews;
   readonly configurations: Configurations;
   readonly baselines: Baselines;
@@ -111,6 +113,7 @@ export class Tracer {
     this.repository = repository;
     this.runtime = runtime;
     this.applicationModels = new ApplicationModels(repository);
+    this.verification = new Verification(repository);
     this.evidence = new EvidenceService(repository, () => this.runtime.newId(), observer);
     const evaluations = new EvaluationExecutor(
       repository,

@@ -15,7 +15,7 @@ const field = object({
   type: literal("string", "number", "boolean", "json"),
   required: optional(boolean),
 });
-function requiredFields(value: unknown): Record<string, Field> | null {
+export function modelRequiredFields(value: unknown): Record<string, Field> | null {
   if (value === null) return null;
   if (!record(value) || Object.keys(value).length > applicationModelLimits.extraRequiredFields)
     throw Error("Invalid required field metadata");
@@ -45,7 +45,7 @@ const resolved = object({
     writable: boolean,
     issues: array(object({ path: array(text), message: text })),
   }),
-  requiredFields: object({ assessment: requiredFields, disposition: requiredFields }),
+  requiredFields: object({ assessment: modelRequiredFields, disposition: modelRequiredFields }),
 });
 export function applicationModelResponse(
   value: unknown,

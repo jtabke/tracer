@@ -1,0 +1,57 @@
+{
+  "contract": "requirement_verification",
+  "version": 1,
+  "requirement": {
+    "type": "requirement",
+    "fields": {
+      "title": "title",
+      "statement": "statement",
+      "acceptance": ["acceptance"]
+    }
+  },
+  "method": {
+    "type": "verification_plan",
+    "fields": {
+      "title": "title",
+      "procedure": "method",
+      "expected": "expectedResult"
+    }
+  },
+  "case": {
+    "type": "verification_case",
+    "fields": {
+      "title": "title",
+      "state": "state",
+      "model": "model",
+      "basis": "basis",
+      "executions": "executions",
+      "selection": "selection",
+      "conclusion": "conclusion"
+    }
+  },
+  "execution": {
+    "type": "verification_execution",
+    "fields": {
+      "title": "title",
+      "data": "result"
+    }
+  },
+  "relationships": {
+    "requirementMethod": "verified_by",
+    "requirementCase": "has_verification_case",
+    "caseExecution": "has_verification_execution"
+  },
+  "states": {
+    "open": "open",
+    "closed": "closed"
+  },
+  "outcomes": {
+    "passed": "passed",
+    "failed": "failed",
+    "blocked": "blocked",
+    "not_run": "not_run"
+  },
+  "policy": {
+    "allowAssessedDesignChanges": false
+  }
+}

@@ -1,5 +1,6 @@
 import { ensure } from "../core/model.ts";
 import type { Schema, EntityQuery, RelationshipQuery } from "../core/model.ts";
+import type { Verification } from "../application/verification.ts";
 import type {
   ChangesetInput,
   EntityInput,
@@ -16,6 +17,18 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "verification resolve-model": ({ tracer, args }) => {
+    const verification: Verification = tracer.verification;
+    return verification.resolveModel(
+      requiredInput<import("../core/application-model.ts").ApplicationModelPin>(args),
+    );
+  },
+  "verification prepare-basis": ({ tracer, args }) => {
+    const verification: Verification = tracer.verification;
+    return verification.prepareBasis(
+      requiredInput<import("../core/verification-basis.ts").PrepareVerificationBasis>(args),
+    );
+  },
   "assessment locate": ({ tracer, args }) => {
     arity(args, 1);
     return tracer.changeAssessments.locate(args[0]!);

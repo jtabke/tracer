@@ -61,3 +61,7 @@ export type * from "./core/application-model.ts";
 export { changeAssessmentSchema } from "./core/application-model.ts";
 
 export type * from "./core/change-assessment.ts";
+
+export type * from "./core/verification-model.ts";
+export { verificationSchema } from "./core/verification-model.ts";
+export type * from "./core/verification-basis.ts";

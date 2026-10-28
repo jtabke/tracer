@@ -519,6 +519,22 @@ A selected definition is validated against its original governing schema and is 
 
 This read service prepares shared application configuration. Headless scope, disposition/action operations and controlled completion use the services below; a writable compatibility result alone establishes no engineering conclusion.
 
+## Verification model and criterion-basis preparation
+
+The selected requirement-verification capability currently exposes model resolution and native basis preparation. These reads do not create cases, executions, result selections or verified conclusions. Existing authored status and receipt outcome strings retain their meanings.
+
+`tracer.verification.resolveModel({entityId, version, field})` resolves an exact native JSON descriptor with contract `requirement_verification`, version `1`. CLI is `verification resolve-model JSON`; typed HTTP is GET `/api/verification-model` with those three query fields and feature `verification-models`. Inspect `compatibility.writable`, issues and complete extra-required-field metadata separately from the definition's original-schema validity. The [project template](../projects/tracer/requirement-verification-model.json) and [architecture](architecture.md#pinned-verification-model-and-native-basis-reads) define role fields and bounds. Schema installation is deliberate and model versions stay pinned through later edits/deletion.
+
+`tracer.verification.prepareBasis(input)` and CLI `verification prepare-basis JSON` accept:
+
+- `model`: the exact descriptor pin above.
+- `requirement`: `{entityId, version}` for an explicit native requirement revision.
+- `coverage`: `{kind: "complete" | "partial", rationale}`.
+- `criteria`: up to 25 `{id, field, start, end, quote}` selections. Offsets use JavaScript UTF-16 units, the quote must match exactly, and ranges in each configured acceptance field cannot overlap. A complete declaration must cover all non-whitespace text in every configured acceptance field.
+- `methods`: up to ten `{entityId, version, relationship: {id, version}, criterionIds}` selections, with at most 100 total assignments. Each exact link must connect this requirement to that method under the configured relationship. Unknown/duplicate criteria or duplicate method identities reject.
+
+Preparation returns the selected historical source text, exact method/link states, current native/schema/evidence read clocks, declared/source completeness and unassigned criterion IDs. A complete source selection with unassigned criteria is still unplanned work; a deliberate partial declaration remains partial even when all text happens to be covered. Selection/output must each fit 64 KiB. No source observation, capture, native revision or engineering approval is created. Preparation can inspect historical basis even after current source or schema changes; current applicability is a separate pending lifecycle contract. There is no JSON-in-URL HTTP basis authoring route; controlled opening will use a bounded mutation body.
+
 ## Open a scoped change assessment
 
 Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. Opening, explicit scope refresh, dispositions/actions and closure/reopen are implemented headlessly. The shared assessment task uses these same services; the completed local real-case proof and acceptance audit are recorded in the development register.

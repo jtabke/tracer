@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`.
+Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`, `verification-models`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -60,6 +60,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/session` | — |
 | GET | `/api/table` | `after` (text), `limit` (integer), `type`* (text), `focusId` (text) |
 | GET | `/api/timeline` | `before` (integer) |
+| GET | `/api/verification-model` | `entityId`* (text), `version`* (integer), `field`* (text) |
 | GET | `/api/work` | `after` (text), `limit` (integer), `type` (text), `key` (text), `search` (text), `field` (text), `value` (text), `without` (text), `targetType` (text) |
 | GET | `/api/working-context` | `query`* (json) |
 | POST | `/api/baselines` | `id`, `name`, `expectedProjectRevision`, `projectRevision` |
