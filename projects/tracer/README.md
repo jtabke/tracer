@@ -31,7 +31,7 @@ The [2026-10-21 audit](../../docs/development-model-plan.md) identified mixed gr
 - `artifact`: exact design/source/test/report references. Initial component source references identify ownership boundaries; they do not establish conformance.
 - `decision`: register ownership and selected direction, with source links.
 - `application_model`: versioned role/policy bindings for a selected application service. The installed model is `MODEL-CHANGE-ASSESSMENT`.
-- `change_assessment` / `impact_disposition`: native scope and candidate-judgment roles for the application build-out. Guarded model-bound opening records an exact selected scope. Controlled reads validate original command/genesis and explicit refresh retains prior obligations; headless dispositions/actions and controlled closure/reopen build on that scope. Dedicated shared UI and the complete real-project demonstration remain pending.
+- `change_assessment` / `impact_disposition`: native scope and candidate-judgment roles for the application build-out. Guarded model-bound opening records an exact selected scope. Controlled reads validate original command/genesis and explicit refresh retains prior obligations; headless dispositions/actions and controlled closure/reopen build on that scope. The shared assessment task projects these services; the completed local real-case proof and exact acceptance evidence are recorded in the register.
 
 Requirements `addresses` needs, can `supports_story` candidate tasks and are `sourced_from` captured references. Needs `contributes_to` goals. Audited artifacts can be linked with `implemented_by` and `checked_by`; historical links keep their original meaning. These links are scoped assertions, not automatic proof of completion.
 

@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-28",
+  "scope": "Executed post-acceptance preservation audit; local SQLite and shared production UI. No representative-human/backend/scale claim.",
+  "nativeRevision": 83,
+  "schemaVersion": 6,
+  "physicalFormat": 11,
+  "finalAcceptance": {
+    "path": "projects/tracer/assessment-completion-verification.json",
+    "sha256": "c26e564f53a69b654dfa947513c328cce01e04a403ae60975b1d32e6bea4d524",
+    "receiptId": "ce4089ef-5f15-4c17-9388-6bb559765dd0",
+    "commandId": "application-foundation-complete-2026-10-28"
+  },
+  "independentVerificationReceipt": "7f1a5f40-80bb-4815-baa8-6fa0864a5271",
+  "requirement": "implemented/verified/not_validated",
+  "work": "completed",
+  "verification": "passed",
+  "actualAssessment": {
+    "assessmentId": "da576164-abae-4d4d-98df-a8a33a482acd",
+    "openingCommandId": "tracer-source-assessment-open-2026-10-28",
+    "version": 13,
+    "completion": "completed",
+    "discovery": "current",
+    "accounted": 6,
+    "total": 6
+  },
+  "export": {
+    "path": "projects/tracer/project-export.json",
+    "sha256": "afa982c19f418f5851c318a908f91ee490b57e6c7b34de03d6f1f8cb6e887065",
+    "canonicalLiveBackupEqual": true
+  },
+  "backup": {
+    "path": "projects/tracer/backups/register-2026-10-28-application-completion.sqlite",
+    "sha256": "a8e758767485535fe578d9d327700d6d34b24b6ed184a9248a1cf93a7a779a0c"
+  },
+  "priorBackup": {
+    "path": "projects/tracer/backups/register-2026-10-28-before-assessment-completion.sqlite",
+    "revision": 74
+  },
+  "preservation": {
+    "oldEntities": 466,
+    "intendedUpdatedEntityIds": [
+      "da576164-abae-4d4d-98df-a8a33a482acd",
+      "db541d2d-b5e6-40a0-844d-771e737a9bd5",
+      "77d7f75d-ceea-4275-965e-27c328695dec",
+      "ea66d0ca-a5bf-4076-83df-273aaf408fa9",
+      "84788529-9022-4492-808a-6ea8043f44ce"
+    ],
+    "otherNativeObjectsUnchanged": true,
+    "oldRelationshipsUnchanged": true,
+    "allOldHistoryAndEvidenceRetained": true,
+    "otherSavedStateRetained": true,
+    "ledgers": {
+      "changeset_commands": {
+        "priorRows": 32,
+        "finalRows": 34,
+        "priorRowsUnchanged": true,
+        "backupEqual": true
+      },
+      "evaluation_commands": {
+        "priorRows": 14,
+        "finalRows": 22,
+        "priorRowsUnchanged": true,
+        "backupEqual": true
+      }
+    }
+  },
+  "interfaces": [
+    {
+      "database": "projects/tracer/tracer.sqlite",
+      "nativeRevision": 83,
+      "schemaVersion": 6,
+      "canonicalExportEqual": true,
+      "coreHTTPCLIEqual": true,
+      "sevenExactCommandRecoveries": true,
+      "acceptanceRecovery": true,
+      "originalOpeningRefreshOutcomesPreserved": true,
+      "negativeCommandsUnreserved": true,
+      "currentReceipts": [
+        "7f1a5f40-80bb-4815-baa8-6fa0864a5271",
+        "ce4089ef-5f15-4c17-9388-6bb559765dd0"
+      ],
+      "noAdditionalWrites": true
+    },
+    {
+      "database": "projects/tracer/backups/register-2026-10-28-application-completion.sqlite",
+      "nativeRevision": 83,
+      "schemaVersion": 6,
+      "canonicalExportEqual": true,
+      "coreHTTPCLIEqual": true,
+      "sevenExactCommandRecoveries": true,
+      "acceptanceRecovery": true,
+      "originalOpeningRefreshOutcomesPreserved": true,
+      "negativeCommandsUnreserved": true,
+      "currentReceipts": [
+        "7f1a5f40-80bb-4815-baa8-6fa0864a5271",
+        "ce4089ef-5f15-4c17-9388-6bb559765dd0"
+      ],
+      "noAdditionalWrites": true
+    }
+  ],
+  "productionUI": {
+    "readOnly": true,
+    "errors": [],
+    "screenshots": [
+      {
+        "path": "output/assessment-ui/actual-completed-1440.png",
+        "sha256": "2dc51196c2e216eac4a92065ed9865ae18947dd93ee166e6439b9bd273ca5569",
+        "width": 1440
+      },
+      {
+        "path": "output/assessment-ui/actual-completed-680.png",
+        "sha256": "8bd8bf2448e49fabe1598595b9f1475c1b662a6d117b1568cad11242f5ca32f7",
+        "width": 680
+      }
+    ]
+  },
+  "procedure": {
+    "path": "output/assessment-ui/verify-final.mjs",
+    "sha256": "622a427d0a9382709d91de5e70f6b74387c1dbffda21398e07b2276bf1bd39ca"
+  },
+  "validation": "not_validated: unfamiliar-agent inspection is not representative-human validation"
+}

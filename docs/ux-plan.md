@@ -94,6 +94,12 @@ A decision does not clear input drift or rewrite the original receipt. Stale com
 
 Evaluation discovery uses declared input/captured-output scope. Project tools supports exact receipt authoring in ordinary projects. Broader baseline investigation and arbitrary temporal comparison remain separate work.
 
+### Scoped application assessment
+
+The selected application build-out adds **Project tools → Change assessments** to the shared workspace. The task keeps recorded assessment selection, an explicit baseline/root/traversal preparation, complete candidate obligations and candidate judgments together. It presents application analysis rather than deriving completion from record fields. Existing receipt comparison/review remains a separate task; an application assessment coordinates independently tracked scope and actions using ordinary native records.
+
+Drafts retain captured basis through refresh and map returns; stale context requires explicit adoption. Supporting material has a deliberate historical/current use, and action completion remains guarded by the application service. New discovery requires explicit scope refresh before closure. Historical completion and current reassessment status remain distinct. Unknown saves use shared command inspection/acknowledgment without replay. Implementation checks and the unfamiliar-agent walkthrough provide technical/task evidence; representative-human validation remains separate.
+
 ## Onboarding paths
 
 **Owner-selected direction, 2026-10-21 (UR-63):** starting or adapting a project begins with understanding and checking its development model. Use a small representative trace to explain record types, relationship meanings, incomplete work and evidence before bulk authoring. Model review must remain lightweight and task-specific; a starter is an editable proposal. The [development model plan](development-model-plan.md) defines the first manual pilot. A guided model-review interaction is not implemented or specified by this direction alone.

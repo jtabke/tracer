@@ -521,7 +521,7 @@ This read service prepares shared application configuration. Headless scope, dis
 
 ## Open a scoped change assessment
 
-Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. Opening, explicit scope refresh, dispositions/actions and closure/reopen are implemented headlessly. Dedicated UI authoring remains pending.
+Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. Opening, explicit scope refresh, dispositions/actions and closure/reopen are implemented headlessly. The shared assessment task uses these same services; the completed local real-case proof and acceptance audit are recorded in the development register.
 
 A request contains:
 
@@ -560,6 +560,12 @@ POST `/api/change-assessments/refresh` and CLI `assessment refresh JSON` use the
 The read service validates model/scope/state/closure against captured application-command outputs. A raw closed value, changed model pointer or authored scope cannot establish controlled state. Native title/project-field edits are preserved. Current model incompatibility is readable but blocks refresh. Reads return compact presentation/provenance and complete recorded scope, bounded to 256 KiB. They do not rediscover scope automatically or claim that the stored discovery basis is current merely because the read succeeded.
 
 After a conflict, obtain a new view and deliberately re-prepare. After an uncertain response, use the existing evaluation outcome lookup. Exact repeats recover the original result even after later refreshes or reopen. A refresh receipt captures the prior scope as an historical input; its generic drift must not be mistaken for a failed refresh or an engineering applicability conclusion.
+
+### Resolve an assessment from its record identity
+
+`tracer.changeAssessments.locate(assessmentId)`, GET `/api/assessment-locate?assessmentId=...` and CLI `assessment locate ID` return the controlled view without requiring the caller to remember its opening command. The service reads the first receipt for that output, resolves its successful command through the existing receipt-identity index, and runs the same original-command/genesis/model/current-control checks as `get`. Ordinary records, raw evaluation commands or authored scope metadata cannot establish an opening. Older openings without `scope.control` still resolve; no history scan, migration or write is needed. The returned opening selection can then be used for analysis and guarded mutations.
+
+The shared UI exposes these services through **Project tools → Change assessments**. [The workspace guide](workspace-guide.md#scoped-change-assessments) owns authoring and recovery instructions. Catalogue hints identify records to inspect; `locate`, model resolution and analysis remain authoritative.
 
 ## Judge candidates and manage completion
 
@@ -604,7 +610,7 @@ Analysis reports each obligation as `undisposed`, `open_actions`, `stale_basis`,
 
 Call `changeAssessments.close(request, provenance)` or `reopen` with `{...selection, commandId, expectedSchemaVersion, expectedProjectRevision, expectedEvidenceRevision, expectedAssessmentVersion, reason}` from a fresh analysis/view. HTTP uses POST `/api/change-assessments/close` or `/reopen`; CLI uses `assessment close JSON` or `assessment reopen JSON`. Closure requires current discovery and complete accounting. It records an immutable certificate and receipt, and rejects self-invalidating current support atomically. Reopening records a reason and retains historical completion; it does not rewrite the old result. A conflict requires deliberate preparation; an uncertain response uses the same evaluation outcome lookup/exact-repeat recovery as opening.
 
-Require features `change-assessment-dispositions` and `change-assessment-closure` when depending on these routes. Limits are five actions, ten support selections per use/twenty aggregate uses, 32 KiB proposal, 48 KiB captured judgment, 64 KiB detail and 256 KiB analysis. Basis captures allow 80 input/link/absence facts and 16 KiB declaration metadata; fingerprint facts are bounded to 1 MiB. See [the architecture contract](architecture.md#candidate-judgments-actions-and-supporting-basis) for ownership, evidence semantics and remaining delivery limits.
+Require features `change-assessment-dispositions` and `change-assessment-closure` when depending on these routes. Limits are five actions, ten support selections per use/twenty aggregate uses, 32 KiB proposal, 48 KiB captured judgment, 64 KiB detail and 256 KiB analysis. Basis captures allow 80 input/link/absence facts and 16 KiB declaration metadata; fingerprint facts are bounded to 1 MiB. See [the architecture contract](architecture.md#candidate-judgments-actions-and-supporting-basis) for ownership, evidence semantics and explicit scope limits.
 
 ## Atomic evaluation operations
 
