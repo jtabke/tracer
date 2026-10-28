@@ -1,0 +1,1172 @@
+{
+  "date": "2026-10-28",
+  "scope": "Controlled assessment reads/genesis/model validation and explicit bounded scope refresh retaining prior obligations only; partial REQ-033 AC-1/2/4/7 evidence, not complete lifecycle or requirement conformance.",
+  "candidateFiles": [
+    {
+      "path": "src/application/assessment-context.ts",
+      "sha256": "318818ba873d6910484be687da7f3935ba2898bcb550e8f07f8c161620bef86d"
+    },
+    {
+      "path": "src/application/assessment-refresh.ts",
+      "sha256": "560d086d19190f82c8e65eed720c482de05c56e7b971dc54c92718fd56f6b6ec"
+    },
+    {
+      "path": "src/application/assessment-scope.ts",
+      "sha256": "ff45d8ffae40bfc60cc8f22914f79a3f50f338c8da4b00a185b881297976af97"
+    },
+    {
+      "path": "src/application/change-assessments.ts",
+      "sha256": "48b7e90e0de9ba98cdb74195a3104ab813c35817ad7697bfcda80ae32725f8b6"
+    },
+    {
+      "path": "src/application/evaluation-executor.ts",
+      "sha256": "4e7b8a8f42c6f692ba6a45442437ca1118d35c347033ce6a50aef804020f1c82"
+    },
+    {
+      "path": "src/application/service.ts",
+      "sha256": "1034a3ce266dfd49c16acaa8d730af6f7b8479eb8cdd4beece3f3b7280ac47b2"
+    },
+    {
+      "path": "src/core/assessment-scope-validation.ts",
+      "sha256": "754791c6a4343ab822435ff9c28e075baec8095462ef82262552595a0bc78e67"
+    },
+    {
+      "path": "src/core/change-assessment.ts",
+      "sha256": "b4fad9e65837fd3aa5117daf4e5640d61115d9b8d10ba145e036f4f30bb6ba41"
+    },
+    {
+      "path": "src/interfaces/api-endpoints.ts",
+      "sha256": "c09a1b76c0982d548b86e8fea0580e14928b4af4be280154e876b5bd48b3a9d1"
+    },
+    {
+      "path": "src/interfaces/api/application-models.ts",
+      "sha256": "989f001753fdfab47c3b318be50faf55a076b917d54fc4a955ac2d7fd91b58d9"
+    },
+    {
+      "path": "src/interfaces/api/assessment-reads.ts",
+      "sha256": "03f47a9c09c9c778164f16103b05c9c7e09cdedd3fae11429c95dcb385f2bda7"
+    },
+    {
+      "path": "src/interfaces/api/change-assessments.ts",
+      "sha256": "6b80d61bf6bff09ba71fd5342d89e2fbcf594b31985a9fb6cf09279fdc409fc0"
+    },
+    {
+      "path": "src/interfaces/cli-data.ts",
+      "sha256": "329292e7cd465ab47030473a288be4bc6b2d2286b519707b948a00e1073ae0b0"
+    },
+    {
+      "path": "src/interfaces/cli-help.ts",
+      "sha256": "73475f471340388418b9122d01df0a566536ab44eace71cdaa642df042b9dc11"
+    },
+    {
+      "path": "test/api-capabilities.test.ts",
+      "sha256": "d0710bd10b3bd88d34b42ef135786baaad801086eaf6d9cb513519cadff2a4ca"
+    },
+    {
+      "path": "test/api-client.test.ts",
+      "sha256": "db655cbfdecc739f9c552ae0224441f5c0c448e45dbbe073077637b1b40268ee"
+    },
+    {
+      "path": "test/architecture-constraints.test.ts",
+      "sha256": "69f3782cfba518e6762adb6f548994443b3556e5da69fa041c5e215529a11f4a"
+    },
+    {
+      "path": "test/assessment-refresh-interfaces.test.ts",
+      "sha256": "b75407a269c7e3cb5ea21534272dbd068b5f5ad7b4703b45ea56e886f7bc68d5"
+    },
+    {
+      "path": "test/assessment-refresh.test.ts",
+      "sha256": "47e25981186035abbcffc815e63032eb9f743ef040db5cc989ee49416252210b"
+    },
+    {
+      "path": "test/assessment-scope-validation.test.ts",
+      "sha256": "0af4766dcb14667c65fc22f370bc32b0bd7e59f5215f1263396b5b9752e77220"
+    },
+    {
+      "path": "ui/reconcile-mutation.ts",
+      "sha256": "b4fc15e87ff3978f5d2cbebeded0cc5f5063735a31b47c031f76c7ec82169aa3"
+    }
+  ],
+  "documentation": [
+    {
+      "path": "docs/api-reference.md",
+      "sha256": "3b1cd61148dbd49f0c34d1475870dd8b24fbe4724c1afb2fad0886abe17b664b"
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "e8569ecaad6a9f03b8cec9f4a22b0e06f420e9ab26d7180bab35c8153086fdba"
+    },
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "986c7fa733dcc40aafd6607ea458218c32f3b53e19e1986205e4a296ce1bfd82"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "03d9614e1620111578d1ce7e758a4d659c1df6c9c238fab0ed1b62ea4cdbff96"
+    },
+    {
+      "path": "projects/tracer/README.md",
+      "sha256": "0260eb27805ac3071d3d506500e16181e514e3a2a0dbe009fc5023ab8519da9d"
+    }
+  ],
+  "verification": {
+    "status": "passed for the retained-scope slice",
+    "implementationCommit": "4c6c591fae6945dffb595c11bb50b5ff0911022c",
+    "fullCheck": {
+      "command": "npm run check",
+      "unitTests": 537,
+      "browserTests": 196,
+      "workbenchCaptures": 18,
+      "formatTypesLintBuildQuality": "passed with unchanged gates"
+    },
+    "documentation": {
+      "command": "npm run build && npx playwright test test/documentation-browser.spec.ts",
+      "tests": 3,
+      "result": "passed after final checkpoint update"
+    },
+    "logs": [
+      {
+        "path": "output/assessment-refresh/full-check.log",
+        "sha256": "af71e62519de692d4c99be2e1ebd9c382ccc10c6acdc774c4a5d3ff87fab1fcd"
+      },
+      {
+        "path": "output/assessment-refresh/documentation-final.log",
+        "sha256": "f738a63f4ea555d39524a6d0c3929472163540f65421a90f100a902f1a58893c"
+      }
+    ],
+    "methods": [
+      {
+        "path": "output/assessment-refresh/refresh-real.mjs",
+        "sha256": "09e7d151053e701cb9b654426e0d6f8fa03f096c5b3653c56ea98197254ce2fc",
+        "retention": "local executable procedure; committed automated checks are candidateFiles"
+      },
+      {
+        "path": "output/assessment-refresh/record-phase.mjs",
+        "sha256": "d3b32e3567b69b94c5a7362767ffe52e4584944ab272c3068778288148ef2b27",
+        "retention": "local executable procedure; committed automated checks are candidateFiles"
+      },
+      {
+        "path": "output/assessment-refresh/verify-final.mjs",
+        "sha256": "190862b2833ea2d72ac123c7c2845b34f943d7db1d4e4b962670d1144cf14a5f",
+        "retention": "local executable procedure; committed automated checks are candidateFiles"
+      }
+    ],
+    "coverage": [
+      "Two configured domain vocabularies, exact pinned definitions after model edits, direct original-command/genesis/current-control checks",
+      "Retained native entity/link/receipt obligations and earlier basis across repeated refreshes, new candidates and stable prior ordering",
+      "Forged raw evaluations/copy outcomes, authored scope/model/closed fields, allowed title edits and incompatible schema writes",
+      "Unknown observed scope, candidate union overflow and rejection before a twenty-sixth examined receipt row",
+      "Typed headless read/refresh, stale-guard refusal, lost committed response, exact core/HTTP/CLI/reopen recovery and corrupt response rejection"
+    ],
+    "requirementStatus": "REQ-033 in_progress/not_verified/not_validated; VER-033 complete procedure not_run; WORK-025 in_progress"
+  },
+  "actualCase": {
+    "assessmentId": "da576164-abae-4d4d-98df-a8a33a482acd",
+    "openingCommandId": "tracer-source-assessment-open-2026-10-28",
+    "refreshCommandId": "tracer-source-assessment-refresh-2026-10-28",
+    "refreshReceiptId": "8e3e866f-aef4-4f00-934c-b4c764a398fe",
+    "originalOpeningReceiptId": "7d18e108-f86d-4374-937c-b6149d034379",
+    "previousAssessmentVersion": 1,
+    "assessmentVersion": 2,
+    "nativeRevision": 62,
+    "schemaVersion": 6,
+    "originalOpeningHadNoControlMetadata": true,
+    "originalOpeningPayloadPreserved": true,
+    "staleGuardRejectedWithoutReservation": true,
+    "exactCoreHTTPCLIReopenRecovery": true,
+    "oldObjectsHistoryEvidencePreserved": true,
+    "previousCandidateKeys": [
+      "entity:1c62695b-5a9c-4f6c-8703-366142817f54",
+      "receipt:8f80340f-c373-4b04-81f7-a9c8a2068fed",
+      "receipt:caf0f6f4-99c8-4264-9803-20894b89857d",
+      "receipt:27b09d2e-7292-472f-944a-cc688c83734d"
+    ],
+    "scope": {
+      "contract": "change_assessment_scope",
+      "version": 1,
+      "purpose": "Assess applicability of historical Tracer verification results that explicitly captured src/application/evaluations.ts. Preserve their original outcomes and identify required follow-up against the present source. Opening alone establishes no disposition or completion.",
+      "query": {
+        "baselineId": "c7ba113f-66dc-4bf4-8843-82d6fe56eedd",
+        "rootId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+        "direction": "outgoing",
+        "relationshipTypes": [],
+        "depth": 1
+      },
+      "basis": {
+        "projectRevision": 61,
+        "evidenceRevision": 466,
+        "schemaVersion": 6,
+        "baselineRevision": 52
+      },
+      "discovery": {
+        "complete": true,
+        "interpretation": "selected_traversal",
+        "excludedReceiptOutputId": "da576164-abae-4d4d-98df-a8a33a482acd",
+        "before": {
+          "paths": [
+            {
+              "entityId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+              "depth": 0,
+              "relationshipIds": []
+            }
+          ],
+          "expandedIds": ["1c62695b-5a9c-4f6c-8703-366142817f54"],
+          "frontierIds": []
+        },
+        "after": {
+          "paths": [
+            {
+              "entityId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+              "depth": 0,
+              "relationshipIds": []
+            }
+          ],
+          "expandedIds": ["1c62695b-5a9c-4f6c-8703-366142817f54"],
+          "frontierIds": []
+        }
+      },
+      "candidates": [
+        {
+          "kind": "entity",
+          "id": "1c62695b-5a9c-4f6c-8703-366142817f54",
+          "change": "unchanged",
+          "beforeVersion": 1,
+          "version": 1,
+          "observationId": "40d89b62-5311-4817-99ae-a2805e106747"
+        },
+        {
+          "kind": "receipt",
+          "id": "8f80340f-c373-4b04-81f7-a9c8a2068fed",
+          "scope": {
+            "inputIds": ["1c62695b-5a9c-4f6c-8703-366142817f54"],
+            "relationshipIds": [],
+            "hasChanged": true,
+            "hasUnknown": false,
+            "state": "changed"
+          },
+          "supersession": {
+            "count": 0,
+            "ids": []
+          },
+          "inputs": [
+            {
+              "entityId": "3d6c711c-2a8c-43f1-8902-640288d982ff",
+              "version": 3,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "cd74dee6-97d4-4ad5-99e1-449fb3cab73a",
+              "version": 3,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "31df7fc0-6ad9-44ec-af3f-a06ba5abaed9",
+              "version": 2,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+              "version": 1,
+              "observationId": "40d89b62-5311-4817-99ae-a2805e106747",
+              "links": []
+            },
+            {
+              "entityId": "7704ba45-9cf1-49e6-9e9d-ce962360fed0",
+              "version": 1,
+              "observationId": "d5af181a-7a65-44c1-a44d-76e238d93a53",
+              "links": []
+            },
+            {
+              "entityId": "4fb0495f-220f-4634-83b6-aa3863ddcb4e",
+              "version": 1,
+              "observationId": "724e2b1e-607e-4169-9052-87c328279ca1",
+              "links": []
+            },
+            {
+              "entityId": "ec063784-07b0-4455-95a6-0b55bddcf06a",
+              "version": 1,
+              "observationId": "500146b6-30b6-4b0e-82ec-c37e274e5c5e",
+              "links": []
+            },
+            {
+              "entityId": "e51e4408-7c64-44ed-9848-770bb14cd212",
+              "version": 1,
+              "observationId": "2499cbc0-2e9d-4024-92fb-6c39b0f6e945",
+              "links": []
+            },
+            {
+              "entityId": "d06a3389-13e8-4e3d-beaf-b57821e808d9",
+              "version": 1,
+              "observationId": "320bfca6-c9b3-4b67-9f43-f8267e70d516",
+              "links": []
+            },
+            {
+              "entityId": "d429da54-13d7-4d4e-afad-c3286baa2542",
+              "version": 1,
+              "observationId": "f7f9e457-6445-4dab-8ff0-56df71205088",
+              "links": []
+            },
+            {
+              "entityId": "e1f4bf02-ed79-412d-aa76-09e015976005",
+              "version": 1,
+              "observationId": "c1276e69-6c40-4665-9699-19f0a4eef40e",
+              "links": []
+            },
+            {
+              "entityId": "ab3b6532-4d12-4989-9604-882689b12353",
+              "version": 1,
+              "observationId": "8d65b374-910c-46be-a031-b278ce1645c8",
+              "links": []
+            },
+            {
+              "entityId": "680e73fe-6431-4830-bb56-360174948aef",
+              "version": 1,
+              "observationId": "0954eb95-021b-47df-b9e2-cb64629750cf",
+              "links": []
+            },
+            {
+              "entityId": "977ffae7-531f-4820-ac1e-beed97903c82",
+              "version": 1,
+              "observationId": "ec677930-5178-4279-a6db-91195a761852",
+              "links": []
+            },
+            {
+              "entityId": "d35d773b-8fcf-423c-9a43-11e76acf20ab",
+              "version": 1,
+              "observationId": "ad8ced55-e379-416b-a20e-b309630765d0",
+              "links": []
+            },
+            {
+              "entityId": "9c4a6d10-5ee4-440e-bd1c-e0d0a35a276e",
+              "version": 1,
+              "observationId": "9378fb8a-393d-46c8-8335-478ef4dfb44a",
+              "links": []
+            },
+            {
+              "entityId": "10d2c34c-9a79-4de9-b291-db42df82d682",
+              "version": 1,
+              "observationId": "5cbdcbc7-c584-42b9-a1f4-68debdf58c72",
+              "links": []
+            },
+            {
+              "entityId": "236e233b-deb7-424f-b1e2-de7fe236d058",
+              "version": 1,
+              "observationId": "5b4c2573-5571-4a42-9e33-fa18e5c87d4d",
+              "links": []
+            },
+            {
+              "entityId": "28e72aa6-1077-4c49-b216-74b5d6889b97",
+              "version": 1,
+              "observationId": "3e66082c-f035-4532-999d-2ca3f9a6258e",
+              "links": []
+            },
+            {
+              "entityId": "1692c82b-2a2f-47ee-a794-7b62a5931152",
+              "version": 1,
+              "observationId": "b198ba4e-bef8-4523-8824-16b6d2994807",
+              "links": []
+            },
+            {
+              "entityId": "b055699d-9db4-4af1-97d5-f8a6df04e296",
+              "version": 1,
+              "observationId": "1c57eb3f-6191-4c9d-b541-825e42faaee9",
+              "links": []
+            },
+            {
+              "entityId": "7af9a4a2-3f35-4fcc-bdd4-a270801229b6",
+              "version": 1,
+              "observationId": "5056b239-8414-4bb9-add5-a2ac507cd189",
+              "links": []
+            },
+            {
+              "entityId": "9a388982-481f-4d99-a077-ce3441f544fe",
+              "version": 1,
+              "observationId": "cb6fc339-5713-4bd6-a49d-4a20df0b5087",
+              "links": []
+            },
+            {
+              "entityId": "5b6e5d77-56ec-4024-9f45-d8f2d70cd6e0",
+              "version": 1,
+              "observationId": "5766a3cb-434f-4568-8518-c50dcc1afcf4",
+              "links": []
+            },
+            {
+              "entityId": "6427e4a8-ae84-4bbd-99d0-ea57a18408a9",
+              "version": 1,
+              "observationId": "c2794ac5-9815-4aaf-b8d0-e6e63ed14088",
+              "links": []
+            },
+            {
+              "entityId": "7498f10e-f817-4c23-ae1c-7b69ed16d44c",
+              "version": 1,
+              "observationId": "1e726cc4-8d9e-4335-b820-1e263ea9685e",
+              "links": []
+            },
+            {
+              "entityId": "f5ba28ef-268c-4252-aea2-87fe701970c2",
+              "version": 1,
+              "observationId": "e44de114-dfca-446a-87bf-f0840d8de1f9",
+              "links": []
+            },
+            {
+              "entityId": "ba4f151b-19ba-4343-9a11-5d0febfc46ce",
+              "version": 1,
+              "observationId": "f02072ac-0690-421c-879e-9711e1e7ba10",
+              "links": []
+            },
+            {
+              "entityId": "d083123d-c4ed-4ddf-bfcc-3410d12b5bc9",
+              "version": 1,
+              "observationId": "fb3c46d1-5556-48d9-ba19-084e16de7b47",
+              "links": []
+            },
+            {
+              "entityId": "596e34a7-e7c9-45da-84b5-cb5a60865889",
+              "version": 1,
+              "observationId": "45e82716-da5e-41cb-b81e-516b66cb8f43",
+              "links": []
+            },
+            {
+              "entityId": "9a325c32-4d75-4c48-8826-16c50fa0491f",
+              "version": 1,
+              "observationId": "bb8f4464-239d-4a78-b884-d9a9e25a26bf",
+              "links": []
+            },
+            {
+              "entityId": "bc89e7b0-24c7-4f25-9d93-8aaabf199b79",
+              "version": 1,
+              "observationId": "91042510-1a5d-4ad4-9cc6-e775daaf39d3",
+              "links": []
+            },
+            {
+              "entityId": "afb2e60d-f8a8-44c9-9e24-bb52fc543559",
+              "version": 1,
+              "observationId": "6ca46485-9c2d-4226-bcf5-2a6edbb4b992",
+              "links": []
+            },
+            {
+              "entityId": "8bcf1d9b-05b3-4422-afad-c89533b9d8b9",
+              "version": 1,
+              "observationId": "ada5173b-def3-4ac0-a987-c1857ae71f8a",
+              "links": []
+            },
+            {
+              "entityId": "2728f2fa-7ae7-420c-8798-babc281df550",
+              "version": 1,
+              "observationId": "1fae3ada-6940-4302-a8b7-b9ef305d40f6",
+              "links": []
+            },
+            {
+              "entityId": "16b6d373-a462-4a0f-9f66-eae5c3442b8a",
+              "version": 1,
+              "observationId": "3385c802-6a86-4cf2-9e11-bed20b7315ae",
+              "links": []
+            },
+            {
+              "entityId": "a45e26b6-e6d6-4834-b181-f040c0274986",
+              "version": 1,
+              "observationId": "5a1a36e7-62c6-477e-a6df-76da262e9349",
+              "links": []
+            },
+            {
+              "entityId": "8d313417-ad85-49cd-bbbb-3504927d6fbb",
+              "version": 1,
+              "observationId": "b4c2250b-690d-48b1-84be-ba893e263abc",
+              "links": []
+            },
+            {
+              "entityId": "6084cd82-c87e-4b97-912c-cba23a632fc2",
+              "version": 1,
+              "observationId": "7d97cb2a-84a3-4706-abe7-b1bb22a9bc9b",
+              "links": []
+            },
+            {
+              "entityId": "f67ce926-72c0-400c-b087-77967a822f82",
+              "version": 1,
+              "observationId": "3587a4be-ca7e-4788-afaf-cd9e123f3f35",
+              "links": []
+            },
+            {
+              "entityId": "10bc8df3-ada7-4da0-91e9-40ea1744b941",
+              "version": 1,
+              "observationId": "38dd7ad9-3eba-46e1-b956-05eeea470e89",
+              "links": []
+            },
+            {
+              "entityId": "a7fd2f73-fa41-4382-a541-d82739f9e1cc",
+              "version": 1,
+              "observationId": "0330d7f3-9a7a-4e49-b542-1cd05414994e",
+              "links": []
+            },
+            {
+              "entityId": "efda3663-7677-4a23-988c-b17f43d25146",
+              "version": 1,
+              "observationId": "6d518203-b911-4ed1-9143-d9c85503913c",
+              "links": []
+            },
+            {
+              "entityId": "97e0491f-7a8b-4245-95fc-b179e3e85b8b",
+              "version": 1,
+              "observationId": "960da35a-a686-47a1-975d-809cfa320e19",
+              "links": []
+            },
+            {
+              "entityId": "b5bf97d5-8065-49f4-b7eb-2b8db4da8e60",
+              "version": 1,
+              "observationId": "e3a9694c-e12c-40fc-b5f6-dfad03f564f8",
+              "links": []
+            },
+            {
+              "entityId": "7bc8b5d6-857d-4d72-ace5-316d21e5c922",
+              "version": 1,
+              "observationId": "0aca7b47-7406-4c94-b753-ae8380e3d898",
+              "links": []
+            },
+            {
+              "entityId": "4250a94f-fc2b-4b5d-af1a-d3b827114aff",
+              "version": 1,
+              "observationId": "c04984e1-c92f-4a95-ab25-d9ee2c46bf0e",
+              "links": []
+            },
+            {
+              "entityId": "26df2d90-14e2-487b-8bd0-64cc697995b1",
+              "version": 1,
+              "observationId": "7b7db4ea-8a45-4191-9042-a80aaada7aac",
+              "links": []
+            },
+            {
+              "entityId": "36df445a-06a3-471b-abb8-807127be8436",
+              "version": 1,
+              "observationId": "9d9f4279-5315-43ce-854e-b5b6d24f28ac",
+              "links": []
+            },
+            {
+              "entityId": "6c22372f-9714-40f8-a20d-f4494e9ad5ce",
+              "version": 1,
+              "observationId": "9ba20334-0166-4853-aa59-d85a5d2ce68d",
+              "links": []
+            },
+            {
+              "entityId": "7bbdc103-4fc4-4840-a162-dd84f437593a",
+              "version": 1,
+              "observationId": "bf88e8ea-406c-4e5f-89de-8173d7287b5e",
+              "links": []
+            }
+          ],
+          "relationshipInputs": [
+            {
+              "id": "4e2537b9-df5e-4747-8d23-b9f61ba164ad",
+              "version": 1
+            },
+            {
+              "id": "9375e573-225c-4d8d-bc57-534fbb59996b",
+              "version": 1
+            },
+            {
+              "id": "a14e0028-c3e2-4cb5-9a2b-d226c718c449",
+              "version": 1
+            },
+            {
+              "id": "f7297d2a-52f8-4064-8c38-0ff47b6cf44d",
+              "version": 2
+            }
+          ]
+        },
+        {
+          "kind": "receipt",
+          "id": "caf0f6f4-99c8-4264-9803-20894b89857d",
+          "scope": {
+            "inputIds": ["1c62695b-5a9c-4f6c-8703-366142817f54"],
+            "relationshipIds": [],
+            "hasChanged": true,
+            "hasUnknown": false,
+            "state": "changed"
+          },
+          "supersession": {
+            "count": 0,
+            "ids": []
+          },
+          "inputs": [
+            {
+              "entityId": "9253f9ac-6c64-42a5-8048-8e5f860fdefc",
+              "version": 2,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "c3ae3436-4e8f-4069-bfe4-9463b3d6efc6",
+              "version": 1,
+              "observationId": "53c270e8-aea2-4aad-aec5-2e4c079bf7f0",
+              "links": []
+            },
+            {
+              "entityId": "ab3b6532-4d12-4989-9604-882689b12353",
+              "version": 1,
+              "observationId": "8d65b374-910c-46be-a031-b278ce1645c8",
+              "links": []
+            },
+            {
+              "entityId": "d06a3389-13e8-4e3d-beaf-b57821e808d9",
+              "version": 1,
+              "observationId": "320bfca6-c9b3-4b67-9f43-f8267e70d516",
+              "links": []
+            },
+            {
+              "entityId": "680e73fe-6431-4830-bb56-360174948aef",
+              "version": 1,
+              "observationId": "0954eb95-021b-47df-b9e2-cb64629750cf",
+              "links": []
+            },
+            {
+              "entityId": "e51e4408-7c64-44ed-9848-770bb14cd212",
+              "version": 1,
+              "observationId": "2499cbc0-2e9d-4024-92fb-6c39b0f6e945",
+              "links": []
+            },
+            {
+              "entityId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+              "version": 1,
+              "observationId": "40d89b62-5311-4817-99ae-a2805e106747",
+              "links": []
+            },
+            {
+              "entityId": "ccbcbdac-4bb0-49ea-aac5-fed62c7ba768",
+              "version": 1,
+              "observationId": "4e9b1e08-30d5-4e5b-aadc-b66a0be4b504",
+              "links": []
+            },
+            {
+              "entityId": "fd393cdb-0bb4-42d8-8bc1-eeb048fb827f",
+              "version": 1,
+              "observationId": "a9e93ac0-057c-413d-a890-5555946f89b3",
+              "links": []
+            },
+            {
+              "entityId": "a6e41a3a-18b4-40a1-9dd2-738279760fc8",
+              "version": 1,
+              "observationId": "0cf0d703-3c7a-4424-b72d-3118eab6e7ee",
+              "links": []
+            },
+            {
+              "entityId": "e2d1e980-2128-4bbf-bc5a-ac881bc2610f",
+              "version": 1,
+              "observationId": "58599d5b-5c65-42ed-bc1d-f15a76c01863",
+              "links": []
+            },
+            {
+              "entityId": "65b0d5c7-15ca-4e36-8106-36a0de0fc6c5",
+              "version": 1,
+              "observationId": "acb0ff93-c3b3-4492-8972-23ae3f2cf6c9",
+              "links": []
+            },
+            {
+              "entityId": "8716236f-b8a7-42f9-b9e2-9431610cd617",
+              "version": 1,
+              "observationId": "4428258f-1662-4888-9963-d052ea7af271",
+              "links": []
+            },
+            {
+              "entityId": "4fb0495f-220f-4634-83b6-aa3863ddcb4e",
+              "version": 1,
+              "observationId": "724e2b1e-607e-4169-9052-87c328279ca1",
+              "links": []
+            },
+            {
+              "entityId": "2b2b7281-04a9-4ad3-82c3-1fbc88419801",
+              "version": 1,
+              "observationId": "226de431-cc78-4f3b-9b83-4c9ca77110ac",
+              "links": []
+            },
+            {
+              "entityId": "955af100-a309-487b-b1e5-2bfd8673aa21",
+              "version": 1,
+              "observationId": "b4020e23-e80e-4536-8d6a-cb7a9936a20a",
+              "links": []
+            },
+            {
+              "entityId": "4cc67392-a169-48c3-ad69-ccc62914523b",
+              "version": 1,
+              "observationId": "704bc180-83cc-4ffa-a7ec-bd29c857eefc",
+              "links": []
+            },
+            {
+              "entityId": "b3696b68-b3d3-4e61-b7dc-977993b4c3ec",
+              "version": 1,
+              "observationId": "ec0fe0f3-1787-42c3-8f0e-a234d8e8ce4e",
+              "links": []
+            },
+            {
+              "entityId": "0ea74743-1399-4b97-9e63-4f30ffdd187a",
+              "version": 1,
+              "observationId": "acb2ee01-3dab-4f37-8717-7df14bc75edd",
+              "links": []
+            },
+            {
+              "entityId": "abf1041e-1b51-4025-bc0a-9edbaaba5646",
+              "version": 1,
+              "observationId": "8163065e-b6a5-427d-98b3-bc4f19bfb04d",
+              "links": []
+            },
+            {
+              "entityId": "d8a303d2-f243-49cb-a640-c0699cb2ceae",
+              "version": 1,
+              "observationId": "916fb3d3-50af-4a87-ad14-cc805ca29724",
+              "links": []
+            },
+            {
+              "entityId": "4aa84039-bd60-4eef-9750-95ac4abb20a3",
+              "version": 1,
+              "observationId": "4a457621-48b0-4f70-a13b-4c926a1b73ec",
+              "links": []
+            },
+            {
+              "entityId": "fbdae562-18b9-46aa-8ce9-61f752c0b81a",
+              "version": 1,
+              "observationId": "769bf22b-3ba0-4ccc-a93e-7670f7519cd6",
+              "links": []
+            },
+            {
+              "entityId": "677820b2-c78e-4471-942b-7c23a6e13077",
+              "version": 1,
+              "observationId": "b5e7c647-27e7-41b5-86c5-9e8cae61d78a",
+              "links": []
+            },
+            {
+              "entityId": "ce6107d9-6643-462d-a79f-436e347d08d0",
+              "version": 1,
+              "observationId": "994ada4f-a65b-46b3-968c-be6ef9406941",
+              "links": []
+            },
+            {
+              "entityId": "7704ba45-9cf1-49e6-9e9d-ce962360fed0",
+              "version": 1,
+              "observationId": "d5af181a-7a65-44c1-a44d-76e238d93a53",
+              "links": []
+            },
+            {
+              "entityId": "8eb31a05-2b80-40aa-a7a3-b21840a56b8d",
+              "version": 1,
+              "observationId": "b553bffc-e16a-4620-ba05-7c980519c510",
+              "links": []
+            },
+            {
+              "entityId": "426029b8-0200-44cf-99d2-4e438615d627",
+              "version": 1,
+              "observationId": "2c2c7819-805c-4c79-bbe4-7e84084702c0",
+              "links": []
+            },
+            {
+              "entityId": "5eb97a69-84d9-48fa-b8c7-685b2db8f335",
+              "version": 1,
+              "observationId": "58e18527-8163-4b9a-af2b-609def13b997",
+              "links": []
+            },
+            {
+              "entityId": "68cf9c87-826b-4059-9e28-09472bfdf3e3",
+              "version": 1,
+              "observationId": "5cd3c8b6-3eae-465b-853c-fbca4be84a4a",
+              "links": []
+            },
+            {
+              "entityId": "aa8e97e4-c4a8-44bb-bcc0-70a7954f203d",
+              "version": 1,
+              "observationId": "a3ec21d1-7bb6-4ab0-a6e1-a3c24d2cb48c",
+              "links": []
+            },
+            {
+              "entityId": "81c74e08-94d2-4310-874a-f1a2fc35bb9f",
+              "version": 1,
+              "observationId": "c633c162-4c35-4865-aeb5-53b93fb38bef",
+              "links": []
+            },
+            {
+              "entityId": "5f7fb488-b197-4dc8-a993-1b70eb8dd60f",
+              "version": 1,
+              "observationId": "c2b4b0f2-8232-4003-becd-d7cb74bcc689",
+              "links": []
+            },
+            {
+              "entityId": "2728f2fa-7ae7-420c-8798-babc281df550",
+              "version": 1,
+              "observationId": "1fae3ada-6940-4302-a8b7-b9ef305d40f6",
+              "links": []
+            },
+            {
+              "entityId": "4250a94f-fc2b-4b5d-af1a-d3b827114aff",
+              "version": 1,
+              "observationId": "c04984e1-c92f-4a95-ab25-d9ee2c46bf0e",
+              "links": []
+            },
+            {
+              "entityId": "6c22372f-9714-40f8-a20d-f4494e9ad5ce",
+              "version": 1,
+              "observationId": "9ba20334-0166-4853-aa59-d85a5d2ce68d",
+              "links": []
+            }
+          ],
+          "relationshipInputs": []
+        },
+        {
+          "kind": "receipt",
+          "id": "27b09d2e-7292-472f-944a-cc688c83734d",
+          "scope": {
+            "inputIds": ["1c62695b-5a9c-4f6c-8703-366142817f54"],
+            "relationshipIds": [],
+            "hasChanged": true,
+            "hasUnknown": false,
+            "state": "changed"
+          },
+          "supersession": {
+            "count": 0,
+            "ids": []
+          },
+          "inputs": [
+            {
+              "entityId": "53548fd6-f741-4088-9de5-2b265d4f48a2",
+              "version": 2,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "2cabf7c2-08f4-4d84-90b3-4e9b73dff772",
+              "version": 2,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "77d7f75d-ceea-4275-965e-27c328695dec",
+              "version": 4,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+              "version": 1,
+              "observationId": "40d89b62-5311-4817-99ae-a2805e106747",
+              "links": []
+            },
+            {
+              "entityId": "f6eded18-7f4d-4308-871f-39d6d515cd4e",
+              "version": 1,
+              "observationId": "40ee6e82-563c-4853-8d17-1206bdf176b3",
+              "links": []
+            },
+            {
+              "entityId": "d35d773b-8fcf-423c-9a43-11e76acf20ab",
+              "version": 1,
+              "observationId": "ad8ced55-e379-416b-a20e-b309630765d0",
+              "links": []
+            },
+            {
+              "entityId": "ba5877f0-d383-4f21-bd4b-66373b32c342",
+              "version": 1,
+              "observationId": "d4d5e86b-4ca1-44e1-9e9d-bef6d47e81c0",
+              "links": []
+            },
+            {
+              "entityId": "596e34a7-e7c9-45da-84b5-cb5a60865889",
+              "version": 1,
+              "observationId": "45e82716-da5e-41cb-b81e-516b66cb8f43",
+              "links": []
+            },
+            {
+              "entityId": "16b6d373-a462-4a0f-9f66-eae5c3442b8a",
+              "version": 1,
+              "observationId": "3385c802-6a86-4cf2-9e11-bed20b7315ae",
+              "links": []
+            },
+            {
+              "entityId": "2728f2fa-7ae7-420c-8798-babc281df550",
+              "version": 1,
+              "observationId": "1fae3ada-6940-4302-a8b7-b9ef305d40f6",
+              "links": []
+            },
+            {
+              "entityId": "afb2e60d-f8a8-44c9-9e24-bb52fc543559",
+              "version": 1,
+              "observationId": "6ca46485-9c2d-4226-bcf5-2a6edbb4b992",
+              "links": []
+            },
+            {
+              "entityId": "5af17daa-5eae-4aa2-aa04-7cc0248e6e20",
+              "version": 1,
+              "observationId": "335019d3-9b00-4602-9780-99747317e1e3",
+              "links": []
+            },
+            {
+              "entityId": "4250a94f-fc2b-4b5d-af1a-d3b827114aff",
+              "version": 1,
+              "observationId": "c04984e1-c92f-4a95-ab25-d9ee2c46bf0e",
+              "links": []
+            },
+            {
+              "entityId": "26df2d90-14e2-487b-8bd0-64cc697995b1",
+              "version": 1,
+              "observationId": "7b7db4ea-8a45-4191-9042-a80aaada7aac",
+              "links": []
+            },
+            {
+              "entityId": "36df445a-06a3-471b-abb8-807127be8436",
+              "version": 1,
+              "observationId": "9d9f4279-5315-43ce-854e-b5b6d24f28ac",
+              "links": []
+            },
+            {
+              "entityId": "6c22372f-9714-40f8-a20d-f4494e9ad5ce",
+              "version": 1,
+              "observationId": "9ba20334-0166-4853-aa59-d85a5d2ce68d",
+              "links": []
+            },
+            {
+              "entityId": "7bbdc103-4fc4-4840-a162-dd84f437593a",
+              "version": 1,
+              "observationId": "bf88e8ea-406c-4e5f-89de-8173d7287b5e",
+              "links": []
+            }
+          ],
+          "relationshipInputs": [
+            {
+              "id": "138cf7a5-5f14-4527-b495-017a83b2dd6e",
+              "version": 2
+            },
+            {
+              "id": "7d8185c3-3a56-446f-b9f0-f946a5d4af9e",
+              "version": 2
+            },
+            {
+              "id": "ae7dfcc8-1836-4859-a51e-b7665adac609",
+              "version": 2
+            }
+          ]
+        },
+        {
+          "kind": "receipt",
+          "id": "c587f91d-8433-4a65-ab8c-b355ab4b511a",
+          "scope": {
+            "inputIds": ["1c62695b-5a9c-4f6c-8703-366142817f54"],
+            "relationshipIds": [],
+            "hasChanged": false,
+            "hasUnknown": false,
+            "state": "current"
+          },
+          "supersession": {
+            "count": 0,
+            "ids": []
+          },
+          "inputs": [
+            {
+              "entityId": "db541d2d-b5e6-40a0-844d-771e737a9bd5",
+              "version": 3,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "77d7f75d-ceea-4275-965e-27c328695dec",
+              "version": 4,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "8e702928-56c6-4bcf-95bf-94ef0f334bd5",
+              "version": 1,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "da576164-abae-4d4d-98df-a8a33a482acd",
+              "version": 1,
+              "observationId": null,
+              "links": []
+            },
+            {
+              "entityId": "3eecb662-31d7-40c2-b434-c9eab536c5cb",
+              "version": 1,
+              "observationId": "8abd0d02-ac87-48fd-a0b5-fe627f8b96a5",
+              "links": []
+            },
+            {
+              "entityId": "994b2650-62a6-47e4-b09f-41594d1838d7",
+              "version": 1,
+              "observationId": "7b23d622-df5a-4d15-b615-6f90cf459701",
+              "links": []
+            },
+            {
+              "entityId": "93153691-d313-4773-bfc4-d06370dad8e7",
+              "version": 1,
+              "observationId": "46aa9369-1811-4cc8-956c-de2ae4b599b7",
+              "links": []
+            },
+            {
+              "entityId": "d75ec19f-e6bb-4e99-915d-a42575d4cf0f",
+              "version": 1,
+              "observationId": "1e7f365e-d30f-47fa-bc3f-085542c8f5a2",
+              "links": []
+            },
+            {
+              "entityId": "1469837f-f524-4f8b-a759-9bc990699110",
+              "version": 1,
+              "observationId": "197ba5d9-00d0-4929-8584-b8b86a382033",
+              "links": []
+            },
+            {
+              "entityId": "f0a6ded4-3a42-4f32-a443-95be85063872",
+              "version": 1,
+              "observationId": "885098a3-e4ae-4074-94cb-ede1f3d8d5fa",
+              "links": []
+            },
+            {
+              "entityId": "19116b88-f6c6-460e-b9de-2b39366fb141",
+              "version": 1,
+              "observationId": "2fa4112d-3fbd-4b83-9a99-194612d1d474",
+              "links": []
+            },
+            {
+              "entityId": "dade6dd3-145d-4a48-b3e8-01ca7593d038",
+              "version": 1,
+              "observationId": "6714514b-b060-4a18-838c-a901f39fafd8",
+              "links": []
+            },
+            {
+              "entityId": "a5ae602b-b1de-410e-ac45-54da03ff4fa0",
+              "version": 1,
+              "observationId": "83a0ad91-f1ac-45af-b271-50c6457023a5",
+              "links": []
+            },
+            {
+              "entityId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+              "version": 1,
+              "observationId": "40d89b62-5311-4817-99ae-a2805e106747",
+              "links": []
+            },
+            {
+              "entityId": "ad7152e8-2493-41b5-9cdf-8e2b8a1014c8",
+              "version": 1,
+              "observationId": "d715b47b-4876-40ca-be5c-7e8e1dd58bdf",
+              "links": []
+            },
+            {
+              "entityId": "e51e4408-7c64-44ed-9848-770bb14cd212",
+              "version": 1,
+              "observationId": "2499cbc0-2e9d-4024-92fb-6c39b0f6e945",
+              "links": []
+            },
+            {
+              "entityId": "ab3b6532-4d12-4989-9604-882689b12353",
+              "version": 1,
+              "observationId": "8d65b374-910c-46be-a031-b278ce1645c8",
+              "links": []
+            },
+            {
+              "entityId": "b055699d-9db4-4af1-97d5-f8a6df04e296",
+              "version": 1,
+              "observationId": "1c57eb3f-6191-4c9d-b541-825e42faaee9",
+              "links": []
+            },
+            {
+              "entityId": "d35d773b-8fcf-423c-9a43-11e76acf20ab",
+              "version": 1,
+              "observationId": "ad8ced55-e379-416b-a20e-b309630765d0",
+              "links": []
+            },
+            {
+              "entityId": "5b6e5d77-56ec-4024-9f45-d8f2d70cd6e0",
+              "version": 1,
+              "observationId": "5766a3cb-434f-4568-8518-c50dcc1afcf4",
+              "links": []
+            },
+            {
+              "entityId": "6427e4a8-ae84-4bbd-99d0-ea57a18408a9",
+              "version": 1,
+              "observationId": "c2794ac5-9815-4aaf-b8d0-e6e63ed14088",
+              "links": []
+            },
+            {
+              "entityId": "16b6d373-a462-4a0f-9f66-eae5c3442b8a",
+              "version": 1,
+              "observationId": "3385c802-6a86-4cf2-9e11-bed20b7315ae",
+              "links": []
+            },
+            {
+              "entityId": "ea4c0a81-6614-4590-acd0-0959b971697e",
+              "version": 1,
+              "observationId": "70387c99-e03e-43fd-ae65-2baeb2d3912f",
+              "links": []
+            },
+            {
+              "entityId": "2728f2fa-7ae7-420c-8798-babc281df550",
+              "version": 1,
+              "observationId": "1fae3ada-6940-4302-a8b7-b9ef305d40f6",
+              "links": []
+            },
+            {
+              "entityId": "7498f10e-f817-4c23-ae1c-7b69ed16d44c",
+              "version": 1,
+              "observationId": "1e726cc4-8d9e-4335-b820-1e263ea9685e",
+              "links": []
+            },
+            {
+              "entityId": "36df445a-06a3-471b-abb8-807127be8436",
+              "version": 1,
+              "observationId": "9d9f4279-5315-43ce-854e-b5b6d24f28ac",
+              "links": []
+            },
+            {
+              "entityId": "4250a94f-fc2b-4b5d-af1a-d3b827114aff",
+              "version": 1,
+              "observationId": "c04984e1-c92f-4a95-ab25-d9ee2c46bf0e",
+              "links": []
+            },
+            {
+              "entityId": "6c22372f-9714-40f8-a20d-f4494e9ad5ce",
+              "version": 1,
+              "observationId": "9ba20334-0166-4853-aa59-d85a5d2ce68d",
+              "links": []
+            },
+            {
+              "entityId": "26df2d90-14e2-487b-8bd0-64cc697995b1",
+              "version": 1,
+              "observationId": "7b7db4ea-8a45-4191-9042-a80aaada7aac",
+              "links": []
+            },
+            {
+              "entityId": "7bbdc103-4fc4-4840-a162-dd84f437593a",
+              "version": 1,
+              "observationId": "bf88e8ea-406c-4e5f-89de-8173d7287b5e",
+              "links": []
+            }
+          ],
+          "relationshipInputs": []
+        }
+      ],
+      "retained": [],
+      "control": {
+        "commandId": "tracer-source-assessment-refresh-2026-10-28",
+        "openingCommandId": "tracer-source-assessment-open-2026-10-28"
+      },
+      "refresh": {
+        "reason": "Include the verification result recorded after opening without dropping the three historical affected results or treating refresh as completion.",
+        "previousAssessmentVersion": 1
+      }
+    },
+    "controlledCompletion": false
+  },
+  "remaining": [
+    "Controlled candidate dispositions, explicit action obligations and supporting assessed basis",
+    "Semantic scope/current-applicability comparison independent of global head/evidence changes and own writes",
+    "Validated immutable closure/reopen with complete population and explicit exception policy",
+    "Complete actual Tracer and materially different configured domain lifecycles through headless interfaces",
+    "Shared UI authoring and retained drafts/recovery with unfamiliar-agent comprehension; representative-human validation stays separate"
+  ],
+  "limits": {
+    "candidates": 25,
+    "examinedReceiptRows": 25,
+    "scopeBytes": 65536,
+    "viewBytes": 262144,
+    "selectedTraversal": "Original query/purpose only; explicit depth/types, historical basis and frontier, not universal engineering consequence discovery",
+    "readTrust": "Original and controlling immutable application command plus native genesis; no generic receipt-state or authored-status substitution",
+    "adapter": "SQLite only; no arbitrary-scale/backend/team/standards-conformance claim"
+  }
+}

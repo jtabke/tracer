@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-opening`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`.
+Features: `atomic-evaluation-commands`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -26,6 +26,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/baselines` | `after` (text), `limit` (integer) |
 | GET | `/api/capabilities` | — |
 | GET | `/api/chain` | `after` (text), `limit` (integer), `type`* (text), `steps`* (json), `search` (text) |
+| GET | `/api/change-assessment` | `assessmentId`* (text), `openingCommandId`* (text) |
 | GET | `/api/changeset-outcome` | `commandId`* (text) |
 | GET | `/api/comparison` | `receiptId`* (text) |
 | GET | `/api/configuration` | `id`* (text) |
@@ -60,6 +61,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/working-context` | `query`* (json) |
 | POST | `/api/baselines` | `id`, `name`, `expectedProjectRevision`, `projectRevision` |
 | POST | `/api/change-assessments/open` | `commandId`, `assessmentId`, `title`, `purpose`, `model`, `query`, `additionalFields`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision` |
+| POST | `/api/change-assessments/refresh` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
 | POST | `/api/changesets` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `operations` |
 | POST | `/api/configurations` | `name`, `subjectId`, `expectedSubjectVersion`, `members`, `relationships` |
 | POST | `/api/coverage-expectations` | `expectations`, `expectedSchemaVersion` |

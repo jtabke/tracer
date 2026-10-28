@@ -521,7 +521,7 @@ This read service prepares shared application configuration. Assessment scope, d
 
 ## Open a scoped change assessment
 
-Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. This currently opens an assessment; disposition, refresh, closure and dedicated UI authoring remain under implementation.
+Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. Opening and explicit scope refresh are implemented; dispositions, closure and dedicated UI authoring remain under implementation.
 
 A request contains:
 
@@ -534,6 +534,32 @@ A request contains:
 The result is the same native-plus-receipt shape as an evaluation command. The assessment's configured scope field retains its exact population, reasons/reachability and read basis. The opening receipt captures that assessment output and the native model version, and establishes no engineering conclusion. Discovery rejects above 25 candidates, 25 examined receipt rows or 64 KiB, retaining the existing impact traversal bounds. Narrow the declared investigation explicitly rather than treating a truncated page as complete.
 
 After an uncertain response, read `/api/evaluation-outcome?commandId=...` or run `evaluation outcome COMMAND_ID`. `null` means no visible success and does not prove an in-flight request failed. A deliberate exact repeat recovers the original result before current guards; clients never retry automatically. Never use an ordinary edited closed status as proof that the pending closure contract has been executed.
+
+## Read and refresh an assessment
+
+Select `{assessmentId, openingCommandId}` using the identities retained when opening. New scope control metadata also retains the opening command ID. An older opening without that metadata still resolves using its original command ID. `tracer.changeAssessments.get(selection)`, GET `/api/change-assessment` and CLI `assessment get JSON` return the same bounded view and current preparation context.
+
+```ts
+const view = await tracer.changeAssessments.get(selection);
+const result = await tracer.changeAssessments.refresh(
+  {
+    ...selection,
+    commandId: crypto.randomUUID(),
+    expectedSchemaVersion: view.model.context.schemaVersion,
+    expectedProjectRevision: view.model.context.projectRevision,
+    expectedEvidenceRevision: view.model.context.evidenceRevision,
+    expectedAssessmentVersion: view.assessment.version,
+    reason: "Include newly recorded verification results and retain earlier obligations",
+  },
+  provenance,
+);
+```
+
+POST `/api/change-assessments/refresh` and CLI `assessment refresh JSON` use the same input. Refresh uses the original purpose/query; it adds new candidates and keeps prior candidates that no longer appear, with their earlier basis explicitly retained. It never clears obligations merely because a link was removed. The combined population remains limited to 25 candidates/64 KiB, and discovery examines at most 25 receipt rows including excluded own-output results. Overflow leaves the original assessment unchanged. Scope refresh records no dispositions or controlled completion.
+
+The read service validates model/scope/state/closure against captured application-command outputs. A raw closed value, changed model pointer or authored scope cannot establish controlled state. Native title/project-field edits are preserved. Current model incompatibility is readable but blocks refresh. Reads return compact presentation/provenance and complete recorded scope, bounded to 256 KiB. They do not rediscover scope automatically or claim that the stored discovery basis is current merely because the read succeeded.
+
+After a conflict, obtain a new view and deliberately re-prepare. After an uncertain response, use the existing evaluation outcome lookup. Exact repeats recover the original result even after later refreshes or reopen. A refresh receipt captures the prior scope as an historical input; its generic drift must not be mistaken for a failed refresh or an engineering applicability conclusion.
 
 ## Atomic evaluation operations
 

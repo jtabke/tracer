@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-28",
+  "scope": "Post-capture preservation/recovery audit at native revision 64. Controlled assessment version 2 remains open; complete application/lifecycle requirement remains in progress.",
+  "nativeRevision": 64,
+  "schemaVersion": 6,
+  "artifactId": "75ef05c6-11c2-4168-9e0f-fb29c38750d4",
+  "receiptId": "61236d06-7a55-4716-ba7a-c7badcaedf99",
+  "commandId": "assessment-refresh-result-2026-10-28",
+  "inputs": 30,
+  "assessmentId": "da576164-abae-4d4d-98df-a8a33a482acd",
+  "assessmentVersion": 2,
+  "assessmentCompletion": false,
+  "phaseReceiptCurrent": true,
+  "historyEvidencePreserved": true,
+  "fullRequirement": "in_progress/not_verified",
+  "work": "in_progress",
+  "goal": "active",
+  "candidateHashesCurrent": true,
+  "backupExportEqual": true,
+  "canonicalExportFileEqual": true,
+  "phaseOutcomeBackupEqual": true,
+  "refreshOutcomeCoreHeadlessBackupEqual": true,
+  "originalOpeningOutcomePreserved": true,
+  "controlledReadScopeEqual": true,
+  "oldCommandRowsIdentical": 33,
+  "assessmentStillOpen": true,
+  "requirementValidation": "not_validated",
+  "report": {
+    "path": "projects/tracer/assessment-refresh-verification.json",
+    "sha256": "d0053c3d13f445e17928e5fc5f18fa7b638f3fc473632c761b915e0a36a21d39"
+  },
+  "reviewExport": {
+    "path": "projects/tracer/project-export.json",
+    "sha256": "5174ebf8c2f050c79c2fdd02b8a11bb53dce534da915c6a23460ba227833db56",
+    "restorable": false
+  },
+  "localSQLiteBackup": {
+    "path": "projects/tracer/backups/register-2026-10-28-assessment-refresh.sqlite",
+    "sha256": "f8602a272101dfc2237e66b3eec26e0ebe005835fee1640d7f432419bc8719ca",
+    "canonicalExportParity": true
+  },
+  "verificationMethod": "output/assessment-refresh/verify-final.mjs"
+}
