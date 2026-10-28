@@ -1,10 +1,9 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import type { Editing } from "../editing.ts";
 import { label } from "../entity-label.ts";
 import { useProjection } from "../use-projection.ts";
-import { MutationControllerContext, useMutation } from "../use-mutation.ts";
-import { MutationRecovery } from "../mutation-recovery.tsx";
+import { ApplicationTaskHeader, ApplicationRecovery } from "../application-task.tsx";
 import { assessmentChoices, modelChoices, useAssessmentDirty } from "./choices.tsx";
 import { AssessmentOpening } from "./opening.tsx";
 import { AssessmentDetail } from "./detail.tsx";
@@ -48,19 +47,16 @@ export function AssessmentWorkspace({
   };
   return (
     <section className="scoped-assessments" aria-label="Scoped change assessments" hidden={!active}>
-      <header>
-        <div>
-          <h2>Change assessments</h2>
-          <p>Keep the selected scope, candidate judgments and unfinished actions together.</p>
-        </div>
-        <button disabled={editing.busy} onClick={() => navigate("", true)}>
-          New assessment
-        </button>
-        <button disabled={editing.busy} onClick={refresh}>
-          Refresh assessments
-        </button>
-      </header>
-      <AssessmentRecovery report={editing.report} refresh={refresh} />
+      <ApplicationTaskHeader
+        title="Change assessments"
+        description="Keep the selected scope, candidate judgments and unfinished actions together."
+        createLabel="New assessment"
+        refreshLabel="Refresh assessments"
+        busy={editing.busy}
+        create={() => navigate("", true)}
+        refresh={refresh}
+      />
+      <ApplicationRecovery report={editing.report} refresh={refresh} />
       <div className="assessment-layout">
         <AssessmentCatalogue
           candidates={candidates}
@@ -106,21 +102,6 @@ export function AssessmentWorkspace({
       </div>
     </section>
   );
-}
-
-function AssessmentRecovery({
-  report,
-  refresh,
-}: {
-  report(error: unknown): void;
-  refresh(): void;
-}) {
-  const shared = useContext(MutationControllerContext);
-  return shared ? <SharedRecovery report={report} refresh={refresh} /> : null;
-}
-function SharedRecovery({ report, refresh }: { report(error: unknown): void; refresh(): void }) {
-  const mutation = useMutation(report);
-  return <MutationRecovery mutation={mutation} refreshed={refresh} resumed={refresh} />;
 }
 
 function LocatedAssessment({

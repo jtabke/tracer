@@ -1,3 +1,4 @@
+import { VerificationWorkspace } from "./verifications/workspace.tsx";
 import { AssessmentWorkspace } from "./assessments/workspace.tsx";
 import { ReferenceWorkspace } from "./reference-workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
@@ -28,7 +29,8 @@ export type NativeTask =
   | "import"
   | "export"
   | "next-work"
-  | "assessments";
+  | "assessments"
+  | "verification";
 export function NativeTasks({
   task,
   entity,
@@ -76,6 +78,16 @@ export function NativeTasks({
     adoptEntity();
   }, [entity?.id]);
   const panels = {
+    verification: () => (
+      <VerificationWorkspace
+        entities={entities}
+        schema={schema}
+        editing={editing}
+        active={task === "verification"}
+        changed={changed}
+        onDirty={taskDirty(onTaskDirty, "verification")}
+      />
+    ),
     assessments: () => (
       <AssessmentWorkspace
         entities={entities}
@@ -275,6 +287,7 @@ const taskTitles = {
   export: "Export project",
   "next-work": "Next work",
   assessments: "Change assessments",
+  verification: "Verification",
 };
 
 function CreateItem({

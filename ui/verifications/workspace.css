@@ -1,0 +1,76 @@
+.native-task:has(.verification-workspace:not([hidden])) {
+  width: min(1200px, calc(100vw - 32px));
+  height: 92dvh;
+  max-height: 92dvh;
+}
+.verification-workspace {
+  padding: 12px;
+  max-width: 1200px;
+  margin: auto;
+  overflow-wrap: anywhere;
+}
+.verification-workspace header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.verification-workspace header > div {
+  flex: 1;
+  min-width: 200px;
+}
+.verification-layout {
+  display: grid;
+  grid-template-columns: minmax(170px, 230px) minmax(0, 1fr);
+  gap: 24px;
+}
+.verification-layout main,
+.verification-layout nav,
+.verification-workspace fieldset {
+  min-width: 0;
+}
+.verification-workspace label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-block: 10px;
+}
+.verification-workspace input,
+.verification-workspace textarea,
+.verification-workspace select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.verification-workspace input[type="checkbox"],
+.verification-workspace input[type="radio"] {
+  width: auto;
+}
+.verification-workspace textarea {
+  min-height: 80px;
+}
+.verification-workspace fieldset {
+  margin-block: 14px;
+}
+.verification-workspace pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.verification-workspace blockquote {
+  white-space: pre-wrap;
+  margin: 8px 0;
+}
+.verification-workspace button {
+  margin: 4px;
+}
+.verification-workspace li {
+  margin-block: 10px;
+}
+@media (max-width: 680px) {
+  .verification-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .verification-workspace {
+    padding: 4px;
+  }
+}

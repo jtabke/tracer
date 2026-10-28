@@ -289,6 +289,7 @@ function ProjectActions({
         New item
       </button>
       <button onClick={() => onTask("schema")}>Configure model</button>
+      <button onClick={() => onTask("verification")}>Verification</button>
       <button onClick={() => onTask("assessments")}>Change assessments</button>
       <button onClick={() => onTask("evaluations")}>Evaluations</button>
       <button onClick={() => onTask("configurations")}>Configurations</button>

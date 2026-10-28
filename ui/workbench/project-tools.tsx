@@ -149,6 +149,7 @@ function ProjectTools({
             "export",
             "next-work",
             "assessments",
+            "verification",
           ].includes(task)
         )
           onDirty(task, true);
@@ -159,12 +160,15 @@ function ProjectTools({
           <h2>Project tools</h2>
           <p>
             Drafts stay in this tab until reload or close. Saved records persist. Reload recovers
-            the workspace scope, not unsaved drafts.
+            the workspace scope, not unsaved drafts. Verification manages requirement criteria,
+            actual results and scoped conclusions. Change assessments judge the applicability of
+            recorded evidence after inputs change.
           </p>
           {(
             [
               ["next-work", "Next work"],
               ["assessments", "Change assessments"],
+              ["verification", "Verification"],
               ["item", "Edit item and connections"],
               ["references", "References for selected record"],
               ["create", "New item"],
