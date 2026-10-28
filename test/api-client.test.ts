@@ -185,6 +185,7 @@ test("every read endpoint has a paired query codec", () => {
     "/api/reference": { id: "reference" },
     "/api/capabilities": {},
     "/api/evaluation-outcome": { commandId: "missing" },
+    "/api/application-model": { entityId: "missing", version: 1, field: "definition" },
     "/api/changeset-outcome": { commandId: "job-1" },
     "/api/next-work": { requirementType: "item" },
     "/api/project-export": {},

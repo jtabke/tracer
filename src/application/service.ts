@@ -1,3 +1,4 @@
+import { ApplicationModels } from "./application-models.ts";
 import { Evaluations } from "./evaluations.ts";
 import { referenceContext } from "./reference-query.ts";
 import { createReference, checkResourceIdentity } from "./reference-command.ts";
@@ -89,6 +90,7 @@ export type Runtime = { newId(): string };
 export class Tracer {
   readonly evidence: EvidenceService;
   readonly evaluations: Evaluations;
+  readonly applicationModels: ApplicationModels;
   readonly savedViews: SavedViews;
   readonly configurations: Configurations;
   readonly baselines: Baselines;
@@ -105,6 +107,7 @@ export class Tracer {
   ) {
     this.repository = repository;
     this.runtime = runtime;
+    this.applicationModels = new ApplicationModels(repository);
     this.evidence = new EvidenceService(repository, () => this.runtime.newId(), observer);
     this.evaluations = new Evaluations(
       repository,

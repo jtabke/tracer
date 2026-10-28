@@ -16,6 +16,10 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "application-model resolve": ({ tracer, args }) =>
+    tracer.applicationModels.resolve(
+      requiredInput<import("../core/application-model.ts").ApplicationModelPin>(args),
+    ),
   "evaluation commit": ({ tracer, args, origin }) =>
     tracer.evaluations.commit(
       requiredInput<import("../application/evaluations.ts").EvaluationCommand>(args),

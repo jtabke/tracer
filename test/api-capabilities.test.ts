@@ -44,6 +44,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "changeset-command-recovery",
     "evidence-revision-guards",
     "native-resources",
+    "pinned-application-models",
     "qualified-references",
     "relationship-evaluation-inputs",
   ]);

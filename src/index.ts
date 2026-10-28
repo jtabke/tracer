@@ -55,3 +55,7 @@ export type { Resource, Reference, ReferenceState } from "./core/references.ts";
 
 export type { EvaluationCommand } from "./application/evaluations.ts";
 export type { EvaluationResult } from "./core/evaluation-command.ts";
+
+export type * from "./core/application-model.ts";
+
+export { changeAssessmentSchema } from "./core/application-model.ts";

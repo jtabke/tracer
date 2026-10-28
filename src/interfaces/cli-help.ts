@@ -3,6 +3,7 @@ Usage: node src/interfaces/cli.ts [OPTIONS] COMMAND
 Options (before command): --db project.sqlite --actor local --reason text
                          --schema-version N (required for individual data writes)
 Commands:
+  application-model resolve JSON
   evaluation commit JSON              atomic native operations plus receipt; required commandId/schema guard
   evaluation outcome COMMAND_ID       original committed evaluation result or null; no automatic retry
   next-work get [QUERY_JSON]            five separate current-work queues; requirementType/statementField/allocationExpectationId/verificationExpectationId

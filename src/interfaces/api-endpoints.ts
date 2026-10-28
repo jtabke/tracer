@@ -17,6 +17,7 @@ import type {
   ReadContext,
   MutationContext,
 } from "./api/definition.ts";
+import { applicationModelReads } from "./api/application-models.ts";
 import { nativeReads, nativeWrites } from "./api/native.ts";
 import { analysisReads, analysisWrites } from "./api/analysis.ts";
 import { evidenceReads, evidenceWrites } from "./api/evidence.ts";
@@ -24,6 +25,7 @@ import { evaluationReads, evaluationWrites } from "./api/evaluations.ts";
 import { sessionReads } from "./api/session.ts";
 
 export const readEndpoints = {
+  ...applicationModelReads,
   ...nativeReads,
   ...analysisReads,
   ...evidenceReads,

@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `qualified-references`, `relationship-evaluation-inputs`.
+Features: `atomic-evaluation-commands`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `pinned-application-models`, `qualified-references`, `relationship-evaluation-inputs`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -20,6 +20,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 <!-- prettier-ignore -->
 | Method | Path | Query parameters or JSON keys |
 | --- | --- | --- |
+| GET | `/api/application-model` | `entityId`* (text), `version`* (integer), `field`* (text) |
 | GET | `/api/baseline` | `id`* (text) |
 | GET | `/api/baseline-contents` | `after` (text), `limit` (integer), `baselineId`* (text), `kind`* (text) |
 | GET | `/api/baselines` | `after` (text), `limit` (integer) |

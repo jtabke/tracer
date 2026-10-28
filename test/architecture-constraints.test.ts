@@ -229,6 +229,13 @@ void wrong;
 // @ts-expect-error empty query endpoints reject unsupported parameters
 void read("/api/schema", {unexpected: "value"});
 const client = createClient({baseUrl: "http://localhost:4317"});
+const resolvedModel: Promise<import("../src/core/application-model.ts").ResolvedApplicationModel> = client.read("/api/application-model", {entityId: "model", version: 1, field: "definition"});
+void resolvedModel;
+// @ts-expect-error model selection must pin a version
+void client.read("/api/application-model", {entityId: "model", field: "definition"});
+// @ts-expect-error model selection is specific, not a schema-version query
+void client.read("/api/application-model", {id: "model", schemaVersion: 1});
+
 const evaluationRequest = {commandId: "analysis-1", expectedSchemaVersion: 1, expectedEvidenceRevision: 0, operations: [], receipt: {outputId: "output", outcome: "recorded", inputs: []}};
 const evaluationResult: Promise<import("../src/core/evaluation-command.ts").EvaluationResult> = client.write("/api/evaluation-commands", evaluationRequest);
 const evaluationOutcome: Promise<import("../src/core/evaluation-command.ts").EvaluationResult | null> = client.read("/api/evaluation-outcome", {commandId: "analysis-1"});
