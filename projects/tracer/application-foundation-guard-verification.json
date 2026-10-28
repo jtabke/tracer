@@ -1,0 +1,246 @@
+{
+  "date": "2026-10-27",
+  "workItem": "WORK-025",
+  "requirement": "REQ-032",
+  "verificationPlan": "VER-032",
+  "result": "passed for evidence-guard slice; larger goal remains active",
+  "scope": "Optional evidence-revision precondition over existing evaluation composition/recovery, plus constructive native model-storage evidence and the initial real Tracer source-change basis. Not delivery of REQ-033 application lifecycle, complete change assessment or new UI.",
+  "baselineCommits": ["36218c7", "f6d99ba"],
+  "criteria": [
+    {
+      "criterion": "AC-1",
+      "evidence": "evaluation-evidence-guard.test.ts: stale/invalid guard full-export equality and no successful outcome; native-stable observation drift conflicts before writes."
+    },
+    {
+      "criterion": "AC-2",
+      "evidence": "Engineering and research tests commit matching watermarks, reject observation/review drift without native head change, and allow receipt-only corrected retry. Portable evaluation check adds matching zero watermark."
+    },
+    {
+      "criterion": "AC-3",
+      "evidence": "Reopen/exact repeat/lookup return original success despite later evidence; changed guard intent conflicts; interrupted guarded HTTP response and CLI process repeats recover one result."
+    },
+    {
+      "criterion": "AC-4",
+      "evidence": "Existing unguarded regression contracts pass; both real pre-feature stored command intents/results replay unchanged after source changes. No migration, storage rewrite or observer IO introduced."
+    },
+    {
+      "criterion": "AC-5",
+      "evidence": "Actual typed headless stale/invalid/matching/repeat operations and capability preflight, compiler probes, guarded interrupted-response/restart and CLI rejection/recovery use shared service."
+    }
+  ],
+  "execution": {
+    "full": {
+      "command": "npm run check",
+      "unit": 506,
+      "browser": 196,
+      "workbenchCaptures": 18,
+      "format": true,
+      "types": true,
+      "lint": true,
+      "builds": true,
+      "quality": true
+    },
+    "finalUnit": {
+      "passed": 508,
+      "reason": "Added two constructive native model-storage tests and a portable zero-watermark assertion after full-run unit phase; reran every unit test on final source."
+    },
+    "focused": {
+      "passed": 18
+    },
+    "modelAndPortable": {
+      "passed": 23
+    },
+    "finalGates": {
+      "types": true,
+      "format": true,
+      "quality": true
+    },
+    "thresholdsOrExclusionsChanged": false
+  },
+  "characterization": {
+    "nativeHeadBefore": 9,
+    "nativeHeadAfterObservation": 9,
+    "evidenceBefore": 2,
+    "evidenceAfterObservation": 3,
+    "nativeGuardAccepted": true,
+    "receiptCommitted": true,
+    "interpretation": "Intentional existing semantics: explicit old input captures remain valid. A derived application proposal whose completeness depends on the observed evidence catalogue cannot use only native-head guarding to protect that read basis. Add an optional evidence-watermark guard; do not invalidate old captures or change unguarded callers."
+  },
+  "modelStorage": {
+    "results": [
+      {
+        "domain": "engineering",
+        "names": {
+          "assessment": "change_assessment",
+          "disposition": "change_disposition",
+          "state": "state",
+          "scope": "scope",
+          "model": "model",
+          "member": "has_disposition",
+          "target": "concerns",
+          "definition": "definition"
+        },
+        "pinnedModelSurvivesEditDeletionReopen": true,
+        "nativeSchemaValidatesConfiguredTypesAndFields": true,
+        "samePrototypeResolver": true,
+        "plainClosedFieldCreatesNoControlledConclusion": true
+      },
+      {
+        "domain": "research",
+        "names": {
+          "assessment": "investigation",
+          "disposition": "interpretation",
+          "state": "progress",
+          "scope": "population",
+          "model": "method_model",
+          "member": "includes_interpretation",
+          "target": "interprets",
+          "definition": "rules"
+        },
+        "pinnedModelSurvivesEditDeletionReopen": true,
+        "nativeSchemaValidatesConfiguredTypesAndFields": true,
+        "samePrototypeResolver": true,
+        "plainClosedFieldCreatesNoControlledConclusion": true
+      }
+    ],
+    "method": "test/application-model-storage.test.ts is committed executable storage evidence. Prototype resolver assertions do not claim production descriptor validation or effective closure."
+  },
+  "sourceCase": {
+    "nativeRevision": 52,
+    "source": "src/application/evaluations.ts",
+    "sourceId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+    "committedSourceBasis": "36218c7",
+    "baselineId": "c7ba113f-66dc-4bf4-8843-82d6fe56eedd",
+    "baselineScope": "native state only; external before/after states are separately observed metadata",
+    "oldObservationId": "2265e2da-f3a1-4052-83eb-a19525146346",
+    "oldHash": "sha256:fa577036968c9802a1508d43126a8f6b4494bfaace5b99c00d79af6fa698ef85",
+    "newObservationId": "a918b269-571a-42ee-ae0c-464bbc0a091a",
+    "newHash": "sha256:a96f4a0964d7599be9aa362bb21b485a93c8e9a0fe12857e5077d2af3d7ad3c8",
+    "scope": {
+      "rootId": "1c62695b-5a9c-4f6c-8703-366142817f54",
+      "direction": "outgoing",
+      "relationshipTypes": [],
+      "depth": 1
+    },
+    "statesBefore": [
+      {
+        "receiptId": "8f80340f-c373-4b04-81f7-a9c8a2068fed",
+        "state": "changed"
+      },
+      {
+        "receiptId": "caf0f6f4-99c8-4264-9803-20894b89857d",
+        "state": "current"
+      }
+    ],
+    "alreadyAffectedBefore": ["8f80340f-c373-4b04-81f7-a9c8a2068fed"],
+    "newlyAffected": ["caf0f6f4-99c8-4264-9803-20894b89857d"],
+    "matchingReceiptPopulation": [
+      {
+        "receiptId": "8f80340f-c373-4b04-81f7-a9c8a2068fed",
+        "outputId": "050d8166-9bc8-492d-8647-eceb9bff7416",
+        "state": "changed",
+        "outcomeRetained": true
+      },
+      {
+        "receiptId": "caf0f6f4-99c8-4264-9803-20894b89857d",
+        "outputId": "c4de3eb7-3749-4b98-b457-41abadf6275e",
+        "state": "changed",
+        "outcomeRetained": true
+      }
+    ],
+    "nativeHeadUnchangedAcrossObservation": true,
+    "oldCommandOutcomesReplayedUnchanged": 2,
+    "historicalReceiptsUnchanged": true,
+    "assessmentStatus": "affected candidate basis established; dispositions, controlled closure and shared UI remain pending"
+  },
+  "goalProgress": {
+    "baseline": "Verified baseline checkpointed in two commits.",
+    "guard": "REQ-032 implemented and scoped verification executed.",
+    "modelStorage": "Ordinary versioned records/JSON bindings, typed links and exact native pins selected; two-domain constructive representation proof passed.",
+    "realCase": "Actual evaluations.ts source change observed; one prior result already changed, another newly affected. Historical outcomes and two stored old commands retained.",
+    "applicationModel": "REQ-033 selected/in_progress with draft detailed specification. Production binding validation, scope/disposition/closure services and UI remain pending."
+  },
+  "candidateFiles": [
+    {
+      "path": "src/application/evaluations.ts",
+      "sha256": "a96f4a0964d7599be9aa362bb21b485a93c8e9a0fe12857e5077d2af3d7ad3c8"
+    },
+    {
+      "path": "src/application/version-guard.ts",
+      "sha256": "b2d6c0d235b0eebc4901c9943c84cb4f4f2c5cff45dc777ddb792ff44a0f047b"
+    },
+    {
+      "path": "src/interfaces/api/evaluations.ts",
+      "sha256": "e879f2715ba118489309db3411a945c6a43a8106359c045d8f7aaa3ae1d6bce4"
+    },
+    {
+      "path": "test/evaluation-evidence-guard.test.ts",
+      "sha256": "bdfeacd8b67c781a9178706110c41736680b96cbfc617a52f569d4861f667f05"
+    },
+    {
+      "path": "test/evaluation-interfaces.test.ts",
+      "sha256": "6b759dcfec0d539325a784f46d97254946f27d5fdf5002d0b4d3991a16c362e3"
+    },
+    {
+      "path": "test/api-capabilities.test.ts",
+      "sha256": "f38b20750dce966cb0baa672dd5d0f719da666fc079a3a3bc76eb9983b12b33e"
+    },
+    {
+      "path": "test/architecture-constraints.test.ts",
+      "sha256": "56b5b8a67de5b522126063606cd1137ef68e751801de2211f3f89ccb9412cfb3"
+    },
+    {
+      "path": "test/repository-evaluation-contract.ts",
+      "sha256": "6db688097567e91ff59db32c84caa2fbdf424b47737cc68269b3324d32a68870"
+    },
+    {
+      "path": "test/application-model-storage.test.ts",
+      "sha256": "62e4f196158cb37c73d3ecc9fa675f139120cdea73e8dd901c54ce03e59973cc"
+    }
+  ],
+  "documentation": [
+    {
+      "path": "docs/architecture.md",
+      "sha256": "62375776f9d8d911a9c7c423c56b31b68829ca7b30eb4df63f85c0383b051573"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "4f8e5285ac797b9736b974d28d2769c2dbb5525592e9048edd62359e77cc61da"
+    },
+    {
+      "path": "docs/api-reference.md",
+      "sha256": "e1c375556433547c7d2f8d0ce8aaecd049d5ad991b5d2c2853e5fb4701554e9b"
+    },
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "34058125ffd416cdadac0ebd177123f90b7e034c1cf7b84f0a95f71cd134df35"
+    },
+    {
+      "path": "projects/tracer/README.md",
+      "sha256": "3a220251f563397dbb8c11fac3e2e3b17f0b2c3a5ae1a966ad2d3466b2bbd772"
+    }
+  ],
+  "logHashes": {
+    "full-check.log": "b4d9a808ae50a0bed20299d0ab91da46a4c7f8b127b1863bcc1ca2f21a7ef9ca",
+    "final-unit.log": "7ea5827ce341d19b28aacaac6343d6c08750457bf343e3c3fccf6101db07ece9",
+    "guard-focused-final.log": "146cb1f45aafb2855cee757875923961a9a172894916db526743eeeafebb58f4",
+    "model-portable-final.log": "0dbb2f0251d40ee434f2cda6abda17924bd67ab209d0ee84d04f3387812a661b",
+    "types-final.log": "5e600a6c437263e35717d543f878a429e3b92d338d2cbee585a8a9574d6656d3",
+    "final-gates.log": "afafb22762fcb1ab91115e440f16a72a8c22f26b608e56fd1ce856c5d02b76ea"
+  },
+  "remaining": [
+    "Define executable descriptor and schema-compatibility validation for pinned application models.",
+    "Implement durable assessment scope, candidate dispositions/actions, cross-record/lifecycle guards and evidence-backed effective closure.",
+    "Declare/test assessment population, capture, page and work budgets with explicit completeness/uncertainty.",
+    "Complete actual Tracer source-change dispositions and closure through the new application service and a second configured domain.",
+    "Integrate shared UI authoring/recovery and evaluate unfamiliar-user comprehension; no human validation claimed.",
+    "Run full objective audit and retain final cross-domain/interface/UI/preservation evidence before goal completion."
+  ],
+  "limits": [
+    "Evidence guard is opt-in and conservatively guards the global committed watermark; it does not automatically invalidate older explicit captures or infer dependencies.",
+    "Source impact shows declared captured material drift, not engineering causality or required design changes.",
+    "Native baseline contains no external bytes; source states are observed metadata with separate IDs/hashes.",
+    "Only SQLite/local interfaces executed; no authenticated-team, backend-parity or arbitrary-scale claim.",
+    "Model-storage proof is constructive representation evidence, not an implemented application model resolver."
+  ]
+}
