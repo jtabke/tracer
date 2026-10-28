@@ -49,6 +49,8 @@ Use **Project tools → Export project** for deterministic JSON with records, li
 
 Both paths use the same **Graph / Matrix / History** workspace. **Project tools** opens complete editing, model configuration, evaluations, configurations and documentation. The [documentation index](docs/README.md) provides reference material after the walkthrough. The [workspace reference](docs/workspace-guide.md) illustrates the current views, search, editing and connection controls.
 
+**Project tools → Verification** records exact criterion/method scope, actual activity results, explicit result selection and a controlled scoped conclusion. It preserves failures and explains reassessment after changes. See the [verification guide](docs/workspace-guide.md#requirement-verification) for model setup, authoring and recovery.
+
 **Next work** keeps statement gaps, unallocated requirements, missing verification plans, changed evidence inputs and unresolved reviews in separate actionable queues. See the [next-work guide](docs/next-work.md).
 
 ## Core contracts and current UI limits

@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-28",
+  "scope": "Independent UI-only fresh-agent walkthrough and addressed findings; not representative-human validation or full REQ-034 acceptance.",
+  "inspection": "/root/verification_walkthrough; fresh context, browser only, disposable native-109 copy; no implementation, documentation, API or live database access before initial report.",
+  "originalReports": [
+    {
+      "path": "output/verification-capability/fresh-verification-walkthrough.md",
+      "sha256": "9b863420d08af0198941e0e7db3b35e37457a6b6ec6fc2a3216a8b8522613a04"
+    },
+    {
+      "path": "output/verification-capability/fresh-verification-walkthrough.json",
+      "sha256": "9bd768cd2da7007e9d6e12f67d801ee17476ab309adc9d130675bfa4cec27238"
+    }
+  ],
+  "unalteredInitialFindingsMarkdown": "# Fresh verification walkthrough — initial findings\n\nWritten before any read-only API or implementation inspection. I used browser UI only against the disposable project at http://127.0.0.1:4318. I did not read source, tests, documentation, databases, or application APIs. These are unaltered first-pass findings from an agent inspection, not representative-human validation.\n\n## Outcome and interpretation\n\nI completed all three tasks independently in approximately three minutes of browser task time (20:34:03–20:36:59 UTC, 2026-10-28), with high confidence in the facts visible in the UI. No navigation coaching was needed. Artifact preparation followed the task.\n\nREQ-011 says engineers can distinguish missing statements, allocations, verification plans, changed inputs and unresolved reviews. Its acceptance says each configured queue explains its population and qualifying gap, and structural gaps must not imply failed execution or missing implementation when code may be unlinked.\n\nThe original genuine activity records a direct relationship change that should produce one changed input but reported zero. AC-1 failed; AC-2 was not run because the focused assertion stopped the activity. The original failing candidate was acc8b65. The original corrected candidate ef93133 records passes after entity and direct relationship comparisons were counted after edit/removal. A later shared comparison-summary refactor changed support and prompted the currently selected activity, “Current REQ-011 verification after shared comparison refactor.” That activity records both AC-1 and AC-2 passed, with nine unit checks, six production browser journeys, a build, and fifteen lifecycle regressions noted in its conditions. I read these recorded claims; I did not execute them.\n\nThe current case says “Verified for this declared scope,” with current governing basis, complete source coverage, zero unassigned criteria, current result selection and zero unassessed activities. The original failure did not disappear: it remains explicitly failed and superseded with changed support. The original corrected pass is also retained as superseded. The selected current activity has no unassessed support change. Historical outcomes remain separate from applicability.\n\n## Separate walkthrough and draft survival\n\nI created “Fresh agent walkthrough REQ-011 — engineering method not run” (case 21f4d418-bbe5-433d-bace-24f286954fed). I deliberately chose the entire acceptance field (characters 0–176), named the combined criterion AC-1-and-AC-2, assigned VER-011 v5, declared complete acceptance coverage, and explained that method assignment is scope clarity, not execution.\n\nI entered the activity “Fresh UI walkthrough — VER-011 not executed” with not_run, explicit conditions identifying browser-only agent inspection, an honest observation and rationale. Before saving I returned to the map and reopened Verification from Project tools. The exact execution conditions and observation survived, including marker FRESH-REQ011-SURVIVES-MAP. I then added REQ-011 v3 as a supporting input with purpose explaining that reading acceptance supports interpretation of not_run, and saved the activity (00379e0a-e5af-4858-8c07-02058fea2012).\n\nI used Choose results to select the only activity and supplied accounting and selection rationales. The case now has current result selection, zero unassessed activities, outcome not_run and current applicability. It remains open. The interface says not every obligation has an applicable passing execution and disables Conclude verification. This is sensible: a current, well-accounted non-execution cannot verify engineering acceptance, and this independent case does not undo the other case’s scoped conclusion.\n\n## Reload and exact context\n\nReload returned me to the map rather than reopening the task panel. I independently reopened Project tools > Verification, searched “Fresh agent,” selected the saved v3 case, and opened the saved activity. Its original condition, marker, not_run outcome and rationale were present.\n\nExpanded Exact captured inputs shows five records and two connections: MODEL-REQUIREMENT-VERIFICATION native v1 definition; case 21f4d418 native v1 model; REQ-011 native v3 statement and acceptance; VER-011 native v5 method and expectedResult; my explicit REQ-011 native v3 supporting input with its purpose; verified_by v1 declared method mapping; and has_verification_execution v1 owned case-execution membership. This was visible through the UI without API assistance.\n\n## Choices, friction, mistakes and limits\n\nSearch made the original failure, correction, case, execution and plan easy to discover together. I first tried Assess evidence, which reasonably sounded like verification but opened generic change assessment. The generic map inspector for the verification case showed connections and history rather than the lifecycle task. I found the dedicated Verification action under Project tools without assistance. The case selector repeats title twice, which adds noise.\n\nThe whole-acceptance option was useful for declaring a truthful scope without pretending I had highlighted separate clauses. Combining both AC clauses is deliberate, although separate clauses would produce more granular outcomes. The supporting-input chooser needed opening before its controls were visible. The saved exact-context disclosure made source versions and connection roles inspectable.\n\nThe activity detail describes a not_run activity as “Newly performed activity attested with explicit conditions and results.” In context the result remains plainly not_run, but this phrase could sound like the engineering method itself ran. I chose Newly performed activity to describe the actual walkthrough rather than falsely interpret an earlier activity. My conditions explicitly disambiguate that.\n\nI made automation locator mistakes: initially sought a textbox instead of the search combobox; used overly broad combobox/button matches; assumed text line breaks; omitted criterion prefixes on result fields; and guessed an exact-input count of two before reading the actual five. I recovered from visible DOM labels and normal controls. These are agent interaction mistakes, not product failures. No task failed and no passing test was invented.\n\nThis single fresh-agent walkthrough supports agent discoverability/comprehension evidence only. It does not validate representative-human usability or the engineering method. I changed only the disposable project through normal UI saves, wrote these reports/screenshots, and did not edit product code or the live project database. No read-only API follow-up was needed.\n\nScreenshots: fresh-current-verification.png; fresh-map-before-save.png; fresh-draft-retained.png; fresh-not-run-accounted.png; fresh-reloaded-exact-context.png.\n",
+  "unalteredInitialStructuredFindings": {
+    "inspection": "Fresh independent agent UI walkthrough, not representative-human validation",
+    "date": "2026-10-28",
+    "url": "http://127.0.0.1:4318",
+    "startedAt": "2026-10-28T20:34:03.461Z",
+    "completedAt": "2026-10-28T20:37:18.097Z",
+    "approximateMinutes": 3,
+    "sourceAccess": "Browser DOM/accessibility and normal UI interactions only. No source, tests, documents, database or application APIs inspected.",
+    "tasks": [
+      {
+        "id": 1,
+        "result": "completed",
+        "confidence": "high",
+        "originalObservation": "Direct relationship edit expected 1 changed input but production queue reported 0; AC-1 failed, AC-2 not_run.",
+        "change": "Original corrected candidate ef93133 counts entity/direct relationship comparisons after edit/removal; later shared comparison-summary refactor changed support and prompted a new activity.",
+        "currentSupport": "Current REQ-011 verification after shared comparison refactor, selected; AC-1 and AC-2 passed; recorded 9 unit checks, 6 production browser journeys, build, and 15 lifecycle regressions in conditions.",
+        "history": "Original genuine AC-1 failure remains failed and superseded; original corrected activity remains passed and superseded. Neither disappeared."
+      },
+      {
+        "id": 2,
+        "result": "completed",
+        "confidence": "high",
+        "caseId": "21f4d418-bbe5-433d-bace-24f286954fed",
+        "caseTitle": "Fresh agent walkthrough REQ-011 — engineering method not run",
+        "criterion": "AC-1-and-AC-2: deliberately entire acceptance field, characters 0–176",
+        "method": "VER-011 v5",
+        "activityId": "00379e0a-e5af-4858-8c07-02058fea2012",
+        "activityTitle": "Fresh UI walkthrough — VER-011 not executed",
+        "outcome": "not_run",
+        "draftCheck": {
+          "returnedToMapBeforeSaving": true,
+          "conditionsRetained": true,
+          "observationsRetained": true,
+          "marker": "FRESH-REQ011-SURVIVES-MAP"
+        },
+        "accounting": "Only activity selected with explicit rationale; selection current, zero unassessed activities.",
+        "conclusion": "Open; applicable result remains not_run. UI explicitly says not every obligation has an applicable passing execution. Conclude verification disabled."
+      },
+      {
+        "id": 3,
+        "result": "completed",
+        "confidence": "high",
+        "recovery": "Reload returned to map. Project tools > Verification > Find verification case: Fresh agent > select saved case > open saved activity.",
+        "exactCapturedContext": [
+          "MODEL-REQUIREMENT-VERIFICATION native v1 definition",
+          "Case 21f4d418 native v1 model",
+          "REQ-011 native v3 statement and acceptance",
+          "VER-011 native v5 method and expectedResult",
+          "REQ-011 native v3 explicit supporting input with purpose",
+          "verified_by v1 declared method mapping",
+          "has_verification_execution v1 owned case-execution membership"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "approxMinute": 0,
+        "action": "Loaded map at ART-COMP-UI; searched REQ-011",
+        "result": "Found requirement plus failure, correction, verification case, current execution and plan."
+      },
+      {
+        "approxMinute": 0.5,
+        "action": "Tried Assess evidence and generic linked case inspection",
+        "result": "Could read historical failure and supporting freshness, but not dedicated lifecycle workflow; independently found Verification under Project tools."
+      },
+      {
+        "approxMinute": 1,
+        "action": "Inspected original, corrected and current activities",
+        "result": "Understood current scoped conclusion and retained history."
+      },
+      {
+        "approxMinute": 1.5,
+        "action": "Opened separate verification with entire acceptance and VER-011 method",
+        "result": "Explicit scope created; no engineering execution claimed."
+      },
+      {
+        "approxMinute": 2,
+        "action": "Filled not_run activity, returned to map, reopened Verification",
+        "result": "Exact unsaved conditions and observation marker retained."
+      },
+      {
+        "approxMinute": 2.3,
+        "action": "Saved activity and result selection",
+        "result": "Current not_run result accounted for; case cannot conclude."
+      },
+      {
+        "approxMinute": 2.7,
+        "action": "Reloaded, searched saved case, expanded activity exact inputs",
+        "result": "Saved work and exact versions/connections visible."
+      }
+    ],
+    "confusion": [
+      {
+        "kind": "navigation",
+        "detail": "Assess evidence looked like a plausible verification entry; it leads to generic change assessment. Map record inspector did not reveal verification-specific lifecycle; Project tools was needed."
+      },
+      {
+        "kind": "wording",
+        "detail": "Newly performed activity attested with explicit conditions and results appears even for not_run; context makes honesty clear, but wording could sound like the engineering method ran."
+      },
+      {
+        "kind": "scope_choice",
+        "detail": "Used whole acceptance field as one named criterion to avoid pretending clause highlighting had been done; deliberate supported choice."
+      },
+      {
+        "kind": "automation_mistake",
+        "detail": "Several locator attempts used textbox/combobox or display text too broadly, or omitted criterion prefix; corrected from visible DOM labels. Also guessed exact input count 2 before reading actual 5; corrected without changing data."
+      }
+    ],
+    "assistanceNeeded": "None. No navigation coaching requested.",
+    "failures": "No task failed. Locator mistakes were inspection automation errors, not asserted product failures.",
+    "screenshots": [
+      "fresh-current-verification.png",
+      "fresh-map-before-save.png",
+      "fresh-draft-retained.png",
+      "fresh-not-run-accounted.png",
+      "fresh-reloaded-exact-context.png"
+    ],
+    "limits": "This is one agent comprehension inspection of a disposable copy. It neither repeats the engineering method nor establishes representative-human usability. No API verification was needed."
+  },
+  "screenshots": [
+    {
+      "path": "output/verification-capability/fresh-current-verification.png",
+      "sha256": "0e3bb1fe3c7a699c38548248c03026b16e89994f242df9de42c365db89a90b3d"
+    },
+    {
+      "path": "output/verification-capability/fresh-draft-retained.png",
+      "sha256": "512eb7c39e941d74dd61153a09ebf2b135ab5a9de10608809df2497df4016157"
+    },
+    {
+      "path": "output/verification-capability/fresh-map-before-save.png",
+      "sha256": "55db03162a3713d6468baea1141d3f78e56e14374a7590fe5b633ae3af151b0f"
+    },
+    {
+      "path": "output/verification-capability/fresh-not-run-accounted.png",
+      "sha256": "cb7cae0f0f8f398998f73850f4f87e40f796a312f5fbbd57cb95da2a05394d14"
+    },
+    {
+      "path": "output/verification-capability/fresh-reloaded-exact-context.png",
+      "sha256": "1390077b7190ebba329b45f3c1d6917e2af2dac919a1eb333db9f9ee976aa43a"
+    }
+  ],
+  "findingDispositions": [
+    {
+      "finding": "Activity wording could imply method execution for not_run",
+      "action": "Renamed current activity source and inspection text; explicit guidance states that not_run/blocked records do not claim method completion. Typed outcome is unchanged.",
+      "files": ["ui/verifications/execution.tsx", "ui/verifications/inspection.tsx"]
+    },
+    {
+      "finding": "Verification discovered under Project tools after trying Assess evidence",
+      "action": "Shared Project tools guidance and workspace documentation distinguish verification from change assessment/evidence applicability; dedicated Verification action remains explicit. Direct input comparison/review now opens from activity inspection.",
+      "qualification": "The agent completed discovery without coaching. Additional record-inspector shortcuts remain possible future UX work, not a newly validated interaction.",
+      "files": [
+        "ui/workbench/project-tools.tsx",
+        "docs/workspace-guide.md",
+        "ui/verifications/inspection.tsx"
+      ]
+    },
+    {
+      "finding": "Case selector repeats title",
+      "action": "Shared record-choice label renders a distinct title only once, preserving native identity and configured field vocabulary.",
+      "files": ["ui/application-choices.tsx"]
+    }
+  ],
+  "additionalRobustness": [
+    "Verification editor owns dirty state; excluded from generic workbench input capture.",
+    "Shared assessment/verification headers, recovery, bounded record and recorded-material choices replace duplicate implementations.",
+    "Confirmed saves clear recovery identities; uncertain saves retain original intent and use common inspection without automatic replay.",
+    "Activity input review reuses shared comparison/judgment controls, retains draft through map/inspection navigation and blocks competing authoring/conclusion until saved or discarded."
+  ],
+  "postFixVerification": {
+    "command": "npm run build && npx playwright test test/verification-ui-browser.spec.ts test/assessment-ui-browser.spec.ts",
+    "result": "12 passed",
+    "log": {
+      "path": "output/verification-capability/verification-ui-reviewed-browser-final.log",
+      "sha256": "12adf84cfb8a57d4fb5e5c42fed96cddc29df44b7be36d519be8cbaaf892f262"
+    },
+    "scope": "Six verification and six existing change-assessment browser journeys, including engineering/research, desktop/680px, genuine fixture failure retention, changed support, revised governing basis, prior activity/native/content/connection inputs, failed reads, lost committed response with exactly one POST and retained exact review drafts with policy-controlled assessed applicability."
+  },
+  "limitations": [
+    "One independent agent inspection, not representative-human validation.",
+    "Synthetic fixtures establish software semantics, not physical or engineering-method results.",
+    "Initial screenshots/report describe the inspected build before wording and shared-review refinements.",
+    "Final full capability acceptance, preservation and quality audit remains pending."
+  ],
+  "postInspectionBackupCheck": {
+    "path": "projects/tracer/backups/register-2026-10-28-fresh-verification-walkthrough.sqlite",
+    "sha256": "d70611f24d2463297ca0f94d152b792c8c9c0a1603123359f19951fafe506c5f",
+    "nativeRevision": 112,
+    "caseId": "21f4d418-bbe5-433d-bace-24f286954fed",
+    "activityId": "00379e0a-e5af-4858-8c07-02058fea2012",
+    "state": "open",
+    "recordedOutcome": "not_run",
+    "accountingComplete": true,
+    "ready": false,
+    "conditionsAndObservationMarkerRetained": true,
+    "inspectionReadOnly": true,
+    "qualification": "Maintainer recovery check after the independent initial report; not part of the agent initial UI inspection. The marker is in actual observations; conditions separately declare method non-execution."
+  }
+}

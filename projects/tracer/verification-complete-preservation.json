@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-28",
+  "scope": "Final complete requirement-to-verification capability publication and unchanged acceptance preservation.",
+  "priorRevision": 109,
+  "nativeRevision": 111,
+  "schemaVersion": 7,
+  "physicalFormatUnchanged": true,
+  "priorBackup": "projects/tracer/backups/register-2026-10-28-real-reassessment.sqlite",
+  "backup": {
+    "path": "projects/tracer/backups/register-2026-10-28-verification-complete.sqlite",
+    "sha256": "1a619da253f685833b5d24f9719ebfe11c354f502197d78b17d47394d7af505a"
+  },
+  "export": {
+    "path": "projects/tracer/project-export.json",
+    "sha256": "1f2a20b8c682c5bca7dd35f68ec29c8d992878e40f5d8819d6f9796b9c202df5"
+  },
+  "acceptanceReport": {
+    "path": "projects/tracer/verification-ui-verification.json",
+    "sha256": "114f3093dd5d4187f72ff4a04475669fbc9fff9dc8e1fd60d5a18c89a54aa694"
+  },
+  "walkthrough": {
+    "path": "projects/tracer/verification-ui-walkthrough.json",
+    "sha256": "a53efe5e4ecdf6d48dab0f8815574d411dbd1f1a8d8a8ebb805f8169689cfc74"
+  },
+  "acceptanceReceiptId": "3a384608-e4b3-47e5-979c-8c414772b573",
+  "publicationCommandId": "verification-complete-acceptance-2026-10-28",
+  "realRequirementCase": {
+    "caseId": "823f8a49-117c-4c85-81d1-cee87bc1892d",
+    "openingCommandId": "req011-verification-case-open-2026-10-28"
+  },
+  "ledgers": {
+    "changeset_commands": {
+      "priorRows": 43,
+      "currentRows": 44,
+      "priorRowsUnchanged": true,
+      "backupEqual": true
+    },
+    "evaluation_commands": {
+      "priorRows": 38,
+      "currentRows": 39,
+      "priorRowsUnchanged": true,
+      "backupEqual": true
+    }
+  },
+  "checks": [
+    {
+      "database": "projects/tracer/tracer.sqlite",
+      "nativeRevision": 111,
+      "schemaVersion": 7,
+      "unchangedAcceptanceAndMethod": true,
+      "fullRequirementImplementedVerifiedHumanNotValidated": true,
+      "priorObjectsHistoryEvidenceAndBothConclusionsPreserved": true,
+      "realRequirementStillCurrentlyVerifiedWithOriginalFailureRetained": true,
+      "exactCoreHTTPCLIRecoveryWithoutWrites": true,
+      "canonicalExportEqual": true,
+      "completeAcceptanceReceiptCurrent": true
+    },
+    {
+      "database": "projects/tracer/backups/register-2026-10-28-verification-complete.sqlite",
+      "nativeRevision": 111,
+      "schemaVersion": 7,
+      "unchangedAcceptanceAndMethod": true,
+      "fullRequirementImplementedVerifiedHumanNotValidated": true,
+      "priorObjectsHistoryEvidenceAndBothConclusionsPreserved": true,
+      "realRequirementStillCurrentlyVerifiedWithOriginalFailureRetained": true,
+      "exactCoreHTTPCLIRecoveryWithoutWrites": true,
+      "canonicalExportEqual": true,
+      "completeAcceptanceReceiptCurrent": true
+    }
+  ],
+  "procedure": {
+    "path": "output/verification-capability/verify-complete-capability.mjs",
+    "sha256": "5c54939112c0243fb166228ee799a09a1af4d9097b3062e74215bd3f941e86a0"
+  },
+  "limitations": [
+    "Independent agent inspection, not representative-human validation.",
+    "Synthetic domain fixtures do not validate physical products or regulatory conformity.",
+    "No authenticated-team/backend parity or arbitrary-scale readiness claim.",
+    "Catalogue authoring bounds are disclosed; exact headless selection remains available beyond UI method-catalogue bounds."
+  ]
+}
