@@ -7,7 +7,12 @@ import type {
   RelationshipDeclaration,
 } from "../core/evidence.ts";
 import type { VerificationCaseView } from "../core/verification-case.ts";
-import { compareReceiptState, comparisonToken, scopedInputState } from "./receipt-comparison.ts";
+import {
+  compareReceiptState,
+  comparisonToken,
+  scopedInputState,
+  summarizeComparedInputs,
+} from "./receipt-comparison.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { factDigest } from "./fact-digest.ts";
 
@@ -53,17 +58,7 @@ function supportComparison(
   const relationshipInputs = prior
     ? (full.relationshipInputs ?? [])
     : (full.relationshipInputs ?? []).slice(1);
-  const all = [...inputs, ...relationshipInputs],
-    hasChanged = all.some((x) => x.hasChanged),
-    hasUnknown = all.some((x) => x.hasUnknown);
-  return {
-    receiptId: full.receiptId,
-    inputs,
-    relationshipInputs,
-    hasChanged,
-    hasUnknown,
-    state: hasUnknown ? "unknown" : hasChanged ? "changed" : "current",
-  };
+  return summarizeComparedInputs(full.receiptId, inputs, relationshipInputs);
 }
 function declareInput(
   input: InputComparison,

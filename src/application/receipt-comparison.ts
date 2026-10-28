@@ -174,6 +174,26 @@ async function compareInput(
   };
 }
 
+/** Summarize an exact full or projected population; preserve absent legacy direct-input metadata. */
+export function summarizeComparedInputs(
+  receiptId: string,
+  inputs: InputComparison[],
+  relationshipInputs?: ComparedState["relationshipInputs"],
+): ComparedState {
+  const hasUnknown =
+    inputs.some((x) => x.hasUnknown) || (relationshipInputs ?? []).some((x) => x.hasUnknown);
+  const hasChanged =
+    inputs.some((x) => x.hasChanged) || (relationshipInputs ?? []).some((x) => x.hasChanged);
+  return {
+    receiptId,
+    inputs,
+    ...(relationshipInputs === undefined ? {} : { relationshipInputs }),
+    hasChanged,
+    hasUnknown,
+    state: comparedState(hasUnknown, hasChanged),
+  };
+}
+
 export async function compareCapturedInputs(
   tx: Transaction,
   receipt: Receipt,
@@ -183,18 +203,11 @@ export async function compareCapturedInputs(
     inputs.push(await compareInput(tx, recorded, receipt.output.id));
   }
   const relationshipInputs = await compareRelationships(tx, receipt.relationshipInputs);
-  const hasUnknown =
-    relationshipInputs.some((r) => r.hasUnknown) || inputs.some((input) => input.hasUnknown);
-  const hasChanged =
-    relationshipInputs.some((r) => r.hasChanged) || inputs.some((input) => input.hasChanged);
-  return {
-    receiptId: receipt.id,
-    ...(receipt.relationshipInputs === undefined ? {} : { relationshipInputs }),
-    state: comparedState(hasUnknown, hasChanged),
-    hasChanged,
-    hasUnknown,
+  return summarizeComparedInputs(
+    receipt.id,
     inputs,
-  };
+    receipt.relationshipInputs === undefined ? undefined : relationshipInputs,
+  );
 }
 /** Shared transaction-local comparison and review applicability for all read surfaces. */
 export async function compareReceiptState(
