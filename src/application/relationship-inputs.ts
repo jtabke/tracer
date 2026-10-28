@@ -1,4 +1,4 @@
-import { ensure, record, knownProperties, type Entity, type Relationship } from "../core/model.ts";
+import { ensure, record, knownProperties } from "../core/model.ts";
 import type {
   RelationshipDeclaration,
   CapturedRelationship,
@@ -40,9 +40,7 @@ export async function captureRelationships(
       "Choose historical selection or current guard",
     );
     const current =
-      value.revision === undefined
-        ? ((await tx.get("relationship", value.id)) as Relationship | undefined)
-        : undefined;
+      value.revision === undefined ? await tx.get("relationship", value.id) : undefined;
     ensure(
       value.revision !== undefined || current,
       "not_found",
@@ -54,10 +52,8 @@ export async function captureRelationships(
         id: value.id,
       });
     const pin = await pinRelationship(tx, value.id, value.revision ?? current!.version);
-    const source = (await tx.getAt("entity", pin.relationship.source, pin.projectRevision)) as
-      Entity | undefined;
-    const target = (await tx.getAt("entity", pin.relationship.target, pin.projectRevision)) as
-      Entity | undefined;
+    const source = await tx.getAt("entity", pin.relationship.source, pin.projectRevision);
+    const target = await tx.getAt("entity", pin.relationship.target, pin.projectRevision);
     ensure(source && target, "storage", "Captured relationship endpoint context unavailable");
     captured.push({
       ...pin,
@@ -74,8 +70,7 @@ export async function compareRelationships(
 ): Promise<RelationshipComparison[]> {
   const results: RelationshipComparison[] = [];
   for (const recorded of captured) {
-    const current = (await tx.get("relationship", recorded.relationship.id)) as
-      Relationship | undefined;
+    const current = await tx.get("relationship", recorded.relationship.id);
     const hasChanged = canonical(current ?? null) !== canonical(recorded.relationship),
       hasUnknown = !current;
     results.push({

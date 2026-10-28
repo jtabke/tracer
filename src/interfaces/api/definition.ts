@@ -33,7 +33,7 @@ export type WriteEndpoint<I, R> = {
   features: readonly string[];
   inputKeys: string[];
   input: Decoder<I>;
-  response: Decoder<R>;
+  response(value: unknown, input?: I): R;
   handle(context: MutationContext, input: I): R | Promise<R>;
 };
 /** Infer public responses from service results; check the wire decoder against them. */

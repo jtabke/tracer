@@ -1,5 +1,5 @@
 import { ensure } from "../core/model.ts";
-import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
+import type { Entity, Relationship } from "../core/model.ts";
 import type { Transaction } from "./ports/repository.ts";
 import type { Graph, GraphQuery, NativeDelta } from "./views.ts";
 import { graphLimits, graphNeighborhood } from "./graph.ts";
@@ -40,8 +40,7 @@ async function deltas<T extends Entity | Relationship>(
 /** Native snapshots only: evidence has its own ordering and is never replayed here. */
 export async function temporalGraph(tx: Transaction, query: GraphQuery): Promise<Graph> {
   const at = await revision(tx, query.atRevision!);
-  const schema = (await tx.getAt("schema", "project", at.projectRevision)) as
-    SchemaObject | undefined;
+  const schema = await tx.getAt("schema", "project", at.projectRevision);
   ensure(schema, "validation", "This revision predates the project schema");
   const after = await graphNeighborhood(tx, query);
   const base: Graph = { schema, ...after, evaluations: [], external: [], temporal: { at } };
@@ -89,7 +88,7 @@ export async function focusedAfter(tx: Transaction, type: string, id?: string, a
     "validation",
     "Use either focus or page cursor",
   );
-  const entity = (await tx.get("entity", id)) as Entity | undefined;
+  const entity = await tx.get("entity", id);
   ensure(entity?.type === type, "not_found", "Focused entity is not active in this type");
   return tx.entityPredecessor(id, type);
 }

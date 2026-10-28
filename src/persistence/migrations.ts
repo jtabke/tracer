@@ -150,25 +150,26 @@ function storageVersion(db: DatabaseSync) {
   ensure(
     !exists ||
       (versions.length === 1 &&
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(Number(versions[0].version))),
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].includes(Number(versions[0].version))),
     "unsupported_storage",
     "Unsupported physical database format",
   );
   return exists ? Number(versions[0].version) : 0;
 }
+function initializeNativeHistory(db: DatabaseSync, version: number) {
+  // Free the v1 index name before creating the new history index.
+  if (version === 1) db.exec("DROP INDEX IF EXISTS revision_object");
+  db.exec(format2);
+  if (version === 1) {
+    importLegacyObjects(db);
+  } else db.exec("CREATE TABLE storage_version (version INTEGER NOT NULL)");
+  db.exec("DELETE FROM storage_version; INSERT INTO storage_version VALUES (2)");
+}
 export function migrate(db: DatabaseSync) {
   db.exec("BEGIN IMMEDIATE");
   try {
     const version = storageVersion(db);
-    if (version < 2) {
-      // Free the v1 index name before creating the new history index.
-      if (version === 1) db.exec("DROP INDEX IF EXISTS revision_object");
-      db.exec(format2);
-      if (version === 1) {
-        importLegacyObjects(db);
-      } else db.exec("CREATE TABLE storage_version (version INTEGER NOT NULL)");
-      db.exec("DELETE FROM storage_version; INSERT INTO storage_version VALUES (2)");
-    }
+    if (version < 2) initializeNativeHistory(db, version);
     if (version < 3) {
       db.exec(`
         CREATE TABLE evidence (
@@ -259,6 +260,20 @@ export function migrate(db: DatabaseSync) {
       ALTER TABLE relationships ADD COLUMN reference_json TEXT;
       CREATE UNIQUE INDEX resource_source_identity ON entities(json_extract(resource_json,'$.source.system'),json_extract(resource_json,'$.source.externalId')) WHERE json_extract(resource_json,'$.source') IS NOT NULL;
       UPDATE storage_version SET version=10;
+    `);
+    if (version < 11)
+      db.exec(`
+      CREATE TABLE evaluation_commands (
+        command_id TEXT PRIMARY KEY NOT NULL,
+        intent_json TEXT NOT NULL,
+        receipt_kind TEXT NOT NULL DEFAULT 'receipt' CHECK(receipt_kind='receipt'),
+        receipt_id TEXT NOT NULL UNIQUE,
+        result_json TEXT NOT NULL,
+        FOREIGN KEY(receipt_kind,receipt_id) REFERENCES evidence(kind,id)
+      );
+      CREATE TRIGGER evaluation_command_no_update BEFORE UPDATE ON evaluation_commands BEGIN SELECT RAISE(ABORT,'Immutable evaluation outcome'); END;
+      CREATE TRIGGER evaluation_command_no_delete BEFORE DELETE ON evaluation_commands BEGIN SELECT RAISE(ABORT,'Immutable evaluation outcome'); END;
+      UPDATE storage_version SET version=11;
     `);
     db.exec(`
       CREATE INDEX IF NOT EXISTS revision_kind_object_version ON object_revisions(kind,object_id,version);

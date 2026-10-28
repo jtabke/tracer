@@ -14,6 +14,7 @@ export type {
   Relationship,
   Kind,
   Stored,
+  StoredByKind,
   Provenance,
   Changeset,
   Revision,
@@ -51,3 +52,6 @@ export type * from "./core/csv-import-types.ts";
 export type { CsvTable, CsvRow } from "./core/csv.ts";
 
 export type { Resource, Reference, ReferenceState } from "./core/references.ts";
+
+export type { EvaluationCommand } from "./application/evaluations.ts";
+export type { EvaluationResult } from "./core/evaluation-command.ts";

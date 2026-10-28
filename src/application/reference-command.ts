@@ -9,8 +9,7 @@ import { expectVersion } from "./version-guard.ts";
 export async function checkResourceIdentity(tx: Transaction, value: Entity) {
   if (!value.resource) return;
   const source = value.resource.source;
-  const binding = (await tx.getEvidence("external", value.id)) as
-    import("../core/evidence.ts").ExternalIdentity | undefined;
+  const binding = await tx.getEvidence("external", value.id);
   ensure(
     !binding || (source?.system === binding.system && source.externalId === binding.externalId),
     "conflict",
@@ -36,7 +35,7 @@ async function resolveTarget(
     "Select a target or a resource descriptor",
   );
   if (input.target) {
-    const target = (await tx.get("entity", input.target)) as Entity | undefined;
+    const target = await tx.get("entity", input.target);
     ensure(target, "not_found", "Reference target is unavailable");
     ensure(
       input.targetVersion !== undefined,
@@ -70,7 +69,7 @@ export async function createReference(
   newId: () => string,
 ): Promise<Relationship> {
   const input = operation.input;
-  const source = (await tx.get("entity", input.source)) as Entity | undefined;
+  const source = await tx.get("entity", input.source);
   ensure(source, "not_found", "Reference source is unavailable");
   expectVersion(source.version, input.sourceVersion, false, { kind: "entity", id: source.id });
   const target = await resolveTarget(tx, schema, input, newId);

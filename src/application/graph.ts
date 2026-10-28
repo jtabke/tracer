@@ -71,7 +71,7 @@ async function addReceiptInputs(
 ) {
   for (const input of receipt.inputs) {
     if (nodes.has(input.entityId)) continue;
-    const node = (await tx.get("entity", input.entityId)) as Entity | undefined;
+    const node = await tx.get("entity", input.entityId);
     // Deleted inputs remain explained by the receipt, not editable live nodes.
     if (!node) continue;
     ensure(
@@ -99,8 +99,7 @@ async function addReceiptFrontier(
       "validation",
       "Graph exceeds 50 evaluations; choose a smaller neighborhood",
     );
-    for (const receipt of receipts.items as Receipt[])
-      await addReceiptInputs(tx, nodes, receipt, limit);
+    for (const receipt of receipts.items) await addReceiptInputs(tx, nodes, receipt, limit);
   }
 }
 

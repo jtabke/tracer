@@ -1,12 +1,15 @@
 import test from "node:test";
+import { repositoryEvaluationContract } from "./repository-evaluation-contract.ts";
+import { repositoryEvidenceContract } from "./repository-evidence-contract.ts";
 import type { TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { Tracer } from "../src/application/service.ts";
 import type { Repository, Transaction } from "../src/application/ports/repository.ts";
 import type { Entity } from "../src/core/model.ts";
 
-type RepositoryFixture = {
+export type RepositoryFixture = {
   repository: Repository;
+  reopen(): Promise<Repository>;
   dispose(): void | Promise<void>;
 };
 const provenance = { actor: "repository-contract" };
@@ -17,6 +20,8 @@ const schema = {
 
 /** Each adapter supplies a fresh isolated project and owns its cleanup. */
 export function repositoryContract(name: string, open: () => Promise<RepositoryFixture>) {
+  repositoryEvidenceContract(name, open);
+  repositoryEvaluationContract(name, open);
   async function setup(t: TestContext) {
     const fixture = await open();
     t.after(() => fixture.dispose());

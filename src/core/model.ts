@@ -37,8 +37,9 @@ export type Relationship = {
   version: number;
 };
 export type SchemaObject = Schema & { id: "project"; version: number };
-export type Kind = "schema" | "entity" | "relationship";
-export type Stored = Entity | Relationship | SchemaObject;
+export type StoredByKind = { entity: Entity; relationship: Relationship; schema: SchemaObject };
+export type Kind = keyof StoredByKind;
+export type Stored = StoredByKind[Kind];
 export type Provenance = { actor: string; reason?: string };
 export type Changeset = Provenance & {
   id: string;

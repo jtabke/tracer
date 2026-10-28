@@ -249,7 +249,7 @@ export class NativeQueries {
         "validation",
         "Unknown relationship type",
       );
-      const entity = (await tx.get("entity", query.id)) as Entity | undefined;
+      const entity = await tx.get("entity", query.id);
       ensure(entity, "not_found", "Item no longer exists");
       const page = await tx.query("relationship", {
         type: query.type,

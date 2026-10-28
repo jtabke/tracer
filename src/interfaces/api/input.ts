@@ -149,13 +149,13 @@ export const locator = union(
   strictObject({ system: literal("git"), repository: text, path: text, ref: text }),
   strictObject({ system: literal("file"), path: text }),
 );
-export const relationshipDeclaration = strictObject({
+const relationshipDeclaration = strictObject({
   id: text,
   expectedVersion: optional(number),
   revision: optional(number),
   role: optional(text),
 });
-export const declaration = strictObject({
+const declaration = strictObject({
   facet: optional(literal("native", "content")),
   role: optional(text),
   entityId: text,
@@ -188,3 +188,13 @@ export const workingContextInput: Decoder<
   ),
   receipts: optional(strictObject({ after: optional(text), limit: optional(integer()) })),
 });
+
+export const receiptCommandInput = {
+  outputId: text,
+  expectedOutputVersion: optional(number),
+  outcome: text,
+  inputs: array(declaration),
+  relationshipInputs: optional(array(relationshipDeclaration)),
+  supersedes: optional(text),
+  configurationId: optional(text),
+};

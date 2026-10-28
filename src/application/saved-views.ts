@@ -69,7 +69,7 @@ export class SavedViews {
     input = snapshotInput(input);
     saveInput(input);
     return this.repository.transaction(async (tx) => {
-      const schema = (await tx.get("schema", "project")) as SchemaObject | undefined;
+      const schema = await tx.get("schema", "project");
       ensure(
         schema && schema.version === input.expectedSchemaVersion,
         "schema_conflict",

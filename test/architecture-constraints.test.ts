@@ -152,6 +152,57 @@ import { object, number } from "../src/interfaces/decode.ts";
 import type { Entity, Page, Relationship } from "../src/core/model.ts";
 import type { Receipt } from "../src/core/evidence.ts";
 import type { ChangeImpact } from "../src/core/impact.ts";
+import type { Transaction } from "../src/application/ports/repository.ts";
+import type { Evidence, EvidenceKind, EvidenceAppend, Observation, Review, ExternalIdentity } from "../src/core/evidence.ts";
+import type { Tracer } from "../src/index.ts";
+declare const tx: Transaction;
+const nativeEntity: Promise<Entity | undefined> = tx.get("entity", "item");
+const nativeLink: Promise<Relationship | undefined> = tx.getAt("relationship", "link", 1);
+const nativeSchema: Promise<import("../src/core/model.ts").SchemaObject | undefined> = tx.get("schema", "project");
+void nativeEntity; void nativeLink; void nativeSchema;
+// @ts-expect-error native read result follows its selected kind
+const wrongNative: Promise<Relationship | undefined> = tx.get("entity", "item");
+// @ts-expect-error historical reads use the same kind/result correlation
+const wrongHistorical: Promise<Entity | undefined> = tx.getAt("schema", "project", 1);
+// @ts-expect-error native reads do not support invented kinds
+void tx.get("document", "item");
+void wrongNative; void wrongHistorical;
+
+declare const tracer: Tracer;
+declare const captured: Receipt;
+declare const observed: Observation;
+declare const reviewed: Review;
+declare const external: ExternalIdentity;
+declare const kind: EvidenceKind;
+declare const payload: Evidence;
+declare const entry: EvidenceAppend;
+void tx.appendEvidence("receipt", "output", captured);
+void tx.appendEvidence("observation", "input", observed);
+void tx.appendEvidence("review", "receipt", reviewed);
+void tx.appendEvidence("external", "input", external);
+void tx.appendEvidence(...entry);
+const capturedRead: Promise<Receipt | undefined> = tx.getEvidence("receipt", "id");
+const reviews: Promise<Page<Review>> = tx.evidence("review", {});
+const lastObservation: Promise<Observation | undefined> = tx.latestEvidence("observation", "id");
+const serviceReviews: Promise<Page<Review>> = tracer.evidence.list("review");
+void [capturedRead, reviews, lastObservation, serviceReviews];
+// @ts-expect-error a receipt cannot be stored as a review
+void tx.appendEvidence("review", "receipt", captured);
+// @ts-expect-error a review cannot be stored as an observation
+void tx.appendEvidence("observation", "input", reviewed);
+// @ts-expect-error an observation cannot be stored as a receipt
+void tx.appendEvidence("receipt", "output", observed);
+// @ts-expect-error a receipt cannot be stored as an external identity
+void tx.appendEvidence("external", "input", captured);
+// @ts-expect-error independently union-typed arguments do not establish kind/payload correlation
+void tx.appendEvidence(kind, "subject", payload);
+// @ts-expect-error reads follow the selected kind
+const wrongEvidence: Promise<Review | undefined> = tx.getEvidence("receipt", "id");
+// @ts-expect-error callers cannot override the selected kind using a type argument
+void tx.getEvidence<"review">("receipt", "id");
+// @ts-expect-error only observations and reviews have a latest-by-subject operation
+void tx.latestEvidence("receipt", "id");
+void wrongEvidence;
 const entities: Promise<Page<Entity>> = read("/api/entities", {});
 const receipts: Promise<Page<Receipt>> = read("/api/evidence", {kind: "receipt"});
 const impact: Promise<ChangeImpact> = read("/api/impact", {baselineId: "baseline", rootId: "item", direction: "incoming", relationshipTypes: []});
@@ -178,6 +229,17 @@ void wrong;
 // @ts-expect-error empty query endpoints reject unsupported parameters
 void read("/api/schema", {unexpected: "value"});
 const client = createClient({baseUrl: "http://localhost:4317"});
+const evaluationRequest = {commandId: "analysis-1", expectedSchemaVersion: 1, operations: [], receipt: {outputId: "output", outcome: "recorded", inputs: []}};
+const evaluationResult: Promise<import("../src/core/evaluation-command.ts").EvaluationResult> = client.write("/api/evaluation-commands", evaluationRequest);
+const evaluationOutcome: Promise<import("../src/core/evaluation-command.ts").EvaluationResult | null> = client.read("/api/evaluation-outcome", {commandId: "analysis-1"});
+void evaluationResult; void evaluationOutcome;
+// @ts-expect-error evaluation writes require command identity and a schema guard
+void client.write("/api/evaluation-commands", {operations: [], receipt: evaluationRequest.receipt});
+// @ts-expect-error evaluation outcomes use command identity, not engineering object identity
+void client.read("/api/evaluation-outcome", {id: "output"});
+// @ts-expect-error a native changeset response is not an evaluation result
+const wrongEvaluation: Promise<import("../src/core/evaluation-command.ts").EvaluationResult> = client.write("/api/changesets", {expectedSchemaVersion: 1, operations: []});
+void wrongEvaluation;
 const native: Promise<Page<Entity>> = client.read("/api/entities", {});
 void native;
 endpoint({

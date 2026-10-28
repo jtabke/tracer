@@ -88,7 +88,7 @@ async function connectedEntity(
   const endpoint = step.direction === "incoming" ? relationship.source : relationship.target;
   let entity = cache.get(endpoint);
   if (!entity) {
-    entity = (await tx.get("entity", endpoint)) as Entity | undefined;
+    entity = await tx.get("entity", endpoint);
     if (entity) cache.set(entity.id, entity);
   }
   return entity;

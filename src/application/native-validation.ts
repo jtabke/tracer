@@ -66,8 +66,8 @@ export async function validateNativeRelationship(
     ? schema.relationshipTypes[link.type]
     : undefined;
   objectFields("relationship", link, definition);
-  const source = (await tx.get("entity", link.source)) as Entity | undefined;
-  const target = (await tx.get("entity", link.target)) as Entity | undefined;
+  const source = await tx.get("entity", link.source);
+  const target = await tx.get("entity", link.target);
   ensure(source && target, "referential_integrity", "Both endpoints must be active");
   ensure(
     (source.resource !== undefined && definition!.resourceSource === true) ||
@@ -105,8 +105,7 @@ async function validateReferenceTarget(
   const state = link.reference.state;
   if (state.mode === "current") return;
   if ("observationId" in state) {
-    const observation = (await tx.getEvidence("observation", state.observationId)) as
-      import("../core/evidence.ts").Observation | undefined;
+    const observation = await tx.getEvidence("observation", state.observationId);
     ensure(
       target.resource.source &&
         observation?.entityId === target.id &&

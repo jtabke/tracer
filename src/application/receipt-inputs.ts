@@ -1,5 +1,5 @@
 import { ensure, record } from "../core/model.ts";
-import type { Entity, SchemaObject } from "../core/model.ts";
+import type { SchemaObject } from "../core/model.ts";
 import type { InputDeclaration } from "../core/evidence.ts";
 import type { Configuration } from "../core/configuration.ts";
 import type { Transaction } from "./ports/repository.ts";
@@ -67,7 +67,7 @@ export async function resolveReceiptInput(
     "validation",
     "Entity ID is required",
   );
-  const value = (await tx.get("entity", declaration.entityId)) as Entity | undefined;
+  const value = await tx.get("entity", declaration.entityId);
   ensure(value, "not_found", "Active entity not found: " + declaration.entityId);
   ensure(
     declaration.expectedVersion === undefined || declaration.expectedVersion === value.version,

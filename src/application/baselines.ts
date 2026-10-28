@@ -1,6 +1,6 @@
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure, json, record, validateProvenance } from "../core/model.ts";
-import type { Entity, Provenance, Relationship, SchemaObject } from "../core/model.ts";
+import type { Entity, Provenance, Relationship } from "../core/model.ts";
 import type {
   Baseline,
   BaselineInput,
@@ -150,7 +150,7 @@ export class Baselines {
         "not_found",
         "Baseline target is not a committed changeset",
       );
-      const schema = (await tx.getAt("schema", "project", target)) as SchemaObject | undefined;
+      const schema = await tx.getAt("schema", "project", target);
       ensure(schema, "validation", "Baseline target has no project schema");
       const value: Baseline = {
         ...actor,
@@ -197,8 +197,7 @@ export class Baselines {
       after = contentsAfter(query);
     return this.repository.transaction(async (tx) => {
       const baseline = await requiredBaseline(tx, query.baselineId);
-      const schema = (await tx.getAt("schema", "project", baseline.projectRevision)) as
-        SchemaObject | undefined;
+      const schema = await tx.getAt("schema", "project", baseline.projectRevision);
       ensure(
         schema && schema.version === baseline.schemaVersion,
         "storage",

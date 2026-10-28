@@ -128,8 +128,19 @@ export type Comparison = ComparedState & {
   review: { state: "unreviewed" | ReviewInput["decision"]; decision?: Review; previous?: Review };
   supersededBy: string[];
 };
-export type EvidenceKind = "external" | "observation" | "receipt" | "review";
-export type Evidence = ExternalIdentity | Observation | Receipt | Review;
+/** One kind-to-payload authority for storage and typed service reads. */
+export type EvidenceByKind = {
+  external: ExternalIdentity;
+  observation: Observation;
+  receipt: Receipt;
+  review: Review;
+};
+export type EvidenceKind = keyof EvidenceByKind;
+export type Evidence = EvidenceByKind[EvidenceKind];
+/** Correlated tuples also reject independently union-typed kinds and payloads. */
+export type EvidenceAppend = {
+  [K in EvidenceKind]: [kind: K, subject: string, value: EvidenceByKind[K]];
+}[EvidenceKind];
 export type EvidenceQuery = { subject?: string; after?: string; limit?: number };
 
 /** Canonical JSON comparison, independent of property insertion order. */

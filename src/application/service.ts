@@ -1,3 +1,4 @@
+import { Evaluations } from "./evaluations.ts";
 import { referenceContext } from "./reference-query.ts";
 import { createReference, checkResourceIdentity } from "./reference-command.ts";
 import { changesetLimits } from "../core/command-limits.ts";
@@ -19,12 +20,7 @@ import type {
   ChangesetCommand,
   ChangesetResult,
 } from "./commands.ts";
-import type {
-  EntityQuery,
-  RelationshipQuery,
-  WorkingSetQuery,
-  ErrorDetails,
-} from "../core/model.ts";
+import type { EntityQuery, RelationshipQuery, WorkingSetQuery } from "../core/model.ts";
 import { projectSnapshot } from "./project-snapshot.ts";
 import { projectExport } from "./project-export.ts";
 import { nextWork } from "./next-work.ts";
@@ -92,6 +88,7 @@ import type { ChangeImpact, ChangeImpactQuery } from "../core/impact.ts";
 export type Runtime = { newId(): string };
 export class Tracer {
   readonly evidence: EvidenceService;
+  readonly evaluations: Evaluations;
   readonly savedViews: SavedViews;
   readonly configurations: Configurations;
   readonly baselines: Baselines;
@@ -109,6 +106,11 @@ export class Tracer {
     this.repository = repository;
     this.runtime = runtime;
     this.evidence = new EvidenceService(repository, () => this.runtime.newId(), observer);
+    this.evaluations = new Evaluations(
+      repository,
+      (tx, schema, operations, actor) => this.nativeBatch(tx, schema, operations, actor),
+      () => this.runtime.newId(),
+    );
     this.queries = new NativeQueries(repository, this.evidence);
     this.workingContext = new WorkingContextService(repository);
     this.savedViews = new SavedViews(repository, () => this.runtime.newId());
@@ -131,20 +133,6 @@ export class Tracer {
   getNextWork(query: NextWorkQuery = {}) {
     return nextWork(this.repository, query);
   }
-  private expected(
-    actual: number,
-    expected: number,
-    schema = false,
-    subject: Pick<ErrorDetails, "kind" | "id"> = {},
-  ) {
-    expectVersion(actual, expected, schema, subject);
-  }
-  private async schema(tx: Transaction, expected?: number): Promise<SchemaObject> {
-    const schema = await projectSchema(tx);
-    if (expected !== undefined)
-      this.expected(schema.version, expected, true, { kind: "schema", id: "project" });
-    return schema;
-  }
   setSchema(command: SetSchemaCommand): Promise<SchemaObject>;
   setSchema(schema: Schema, expectedVersion: number, provenance: Provenance): Promise<SchemaObject>;
   async setSchema(value: Schema | SetSchemaCommand, version?: number, provenance?: Provenance) {
@@ -165,7 +153,7 @@ export class Tracer {
     validateSchema(schema);
     return this.repository.transaction(async (tx) => {
       const current = await tx.get("schema", "project");
-      this.expected(current?.version ?? 0, expectedVersion, true, {
+      expectVersion(current?.version ?? 0, expectedVersion, true, {
         kind: "schema",
         id: "project",
       });
@@ -220,14 +208,10 @@ export class Tracer {
           return previous.result;
         }
       }
-      const schema = await this.schema(tx, input.expectedSchemaVersion);
+      const schema = await projectSchema(tx, input.expectedSchemaVersion);
       if (input.expectedProjectRevision !== undefined)
         expectProjectRevision(await tx.headRevision(), input.expectedProjectRevision);
-      const changeset = await tx.beginChangeset(this.runtime.newId(), schema.version, origin);
-      const results: (Entity | Relationship | Deletion)[] = [];
-      for (const operation of input.operations)
-        results.push(await this.apply(tx, schema, operation));
-      const result = { changeset, results };
+      const result = await this.nativeBatch(tx, schema, input.operations, origin);
       if (input.commandId !== undefined)
         await tx.appendChangesetCommand(input.commandId, intent!, result);
       return result;
@@ -241,6 +225,17 @@ export class Tracer {
     return this.repository.transaction(
       async (tx) => (await tx.getChangesetCommand(commandId))?.result ?? null,
     );
+  }
+  private async nativeBatch(
+    tx: Transaction,
+    schema: SchemaObject,
+    operations: Operation[],
+    origin: Provenance,
+  ): Promise<ChangesetResult> {
+    const changeset = await tx.beginChangeset(this.runtime.newId(), schema.version, origin);
+    const results: (Entity | Relationship | Deletion)[] = [];
+    for (const operation of operations) results.push(await this.apply(tx, schema, operation));
+    return { changeset, results };
   }
   private async apply(
     tx: Transaction,
@@ -264,7 +259,7 @@ export class Tracer {
     const kind = operation.op.startsWith("entity.") ? "entity" : "relationship";
     const current = (await tx.get(kind, operation.id)) as Entity | Relationship | undefined;
     ensure(current, "not_found", "Object not found", { kind, id: operation.id });
-    this.expected(current.version, operation.expectedVersion, false, { kind, id: current.id });
+    expectVersion(current.version, operation.expectedVersion, false, { kind, id: current.id });
     if (operation.op === "entity.update") {
       ensure(record(operation.input), "validation", "Object input is required");
       return this.updateNativeEntity(tx, schema, current as Entity, operation.input);
@@ -376,11 +371,11 @@ export class Tracer {
       ensure(record(operation.expectedEndpoints), "validation", "Endpoint versions are required");
       const source = (await tx.get("entity", value.source)) as Entity;
       const target = (await tx.get("entity", value.target)) as Entity;
-      this.expected(source.version, operation.expectedEndpoints.sourceVersion, false, {
+      expectVersion(source.version, operation.expectedEndpoints.sourceVersion, false, {
         kind: "entity",
         id: source.id,
       });
-      this.expected(target.version, operation.expectedEndpoints.targetVersion, false, {
+      expectVersion(target.version, operation.expectedEndpoints.targetVersion, false, {
         kind: "entity",
         id: target.id,
       });
@@ -634,9 +629,7 @@ export class Tracer {
     return previewSchema(this.repository, input);
   }
   getSchema() {
-    return this.repository.transaction((tx) => tx.get("schema", "project")) as Promise<
-      SchemaObject | undefined
-    >;
+    return this.repository.transaction((tx) => tx.get("schema", "project"));
   }
   timeline(before?: number) {
     return this.repository.transaction((tx) => nativeTimeline(tx, before));

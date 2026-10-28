@@ -30,7 +30,7 @@ export async function nextWork(
     "Next work choices must be strings of at most 200 characters; use an empty string for an unconfigured queue",
   );
   return repository.transaction(async (tx) => {
-    const schema = ((await tx.get("schema", "project")) as SchemaObject | undefined) ?? null;
+    const schema = (await tx.get("schema", "project")) ?? null;
     const selection = selected(schema, query);
     const value: NextWork = {
       schema,

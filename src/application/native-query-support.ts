@@ -1,10 +1,16 @@
+import { expectVersion } from "./version-guard.ts";
 import { ensure, json, record } from "../core/model.ts";
 import type { ObjectQuery, SchemaObject, Stored } from "../core/model.ts";
 import type { Transaction } from "./ports/repository.ts";
 
-export async function projectSchema(tx: Transaction): Promise<SchemaObject> {
-  const schema = (await tx.get("schema", "project")) as SchemaObject | undefined;
+export async function projectSchema(
+  tx: Transaction,
+  expectedVersion?: number,
+): Promise<SchemaObject> {
+  const schema = await tx.get("schema", "project");
   ensure(schema, "validation", "Define a schema first");
+  if (expectedVersion !== undefined)
+    expectVersion(schema.version, expectedVersion, true, { kind: "schema", id: "project" });
   return schema;
 }
 /** Used only by whole-schema validation, cascade deletion and bounded traversal owners. */

@@ -1,4 +1,4 @@
-import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
+import type { Relationship, SchemaObject } from "../core/model.ts";
 import type { Transaction } from "./ports/repository.ts";
 import type { RecordedConnections, RecordedConnectionsQuery } from "./views.ts";
 
@@ -12,7 +12,7 @@ export async function recordedConnections(
   const items = page.items as Relationship[];
   const endpoints: RecordedConnections["endpoints"] = [];
   for (const id of new Set(items.flatMap((link) => [link.source, link.target]))) {
-    const entity = (await tx.get("entity", id)) as Entity | undefined;
+    const entity = await tx.get("entity", id);
     if (!entity) continue;
     endpoints.push({
       id: entity.id,

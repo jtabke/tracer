@@ -184,6 +184,7 @@ test("every read endpoint has a paired query codec", () => {
   const queries: { [K in ReadPath]: ReadQuery<K> } = {
     "/api/reference": { id: "reference" },
     "/api/capabilities": {},
+    "/api/evaluation-outcome": { commandId: "missing" },
     "/api/changeset-outcome": { commandId: "job-1" },
     "/api/next-work": { requirementType: "item" },
     "/api/project-export": {},

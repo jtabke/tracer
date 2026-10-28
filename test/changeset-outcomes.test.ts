@@ -130,7 +130,7 @@ test("format 8 migrates without changing native history; outcomes are immutable 
   repository.close();
   const old = new DatabaseSync(path);
   old.exec(
-    "DROP TABLE changeset_commands; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=8",
+    "DROP TABLE evaluation_commands; DROP TABLE changeset_commands; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=8",
   );
   old.close();
   repository = new SQLiteRepository(path);
@@ -150,7 +150,7 @@ test("format 8 migrates without changing native history; outcomes are immutable 
   );
   const inspect = new DatabaseSync(path);
   try {
-    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 10);
+    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 11);
     assert.throws(
       () => inspect.exec("UPDATE changeset_commands SET intent_json='changed'"),
       /Immutable command outcome/,

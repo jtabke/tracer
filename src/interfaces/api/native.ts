@@ -2,6 +2,7 @@ import { viewDefinition } from "../../core/presentation.ts";
 import {
   baseline,
   changeset,
+  changesetResult,
   comparison,
   configuration,
   delta,
@@ -32,15 +33,6 @@ import {
 import { read, write } from "./definition.ts";
 import { inputSchema, operation, strictObject } from "./input.ts";
 import * as q from "./query.ts";
-const changesetResult = object({
-  changeset,
-  results: array(
-    union(
-      relationship,
-      union(entity, object({ id: text, version: number, deleted: literal(true) })),
-    ),
-  ),
-});
 export const nativeReads = {
   "/api/reference": read({
     features: ["qualified-references"],

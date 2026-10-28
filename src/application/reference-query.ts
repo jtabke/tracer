@@ -1,4 +1,4 @@
-import { ensure, type Entity, type Relationship } from "../core/model.ts";
+import { ensure, type Relationship } from "../core/model.ts";
 import type { Observation } from "../core/evidence.ts";
 import type { Repository, Transaction } from "./ports/repository.ts";
 async function selectedObservation(
@@ -8,7 +8,7 @@ async function selectedObservation(
 ) {
   const state = link.reference!.state;
   if (state.mode === "pinned" && "observationId" in state)
-    return (await tx.getEvidence("observation", state.observationId)) as Observation | undefined;
+    return await tx.getEvidence("observation", state.observationId);
   return latest;
 }
 function externalDrift(selected: Observation | undefined, latest: Observation | undefined) {
@@ -17,11 +17,11 @@ function externalDrift(selected: Observation | undefined, latest: Observation | 
 }
 export async function referenceContext(repository: Repository, id: string) {
   return repository.transaction(async (tx) => {
-    const relationship = (await tx.get("relationship", id)) as Relationship | undefined;
+    const relationship = await tx.get("relationship", id);
     ensure(relationship?.reference, "not_found", "Qualified reference not found");
-    const resource = (await tx.get("entity", relationship.target)) as Entity | undefined;
+    const resource = await tx.get("entity", relationship.target);
     ensure(resource?.resource, "not_found", "Reference resource unavailable");
-    const latest = (await tx.latestEvidence("observation", resource.id)) as Observation | undefined;
+    const latest = await tx.latestEvidence("observation", resource.id);
     const selected = await selectedObservation(tx, relationship, latest);
     const state = relationship.reference.state;
     const native =

@@ -127,7 +127,7 @@ async function compareDependencyLinks(
   const links: (Relationship | null)[] = [];
   let changed = false;
   for (const baseline of baselines) {
-    const link = (await tx.get("relationship", baseline.id)) as Relationship | undefined;
+    const link = await tx.get("relationship", baseline.id);
     links.push(link ?? null);
     if (!link || canonical(baseline) !== canonical(link)) {
       changed = true;
@@ -144,10 +144,9 @@ async function compareInput(
   recorded: CapturedInput,
   outputId: string,
 ): Promise<InputComparison> {
-  const currentEntity = (await tx.get("entity", recorded.entityId)) as Entity | undefined;
+  const currentEntity = await tx.get("entity", recorded.entityId);
   const observation = recorded.observation
-    ? (((await tx.latestEvidence("observation", recorded.entityId)) as Observation | undefined) ??
-      null)
+    ? ((await tx.latestEvidence("observation", recorded.entityId)) ?? null)
     : null;
   const links: (Relationship | null)[] = [];
   const reasons: string[] = [];
@@ -204,7 +203,7 @@ export async function compareReceiptState(
 ): Promise<Omit<Comparison, "supersededBy">> {
   const comparison = await compareCapturedInputs(tx, receipt),
     token = comparisonToken(comparison);
-  const latest = (await tx.latestEvidence("review", receipt.id)) as Review | undefined;
+  const latest = await tx.latestEvidence("review", receipt.id);
   return { ...comparison, token, review: reviewState(latest, token) };
 }
 function reviewState(latest: Review | undefined, token: string): Comparison["review"] {

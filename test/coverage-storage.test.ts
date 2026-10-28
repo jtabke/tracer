@@ -30,7 +30,7 @@ test("format6 upgrades preserve native history and format8 retains versioned cov
     repository = undefined;
     const old = new DatabaseSync(database);
     old.exec(
-      "DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=6",
+      "DROP TABLE evaluation_commands; DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=6",
     );
     old.close();
     repository = new SQLiteRepository(database);
@@ -63,7 +63,7 @@ test("format6 upgrades preserve native history and format8 retains versioned cov
     repository.close();
     repository = undefined;
     const inspect = new DatabaseSync(database);
-    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 10);
+    assert.equal(inspect.prepare("SELECT version FROM storage_version").get()!.version, 11);
     assert.equal(
       inspect
         .prepare(
@@ -72,11 +72,11 @@ test("format6 upgrades preserve native history and format8 retains versioned cov
         .get()!.count,
       2,
     );
-    inspect.exec("UPDATE storage_version SET version=11");
+    inspect.exec("UPDATE storage_version SET version=12");
     inspect.close();
     assert.throws(() => new SQLiteRepository(database), { code: "unsupported_storage" });
     const retained = new DatabaseSync(database);
-    assert.equal(retained.prepare("SELECT version FROM storage_version").get()!.version, 11);
+    assert.equal(retained.prepare("SELECT version FROM storage_version").get()!.version, 12);
     assert.deepEqual(
       JSON.parse(
         String(

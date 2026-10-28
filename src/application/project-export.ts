@@ -1,6 +1,5 @@
 import { ensure } from "../core/model.ts";
-import type { Entity, Relationship, Page, SchemaObject } from "../core/model.ts";
-import type { ExternalIdentity, Observation, Receipt, Review } from "../core/evidence.ts";
+import type { Entity, Relationship, Page } from "../core/model.ts";
 import { serializeProjectExport, type ProjectExport } from "../core/project-export.ts";
 import type { Repository, Transaction } from "./ports/repository.ts";
 
@@ -25,7 +24,7 @@ export function projectExport(repository: Repository): Promise<ProjectExport> {
       projectRevision: await tx.headRevision(),
       evidenceRevision: await tx.impactEvidenceRevision(),
       current: {
-        schema: ((await tx.get("schema", "project")) as SchemaObject | undefined) ?? null,
+        schema: (await tx.get("schema", "project")) ?? null,
         entities: (await collect((after) =>
           tx.query("entity", { after, limit: pageSize }),
         )) as Entity[],
@@ -38,18 +37,12 @@ export function projectExport(repository: Repository): Promise<ProjectExport> {
         revisions: await collect((after) => tx.history({ after, limit: pageSize })),
       },
       evidence: {
-        external: (await collect((after) =>
-          tx.evidence("external", { after, limit: pageSize }),
-        )) as ExternalIdentity[],
-        observations: (await collect((after) =>
+        external: await collect((after) => tx.evidence("external", { after, limit: pageSize })),
+        observations: await collect((after) =>
           tx.evidence("observation", { after, limit: pageSize }),
-        )) as Observation[],
-        receipts: (await collect((after) =>
-          tx.evidence("receipt", { after, limit: pageSize }),
-        )) as Receipt[],
-        reviews: (await collect((after) =>
-          tx.evidence("review", { after, limit: pageSize }),
-        )) as Review[],
+        ),
+        receipts: await collect((after) => tx.evidence("receipt", { after, limit: pageSize })),
+        reviews: await collect((after) => tx.evidence("review", { after, limit: pageSize })),
       },
       configurations: await collect((after) => tx.configurations({ after, limit: pageSize })),
       baselines: await collect((after) => tx.baselines({ after, limit: pageSize })),

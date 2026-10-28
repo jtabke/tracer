@@ -75,8 +75,7 @@ export async function previewSchema(
   validateSchema(input.schema);
   validatePageLimit(input.limit, 1000);
   return repository.transaction(async (tx) => {
-    const current = (await tx.get("schema", "project")) as
-      import("../core/model.ts").SchemaObject | undefined;
+    const current = await tx.get("schema", "project");
     const version = current?.version ?? 0;
     expectVersion(version, input.expectedVersion, true, { kind: "schema", id: "project" });
     const result: SchemaPreview = {

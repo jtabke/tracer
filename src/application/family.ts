@@ -59,7 +59,7 @@ async function loadMemberConnections(
     links.set(link.id, link);
     for (const id of [link.source, link.target]) {
       if (nodes.has(id)) continue;
-      const entity = (await tx.get("entity", id)) as Entity | undefined;
+      const entity = await tx.get("entity", id);
       ensure(entity, "referential_integrity", "Connected item is unavailable");
       nodes.set(id, entity);
     }
@@ -74,7 +74,7 @@ export async function familyWorkspace(
   query: FamilyQuery,
 ): Promise<FamilyWorkspace> {
   const limit = validateFamilyQuery(schema, query);
-  const root = (await tx.get("entity", query.rootId)) as Entity | undefined;
+  const root = await tx.get("entity", query.rootId);
   ensure(root, "not_found", "Family root no longer exists");
   const incoming = query.direction === "incoming";
   const page =
@@ -91,7 +91,7 @@ export async function familyWorkspace(
   if (query.relationshipType === undefined) members.set(root.id, root);
   for (const link of membership) {
     const id = incoming ? link.source : link.target;
-    const entity = (await tx.get("entity", id)) as Entity | undefined;
+    const entity = await tx.get("entity", id);
     ensure(entity, "referential_integrity", "Family member is unavailable");
     members.set(id, entity);
   }

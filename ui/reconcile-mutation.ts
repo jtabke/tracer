@@ -45,6 +45,22 @@ async function nativeRecords(input: ChangesetInput): Promise<Reconciliation> {
   return result;
 }
 const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliation> } = {
+  "/api/evaluation-commands": async (input) => {
+    const value = await read("/api/evaluation-outcome", { commandId: input.commandId });
+    return {
+      records: value
+        ? [
+            {
+              id: value.commandId,
+              heading: `Evaluation command ${value.commandId}`,
+              description: value.receipt.outcome,
+              value,
+            },
+          ]
+        : [],
+      incomplete: value === null,
+    };
+  },
   "/api/coverage-expectations": async () => {
     const value = await read("/api/coverage-expectations", {});
     return {

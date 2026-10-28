@@ -20,6 +20,7 @@ import type {
 import { nativeReads, nativeWrites } from "./api/native.ts";
 import { analysisReads, analysisWrites } from "./api/analysis.ts";
 import { evidenceReads, evidenceWrites } from "./api/evidence.ts";
+import { evaluationReads, evaluationWrites } from "./api/evaluations.ts";
 import { sessionReads } from "./api/session.ts";
 
 export const readEndpoints = {
@@ -27,8 +28,14 @@ export const readEndpoints = {
   ...analysisReads,
   ...evidenceReads,
   ...sessionReads,
+  ...evaluationReads,
 };
-export const writeEndpoints = { ...nativeWrites, ...analysisWrites, ...evidenceWrites };
+export const writeEndpoints = {
+  ...nativeWrites,
+  ...analysisWrites,
+  ...evidenceWrites,
+  ...evaluationWrites,
+};
 /** Discovery and reference inventory derive from the same registered handlers as dispatch. */
 export function describeApi(): ApiCapabilities {
   const operations = [
@@ -64,8 +71,8 @@ export function decodeQuery<K extends ReadPath>(path: K, url: URL) {
 export function decodeRead<K extends ReadPath>(path: K, query: ReadQuery<K>, value: unknown) {
   return reads[path].response(value, query);
 }
-export function decodeWrite<K extends WritePath>(path: K, value: unknown) {
-  return writes[path].response(value);
+export function decodeWrite<K extends WritePath>(path: K, value: unknown, input?: WriteInput<K>) {
+  return writes[path].response(value, input);
 }
 function decodeWriteInput<K extends WritePath>(path: K, value: unknown): WriteInput<K> {
   ensure(json(value), "validation", "Request must contain JSON-safe data");

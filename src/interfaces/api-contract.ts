@@ -1,5 +1,5 @@
 import type { ErrorCode, ErrorDetails } from "../core/model.ts";
-import type { ExternalIdentity, Observation, Receipt, Review } from "../core/evidence.ts";
+export type { EvidenceByKind } from "../core/evidence.ts";
 import type { readEndpoints, writeEndpoints } from "./api-endpoints.ts";
 
 /** Public contracts derive from the endpoint definitions, never parallel route tables. */
@@ -21,12 +21,6 @@ export type ReadResponse<K extends ReadPath> = ReadApi[K]["response"];
 export type WritePath = keyof WriteApi;
 export type WriteInput<K extends WritePath> = WriteApi[K]["input"];
 export type WriteResponse<K extends WritePath> = WriteApi[K]["response"];
-export type EvidenceByKind = {
-  external: ExternalIdentity;
-  observation: Observation;
-  receipt: Receipt;
-  review: Review;
-};
 
 export class ApiError extends Error {
   code: ErrorCode | "read_failed" | "outcome_unknown" | "incompatible_api";

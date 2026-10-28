@@ -16,6 +16,15 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "evaluation commit": ({ tracer, args, origin }) =>
+    tracer.evaluations.commit(
+      requiredInput<import("../application/evaluations.ts").EvaluationCommand>(args),
+      origin,
+    ),
+  "evaluation outcome": ({ tracer, args }) => {
+    arity(args, 1);
+    return tracer.evaluations.getOutcome(args[0]);
+  },
   "schema get": async ({ tracer, args }) => {
     arity(args, 0);
     return (await tracer.getSchema()) ?? null;

@@ -1,5 +1,5 @@
 import { ensure } from "../core/model.ts";
-import type { Entity, Relationship, SchemaObject } from "../core/model.ts";
+import type { Entity, Relationship } from "../core/model.ts";
 import type { ProjectSnapshot } from "../core/project-snapshot.ts";
 import type { Transaction } from "./ports/repository.ts";
 
@@ -14,7 +14,7 @@ export async function projectSnapshot(tx: Transaction): Promise<ProjectSnapshot>
     MAP_CONNECTION_LIMIT,
   )) as Relationship[];
   return {
-    schema: ((await tx.get("schema", "project")) as SchemaObject | undefined) ?? null,
+    schema: (await tx.get("schema", "project")) ?? null,
     projectRevision: await tx.headRevision(),
     entities,
     relationships,

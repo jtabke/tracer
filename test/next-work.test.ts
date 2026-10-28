@@ -369,7 +369,12 @@ test("invalid selections, unknown properties and exceeded bounds reject without 
     const receipts = new Tracer(
       decorate(repository, (tx) => ({
         ...tx,
-        evidence: async () => ({ items: Array(2001).fill(receipt) }),
+        evidence: async (kind, query) => {
+          const page = await tx.evidence(kind, query);
+          return kind === "receipt"
+            ? { ...page, items: Array.from({ length: 2001 }, () => page.items[0]) }
+            : page;
+        },
       })),
     );
     await assert.rejects(receipts.getNextWork(), /2,000 recorded results/);
@@ -378,7 +383,15 @@ test("invalid selections, unknown properties and exceeded bounds reject without 
       inputs: Array(10_001).fill({ entityId: input.id, entity: input, links: [] }),
     };
     const inputs = new Tracer(
-      decorate(repository, (tx) => ({ ...tx, evidence: async () => ({ items: [largeInputs] }) })),
+      decorate(repository, (tx) => ({
+        ...tx,
+        evidence: async (kind, query) => {
+          const page = await tx.evidence(kind, query);
+          return kind === "receipt"
+            ? { ...page, items: page.items.map((row) => ({ ...row, inputs: largeInputs.inputs })) }
+            : page;
+        },
+      })),
     );
     await assert.rejects(inputs.getNextWork(), /10,000 declared inputs/);
     assert.equal(

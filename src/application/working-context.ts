@@ -1,6 +1,5 @@
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure } from "../core/model.ts";
-import type { Entity } from "../core/model.ts";
 import type { WorkingContext, WorkingContextQuery } from "../core/working-context.ts";
 import type { Repository, Transaction } from "./ports/repository.ts";
 import { projectSchema } from "./native-query-support.ts";
@@ -26,7 +25,7 @@ async function projection(tx: Transaction, query: PreparedWorkingQuery): Promise
   const schema = await projectSchema(tx),
     selected = await context(tx, schema.version);
   continuations(query, selected);
-  const focus = (await tx.get("entity", query.focusId)) as Entity | undefined;
+  const focus = await tx.get("entity", query.focusId);
   ensure(focus, "not_found", "Working focus no longer exists");
   validateWorkingRecipe(schema, focus, query.recipe);
   const rows = await workingRows(tx, query, selected),

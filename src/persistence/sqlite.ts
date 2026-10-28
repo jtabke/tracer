@@ -7,6 +7,7 @@ import { TracerError, ensure } from "../core/model.ts";
 import type {
   Kind,
   Stored,
+  StoredByKind,
   Changeset,
   Revision,
   ObjectQuery,
@@ -21,6 +22,8 @@ import { coverageTransaction } from "./coverage.ts";
 import { impactTransaction, indexReceiptDependencies } from "./impact.ts";
 import { migrate, writeCurrent } from "./migrations.ts";
 import { workingContextTransaction } from "./working-context.ts";
+
+import type { EvidenceByKind, EvidenceKind, EvidenceQuery } from "../core/evidence.ts";
 
 type Row = Record<string, unknown>;
 function decodeRevision(row: Row): Revision {
@@ -37,10 +40,15 @@ function decodeRevision(row: Row): Revision {
   };
 }
 const tables = { entity: "entities", relationship: "relationships", schema: "schemas" } as const;
-function decode(kind: Kind, row: Row): Stored {
+function decode<K extends Kind>(kind: K, row: Row): StoredByKind[K] {
   const common = { id: String(row.id), version: Number(row.version) };
-  if (kind === "schema") return { ...common, ...JSON.parse(String(row.definition_json)) };
-  return kind === "entity" ? decodeEntity(row) : decodeRelationship(row);
+  return (
+    kind === "schema"
+      ? { ...common, ...JSON.parse(String(row.definition_json)) }
+      : kind === "entity"
+        ? decodeEntity(row)
+        : decodeRelationship(row)
+  ) as StoredByKind[K];
 }
 function changeset(row: Row): Changeset {
   return {
@@ -129,6 +137,7 @@ export class SQLiteRepository implements Repository {
     return this.queue.run(async () => {
       let current: Changeset | undefined;
       let ordinal = 0;
+      const capturedReceipts = new Set<string>();
       let active = true;
       const check = () => ensure(active, "storage", "Transaction is no longer active");
       const append = (kind: Kind, id: string, version: number, snapshot: Stored | null) => {
@@ -196,7 +205,7 @@ export class SQLiteRepository implements Repository {
             .get(kind, id);
           return row ? JSON.parse(String(row.payload_json)) : undefined;
         },
-        evidence: async (kind, query) => {
+        evidence: async <K extends EvidenceKind>(kind: K, query: EvidenceQuery) => {
           check();
           const limit = query.limit ?? 100;
           const subjects = query.subject == null ? [] : [query.subject];
@@ -207,14 +216,11 @@ export class SQLiteRepository implements Repository {
                 AND sequence>? ORDER BY sequence LIMIT ?`,
             )
             .all(kind, ...subjects, Number(query.after ?? 0), limit + 1);
-          return jsonPage<import("../core/evidence.ts").Evidence>(rows, limit);
+          return jsonPage<EvidenceByKind[K]>(rows, limit);
         },
-        appendEvidence: async (kind, subject, value) => {
+        appendEvidence: async (...[kind, subject, value]) => {
           check();
-          const identity =
-            kind === "external"
-              ? (value as import("../core/evidence.ts").ExternalIdentity)
-              : undefined;
+          const identity = kind === "external" ? value : undefined;
           const inserted = this.db
             .prepare(
               "INSERT INTO evidence(id,kind,subject_id,payload_json,system,external_id) VALUES (?,?,?,?,?,?)",
@@ -227,8 +233,10 @@ export class SQLiteRepository implements Repository {
               identity?.system ?? null,
               identity?.externalId ?? null,
             );
-          if (kind === "receipt")
+          if (kind === "receipt") {
             indexReceiptDependencies(this.db, Number(inserted.lastInsertRowid));
+            capturedReceipts.add(value.id);
+          }
         },
         get: async (kind, id) => {
           check();
@@ -356,6 +364,32 @@ export class SQLiteRepository implements Repository {
             )
             .all(...sourceIds, relationshipType, targetType);
           return { links, missingSourceIds: missing.map((row) => String(row.id)) };
+        },
+        getEvaluationCommand: async (commandId) => {
+          check();
+          const row = this.db
+            .prepare("SELECT intent_json,result_json FROM evaluation_commands WHERE command_id=?")
+            .get(commandId);
+          return row
+            ? { intent: String(row.intent_json), result: JSON.parse(String(row.result_json)) }
+            : undefined;
+        },
+        appendEvaluationCommand: async (commandId, intent, result) => {
+          check();
+          ensure(result.commandId === commandId, "storage", "Evaluation outcome identity mismatch");
+          ensure(
+            (result.native === null
+              ? current === undefined
+              : current?.id === result.native.changeset.id) &&
+              capturedReceipts.has(result.receipt.id),
+            "storage",
+            "Evaluation outcome requires its current changeset",
+          );
+          this.db
+            .prepare(
+              "INSERT INTO evaluation_commands(command_id,intent_json,receipt_id,result_json) VALUES (?,?,?,?)",
+            )
+            .run(commandId, intent, result.receipt.id, JSON.stringify(result));
         },
         getChangesetCommand: async (commandId) => {
           check();

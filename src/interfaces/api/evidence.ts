@@ -1,8 +1,8 @@
 import type * as Evidence from "../../core/evidence.ts";
 import { comparison, evidence, external, observation, receipt, review } from "../api-models.ts";
-import { array, literal, number, optional, page, text } from "../decode.ts";
+import { literal, page, text } from "../decode.ts";
 import { read, write } from "./definition.ts";
-import { declaration, locator, relationshipDeclaration } from "./input.ts";
+import { locator, receiptCommandInput } from "./input.ts";
 import * as q from "./query.ts";
 export const evidenceReads = {
   "/api/evidence": read({
@@ -47,19 +47,9 @@ export const evidenceWrites = {
     { entityId: text, locator },
     observation,
   )(({ tracer, provenance }, input) => tracer.evidence.observe(input, provenance)),
-  "/api/receipts": write(
-    {
-      outputId: text,
-      expectedOutputVersion: optional(number),
-      outcome: text,
-      inputs: array(declaration),
-      relationshipInputs: optional(array(relationshipDeclaration)),
-      supersedes: optional(text),
-      configurationId: optional(text),
-    },
-    receipt,
-    { features: ["relationship-evaluation-inputs"] },
-  )(({ tracer, provenance }, input) => tracer.evidence.recordReceipt(input, provenance)),
+  "/api/receipts": write(receiptCommandInput, receipt, {
+    features: ["relationship-evaluation-inputs"],
+  })(({ tracer, provenance }, input) => tracer.evidence.recordReceipt(input, provenance)),
   "/api/reviews": write(
     {
       receiptId: text,

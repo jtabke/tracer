@@ -120,7 +120,12 @@ export function createClient(options: ClientOptions = {}) {
     } catch {
       throw new ApiError("validation", "The proposal could not be serialized. Nothing was sent.");
     }
-    return request(path, (value) => decodeWrite(path, value), body, options);
+    return request(
+      path,
+      (value) => decodeWrite(path, value, JSON.parse(body) as WriteInput<K>),
+      body,
+      options,
+    );
   }
   /** Explicit, uncached preflight. A failed or superseded check cannot authorize a write. */
   async function checkCompatibility(

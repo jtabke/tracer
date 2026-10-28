@@ -1,6 +1,5 @@
 import { ensure } from "../core/model.ts";
 import type { Entity } from "../core/model.ts";
-import type { Receipt } from "../core/evidence.ts";
 import type { WorkingContext, WorkingReceipt, WorkingInputFact } from "../core/working-context.ts";
 import type { Transaction, WorkingReceiptCandidate } from "./ports/repository.ts";
 import { compareReceiptState } from "./receipt-comparison.ts";
@@ -17,7 +16,7 @@ async function comparison(
 ): Promise<WorkingReceipt["comparison"]> {
   if (candidate.inputCount > budget.remaining) return null;
   budget.remaining -= candidate.inputCount;
-  const receipt = (await tx.getEvidence("receipt", candidate.receipt.id)) as Receipt | undefined;
+  const receipt = await tx.getEvidence("receipt", candidate.receipt.id);
   ensure(receipt, "referential_integrity", "Working receipt is unavailable");
   return compareReceiptState(tx, receipt);
 }

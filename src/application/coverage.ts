@@ -34,8 +34,7 @@ async function context(tx: Transaction, query: CoverageListQuery) {
   );
   const baseline = await tx.getBaseline(query.baselineId);
   ensure(baseline, "not_found", "Baseline not found");
-  const schema = (await tx.getAt("schema", "project", baseline.projectRevision)) as
-    SchemaObject | undefined;
+  const schema = await tx.getAt("schema", "project", baseline.projectRevision);
   ensure(
     schema && schema.version === baseline.schemaVersion,
     "storage",

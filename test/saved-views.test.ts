@@ -136,7 +136,7 @@ test("format 3 upgrades add presentation storage without rewriting records, revi
     repository.close();
     const old = new DatabaseSync(path);
     old.exec(
-      "DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE workspace_views; DROP TABLE configurations; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=3",
+      "DROP TABLE evaluation_commands; DROP TABLE changeset_commands; DROP TABLE receipt_dependencies; DROP INDEX receipt_supersedes; DROP INDEX coverage_source_target; DROP INDEX coverage_target_source; DROP TABLE baselines; DROP TABLE workspace_views; DROP TABLE configurations; DROP TABLE resource_identities; DROP INDEX resource_source_identity; ALTER TABLE entities DROP COLUMN resource_json; ALTER TABLE relationships DROP COLUMN reference_json; UPDATE storage_version SET version=3",
     );
     old.close();
     const upgraded = new SQLiteRepository(path);

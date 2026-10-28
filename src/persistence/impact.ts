@@ -1,5 +1,5 @@
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
-import type { Evidence, Receipt } from "../core/evidence.ts";
+import type { EvidenceByKind, Receipt } from "../core/evidence.ts";
 import type { ImpactIncidentQuery, ImpactReceiptQuery } from "../core/impact.ts";
 import type { Relationship } from "../core/model.ts";
 import type { Transaction } from "../application/ports/repository.ts";
@@ -111,14 +111,14 @@ export function impactTransaction(
         db.prepare("SELECT COALESCE(MAX(sequence),0) AS revision FROM evidence").get()!.revision,
       );
     },
-    latestEvidence: async (kind, subject) => {
+    latestEvidence: async <K extends "observation" | "review">(kind: K, subject: string) => {
       check();
       const row = db
         .prepare(
           "SELECT payload_json FROM evidence WHERE kind=? AND subject_id=? ORDER BY sequence DESC LIMIT 1",
         )
         .get(kind, subject);
-      return row ? (JSON.parse(String(row.payload_json)) as Evidence) : undefined;
+      return row ? (JSON.parse(String(row.payload_json)) as EvidenceByKind[K]) : undefined;
     },
     impactSupersession: async (receiptId) => {
       check();

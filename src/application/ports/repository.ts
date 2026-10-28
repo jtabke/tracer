@@ -2,6 +2,7 @@ import type { ChangesetResult } from "../../core/changeset.ts";
 import type {
   Kind,
   Stored,
+  StoredByKind,
   Revision,
   Changeset,
   Provenance,
@@ -9,7 +10,12 @@ import type {
   ObjectQuery,
   HistoryQuery,
 } from "../../core/model.ts";
-import type { Evidence, EvidenceKind, EvidenceQuery } from "../../core/evidence.ts";
+import type {
+  EvidenceByKind,
+  EvidenceKind,
+  EvidenceQuery,
+  EvidenceAppend,
+} from "../../core/evidence.ts";
 import type { SavedView } from "../../core/presentation.ts";
 import type { Configuration } from "../../core/configuration.ts";
 import type { Baseline, BaselineQuery } from "../../core/baseline.ts";
@@ -44,6 +50,23 @@ export type WorkingReceiptCandidate = {
  * including its own writes. It is valid only inside its repository callback.
  */
 export interface Transaction {
+  /** Project- and family-scoped immutable successful outcomes. Lookup owns returned values.
+   * Append requires the receipt captured in this transaction and its active native
+   * changeset (or none for receipt-only capture). Duplicate IDs never replace.
+   * Rollback removes the complete result; concurrent identical IDs cannot commit twice.
+   * Reopen retains exact intent/result independently of later project changes.
+   */
+  getEvaluationCommand(
+    commandId: string,
+  ): Promise<
+    | { intent: string; result: import("../../core/evaluation-command.ts").EvaluationResult }
+    | undefined
+  >;
+  appendEvaluationCommand(
+    commandId: string,
+    intent: string,
+    result: import("../../core/evaluation-command.ts").EvaluationResult,
+  ): Promise<void>;
   findResource(source: {
     system: "file" | "git";
     externalId: string;
@@ -69,8 +92,12 @@ export interface Transaction {
   impactReceipts(
     query: ImpactReceiptQuery,
   ): Promise<Page<import("../../core/evidence.ts").Receipt>>;
+  /** Committed evidence watermark: monotonic, with gaps permitted. */
   impactEvidenceRevision(): Promise<number>;
-  latestEvidence(kind: "observation" | "review", subject: string): Promise<Evidence | undefined>;
+  latestEvidence<K extends "observation" | "review">(
+    kind: K,
+    subject: string,
+  ): Promise<EvidenceByKind[K] | undefined>;
   impactSupersession(receiptId: string): Promise<{ count: number; ids: string[] }>;
   supersedingReceiptIds(receiptId: string): Promise<string[]>;
   coveragePage(query: CoverageNativeQuery): Promise<Page<CoverageNativeRow>>;
@@ -90,12 +117,22 @@ export interface Transaction {
   listViews(): Promise<SavedView[]>;
   saveView(view: SavedView, expectedVersion: number): Promise<void>;
   removeView(id: string, expectedVersion: number): Promise<void>;
-  getEvidence(kind: EvidenceKind, id: string): Promise<Evidence | undefined>;
-  evidence(kind: EvidenceKind, query: EvidenceQuery): Promise<Page<Evidence>>;
-  appendEvidence(kind: EvidenceKind, subject: string, value: Evidence): Promise<void>;
-  get(kind: Kind, id: string): Promise<Stored | undefined>;
+  getEvidence<K extends EvidenceKind>(kind: K, id: string): Promise<EvidenceByKind[K] | undefined>;
+  evidence<K extends EvidenceKind>(kind: K, query: EvidenceQuery): Promise<Page<EvidenceByKind[K]>>;
+  /** Append an immutable call-time payload. Duplicate kind/ID must conflict, never replace.
+   * Reads and returned values cannot mutate captured storage by alias. Evidence and
+   * dependency indexes commit/rollback with native state/history in this callback.
+   * Capture-only transactions allocate no native revision. Bodies remain kind-specific.
+   */
+  appendEvidence(...entry: EvidenceAppend): Promise<void>;
+  /** Kind-specific native reads; absent/deleted identities return undefined. */
+  get<K extends Kind>(kind: K, id: string): Promise<StoredByKind[K] | undefined>;
   headRevision(): Promise<number>;
-  getAt(kind: Kind, id: string, revision: number): Promise<Stored | undefined>;
+  getAt<K extends Kind>(
+    kind: K,
+    id: string,
+    revision: number,
+  ): Promise<StoredByKind[K] | undefined>;
   incidentAt(id: string, revision: number, limit: number): Promise<Page<Stored>>;
   entityPredecessor(id: string, type: string): Promise<string | undefined>;
   query(kind: "entity" | "relationship", query: ObjectQuery): Promise<Page<Stored>>;

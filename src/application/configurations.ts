@@ -1,6 +1,5 @@
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { ensure, json, record, validateProvenance } from "../core/model.ts";
-import type { Entity } from "../core/model.ts";
 import type { Configuration, ConfigurationInput } from "../core/configuration.ts";
 import type { EvidenceQuery } from "../core/evidence.ts";
 import type { Repository } from "./ports/repository.ts";
@@ -78,7 +77,7 @@ export class Configurations {
     input = snapshotInput(input);
     validateCapture(input);
     return this.repository.transaction(async (tx) => {
-      const subject = (await tx.get("entity", input.subjectId)) as Entity | undefined;
+      const subject = await tx.get("entity", input.subjectId);
       ensure(subject, "not_found", "Configuration subject is no longer active");
       ensure(
         subject.version === input.expectedSubjectVersion,

@@ -1,5 +1,4 @@
 import { ensure, json } from "../core/model.ts";
-import type { SchemaObject } from "../core/model.ts";
 import type { ChangeImpact, ChangeImpactQuery } from "../core/impact.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { projectSchema, queryShape, validatePageLimit } from "./native-query-support.ts";
@@ -90,8 +89,7 @@ export async function impactContext(
 ): Promise<ChangeImpact["context"]> {
   const baseline = await tx.getBaseline(query.baselineId);
   ensure(baseline, "not_found", "Impact baseline not found");
-  const beforeSchema = (await tx.getAt("schema", "project", baseline.projectRevision)) as
-    SchemaObject | undefined;
+  const beforeSchema = await tx.getAt("schema", "project", baseline.projectRevision);
   ensure(
     beforeSchema?.version === baseline.schemaVersion,
     "storage",

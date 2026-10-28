@@ -289,3 +289,13 @@ export function reachability() {
     frontierIds: array(text),
   });
 }
+
+export const changesetResult = object({
+  changeset,
+  results: array(
+    union(
+      relationship,
+      union(entity, object({ id: text, version: number, deleted: literal(true) })),
+    ),
+  ),
+});

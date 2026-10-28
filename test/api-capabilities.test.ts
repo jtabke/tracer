@@ -40,6 +40,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
   assert.deepEqual(capabilities, describeApi());
   assert.equal(capabilities.contractVersion, 2);
   assert.deepEqual(capabilities.features, [
+    "atomic-evaluation-commands",
     "changeset-command-recovery",
     "native-resources",
     "qualified-references",
