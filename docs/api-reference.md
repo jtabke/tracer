@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `changeset-command-recovery`, `native-resources`, `qualified-references`, `relationship-evaluation-inputs`.
+Features: `atomic-evaluation-commands`, `changeset-command-recovery`, `evidence-revision-guards`, `native-resources`, `qualified-references`, `relationship-evaluation-inputs`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -61,7 +61,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | POST | `/api/changesets` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `operations` |
 | POST | `/api/configurations` | `name`, `subjectId`, `expectedSubjectVersion`, `members`, `relationships` |
 | POST | `/api/coverage-expectations` | `expectations`, `expectedSchemaVersion` |
-| POST | `/api/evaluation-commands` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `operations`, `receipt` |
+| POST | `/api/evaluation-commands` | `commandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `operations`, `receipt` |
 | POST | `/api/external` | `entityId`, `system`, `externalId`, `ownership` |
 | POST | `/api/observations` | `entityId`, `locator` |
 | POST | `/api/receipts` | `outputId`, `expectedOutputVersion`, `outcome`, `inputs`, `relationshipInputs`, `supersedes`, `configurationId` |

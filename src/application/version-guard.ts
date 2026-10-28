@@ -32,3 +32,19 @@ export function expectProjectRevision(actual: number, expected: number) {
     { path: ["expectedProjectRevision"], expectedVersion: expected, actualVersion: actual },
   );
 }
+
+/** Guard evidence-dependent proposals independently of the native project head. */
+export function expectEvidenceRevision(actual: number, expected: number) {
+  ensure(
+    Number.isSafeInteger(expected) && expected >= 0,
+    "validation",
+    "Expected evidence revision must be a nonnegative safe integer",
+    { path: ["expectedEvidenceRevision"] },
+  );
+  ensure(
+    actual === expected,
+    "conflict",
+    `Evidence changed since preparation (expected ${expected}, current ${actual}). Prepare again.`,
+    { path: ["expectedEvidenceRevision"], expectedVersion: expected, actualVersion: actual },
+  );
+}

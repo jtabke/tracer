@@ -36,10 +36,11 @@ export const evaluationWrites = {
       commandId: text,
       expectedSchemaVersion: number,
       expectedProjectRevision: optional(number),
+      expectedEvidenceRevision: optional(number),
       operations: array(operation),
       receipt: strictObject(receiptCommandInput),
     },
     evaluation,
-    { features: feature },
+    { features: [...feature, "evidence-revision-guards"] },
   )(({ tracer, provenance }, input) => tracer.evaluations.commit(input, provenance)),
 };

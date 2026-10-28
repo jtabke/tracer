@@ -57,6 +57,8 @@ export function repositoryEvaluationContract(name: string, open: () => Promise<R
     const f = await setup(open);
     t.after(() => f.fixture.dispose());
     const before = await f.tracer.exportProject();
+    assert.equal(before.evidenceRevision, 0);
+    f.command.expectedEvidenceRevision = 0;
     await assert.rejects(
       f.tracer.evaluations.commit(
         {

@@ -8,7 +8,7 @@ import type { Repository, Transaction } from "./ports/repository.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { changesetLimits } from "../core/command-limits.ts";
 import { changesetCommandId } from "./changeset-command.ts";
-import { expectProjectRevision } from "./version-guard.ts";
+import { expectProjectRevision, expectEvidenceRevision } from "./version-guard.ts";
 import { projectSchema } from "./native-query-support.ts";
 import { prepareReceipt, captureReceipt } from "./receipt-capture.ts";
 
@@ -16,6 +16,7 @@ export type EvaluationCommand = {
   commandId: string;
   expectedSchemaVersion: number;
   expectedProjectRevision?: number;
+  expectedEvidenceRevision?: number;
   operations: Operation[];
   receipt: ReceiptInput;
 };
@@ -35,6 +36,7 @@ function prepare(input: EvaluationCommand) {
           "commandId",
           "expectedSchemaVersion",
           "expectedProjectRevision",
+          "expectedEvidenceRevision",
           "operations",
           "receipt",
         ].includes(key),
@@ -83,6 +85,8 @@ export class Evaluations {
       const schema = await projectSchema(tx, input.expectedSchemaVersion);
       if (input.expectedProjectRevision !== undefined)
         expectProjectRevision(await tx.headRevision(), input.expectedProjectRevision);
+      if (input.expectedEvidenceRevision !== undefined)
+        expectEvidenceRevision(await tx.impactEvidenceRevision(), input.expectedEvidenceRevision);
       const native = input.operations.length
         ? await this.nativeBatch(tx, schema, input.operations, actor)
         : null;

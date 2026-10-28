@@ -42,6 +42,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
   assert.deepEqual(capabilities.features, [
     "atomic-evaluation-commands",
     "changeset-command-recovery",
+    "evidence-revision-guards",
     "native-resources",
     "qualified-references",
     "relationship-evaluation-inputs",

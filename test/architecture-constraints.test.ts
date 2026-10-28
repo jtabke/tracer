@@ -229,10 +229,12 @@ void wrong;
 // @ts-expect-error empty query endpoints reject unsupported parameters
 void read("/api/schema", {unexpected: "value"});
 const client = createClient({baseUrl: "http://localhost:4317"});
-const evaluationRequest = {commandId: "analysis-1", expectedSchemaVersion: 1, operations: [], receipt: {outputId: "output", outcome: "recorded", inputs: []}};
+const evaluationRequest = {commandId: "analysis-1", expectedSchemaVersion: 1, expectedEvidenceRevision: 0, operations: [], receipt: {outputId: "output", outcome: "recorded", inputs: []}};
 const evaluationResult: Promise<import("../src/core/evaluation-command.ts").EvaluationResult> = client.write("/api/evaluation-commands", evaluationRequest);
 const evaluationOutcome: Promise<import("../src/core/evaluation-command.ts").EvaluationResult | null> = client.read("/api/evaluation-outcome", {commandId: "analysis-1"});
 void evaluationResult; void evaluationOutcome;
+// @ts-expect-error evidence guards are numeric watermarks, not timestamps
+void client.write("/api/evaluation-commands", {...evaluationRequest, expectedEvidenceRevision: "now"});
 // @ts-expect-error evaluation writes require command identity and a schema guard
 void client.write("/api/evaluation-commands", {operations: [], receipt: evaluationRequest.receipt});
 // @ts-expect-error evaluation outcomes use command identity, not engineering object identity

@@ -9,10 +9,13 @@ test("typed headless evaluation survives response loss, restart, explicit lookup
   const f = await evaluationFixture();
   let server = await startHeadlessServer(f.tracer, { port: 0, provenance: actor });
   let writes = 0;
+  f.command.expectedEvidenceRevision = await f.repository.transaction((tx) =>
+    tx.impactEvidenceRevision(),
+  );
   try {
     const interrupted = createClient({
       baseUrl: server.origin,
-      require: { features: ["atomic-evaluation-commands"] },
+      require: { features: ["atomic-evaluation-commands", "evidence-revision-guards"] },
       fetch: async (...args) => {
         const response = await fetch(...args);
         if (String(args[0]).endsWith("/api/evaluation-commands")) {
@@ -141,6 +144,16 @@ test("CLI records and recovers the same research application operation across pr
       );
       return { ...r, value: r.status === 0 ? JSON.parse(r.stdout) : undefined };
     };
+    f.command.expectedEvidenceRevision = await f.repository.transaction((tx) =>
+      tx.impactEvidenceRevision(),
+    );
+    const rejected = invoke(
+      "evaluation",
+      "commit",
+      JSON.stringify({ ...f.command, expectedEvidenceRevision: 0 }),
+    );
+    assert.equal(rejected.status, 1);
+    assert.equal(JSON.parse(rejected.stderr).error, "conflict");
     const absent = invoke("evaluation", "outcome", f.command.commandId);
     assert.equal(absent.status, 0, absent.stderr);
     assert.equal(absent.value, null);
