@@ -1,0 +1,274 @@
+{
+  "date": "2026-10-26",
+  "workItem": "WORK-021",
+  "scope": "Finish primitive identity/lifecycle/guarantee/reducibility audit before application-model design. Classify concepts and test current behavioral boundaries; no generalized assessment API, new application model, identity migration or broad product-conformance claim.",
+  "result": "passed",
+  "criteria": [
+    "Independent identity and what must survive change",
+    "Mutable lifecycle versus immutable historical fact",
+    "Essential validation, capture, concurrency and recovery guarantees",
+    "Constructive existing-structure encoding and rules needed for equivalent behavior",
+    "Observable counterexamples and explicit limits; implementation inconvenience is not proof of conceptual irreducibility"
+  ],
+  "inventory": [
+    {
+      "concept": "entity",
+      "classification": "structural object",
+      "identityAndLifecycle": "Native UUID and individually versioned managed state",
+      "reduction": "Project record types specialize this contract; arbitrary fields cannot replace guarded identity/version/history.",
+      "decision": "retain"
+    },
+    {
+      "concept": "relationship",
+      "classification": "structural directed link",
+      "identityAndLifecycle": "Link UUID independent of endpoints/type; native versions",
+      "reduction": "An entity encoding is possible, but must restore direction, endpoint integrity, parallel-link identity and traversal semantics. Endpoint fields alone are lossy.",
+      "decision": "retain contract; no mathematical irreducibility claim"
+    },
+    {
+      "concept": "schema/revision/changeset",
+      "classification": "governing state/history mechanisms",
+      "identityAndLifecycle": "Schema versions, exact object revisions and atomic commit identity",
+      "reduction": "JSON/timestamps do not themselves enforce schema permissions, exact reconstruction or all-or-nothing history.",
+      "decision": "retain governing contracts"
+    },
+    {
+      "concept": "resource",
+      "classification": "entity capability",
+      "identityAndLifecycle": "Same native entity UUID; optional exact external source binding; supported promotion",
+      "reduction": "Already expressed as entity.resource with @resource for unclassified identities; managed classification can be added without a second identity.",
+      "decision": "already reduced"
+    },
+    {
+      "concept": "external identity/locator",
+      "classification": "binding capability and address value",
+      "identityAndLifecycle": "Binding shares entity identity; locator is mutable location through observations",
+      "reduction": "Paths, labels and hashes cannot substitute for stable exact ownership. Legacy binding and resource capability remain compatible; no bulk merge.",
+      "decision": "retain values and exact-identity guards"
+    },
+    {
+      "concept": "contextual reference",
+      "classification": "relationship specialization",
+      "identityAndLifecycle": "Same relationship UUID/history; distinct uses can share endpoints",
+      "reduction": "Already qualified by reference metadata; each excerpt need not become an entity. Removing role/scope/pin loses required meaning.",
+      "decision": "already reduced"
+    },
+    {
+      "concept": "selector/selection",
+      "classification": "qualified values",
+      "identityAndLifecycle": "No independent managed lifecycle",
+      "reduction": "Values identify kind/scope and current or exact selected state. Unsupported data stays preserved and unresolved; no new entity identity needed.",
+      "decision": "values, not independent primitives"
+    },
+    {
+      "concept": "observation",
+      "classification": "specialized immutable capture protocol",
+      "identityAndLifecycle": "Observation ID and append-only provenance; source state separate from native version",
+      "reduction": "Shares immutable evidence storage; cannot infer external availability/content from entity metadata or treat observed bytes as engineering acceptance.",
+      "decision": "specialized protocol"
+    },
+    {
+      "concept": "evaluation receipt",
+      "classification": "specialized immutable assessment/capture protocol",
+      "identityAndLifecycle": "Receipt ID, captured output/declared inputs/outcome/provenance; explicit supersession",
+      "reduction": "Can be represented by generic immutable assessment data with typed subject/basis/result, but must preserve exact capture/scoped comparison and outcome. Ordinary mutable records plus text alone do not supply those services.",
+      "decision": "specialized protocol; retain current API"
+    },
+    {
+      "concept": "applicability review",
+      "classification": "specialized assessment/capture protocol",
+      "identityAndLifecycle": "Review ID, receipt comparison/token, decision/rationale/provenance; renewed applicability after relevant change",
+      "reduction": "Constructive conceptual mapping to assessment: subject=receipt+comparison token, basis=captured comparison, result=decision+rationale. A generic implementation is not executed or proven here; current receipt input vocabulary cannot target this subject.",
+      "decision": "not a peer foundational primitive; retain typed guarded operation"
+    },
+    {
+      "concept": "configuration",
+      "classification": "selected native-state capture service",
+      "identityAndLifecycle": "Immutable capture ID, selected exact native revisions; may mix versions",
+      "reduction": "Builds on native history. Selection does not establish complete project/commit topology.",
+      "decision": "derived capture service"
+    },
+    {
+      "concept": "baseline",
+      "classification": "complete committed native-state capture service",
+      "identityAndLifecycle": "Immutable baseline ID and exact native commit/schema/topology",
+      "reduction": "Builds on native history. A selected member list must add complete atomic commit guarantees to be equivalent; capture does not include external bytes or evidence timeline.",
+      "decision": "derived capture service"
+    },
+    {
+      "concept": "saved view/projection",
+      "classification": "presentation recipe and derived read",
+      "identityAndLifecycle": "View has editable recipe version; read projection has scoped context",
+      "reduction": "Recipe is not a state pin; projections are bounded/paged results, not another engineering truth store.",
+      "decision": "presentation/query layer"
+    }
+  ],
+  "reviewAlternatives": [
+    {
+      "alternative": "Plain managed record or execution outcome saying accepted",
+      "finding": "Tested: no comparison-scoped review is inferred. Version pinning can preserve bytes but comparison targeting and guarded applicability rules remain necessary.",
+      "status": "lossy as a direct substitution"
+    },
+    {
+      "alternative": "General immutable assessment with typed subject/basis/result",
+      "finding": "Conceptually expresses review and execution while retaining specialized services. Review subject is a receipt comparison, not the receipt API current native/content/relationship inputs.",
+      "status": "conceptual reduction supported; executable API unification not claimed"
+    },
+    {
+      "alternative": "Existing typed payloads/commands over shared immutable evidence persistence",
+      "finding": "Tested shared append-only trigger protection and native/evidence history separation; existing comparison and transaction services preserve scoped semantics.",
+      "status": "retain current implementation; correct taxonomy"
+    }
+  ],
+  "execution": {
+    "focused": {
+      "command": "node --test test/primitive-reducibility.test.ts test/reference-primitives.test.ts test/requirement-evidence-cycle.test.ts test/baselines.test.ts test/configurations.test.ts test/evidence.test.ts test/sqlite-repository-contract.test.ts",
+      "log": "output/reducibility/checks.log",
+      "passed": 37,
+      "failed": 0,
+      "newChecks": 4
+    },
+    "unit": {
+      "command": "npm test",
+      "log": "output/reducibility/unit.log",
+      "passed": 484,
+      "failed": 0
+    },
+    "documentation": {
+      "productionAndHarnessBuilds": true,
+      "log": "output/reducibility/build.log",
+      "browserLog": "output/reducibility/browser.log",
+      "browserPassed": 3,
+      "widths": [1440, 390]
+    },
+    "strictTypes": true,
+    "format": true,
+    "localLinks": true,
+    "productionSourceChanged": false,
+    "fullBrowserAndQualityRerun": false
+  },
+  "behavioralEvidence": [
+    "Promotion preserves one resource/entity identity, reference target/history and scoped external input meaning.",
+    "Different passages retain separate link identities on the same source/target pair.",
+    "Plain accepted text and generic receipt outcome produce no applicability review.",
+    "Stale review token rejects without any export change; accepted changed review retains drift and the exact captured comparison.",
+    "Explicit external source change retires earlier review applicability; missing source prevents acceptance without writes.",
+    "Observations, receipts and reviews reject direct storage update/delete through the same immutable mechanism and do not allocate native revisions.",
+    "A selected configuration and a baseline retain exact older states while current records change; a saved live recipe does not pin native states."
+  ],
+  "verificationHistory": [
+    "Initial comparison-shape assertion included absent keys as explicit undefined. Corrected fixture assertion destructures derived response fields before comparing the stored comparison; no product behavior changed."
+  ],
+  "candidateFiles": [
+    {
+      "path": "test/primitive-reducibility.test.ts",
+      "sha256": "718c74491c5a2f80b67cd5b33091a66efb803cb38033f2f811b8e8c7b6a91ff2"
+    },
+    {
+      "path": "test/evidence-cycle-fixture.ts",
+      "sha256": "43f03cc6580b8785a79e60251dc08a79c0c5c1bb553701676c3bba337390c6bf"
+    },
+    {
+      "path": "test/reference-primitives.test.ts",
+      "sha256": "ddfb3681d7573e608b8e834d3f8c0e91d450779424515196e12f0d0ef714e8bd"
+    },
+    {
+      "path": "test/requirement-evidence-cycle.test.ts",
+      "sha256": "bef423f2a1574e56ee33b861604d995c5c34ba49fc94e82e509bdfd1ad44bed2"
+    },
+    {
+      "path": "test/evidence.test.ts",
+      "sha256": "aaa1171f2e097d5faab8ecc25041d3c94f52edf5a7ed317b4ed629b3335fdf9a"
+    },
+    {
+      "path": "test/baselines.test.ts",
+      "sha256": "5da71e0eaf13d41e519efb9b6f3f966d03c495b9df9a767e8fcc95a28e694fc2"
+    },
+    {
+      "path": "test/configurations.test.ts",
+      "sha256": "1ba8196443cadffacb764f329e32bc3ae68f8bb26f116d60c065d528d7278402"
+    },
+    {
+      "path": "test/repository-contract.ts",
+      "sha256": "973cedb29ef786388013c3464fd35d1ad20d75415529af9fd84bb3772fbb046d"
+    },
+    {
+      "path": "test/sqlite-repository-contract.test.ts",
+      "sha256": "6a0c3f5b48418ecbd034a0a6ac9f6a37d4046b0ee582bd86c7b49efab1118ed3"
+    },
+    {
+      "path": "src/core/model.ts",
+      "sha256": "0108213c16aeae4dc783e18294b75952e3a86c22f305280e29e03f8a95c58aab"
+    },
+    {
+      "path": "src/core/evidence.ts",
+      "sha256": "f90c4efe1217d236f321eec85056ce2b43b22787c6f8d6e25fda71eba168d619"
+    },
+    {
+      "path": "src/core/references.ts",
+      "sha256": "12c0fb215579247d963dc7d2454b74484af29d6af12bd1979cf7e45096519456"
+    },
+    {
+      "path": "src/core/configuration.ts",
+      "sha256": "85f6baacad49ab0ab3b8fa288e817252e1ca2e15e74f340126d43aefb83d17f4"
+    },
+    {
+      "path": "src/core/baseline.ts",
+      "sha256": "948c11c72382f0edd9facd553cb5d79c17d203b3af5c36920642b3de9ab13d23"
+    },
+    {
+      "path": "src/core/presentation.ts",
+      "sha256": "794c836733a06e6ac4d5917272ac68d74febe3255fbb1316b3e4c0fb8142332b"
+    },
+    {
+      "path": "src/application/reference-command.ts",
+      "sha256": "13d871c321555b5cd451c34631d1c2f4708c5599577537319dc05b51103f801f"
+    },
+    {
+      "path": "src/application/evidence.ts",
+      "sha256": "6211d53d38ac5aea85a9d4e5621fcfb9fc074550c18833ee47688be34b7c5080"
+    },
+    {
+      "path": "src/application/receipt-comparison.ts",
+      "sha256": "a252ea054f90da35cfb31d6a30ae943ee8195f671c0c43fddf85e0b52dd309c3"
+    },
+    {
+      "path": "src/application/ports/repository.ts",
+      "sha256": "f9d2245ca6c4e08cea8a3fb8c5eaeb8e50d7554e60cd7de742a6f7bcd801e358"
+    },
+    {
+      "path": "src/persistence/migrations.ts",
+      "sha256": "4b9d54b41522ae535f7402309d58d1b3138ff854cfc0edbf07f878087228a6ce"
+    },
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "f11f8d61571e003d170f400e2f1cee0b9db8bfe82a5096e1f0dee19cae86941a"
+    }
+  ],
+  "owningDocumentation": [
+    {
+      "path": "docs/architecture.md",
+      "sha256": "1d000acd0a27aa9a9b26f8a800c2c45d27f020d0663618971a8df23e2ccd99a9"
+    },
+    {
+      "path": "docs/workspace-guide.md",
+      "sha256": "89a9ebad953eb92b901c77b08e2931832915b08da54b5de280ecc6b1b68d1690"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "f3f7784e65e866ebe6376d4f6549d4d9a20004ef6e24cc968b939130f4afaf70"
+    },
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "13d518aa90b5e923d3f3134d0053fb218397fb32571c1d04116cc91ade6bdc21"
+    }
+  ],
+  "limits": [
+    "Finite contract audit, not a mathematical proof of globally optimal/minimal primitives.",
+    "Current API substitution failures do not establish fundamental irreducibility. A generalized assessment representation is a conceptual alternative, not a verified replacement implementation.",
+    "No runtime, wire, storage format, historical payload, native identity or product requirement acceptance changed.",
+    "No standards conformity, representative-user validation, other-backend parity or authenticated team-readiness claim.",
+    "Complete application-model work remains pending under the active goal; primitive audit completion does not close that larger objective."
+  ],
+  "nextBoundary": "Application-model work may now distinguish structural objects/history, capabilities and specialized capture services. It must preserve those guarantees and use concrete semantic/composition gaps to justify changes; do not implement a generic assessment engine merely to reduce type names."
+}

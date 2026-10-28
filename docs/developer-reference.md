@@ -113,6 +113,10 @@ One SQLite repository represents one project. Its parent directory must exist. R
 
 Use `Tracer.applyChangeset` for an atomic group of application changes. Inside a low-level repository callback, call the supplied transaction handle rather than another `Tracer` or repository transaction on that same instance; a nested call now rejects with `storage` instead of waiting for itself. Independent callers continue to queue. Drain operations before close; later calls reject with `storage`, and reopening requires a new repository instance. The shared adapter suite checks rollback, transaction lifetime, command outcomes, queue recovery and closed-handle behavior. These contracts keep adapter changes separate from engineering semantics; they do not establish another backend's parity or multi-user throughput.
 
+Evidence reads infer their payload type from the kind: `tx.getEvidence("receipt", id)` returns `Receipt | undefined`, and `tx.evidence("review", query)` returns `Page<Review>`. Appends keep the existing three arguments but require a correlated kind/payload tuple; independently union-typed kind and payload variables are insufficient. Use a correlated `EvidenceAppend` value when forwarding heterogeneous entries. This is a trusted TypeScript boundary; public request decoders and capture/review service guards still validate runtime input.
+
+Every adapter registration through `repositoryContract` also runs the portable evidence suite. Its fixture supplies a fresh persisted project, a `reopen()` method returning a new repository for that same project, and cleanup. Shared checks cover immutable/duplicate captures, read/input alias protection, exact capture/history/schema after edits and deletion, scoped review applicability, kind/subject paging and native/evidence/index/command rollback. See [guarantee ownership and checks](architecture.md#primitive-guarantee-ownership-and-executable-checks). SQLite currently supplies the executed registration; another provider must run these checks before parity is claimed.
+
 ### API map
 
 | Task                                               | Service entry point                                                                                         | Contract/source                                                                                                 |
@@ -416,6 +420,8 @@ For actual verification, declare the product candidate, requirement/criteria, ch
 
 ## Offline evaluation workflow
 
+Receipts and applicability reviews are specialized immutable capture protocols, not separate peer primitives. `recordReceipt` captures an execution/analysis against declared native/content/relationship inputs; `review` captures a judgment about a receipt comparison and checks its token atomically. The existing receipt API cannot target a comparison in place of `review`. See the [primitive reducibility audit](architecture.md#primitive-reducibility-audit) for the conceptual reduction and preserved contracts.
+
 Open **Evaluations** after creating your native requirement, artifact and output entities and links. Bind each artifact to a stable external ID (`git` or `file`, external ownership), then explicitly observe its local content. Create a receipt with an outcome and declared native/entity or external/observation inputs. Change an input, record a new observation for external sources, and compare the affected receipt. Record an accepted, acknowledged or needs-reevaluation decision with rationale.
 
 - Git reads **one committed file**, resolving a local ref to a commit; uncommitted working-tree edits are not observed. Local files use SHA-256. Paths are locators, not identity.
@@ -492,6 +498,49 @@ Individual native writes require the observed `--schema-version`; edits also req
 
 Keys are unique across active project entities, case-sensitive. Lowercase UUID identity is permanent, even after deletion. Entity removal rejects active links unless the optional `cascade` argument is explicitly supplied; cascade records every incident link and entity tombstone together.
 
+## Atomic evaluation operations
+
+Use `tracer.evaluations.commit(command, provenance)` when native project updates and one execution/analysis receipt must succeed together. Separate `applyChangeset` and `evidence.recordReceipt` calls remain separate transactions. Project schema and captured roles define engineering meaning; the operation does not execute tests or infer verification status.
+
+```ts
+const result = await tracer.evaluations.commit(
+  {
+    commandId: "power-analysis-001",
+    expectedSchemaVersion: schema.version,
+    expectedProjectRevision: capturedHead,
+    operations: [],
+    receipt: {
+      outputId: existingAnalysisId,
+      outcome: "Measured power meets the stated criterion under the recorded conditions",
+      inputs: [
+        {
+          entityId: requirementId,
+          facet: "native",
+          revision: criterionRevision,
+          fields: ["statement"],
+          role: "acceptance criterion",
+        },
+        {
+          entityId: reportId,
+          facet: "content",
+          observationId: reportObservation.id,
+          role: "measured result",
+        },
+      ],
+    },
+  },
+  provenance,
+);
+```
+
+Identifiers/versions in this fragment are captured by the caller. Observe external material beforehand with the normal observer; commit performs no file/Git IO. For new objects, supply unused UUIDs in native create operations and reference those UUIDs in the receipt. Zero operations produce `native: null` and allocate no native revision. Up to 1,000 operations plus the receipt commit together, using existing native guards and receipt limits (100 declarations). Invalid edits, guards or capture state roll back the whole operation, including indexes and the successful-command identity.
+
+Persist the command ID and exact request. `evaluations.getOutcome(commandId)` returns the original `{ commandId, native, receipt }` or null. An exact repeat, including trusted provenance, returns the original result before current guards even after restart or later edits/deletion. Reusing the ID with changed intent conflicts. A rejection reserves no success. Null means no visible committed success; an in-flight request may still commit. Inspect explicitly after an unknown transport outcome and never automatically retry with a new ID. Native changeset and evaluation command IDs have separate project-scoped namespaces.
+
+CLI uses the same service: `evaluation commit JSON` and `evaluation outcome COMMAND_ID`. HTTP uses `POST /api/evaluation-commands` and `GET /api/evaluation-outcome?commandId=...`. Check `atomic-evaluation-commands` through capabilities and call `client.connect()` for a local session before writes. Typed client `write`/`read` use these same route names and validate response identity; malformed or interrupted write responses remain `outcome_unknown`. Trusted host configuration supplies provenance, so HTTP bodies cannot supply actors.
+
+The immutable outcome ledger is operational data excluded from recorded-project JSON; SQLite backup retains both native and evaluation command recovery. Physical format 11 adds this ledger without rewriting earlier payloads. Existing receipt/native APIs remain available. [Application-model contracts](architecture.md#engineering-application-model) and the cross-domain executable tests define guarantees and current exclusions; a receipt outcome, structural coverage, freshness and applicability review remain independent.
+
 ## Atomic changesets
 
 Single-object commands use the same changeset path as batches:
@@ -538,7 +587,7 @@ Malformed coverage/impact cursors fail validation before stale checks. Valid sta
 
 Identity/type/key/version and link endpoints are indexed relational columns; configurable fields and immutable snapshots use JSON. Permanent identities prevent reuse; foreign keys prevent dangling active links.
 
-Physical format **10** is independent of user-schema version. Supported formats 1–9 migrate transactionally on open, preserving native/evidence history, configurations, baselines and saved views. Unknown formats reject; failures roll back. Older builds cannot reopen unsupported upgraded formats. See [operational boundaries](architecture.md#7-operational-boundaries) and the feature-specific migration contracts.
+Physical format **11** is independent of user-schema version. Supported formats 1–10 migrate transactionally on open, preserving native/evidence history, configurations, baselines and saved views. Unknown formats reject; failures roll back. Older builds cannot reopen unsupported upgraded formats. See [operational boundaries](architecture.md#7-operational-boundaries) and the feature-specific migration contracts.
 
 Back up a closed database or use SQLite-aware tooling; copying only a live WAL main file is unsafe. Await outstanding work before closing. Transactions serialize per repository; competing connections may return `busy`, and the synchronous driver blocks the event loop.
 

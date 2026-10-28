@@ -1,0 +1,372 @@
+{
+  "date": "2026-10-27",
+  "workItem": "WORK-023",
+  "requirement": "REQ-031",
+  "verificationPlan": "VER-031",
+  "result": "passed",
+  "scope": "Local engineering application model over audited entity/link/history/capture protocols. Atomic native proposal plus execution/analysis receipt and durable family-scoped recovery shared by core/HTTP/client/CLI. No new engineering primitive or universal lifecycle.",
+  "criteria": [
+    {
+      "criterion": "AC-1",
+      "guarantee": "Atomic native proposal and receipt; full rejection rollback and reusable identity",
+      "checks": [
+        "test/assessment-composition.test.ts",
+        "test/repository-evaluation-contract.ts",
+        "test/evaluation-command.test.ts"
+      ],
+      "result": "passed"
+    },
+    {
+      "criterion": "AC-2",
+      "guarantee": "Exact native/content/link capture; explicit roles and trusted provenance; no observer IO during commit",
+      "checks": [
+        "test/evaluation-model.test.ts",
+        "test/repository-evaluation-contract.ts",
+        "test/evaluation-interfaces.test.ts"
+      ],
+      "result": "passed"
+    },
+    {
+      "criterion": "AC-3",
+      "guarantee": "Exact repeat and lookup across reopen/later edits; changed intent/provenance conflict; response loss and contention",
+      "checks": [
+        "test/repository-evaluation-contract.ts",
+        "test/evaluation-command.test.ts",
+        "test/evaluation-interfaces.test.ts"
+      ],
+      "result": "passed"
+    },
+    {
+      "criterion": "AC-4",
+      "guarantee": "Receipt-only no native revision; old table/payload/outcome preservation, immutable new ledger",
+      "checks": ["test/evaluation-migration.test.ts", "test/repository-evaluation-contract.ts"],
+      "result": "passed"
+    },
+    {
+      "criterion": "AC-5",
+      "guarantee": "Actual typed headless HTTP/session/client and CLI share validation/recovery and advertised feature",
+      "checks": [
+        "test/evaluation-interfaces.test.ts",
+        "test/api-capabilities.test.ts",
+        "test/api-client.test.ts",
+        "test/architecture-constraints.test.ts"
+      ],
+      "result": "passed"
+    },
+    {
+      "criterion": "AC-6",
+      "guarantee": "Two schemas/vocabularies share the operation; bounded coverage/impact retain scope, unknown state and independent review/outcome",
+      "checks": ["test/evaluation-model.test.ts"],
+      "result": "passed"
+    }
+  ],
+  "applicationModel": {
+    "composition": "evaluations.commit snapshots invocation intent and trusted provenance, checks immutable prior success before live guards, shares transaction-local native and receipt handlers, and appends the exact result in the same repository transaction.",
+    "recovery": "evaluations.getOutcome and exact repeat recover the original success without automatic retry. Changed intent/provenance conflicts. Rejected operations reserve no success. Null is not proof of in-flight failure.",
+    "storage": "Physical format 11 adds immutable evaluation_commands with receipt foreign key; native and evaluation IDs use separate project/family namespaces. SQLite backup retains ledgers, recorded-project JSON excludes them.",
+    "projectSemantics": "Engineering requirement/build/test_plan/test_run/verification_summary and research hypothesis/cohort/analysis_method/analysis_run/finding use distinct configured fields and connections; generic services retain explicit roles, captured states and scope.",
+    "bounds": "0–1000 native operations and existing receipt maximum of 100 total declarations; native/value and HTTP body guards unchanged. Outcome lookup selects one exact command. Coverage/impact keep page/population/work bounds and explicit cursor invalidation; no latency or arbitrary-scale claim."
+  },
+  "goalAudit": [
+    {
+      "obligation": "Critically review primitive identity/lifecycle/reducibility",
+      "evidence": "primitive-reducibility-audit.json; architecture primitive-reducibility-audit; four executed reduction checks. Resources/references specialize entities/links; review is a specialized assessment, not a peer structural primitive."
+    },
+    {
+      "obligation": "Own essential guarantees and typed storage boundaries",
+      "evidence": "evidence-contract-verification.json; architecture guarantee-owner mapping; correlated EvidenceAppend and kind-derived reads; 21 portable checks registered against SQLite."
+    },
+    {
+      "obligation": "Separate shared services from configurable project meaning",
+      "evidence": "architecture engineering-application-model responsibility table; evaluation-model tests execute two distinct schemas without domain-specific branches."
+    },
+    {
+      "obligation": "Cross-primitive invariants, transaction/concurrency/recovery",
+      "evidence": "REQ-031 AC-1–5; exact same-transaction native/capture/index/outcome; invalid full-export equality, queue contention, real independent connections, response loss/restart and explicit recovery."
+    },
+    {
+      "obligation": "Bounded queries/projections shared by clients",
+      "evidence": "Existing coverage/impact/working-context guards retained; AC-6 exercises page-only summaries, cursors, selected scope, independent changed/unknown flags and stale review rejection."
+    },
+    {
+      "obligation": "Preserve identities/history/evidence/compatibility",
+      "evidence": "All prior-table rows equal during format 10→11 rehearsal and live migration; full regression and migration tests; historical phase reports/receipts retained without rewriting."
+    },
+    {
+      "obligation": "Executable representative headless operations",
+      "evidence": "Engineering verification and research analysis simulations; actual typed headless HTTP and CLI process checks. Fixtures do not claim physical engineering execution or participant validation."
+    },
+    {
+      "obligation": "Owning documentation and register with scoped evidence",
+      "evidence": "Architecture/developer/API/README/checkpoint updates; REQ-031/VER-031/WORK-023 candidate-specific completion and immutable result, followed by deterministic export and SQLite backup."
+    }
+  ],
+  "execution": {
+    "full": {
+      "command": "npm run check",
+      "unit": 503,
+      "browser": 196,
+      "workbenchCaptures": 18,
+      "format": true,
+      "types": true,
+      "lint": true,
+      "builds": true,
+      "quality": false,
+      "stoppedAt": "unused exports after receipt validator sharing; follow-up also identified migration cognitive complexity"
+    },
+    "finalUnit": {
+      "passed": 503,
+      "reason": "Final validator export cleanup, shared portable reopen assertions and legacy-migration helper extraction; reran all unit tests without clearing browser coverage."
+    },
+    "finalInterfaceFollowUp": {
+      "passed": 15
+    },
+    "finalQuality": {
+      "passed": true,
+      "log": "quality-final-2.log"
+    },
+    "compilerFollowUp": {
+      "passed": 3,
+      "reason": "Added positive and negative evaluation request/result type probes after full unit phase; no production behavior change."
+    },
+    "focused": {
+      "passed": 9
+    },
+    "documentationFollowUp": {
+      "passed": 3,
+      "reason": "Rebuild and rerun documentation routes after final owning-doc edits."
+    },
+    "thresholdsOrExclusionsChanged": false
+  },
+  "migration": {
+    "sourcePath": "projects/tracer/backups/register-2026-10-27-before-evaluation.sqlite",
+    "destination": "output/application-model/final-migration-rehearsal.sqlite",
+    "sourceFormat": 10,
+    "targetFormat": 11,
+    "nativeRevision": 47,
+    "schemaVersion": 5,
+    "oldTableCount": 14,
+    "preservedRows": 4299,
+    "allExistingTableRowsIdentical": true,
+    "newEvaluationCommands": 0
+  },
+  "logHashes": {
+    "full-check.log": "17f131b3f029270236cd1e8a7b42299c9cad192b283c7fb9e809f4e6e1abb1bd",
+    "compiler-final.log": "a53cbb1ccef1d9c390600ab2bde50526282af11105592c1e0b4eb668edfa0dab",
+    "evaluation-focused.log": "e140f58bd711d0b353054e02a784c97571cb7cf804c040fd9af76586afc97539",
+    "migration-rehearsal.json": "5e524faee3271af027450431f2cfe013bda94e4290e0823ad318a8ee330c362f",
+    "live-migration-rehearsal.json": "b49575df317ccd03f27e2734ce2a35ef303bb5e5a20a7e6335b34007e199b049",
+    "live-preservation.log": "6da14ab90b45055cc637ee738f60b7d44846663807dda325a04c473bd45f683f",
+    "final-gates.log": "724e4015837f7d877fa6c215c9646e36260ae93a4a75603162513c85e964b5fe",
+    "documentation-final.log": "0375605bfbc10a97b29ebc4293cb3d590f4d543c96ef248764857feb5ef46043",
+    "final-unit.log": "1acbfdadd8e59c59517ba7ba0718350801e7ce61e9f9da4cdb8cb7f1df87e5c9",
+    "final-interfaces.log": "6c49af0bcdcb82061a149f72fe28721ad53ddda11e2ce9af504f8c6a8ad60771",
+    "final-types.log": "5e600a6c437263e35717d543f878a429e3b92d338d2cbee585a8a9574d6656d3",
+    "quality-final-2.log": "20473f3267c0da10e98b5c5c36bc2d6de93934260eebdf1d9128e7d152d973a1"
+  },
+  "candidateFiles": [
+    {
+      "path": "src/application/evaluations.ts",
+      "sha256": "76c4582abf0a0162157345a6b130bf6aa1f334313887ae859078a904492aa6d8"
+    },
+    {
+      "path": "src/application/receipt-capture.ts",
+      "sha256": "06ee2ab46cefd12f8ef01344aece2b2a9e5488117b835e2677e8478765580131"
+    },
+    {
+      "path": "src/application/evidence-validation.ts",
+      "sha256": "813176a91406aa51fcce336dd9b0bd66ffa64c531db75a56d330001c15ae3f66"
+    },
+    {
+      "path": "src/application/evidence.ts",
+      "sha256": "a6f370d04aa69a41657ed273f98a733d7b6aca6186739c244429d1b0e64f124d"
+    },
+    {
+      "path": "src/application/service.ts",
+      "sha256": "96801ffc4e128e2d5dde057a4779e34bec5b01a0cf3b0bb8b8ccbc068b2ddd9a"
+    },
+    {
+      "path": "src/application/ports/repository.ts",
+      "sha256": "af72fc433cca58dea0540d5c56609b97dbceaeb805f58d0ba2508760bcdfee77"
+    },
+    {
+      "path": "src/core/evaluation-command.ts",
+      "sha256": "1e147ae5fe3df047c347354b18ca9d4876db1305d161ada73f6b3baab5e31ce5"
+    },
+    {
+      "path": "src/core/evidence.ts",
+      "sha256": "1850548f804fd61f597c82408da45f740c986796e92514cdcb7640ccbb1845bc"
+    },
+    {
+      "path": "src/index.ts",
+      "sha256": "0b80c7fce4ea53874e036721865707c49876eec809139f1d586da6022d589508"
+    },
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "4ca38a25f3064359852e1f83684d1742870f6191cea7ee3785f6e3909ba32bc0"
+    },
+    {
+      "path": "src/persistence/migrations.ts",
+      "sha256": "78b5e0a03ba8571b08dca5aea94ed7ad0d905e5ed8e852e54324e59863ff023a"
+    },
+    {
+      "path": "src/interfaces/api/evaluations.ts",
+      "sha256": "97d4038a9d16bcf56be20751fbea70b37baef884d2b3c5c01a786d67a28cb2ca"
+    },
+    {
+      "path": "src/interfaces/api/input.ts",
+      "sha256": "bfc76dd391024d9370443e886bc2bb59f1fa21ac65e37c301220c69fdce8b9a1"
+    },
+    {
+      "path": "src/interfaces/api/evidence.ts",
+      "sha256": "a813f8235a8b95567f87c101e021fdea2f10daf5efa0d6de2d7b3859406e77ca"
+    },
+    {
+      "path": "src/interfaces/api/native.ts",
+      "sha256": "7c3748a159d1bb045b7e871840f2215e3d67353e4325b6d42e4fe3dc6505c202"
+    },
+    {
+      "path": "src/interfaces/api/definition.ts",
+      "sha256": "08b4b317761ad577f66075d43397ef20919b0d373548fffa7e2449059004ac10"
+    },
+    {
+      "path": "src/interfaces/api-models.ts",
+      "sha256": "2b4f7c1fba2f5cc70a3b0bc2f20a65590aa362ece8c5cf4dd475303aaab0eb56"
+    },
+    {
+      "path": "src/interfaces/api-endpoints.ts",
+      "sha256": "e9ff6e799a8245b12a9f05d6c07a29c5a8b5f5cb023ee773154a5a3eacf25b12"
+    },
+    {
+      "path": "src/interfaces/api-contract.ts",
+      "sha256": "82662e305bad3a8f475dc19bd9a9aa2f40225d248b6f3100fe461cf8c1b9d632"
+    },
+    {
+      "path": "src/client.ts",
+      "sha256": "3e23e467ae43bf96a592147ccb06248d1b8c3031a0d27290e7efb39324b99711"
+    },
+    {
+      "path": "src/interfaces/cli-data.ts",
+      "sha256": "e124a3c379d28fd25a80c25f9d884dc24dd92fe2c693e095a0e28652dc046124"
+    },
+    {
+      "path": "src/interfaces/cli-help.ts",
+      "sha256": "839955f76504e10472829b3a9f97e881d72e7879f51d756c3e05d3e18d22a102"
+    },
+    {
+      "path": "ui/reconcile-mutation.ts",
+      "sha256": "c89410c501518b24f1c493ee3c0204336eb9b9269171f46a23b36a90288f9b81"
+    },
+    {
+      "path": "test/assessment-composition.test.ts",
+      "sha256": "27cff656e631efe76911a76fa1598f1921494575f6825fbb19d640bd77abc49b"
+    },
+    {
+      "path": "test/evaluation-fixture.ts",
+      "sha256": "ec0d677fa8efd799a0ca338244be48d51a76b08fe2ab0f85119057c215668c9a"
+    },
+    {
+      "path": "test/evaluation-command.test.ts",
+      "sha256": "bdb734befbc3f309a01576df17a29a39b1f1d7f41c85dd554eff4ce883cba1eb"
+    },
+    {
+      "path": "test/evaluation-interfaces.test.ts",
+      "sha256": "a7f88f923dd31ce12b94e26d70798a64805bce709516d18ed1094a3b8946b725"
+    },
+    {
+      "path": "test/evaluation-migration.test.ts",
+      "sha256": "ea2401c9a72e40c5323923cac671d630ed1917c0cba7a967fb18542f3be8e3a9"
+    },
+    {
+      "path": "test/evaluation-model.test.ts",
+      "sha256": "383468dee56f90d91eb2cd2c3a2479a6983ad56cd35854fa75ede72bf6370e39"
+    },
+    {
+      "path": "test/repository-evaluation-contract.ts",
+      "sha256": "8aca723657e58c2752b53791de60f90c3d91e3a603cb380cb83b878b6866b745"
+    },
+    {
+      "path": "test/repository-contract.ts",
+      "sha256": "d2d8798a901246517c430ae3777131eb7d7ed7189941d118b6be3f200628c878"
+    },
+    {
+      "path": "test/architecture-constraints.test.ts",
+      "sha256": "a541b0ae086f099a17c728bb9c7d2f1013b700873467beee6fb13aa516cec0c5"
+    },
+    {
+      "path": "test/api-capabilities.test.ts",
+      "sha256": "ae09fb271edb75234a3771968141bbb7d9dd58cd83779d7d03a573d644559df1"
+    },
+    {
+      "path": "test/api-client.test.ts",
+      "sha256": "2549fa25fea3d16dc4c55417c74e27805067ec1f6c65386ae405bf1cb2ebce3c"
+    },
+    {
+      "path": "test/sqlite-repository-contract.test.ts",
+      "sha256": "d82a283c2383a9179daf3b47a0321f327031838188abc617798ab1bf1131aff4"
+    },
+    {
+      "path": "test/configurations.test.ts",
+      "sha256": "46a4c4021145a1362840e00d3a2339cb4be525a0afade99a4aa3c396ebf9a68d"
+    },
+    {
+      "path": "test/coverage-storage.test.ts",
+      "sha256": "e0e381bf62954508ec8032fcdfaba82eeb84d6f6edbce824763ea8535fa94fac"
+    },
+    {
+      "path": "test/impact-storage.test.ts",
+      "sha256": "6ed9bcade3102854ee2a11301dbd4af025be0320ab30f942ada4768ee5ad401b"
+    },
+    {
+      "path": "test/evidence.test.ts",
+      "sha256": "e78e5c3ca8482826ef492dedfa7c4c44131cf08fd90c014119d6b8edac536c6c"
+    },
+    {
+      "path": "test/changeset-outcomes.test.ts",
+      "sha256": "eb193e9545c026934d793ea2641d4c8f9189940f692839ca0c2a031837dcc8e4"
+    },
+    {
+      "path": "test/saved-views.test.ts",
+      "sha256": "86ac85f8c1e6eb7e5000b23166fb6ec23d9d53a19f5633acd9b7256f9ab80d78"
+    },
+    {
+      "path": "test/baselines.test.ts",
+      "sha256": "c31b0d2be48605773a626b1af286d86f3245ffdf9750424db29b4659a724c019"
+    }
+  ],
+  "owningDocumentation": [
+    {
+      "path": "README.md",
+      "sha256": "c9efbbf4361666f0b6e0ef0b378a343d362944a1def00abb3f0bdf5d56e02335"
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "3540cb147a49aa132b2efe7dd9a4b7346f3130b05004f3a3c16f6b7ba5a0f136"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "5198ac5e03405cc144b6d9609286ef665af8f888b25ac26a0df880f37d9b4c46"
+    },
+    {
+      "path": "docs/api-reference.md",
+      "sha256": "98a604c568ed71df620c5b83d6e4f6687faaa1fe111a2a76578b61d7dfea46a6"
+    },
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "3242cbd2a883b3ef2fd6a8fc8daa25f8b7328bdb0f7dfbff2838b974f143d963"
+    },
+    {
+      "path": "projects/tracer/README.md",
+      "sha256": "020673064300015053148672ba6c26044acee74e64219ffa51a8eb7e7f9e1d20"
+    }
+  ],
+  "limits": [
+    "SQLite is the only executed adapter; no authenticated team/deployment/second-backend certification.",
+    "Simulated engineering/research data establish application behavior, not actual test execution, industry compliance or participant validation.",
+    "External observations capture identity/hash/revision metadata, not source bytes or automatic passage relevance/reanchoring.",
+    "No generic assessment API, receipt/review schema merger or universal verification/approval lifecycle.",
+    "No dedicated evaluation authoring UI added; shared typed transport and recovery are available to presentation callers.",
+    "Reopen and interrupted-response checks are not process-kill/power-loss or distributed-consensus proof.",
+    "Current operation/query bounds are explicit local contracts, not arbitrary-scale performance guarantees."
+  ]
+}

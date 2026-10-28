@@ -70,7 +70,7 @@ The [product vision](docs/user-needs.md#product-vision) describes the broader di
 
 ## Use the headless core
 
-Import `Tracer` from `@tracer-local/core` and `SQLiteRepository` from `@tracer-local/core/sqlite`, or use the CLI/local HTTP API. The [API guide](docs/developer-reference.md#use-the-headless-core) covers commands, guards, paging, errors and sessions. The API ships as source; no npm SDK is published.
+Import `Tracer` from `@tracer-local/core` and `SQLiteRepository` from `@tracer-local/core/sqlite`, or use the CLI/local HTTP API. The [API guide](docs/developer-reference.md#use-the-headless-core) covers commands, guards, paging, errors and sessions. The API ships as source; no npm SDK is published. For atomic native updates plus an immutable execution/analysis receipt, use [`evaluations.commit`](docs/developer-reference.md#atomic-evaluation-operations), with explicit command recovery shared by core, CLI and HTTP.
 
 To serve the API without a browser or frontend build:
 

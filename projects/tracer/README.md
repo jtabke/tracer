@@ -23,9 +23,9 @@ The [2026-10-21 audit](../../docs/development-model-plan.md) identified mixed gr
 - `goal`: the existing UN-001–005 product direction.
 - `user_need`: PN-01–09, with evidence qualifications and validation status.
 - `story`: ND/SC/Q/R candidate tasks, retaining acceptance examples and uncertainties.
-- `requirement`: REQ-001–030 behavioral obligations, including the selected local primitive slice REQ-027–030, with numbered criteria, capability area and independent status; TR-001–017 are preserved historical summaries.
+- `requirement`: REQ-001–031 behavioral obligations, including the selected local primitive slice REQ-027–030, with numbered criteria, capability area and independent status; TR-001–017 are preserved historical summaries.
 - `component`: COMP-TRACER and its system/subcomponent responsibilities, organized by `part_of` and allocated from requirements.
-- `verification_plan`: VER-001–030 planned methods and expected results against exact acceptance. A plan is not an executed result.
+- `verification_plan`: VER-001–031 planned methods and expected results against exact acceptance. A plan is not an executed result.
 - `work_item`: selected work and proposed next/later actions, with rationale and requirement links.
 - `source`: captured document sections or owner requests, with paths, headings and whole-file SHA-256 hashes where applicable.
 - `artifact`: exact design/source/test/report references. Initial component source references identify ownership boundaries; they do not establish conformance.
@@ -64,7 +64,7 @@ node src/interfaces/cli.ts --db projects/tracer/tracer.sqlite coverage evaluate 
 node src/interfaces/cli.ts --db projects/tracer/tracer.sqlite history '{"limit":10}'
 ```
 
-Use `Tracer.updateEntity` or CLI `entity update` with the captured schema/object versions and an actor/reason. **Fields replace the whole fields object**: preserve unchanged fields explicitly. Use `applyChangeset` for related updates and `expectedProjectRevision` when the proposal depends on the whole captured state. Re-read deliberately after a conflict; never blindly replay an uncertain write. The [developer reference](../../docs/developer-reference.md) documents full commands and recovery semantics.
+Use `Tracer.updateEntity` or CLI `entity update` with the captured schema/object versions and an actor/reason. **Fields replace the whole fields object**: preserve unchanged fields explicitly. Use `evaluations.commit` when related native updates and one immutable execution/analysis receipt must commit and recover together. Use `applyChangeset` for related updates and `expectedProjectRevision` when the proposal depends on the whole captured state. Re-read deliberately after a conflict; never blindly replay an uncertain write. The [developer reference](../../docs/developer-reference.md) documents full commands and recovery semantics.
 
 After a slice: update its scoped requirement/work records, attach exact code/check references and actual results, preserve validation uncertainty, and export the new state. Do not mark an entire need satisfied merely because one requirement passed tests. Native receipts are available for version-pinned results; source records containing old test reports are not receipts from a new execution.
 

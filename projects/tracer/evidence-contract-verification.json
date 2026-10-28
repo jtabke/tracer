@@ -1,0 +1,380 @@
+{
+  "date": "2026-10-26",
+  "workItem": "WORK-022",
+  "result": "passed",
+  "scope": "Hardening selected after the primitive audit: typed evidence kind/payload correlation and adapter-independent immutable capture, exact-state, applicability, paging, reopen and mixed native/evidence rollback contracts. No new primitive, generalized assessment engine, wire/storage migration or application-model implementation.",
+  "changes": {
+    "typedBoundary": "EvidenceByKind is the single kind-to-payload map. EvidenceAppend uses a discriminated tuple union so wrong payloads and unrelated union arguments fail compilation. getEvidence/evidence/latestEvidence and service list infer the selected payload. Literal-kind application casts and export array casts are removed. The HTTP contract re-exports the same map, retaining its import path without a duplicate declaration.",
+    "portableProof": "repositoryContract automatically registers the five portable capture checks alongside thirteen base checks. A factory provides a fresh persisted project, same-project reopen and cleanup. SQLite registration now uses a disposable file rather than an in-memory project. Capture tests contain no SQL/driver/filesystem assumptions and use a deterministic observer.",
+    "runtimeCompatibility": "Existing append call shape, routes, payloads, physical storage and outcome/review semantics remain unchanged. Trusted storage JSON deserialization remains at the adapter boundary; compile-time types do not validate untrusted runtime payloads.",
+    "testFixtures": "Next-work capacity fault injection retains kind-specific result types and still creates the intended overflow. Fake observer hashes use valid SHA-256 syntax; captured native inputs remain explicit."
+  },
+  "guarantees": [
+    {
+      "guarantee": "Schema permissions, typed values and atomic rejection",
+      "owner": "`application/native-validation.ts`, `application/service.ts`",
+      "checks": "`requirement-schema.test.ts`, `requirement-relationships.test.ts`"
+    },
+    {
+      "guarantee": "Stable entity/resource identity, exact external binding and promotion",
+      "owner": "`application/reference-command.ts`, `persistence/sqlite.ts`, `persistence/migrations.ts`",
+      "checks": "`reference-primitives.test.ts`; `primitive-reducibility.test.ts` specialization check"
+    },
+    {
+      "guarantee": "Independent directed/parallel link identity and qualified reference history",
+      "owner": "`application/native-validation.ts`, `application/reference-command.ts`, `application/service.ts`",
+      "checks": "`requirement-relationships.test.ts`, `reference-primitives.test.ts`; portable exact-capture check"
+    },
+    {
+      "guarantee": "Kind/payload correlation and kind-specific reads",
+      "owner": "`core/evidence.ts` (`EvidenceByKind`, `EvidenceAppend`) and repository/service signatures",
+      "checks": "Compiler probes in `architecture-constraints.test.ts`: matching reads/appends compile; wrong payloads, uncorrelated union arguments and false read-type claims reject"
+    },
+    {
+      "guarantee": "Immutable captures, duplicate kind/ID conflict, caller-owned values cannot mutate stored evidence",
+      "owner": "`application/ports/repository.ts`, `persistence/sqlite.ts`, `persistence/migrations.ts`",
+      "checks": "Portable check “evidence kind/subject reads own immutable payloads and duplicate captures never replace,” including reopen"
+    },
+    {
+      "guarantee": "Invocation-time append payload capture",
+      "owner": "`application/ports/repository.ts`, `persistence/sqlite.ts`",
+      "checks": "Portable paging/latest check mutates an append input before awaiting its promise and verifies the original captured bytes"
+    },
+    {
+      "guarantee": "Exact native/content/relationship state and schema persist independently of current edits/deletion",
+      "owner": "`application/evidence.ts`, `application/receipt-inputs.ts`, `application/relationship-inputs.ts`, `application/native-pins.ts` and repository persistence",
+      "checks": "Portable check “exact entity/link/resource captures and native selections survive edits, deletion, schema changes and reopen”"
+    },
+    {
+      "guarantee": "Native state/history, captures, dependency indexes and command outcomes are one rollback/commit boundary",
+      "owner": "`application/ports/repository.ts`, `persistence/sqlite.ts`, `persistence/impact.ts`",
+      "checks": "Portable check “native state, captures, dependency indexes and command outcomes roll back and commit together”: staged reads, rejected prefix, index cleanup, identity reuse and durable reopen"
+    },
+    {
+      "guarantee": "Relevant input scope changes review applicability; unrelated fields and equivalent observations do not",
+      "owner": "`application/receipt-comparison.ts`, `application/evidence.ts`",
+      "checks": "Portable review-applicability check; `evidence.test.ts` and `requirement-evidence-cycle.test.ts`"
+    },
+    {
+      "guarantee": "Stale review and unknown acceptance reject without writes; accepted drift does not rewrite outcome",
+      "owner": "`application/evidence.ts`, `application/ports/repository.ts`",
+      "checks": "Portable review-applicability check: original capture/decision retained, changed/unknown flags separate, review persists after reopen"
+    },
+    {
+      "guarantee": "Observation reads happen outside repository callbacks",
+      "owner": "`application/evidence.ts` observer/append boundary",
+      "checks": "Portable fixture observer acquires an independent repository read; nested transaction rejection would fail the fixture if invoked inside a callback"
+    },
+    {
+      "guarantee": "Kind/subject filtering precedes page limits, continuation exhausts the selected scope, latest means append order",
+      "owner": "`application/ports/repository.ts`, `persistence/sqlite.ts`, `persistence/impact.ts`",
+      "checks": "Portable paging/latest check interleaves subjects and uses a backdated final append; `evidence-indexed-reads.test.ts` and `impact-storage.test.ts` additionally assert SQLite index plans"
+    },
+    {
+      "guarantee": "Selected/mixed-version configuration versus complete native commit baseline",
+      "owner": "`application/configurations.ts`, `application/baselines.ts`, native history",
+      "checks": "Portable exact-capture check plus `configurations.test.ts`, `baselines.test.ts` and primitive reduction scope check"
+    },
+    {
+      "guarantee": "Selectors/pins retain declared meaning; observed bytes and passage relevance remain separate",
+      "owner": "`application/native-validation.ts`, `application/reference-query.ts`, `application/evidence.ts`",
+      "checks": "`reference-primitives.test.ts`, `resource-evidence.test.ts`, `primitive-reducibility.test.ts`"
+    },
+    {
+      "guarantee": "Explicit supersession preserves the old outcome and requires the same output identity",
+      "owner": "`application/evidence.ts`",
+      "checks": "`requirement-evidence-cycle.test.ts`, `changeset-outcomes.test.ts`"
+    },
+    {
+      "guarantee": "Transaction lifetime, guard competition, command recovery, failure usability and shutdown ownership",
+      "owner": "`application/ports/repository.ts`, `persistence/transaction-queue.ts`, `interfaces/local-server.ts`",
+      "checks": "Base `repository-contract.ts`, `changeset-outcomes.test.ts`, `local-server.test.ts`"
+    },
+    {
+      "guarantee": "Views/projections do not become another engineering history or hide exceeded scope",
+      "owner": "`application/graph.ts`, `application/impact.ts`, `application/saved-views.ts`, `core/presentation.ts`",
+      "checks": "`saved-views.test.ts`, `graph.test.ts`, `impact.test.ts`, `native-query-contract.test.ts`"
+    }
+  ],
+  "execution": {
+    "full": {
+      "command": "npm run check",
+      "log": "output/evidence-contracts/full-check.log",
+      "unit": 489,
+      "browser": 196,
+      "workbenchCaptures": 18,
+      "format": true,
+      "types": true,
+      "lint": true,
+      "builds": true,
+      "quality": false,
+      "stoppedAt": "dead-code gate: duplicate EvidenceByKind declaration; resolved and all final gates passed in follow-up"
+    },
+    "finalPortableFollowUp": {
+      "command": "NODE_V8_COVERAGE=.fallow/coverage/captures node --test test/sqlite-repository-contract.test.ts test/architecture-constraints.test.ts test/api-client.test.ts test/working-context-http.test.ts test/api-capabilities.test.ts",
+      "log": "output/evidence-contracts/final-focused.log",
+      "passed": 42,
+      "reason": "Removed an unnecessary gapless evidence-sequence assumption: require exact per-kind committed deltas, unchanged rollback export and a monotonic committed watermark. Also strengthen wrong-kind lookup isolation and complete baseline entity/link scope assertions. No runtime source behavior changed after full-run unit phase."
+    },
+    "finalStrictTypes": {
+      "log": "output/evidence-contracts/final-types.log",
+      "passed": true
+    },
+    "finalGates": {
+      "log": "output/evidence-contracts/final-gates.log",
+      "format": true,
+      "quality": true
+    },
+    "qualityThresholdsOrExclusionsChanged": false
+  },
+  "newSharedChecks": [
+    {
+      "name": "evidence kind/subject reads own immutable payloads and duplicate captures never replace",
+      "scope": "All four kinds; duplicate payload replacement rejection, deep read/return alias protection, subject isolation and identical reopen export."
+    },
+    {
+      "name": "native state, captures, dependency indexes and command outcomes roll back and commit together",
+      "scope": "Own writes readable in transaction; four capture kinds and command result rollback with a native creation; dependency index cleanup and ID reuse; one native commit, exact capture deltas and reopen retention."
+    },
+    {
+      "name": "exact entity/link/resource captures and native selections survive edits, deletion, schema changes and reopen",
+      "scope": "Original criteria, qualified reference, resource observation and governing schema retained after current edits/deletion; configuration and complete baseline remain exact."
+    },
+    {
+      "name": "review applicability follows declared scope, rejects stale/unknown acceptance and survives reopen",
+      "scope": "Unselected annotations/equivalent observations preserve applicability, selected changes retire it, stale/unknown acceptance rolls back, accepted drift persists, review/outcome survive reopen."
+    },
+    {
+      "name": "evidence pages apply kind/subject before limits and latest means append order",
+      "scope": "Interleaved subjects, selected continuation, backdated final append, invocation-time payload ownership and no native revision allocation."
+    }
+  ],
+  "verificationHistory": [
+    "Typed generic reads exposed an uncorrelated next-work overflow mock; changed it to transform only the requested receipt page rather than claim every evidence kind returns receipts.",
+    "Initial synthetic observer hash and selected configuration fixture were corrected to satisfy real observation and endpoint/member guards; optional schema read is asserted before use. No product guard was weakened.",
+    "The full run reached the dead-code gate after 489 unit/196 browser/workbench checks and identified an existing HTTP map with the same name. Replaced the HTTP declaration with a re-export from core; no suppression or duplicated authority remains. Final type/API checks and complete quality gates passed.",
+    "Final portable assertion permits gaps in evidence sequence allocation; exact committed contents and rollback/reopen equality remain required."
+  ],
+  "logHashes": {
+    "full-check.log": "dab4097d4fe10aa1f30d2bf93bab8c16c37b7b090ff21a2d27b6e7d898031fb1",
+    "final-focused.log": "3bfe7d6e752ad72db06fee023415b85e3cb43d980eb4fa5df96a61f695a69aa5",
+    "final-types.log": "5e600a6c437263e35717d543f878a429e3b92d338d2cbee585a8a9574d6656d3",
+    "final-gates.log": "4944741430e570a1deac740f5a326448fc89dbda3a14f9a121c2499d3a6e8761"
+  },
+  "candidateFiles": [
+    {
+      "path": "src/core/evidence.ts",
+      "sha256": "1850548f804fd61f597c82408da45f740c986796e92514cdcb7640ccbb1845bc"
+    },
+    {
+      "path": "src/interfaces/api-contract.ts",
+      "sha256": "82662e305bad3a8f475dc19bd9a9aa2f40225d248b6f3100fe461cf8c1b9d632"
+    },
+    {
+      "path": "src/application/ports/repository.ts",
+      "sha256": "7f522b36e41a656df822bb8e9e6f9f25c66b1051f16501f17bec72c77f21c85f"
+    },
+    {
+      "path": "src/application/evidence.ts",
+      "sha256": "a679540e93d602823a9300faa6e29e0ec910b6ae0bc8aa6ad9daa1215123454d"
+    },
+    {
+      "path": "src/application/receipt-comparison.ts",
+      "sha256": "8d65a0fe944df40d89bff52e2a692967b72cfc801dc821e6b904984b0ea58fb6"
+    },
+    {
+      "path": "src/application/project-export.ts",
+      "sha256": "3efe1bc9bac3e99d2522127e861f574ea9d2150b97947c1523cecc07422ea6a7"
+    },
+    {
+      "path": "src/application/graph.ts",
+      "sha256": "fcf06a0b185be58df109de6fae6773408adf5ec71cecddcd0db66db6ca8e4b64"
+    },
+    {
+      "path": "src/application/native-validation.ts",
+      "sha256": "2cf18a7ef3b29c269b5d5127bf99ab01709ad6b3559c1654d1de3fe30471dc9e"
+    },
+    {
+      "path": "src/application/next-work-evidence.ts",
+      "sha256": "3453050c3c5bead3f5dfda490561c45a7e28c50f865bee39f71473917d5fe067"
+    },
+    {
+      "path": "src/application/reference-command.ts",
+      "sha256": "a9c25c2ee8d6c683642c90c667b49efd554ca8930ec675257fefc91041020d5c"
+    },
+    {
+      "path": "src/application/reference-query.ts",
+      "sha256": "4d0ed1d10aa7005efc8e2236499ee537e58ddd1b9e833c0048f5e55f1dd401b9"
+    },
+    {
+      "path": "src/application/working-context-receipts.ts",
+      "sha256": "d1cbaeaad3383134aa01260dd9640d8d47936c570ea2e98b30cba4d4781f5dc6"
+    },
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "a320734ff8a3cbebaae1c131804e710baeffacb4d74c2acf30352679af7f016a"
+    },
+    {
+      "path": "src/persistence/impact.ts",
+      "sha256": "8b1b51c05d9e4b76d7474ab380f2182fca14c978d9fa40ad2f5358cd79480ce4"
+    },
+    {
+      "path": "test/repository-contract.ts",
+      "sha256": "dde255019904bdbb999556aaa2c86fe6543fbccebdfb3967332af65b14199e7f"
+    },
+    {
+      "path": "test/repository-evidence-contract.ts",
+      "sha256": "8e631c7d7ae231149bf40993e8c523cac1b8622e29d958f5c702475f6d203e4a"
+    },
+    {
+      "path": "test/sqlite-repository-contract.test.ts",
+      "sha256": "d82a283c2383a9179daf3b47a0321f327031838188abc617798ab1bf1131aff4"
+    },
+    {
+      "path": "test/architecture-constraints.test.ts",
+      "sha256": "9824202860e295e319cf721430a9ae4e700b371df3187e6fe1defdb0d02e6f1a"
+    },
+    {
+      "path": "test/next-work.test.ts",
+      "sha256": "1aa8b42dcc21d062fd7053362ac16e317e140501d20947ccf0b806beb841d929"
+    },
+    {
+      "path": "src/application/service.ts",
+      "sha256": "2b5a6b5afe5d5ad6590de30a7b5351c23f7db12bfec2244e659501eb59d0eada"
+    },
+    {
+      "path": "test/requirement-schema.test.ts",
+      "sha256": "17066eb69194cbcf78eff4f04da01b068eb15a7c851e91a93ad925c29193c111"
+    },
+    {
+      "path": "test/requirement-relationships.test.ts",
+      "sha256": "b4ce5eb30447e0cd753db2c2549f0b0b0733e94078696147481a8716cebd5e96"
+    },
+    {
+      "path": "src/persistence/migrations.ts",
+      "sha256": "4b9d54b41522ae535f7402309d58d1b3138ff854cfc0edbf07f878087228a6ce"
+    },
+    {
+      "path": "test/reference-primitives.test.ts",
+      "sha256": "ddfb3681d7573e608b8e834d3f8c0e91d450779424515196e12f0d0ef714e8bd"
+    },
+    {
+      "path": "test/primitive-reducibility.test.ts",
+      "sha256": "718c74491c5a2f80b67cd5b33091a66efb803cb38033f2f811b8e8c7b6a91ff2"
+    },
+    {
+      "path": "src/application/receipt-inputs.ts",
+      "sha256": "3355e36bb3124a524b0e1ed13e50a99577d6078342d8ba8f94d084b6c5426928"
+    },
+    {
+      "path": "src/application/relationship-inputs.ts",
+      "sha256": "b2022457ec85a4f480f88bae1835b8471e8a36b8508f973646962a3bccb5700a"
+    },
+    {
+      "path": "src/application/native-pins.ts",
+      "sha256": "5e20cb163ee66a8b99c5f77534e657d4a13cf1e1159c3ddaf9f78504541e6301"
+    },
+    {
+      "path": "test/evidence.test.ts",
+      "sha256": "aaa1171f2e097d5faab8ecc25041d3c94f52edf5a7ed317b4ed629b3335fdf9a"
+    },
+    {
+      "path": "test/requirement-evidence-cycle.test.ts",
+      "sha256": "bef423f2a1574e56ee33b861604d995c5c34ba49fc94e82e509bdfd1ad44bed2"
+    },
+    {
+      "path": "test/evidence-indexed-reads.test.ts",
+      "sha256": "7c416d63dd0791148080f44a9de8ac80b56c5b4d02e409fb11bd538e7b01e2b9"
+    },
+    {
+      "path": "test/impact-storage.test.ts",
+      "sha256": "fb7c16c09ce4ee272cbbdbf4fbcfb17e651e449d8324863fe07ce4e805df3271"
+    },
+    {
+      "path": "src/application/configurations.ts",
+      "sha256": "1b797051ffb051aac76d54d51cdcc1dd88e5a74a2d2d2ccfe5b8066fbc54e933"
+    },
+    {
+      "path": "src/application/baselines.ts",
+      "sha256": "457e059dbe1bfc7cd16d7f58a780971f6b5974f37a27705db7d4c1e88455349f"
+    },
+    {
+      "path": "test/configurations.test.ts",
+      "sha256": "1ba8196443cadffacb764f329e32bc3ae68f8bb26f116d60c065d528d7278402"
+    },
+    {
+      "path": "test/baselines.test.ts",
+      "sha256": "5da71e0eaf13d41e519efb9b6f3f966d03c495b9df9a767e8fcc95a28e694fc2"
+    },
+    {
+      "path": "test/resource-evidence.test.ts",
+      "sha256": "e1ed9e6c81e7767e4aacc8052adbae969efc0754f8c6ef3bc175676a03b1c062"
+    },
+    {
+      "path": "test/changeset-outcomes.test.ts",
+      "sha256": "bfaa0e68faae32933cca0b68aeccda92f5ce44230c8ad6d454920562f6554386"
+    },
+    {
+      "path": "src/persistence/transaction-queue.ts",
+      "sha256": "dff3b46c59a9c0c1de96bfbd091d3cb60bc10a86fa79bad5a03c93ee37f878c9"
+    },
+    {
+      "path": "src/interfaces/local-server.ts",
+      "sha256": "891e9d297bd6f5158fface197215cc6072a476173a179391ddd2a340f49fc574"
+    },
+    {
+      "path": "test/local-server.test.ts",
+      "sha256": "5bded858a28e6ef666ede70f576a6818ff136deee119e3c2691961178cac7743"
+    },
+    {
+      "path": "src/application/impact.ts",
+      "sha256": "e9e2046412e7b332116e88382652f87f96beb913b44703dadc075a8e305f491b"
+    },
+    {
+      "path": "src/application/saved-views.ts",
+      "sha256": "e1aea3bdf3532103e3d0d31a1a042c922956b6066015376b43a21cdeef11d0c3"
+    },
+    {
+      "path": "src/core/presentation.ts",
+      "sha256": "794c836733a06e6ac4d5917272ac68d74febe3255fbb1316b3e4c0fb8142332b"
+    },
+    {
+      "path": "test/saved-views.test.ts",
+      "sha256": "93f618039bbd04b1eb92a3fec94aa5027cb780437403de69190e2da9f788716d"
+    },
+    {
+      "path": "test/graph.test.ts",
+      "sha256": "5718f9d6ed045a315f4cbf479a29d403cccdfeaa7210015da0e002a09f83565f"
+    },
+    {
+      "path": "test/impact.test.ts",
+      "sha256": "22e6b94ae893e03a0b415e724aa2004ca482a7522d99f99682a42529baa4fe16"
+    },
+    {
+      "path": "test/native-query-contract.test.ts",
+      "sha256": "8c0d0421e4c80388e0e2f5e0a4b3c9e4ea3f312560da63fd762f452db82c4acd"
+    }
+  ],
+  "owningDocumentation": [
+    {
+      "path": "docs/architecture.md",
+      "sha256": "f3b4e11a871c784bf950e9428f593a1034df096ddc4a1e2f14253d24ffc7ff98"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "cd9cb6233bb559695039cfef1a81aa9ae9a459591cd4f6ca238f2c68b5643a8f"
+    },
+    {
+      "path": "docs/checkpoint.md",
+      "sha256": "16b575e748836ad1910fdf49202578db07527108ee72e089e8f902688b30550c"
+    }
+  ],
+  "limits": [
+    "Only SQLite has executed this portable registration; no PostgreSQL or authenticated-team parity claim.",
+    "Physical SQL trigger and index-plan assertions remain separate adapter-specific evidence.",
+    "Generic compile-time kind correlation does not replace runtime request/service validation.",
+    "Reopen checks verify the provider fixture reopening the same persisted project; not power-loss/crash durability or distributed consensus.",
+    "No existing historical report/payload or product requirement status is rewritten.",
+    "The application-model goal remains active; this is primitive/contract hardening before that layer."
+  ]
+}
