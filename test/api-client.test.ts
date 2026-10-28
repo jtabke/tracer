@@ -182,6 +182,13 @@ test("transport failures, cancellation and malformed responses do not replay wri
 
 test("every read endpoint has a paired query codec", () => {
   const queries: { [K in ReadPath]: ReadQuery<K> } = {
+    "/api/verification-case": { caseId: "case", openingCommandId: "opening" },
+    "/api/verification-case-locate": { caseId: "case" },
+    "/api/verification-execution": {
+      caseId: "case",
+      openingCommandId: "opening",
+      executionId: "execution",
+    },
     "/api/verification-model": { entityId: "missing", version: 1, field: "definition" },
     "/api/assessment-locate": { assessmentId: "assessment" },
     "/api/assessment-analysis": { assessmentId: "assessment", openingCommandId: "open-command" },

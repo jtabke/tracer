@@ -11,7 +11,7 @@ import { changesetCommandId } from "./changeset-command.ts";
 import { projectSchema } from "./native-query-support.ts";
 import { expectProjectRevision, expectEvidenceRevision } from "./version-guard.ts";
 import { prepareReceipt, captureReceipt } from "./receipt-capture.ts";
-import type { AssessmentOperation } from "../core/change-assessment.ts";
+import type { ApplicationOperation } from "../core/evaluation-command.ts";
 
 export type EvaluationGuards = {
   commandId: string;
@@ -29,6 +29,8 @@ export type EvaluationComposition = {
   operations: Operation[];
   receipt: ReceiptInput;
   assertResult?: (tx: Transaction) => Promise<void>;
+  maxResultBytes?: number;
+  assertComplete?: (tx: Transaction) => Promise<void>;
 };
 
 /** Internal, fixed native-plus-receipt protocol. Application intent precedes derived writes. */
@@ -45,7 +47,7 @@ export class EvaluationExecutor {
     input: T,
     origin: Provenance,
     compose: (tx: Transaction, request: T) => Promise<EvaluationComposition>,
-    operation?: AssessmentOperation,
+    operation?: ApplicationOperation,
   ): Promise<EvaluationResult> {
     input = snapshotInput(input);
     const actor = validateProvenance(origin);
@@ -89,7 +91,14 @@ export class EvaluationExecutor {
       await proposal.assertResult?.(tx);
       const receipt = await captureReceipt(tx, receiptInput, actor, this.newId);
       const result = { commandId: input.commandId, native, receipt };
+      if (proposal.maxResultBytes !== undefined)
+        ensure(
+          new TextEncoder().encode(JSON.stringify(result)).length <= proposal.maxResultBytes,
+          "validation",
+          "Application result exceeds the operation's response byte budget",
+        );
       await tx.appendEvaluationCommand(input.commandId, intent, result);
+      await proposal.assertComplete?.(tx);
       return result;
     });
   }

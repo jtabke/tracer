@@ -19,6 +19,7 @@ import type {
 } from "./api/definition.ts";
 import { applicationModelReads } from "./api/application-models.ts";
 import { verificationModelReads } from "./api/verification-models.ts";
+import { verificationReads, verificationWrites } from "./api/verification-cases.ts";
 import { changeAssessmentWrites } from "./api/change-assessments.ts";
 import { assessmentReads } from "./api/assessment-reads.ts";
 import { assessmentLifecycleReads, assessmentLifecycleWrites } from "./api/assessment-lifecycle.ts";
@@ -29,6 +30,7 @@ import { evaluationReads, evaluationWrites } from "./api/evaluations.ts";
 import { sessionReads } from "./api/session.ts";
 
 export const readEndpoints = {
+  ...verificationReads,
   ...verificationModelReads,
   ...assessmentLifecycleReads,
   ...assessmentReads,
@@ -40,6 +42,7 @@ export const readEndpoints = {
   ...evaluationReads,
 };
 export const writeEndpoints = {
+  ...verificationWrites,
   ...assessmentLifecycleWrites,
   ...changeAssessmentWrites,
   ...nativeWrites,

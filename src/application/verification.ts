@@ -4,12 +4,32 @@ import type { Repository } from "./ports/repository.ts";
 import { prepareModelPin } from "./application-models.ts";
 import { resolveVerificationModel } from "./verification-models.ts";
 import { prepareVerificationBasis, resolveVerificationBasis } from "./verification-basis.ts";
+import {
+  prepareVerificationOpening,
+  prepareVerificationExecution,
+  prepareVerificationSelection,
+} from "./verification-inputs.ts";
+import type {
+  OpenVerificationCase,
+  RecordVerificationExecution,
+  VerificationSelection,
+} from "../core/verification-case.ts";
+import type { Provenance } from "../core/model.ts";
+import { EvaluationExecutor } from "./evaluation-executor.ts";
+import { openVerificationCase } from "./verification-open.ts";
+import { recordVerificationExecution } from "./verification-execute.ts";
+import { verificationContext } from "./verification-context.ts";
+import { readVerificationExecution } from "./verification-execution-read.ts";
+import { ensure } from "../core/model.ts";
+import { verificationText } from "../core/verification-criteria.ts";
 
 /** Shared verification meaning. Native storage, evidence and transport retain their own contracts. */
 export class Verification {
   private repository: Repository;
-  constructor(repository: Repository) {
+  private executor: EvaluationExecutor;
+  constructor(repository: Repository, executor: EvaluationExecutor) {
     this.repository = repository;
+    this.executor = executor;
   }
   async resolveModel(input: ApplicationModelPin) {
     input = prepareModelPin(input);
@@ -18,5 +38,31 @@ export class Verification {
   async prepareBasis(input: PrepareVerificationBasis) {
     input = prepareVerificationBasis(input);
     return this.repository.transaction((tx) => resolveVerificationBasis(tx, input));
+  }
+  async open(input: OpenVerificationCase, actor: Provenance) {
+    input = prepareVerificationOpening(input);
+    return this.executor.execute(input, actor, openVerificationCase, "verification.open");
+  }
+  async recordExecution(input: RecordVerificationExecution, actor: Provenance) {
+    input = prepareVerificationExecution(input);
+    return this.executor.execute(input, actor, recordVerificationExecution, "verification.execute");
+  }
+  async get(input: VerificationSelection) {
+    input = prepareVerificationSelection(input);
+    return this.repository.transaction(async (tx) => (await verificationContext(tx, input)).view);
+  }
+  async locate(caseId: string) {
+    verificationText(caseId, 200);
+    return this.repository.transaction(async (tx) => {
+      const first = (await tx.evidence("receipt", { subject: caseId, limit: 1 })).items[0];
+      const commandId = first && (await tx.evaluationCommandForReceipt(first.id));
+      ensure(commandId, "not_found", "No controlled verification opening found");
+      return (await verificationContext(tx, { caseId, openingCommandId: commandId })).view;
+    });
+  }
+  async execution(input: VerificationSelection, executionId: string) {
+    input = prepareVerificationSelection(input);
+    verificationText(executionId, 200);
+    return this.repository.transaction((tx) => readVerificationExecution(tx, input, executionId));
   }
 }

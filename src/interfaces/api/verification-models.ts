@@ -55,7 +55,7 @@ function validContext(result: ResolvedVerificationModel) {
     result.compatibility.writable === (result.compatibility.issues.length === 0)
   );
 }
-function verificationModelResponse(
+export function verificationModelResponse(
   value: unknown,
   selection: ApplicationModelPin,
 ): ResolvedVerificationModel {

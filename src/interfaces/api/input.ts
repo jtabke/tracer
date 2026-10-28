@@ -149,7 +149,7 @@ export const locator = union(
   strictObject({ system: literal("git"), repository: text, path: text, ref: text }),
   strictObject({ system: literal("file"), path: text }),
 );
-const relationshipDeclaration = strictObject({
+export const relationshipDeclaration = strictObject({
   id: text,
   expectedVersion: optional(number),
   revision: optional(number),

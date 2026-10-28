@@ -6,6 +6,11 @@ Commands:
   application-model resolve JSON
   verification resolve-model JSON    exact native verification model; no lifecycle conclusion
   verification prepare-basis JSON    validate selected criteria/methods without writing a case
+  verification open JSON             guarded case genesis with owned requirement membership
+  verification get JSON              caseId + openingCommandId; controlled basis and registry
+  verification locate ID             find the controlled opening from a case identity
+  verification execution JSON        selection + executionId; original results and separate input states
+  verification record-execution JSON guarded typed attestation; no automatic result selection or conclusion
   assessment open JSON                guarded model-bound scope; recover with evaluation outcome COMMAND_ID
   assessment get JSON                 assessmentId + openingCommandId; controlled scope and exact model
   assessment locate ID                resolve controlled opening from a record identity

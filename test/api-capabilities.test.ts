@@ -51,6 +51,8 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "pinned-application-models",
     "qualified-references",
     "relationship-evaluation-inputs",
+    "verification-cases",
+    "verification-executions",
     "verification-models",
   ]);
   assert.deepEqual(

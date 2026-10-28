@@ -113,7 +113,6 @@ export class Tracer {
     this.repository = repository;
     this.runtime = runtime;
     this.applicationModels = new ApplicationModels(repository);
-    this.verification = new Verification(repository);
     this.evidence = new EvidenceService(repository, () => this.runtime.newId(), observer);
     const evaluations = new EvaluationExecutor(
       repository,
@@ -121,6 +120,7 @@ export class Tracer {
       () => this.runtime.newId(),
     );
     this.evaluations = new Evaluations(evaluations);
+    this.verification = new Verification(repository, evaluations);
     this.changeAssessments = new ChangeAssessments(repository, evaluations);
     this.queries = new NativeQueries(repository, this.evidence);
     this.workingContext = new WorkingContextService(repository);

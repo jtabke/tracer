@@ -17,6 +17,38 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "verification open": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.open(
+      requiredInput<import("../core/verification-case.ts").OpenVerificationCase>(args),
+      origin,
+    );
+  },
+  "verification get": ({ tracer, args }) => {
+    const verification: Verification = tracer.verification;
+    return verification.get(
+      requiredInput<import("../core/verification-case.ts").VerificationSelection>(args),
+    );
+  },
+  "verification locate": ({ tracer, args }) => {
+    arity(args, 1);
+    const verification: Verification = tracer.verification;
+    return verification.locate(args[0]);
+  },
+  "verification execution": ({ tracer, args }) => {
+    const { executionId, ...selection } = requiredInput<
+      import("../core/verification-case.ts").VerificationSelection & { executionId: string }
+    >(args);
+    const verification: Verification = tracer.verification;
+    return verification.execution(selection, executionId);
+  },
+  "verification record-execution": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.recordExecution(
+      requiredInput<import("../core/verification-case.ts").RecordVerificationExecution>(args),
+      origin,
+    );
+  },
   "verification resolve-model": ({ tracer, args }) => {
     const verification: Verification = tracer.verification;
     return verification.resolveModel(

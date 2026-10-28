@@ -175,12 +175,10 @@ export type AssessmentClosure = {
     digest: string;
   }[];
 };
-export type AssessmentOperation =
-  | "change-assessment.open"
-  | "change-assessment.refresh"
-  | "change-assessment.disposition"
-  | "change-assessment.close"
-  | "change-assessment.reopen";
+export type AssessmentOperation = Extract<
+  import("./evaluation-command.ts").ApplicationOperation,
+  `change-assessment.${string}`
+>;
 
 export type AssessmentSelection = { assessmentId: string; openingCommandId: string };
 export type RefreshChangeAssessment = AssessmentSelection & {
