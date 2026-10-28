@@ -1,0 +1,193 @@
+{
+  "date": "2026-10-28",
+  "status": "owner-selected bounded specification; implementation pending",
+  "work": "WORK-026",
+  "requirement": "REQ-034",
+  "plan": "VER-034",
+  "ownerRequest": "Build the requirement-to-verification capability on the verified reusable application foundation, including full real-task and second-domain proof, shared interfaces, unfamiliar-agent inspection and preservation.",
+  "architecture": "docs/architecture.md#requirement-to-verification-capability--selected-specification",
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "expected": "Pinned project-model bindings define requirement, method, case and execution vocabulary against the governing schema; edits, deletion and incompatible schema changes cannot silently reinterpret existing verification.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-2",
+      "expected": "Cases retain an exact requirement basis, stable criterion IDs, validated native acceptance text ranges/quotes, complete or explicitly partial source coverage and exact criterion-to-method assignments; missing or duplicate obligations cannot become verified.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-3",
+      "expected": "Controlled executions atomically preserve activity identity, exact method/requirement/design/supporting input states, conditions, actual observations and typed per-criterion passed/failed/blocked/not_run results with immutable receipts; prose outcomes and report links alone are insufficient.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-4",
+      "expected": "Guarded result selection accounts for selected and competing executions, requires rationale for supersession, rejects unrelated scope and prevents a later unassessed failure or partial run from being silently bypassed in favor of an older passing result.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-5",
+      "expected": "Analysis separates planning coverage, execution outcome, evidence drift/unknowns, assessed applicability and effective scoped verification. Full verification requires every declared obligation passed/applicable, complete source coverage and a controlled immutable conclusion; authored status alone cannot establish it.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-6",
+      "expected": "Relevant requirement/method/design/support changes preserve historical execution/conclusions and require explicit reassessment or basis revision. Unrelated annotations do not retire applicability; unknown material and stale comparison/proposal guards cannot establish current verification.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-7",
+      "expected": "Core, typed HTTP/client and CLI share guarded atomic operations, original-intent success recovery, stable identities and bounded complete reads, including invalid, partial, stale, interrupted, superseded and reopened/reassessed cases in two materially different configured domains.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-8",
+      "expected": "A real currently unverified Tracer requirement retains unchanged acceptance and a declared method, genuine failing execution, justified correction, passing verification and later relevant-change reassessment. Original failures/candidates remain inspectable; failures are not manufactured to satisfy this lifecycle.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-9",
+      "expected": "The shared workspace authors verification bases/executions/selections and explains results/outstanding work through shared services, retains drafts and uncertain-save recovery, and undergoes an independent fresh-agent task with material findings addressed and human validation explicitly separate.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-10",
+      "expected": "Existing identity/history/evidence/outcomes and interface/storage compatibility are preserved, deliberate migrations are rehearsed if needed, deterministic export/SQLite backup recovery is verified, owning docs/register retain exact candidate evidence and uncertainties, and appropriate regression/architecture/quality gates pass unchanged.",
+      "verification": "not_run"
+    }
+  ],
+  "gapAnalysis": [
+    {
+      "existing": "Ordinary native identities, fields, relationships, immutable revisions and exact pins",
+      "source": [
+        "src/core/model.ts",
+        "src/core/configuration.ts",
+        "src/application/native-pins.ts"
+      ],
+      "reuse": "Represent cases, plans and executions with ordinary configured native types. Criteria are subordinate IDs within the case basis.",
+      "missing": "Capability-specific descriptor validation and controlled ownership; no additional structural primitive is justified."
+    },
+    {
+      "existing": "Atomic evaluation composition and durable original-intent outcome recovery",
+      "source": [
+        "src/application/evaluation-executor.ts",
+        "src/application/evaluations.ts",
+        "src/application/ports/repository.ts"
+      ],
+      "reuse": "One native/receipt/outcome transaction, guards and existing recovery namespace.",
+      "missing": "Executor operation discriminator currently imports AssessmentOperation from one capability. Widen the application-owned operation contract without changing existing intent bytes or introducing a dispatch framework."
+    },
+    {
+      "existing": "Receipt inputs capture native/content/direct relationships, outcome is free text",
+      "source": ["src/core/evidence.ts", "src/application/receipt-capture.ts"],
+      "reuse": "Exact versions, observations and provenance, selected facets and historical state.",
+      "missing": "Typed per-criterion execution semantics and validated correlation to the governing case/method. A free-text PASS is not machine-authoritative verification."
+    },
+    {
+      "existing": "Comparison/review retain drift, unknowns, supersession and explicit applicability separately",
+      "source": [
+        "src/application/receipt-comparison.ts",
+        "src/application/relationship-inputs.ts",
+        "src/application/evidence.ts"
+      ],
+      "reuse": "Existing declared-input comparison and applicability tokens; no second review ledger.",
+      "missing": "Criterion/method basis invariants, controlled adoption of reviewed execution applicability, complete result accounting and derived scoped verification."
+    },
+    {
+      "existing": "Native project requirement/verification_plan conventions and structural coverage",
+      "source": [
+        "docs/development-model.md",
+        "src/application/coverage.ts",
+        "src/application/next-work.ts"
+      ],
+      "reuse": "Existing plan identities/method/expectedResult and links; coverage remains structural.",
+      "missing": "Prose criterionScope and authored executionStatus/verificationStatus do not prove criterion results. No implicit conversion of legacy results/status on open."
+    },
+    {
+      "existing": "Shared workspace task drafts and mutation recovery",
+      "source": ["ui/native-task.tsx", "ui/assessments/workspace.tsx", "ui/next-work-queues.tsx"],
+      "reuse": "Shared shell/client/recovery, service-derived states and accessible bounded choices.",
+      "missing": "Verification authoring/result inspection and criterion-level explanations using the new services."
+    }
+  ],
+  "contracts": {
+    "criteria": {
+      "identity": "Stable local ID per case basis; no criterion record required.",
+      "source": "Explicit named native acceptance field with exact start/end offsets and quote, validated against pinned requirement text.",
+      "complete": "Disjoint ranges account for every non-whitespace character of every selected acceptance field; complete-source declaration and rationale remain visible. This does not prove adequacy of the requirement.",
+      "partial": "Explicit partial scope never yields whole-scope verified.",
+      "revision": "Stable IDs retain explicit old/new mapping through deliberate basis revision; no automatic prose parser or silent reanchoring."
+    },
+    "plans": "One or more pinned native methods per case, explicit criterion/method assignments; all assigned methods are required in the initial profile. Expected-result and method source fields are captured.",
+    "executions": "An ordinary native activity with immutable controlling receipt: case/basis/method identity, conditions, exact input selections and each assigned criterion result. Missing results are explicit not_run or rejection, never assumed pass. Execution observations are attestations of work performed by a person/tool; Tracer does not run arbitrary user-supplied commands.",
+    "selection": "Recording does not auto-select a favorable result. Explicit guarded selections name evidence for every obligation and account for other controlled executions with rationale; newly recorded execution evidence requires reconciliation. Supersession stays within declared case/method/criterion scope and preserves originals.",
+    "conclusion": "Controlled immutable certificate over complete scope and accounted selected execution/applicability facts. Native authored state/JSON cannot forge it. The selected case is the unit of scoped verification; multiple requirement cases are displayed rather than silently merged.",
+    "reassessment": "Relevant drift retires effective applicability without rewriting history. Changed criteria/method require deliberate basis revision and new execution for affected obligations. Changed design/support may use an explicit applicable review only while criteria/method still match and unknowns are absent. Reopen preserves the prior certificate.",
+    "legacy": "Existing requirement/plan status strings and raw receipts remain annotations/supporting evidence. No automatic typed-result promotion, automatic schema upgrade or bulk rewrite.",
+    "configuration": "Bounded versioned descriptor binds requirement, plan, case, execution types/fields, relationship permissions and supported result vocabulary. Fixed semantics remain service-owned, no expression/rules engine.",
+    "operations": [
+      "resolve model",
+      "open case",
+      "inspect/analyze case",
+      "record execution",
+      "select/account execution results",
+      "conclude scoped verification",
+      "reopen for reassessment",
+      "revise basis with explicit criterion mapping",
+      "locate/list requirement cases with bounded completeness"
+    ],
+    "recovery": "Reuse original-intent evaluation command/outcome protocol. Exact repeats return original success before current guards; changed intent conflicts, rejection reserves no successful ID, unknown responses lock writes until explicit reconciliation; no implicit retry.",
+    "bounds": {
+      "requirementsPerCase": 1,
+      "criteria": 25,
+      "methods": 10,
+      "assignments": 100,
+      "controlledExecutions": 100,
+      "modelBytes": 65536,
+      "scopeBytes": 65536,
+      "commandBytes": 131072,
+      "analysisBytes": 262144,
+      "capture": "Existing tighter receipt/relationship/metadata/input limits also apply. Complete-population overflow refuses completion; paged history does not imply full accounting."
+    }
+  },
+  "realCase": {
+    "status": "candidate requiring formal failing execution before confirmed proof selection",
+    "requirement": "REQ-011",
+    "acceptanceUnchanged": true,
+    "candidateFinding": "Next-work rows count entity input comparisons but omit direct relationship-input comparisons even though those comparisons qualify the changed/unknown evidence state. A direct-relationship-only change can therefore display zero changed/unknown inputs in a nonempty changed-evidence queue.",
+    "candidateCode": "src/application/next-work-evidence.ts",
+    "regression": "test/next-work-relationship-evidence.test.ts",
+    "readOnlyProjectProbe": {
+      "path": "output/verification-capability/queue-gap-probe.json",
+      "nativeRevision": 83,
+      "changedReceiptRows": 31,
+      "mismatchingCurrentRows": 0,
+      "interpretation": "No already-stale direct relationship was found in the current development database. This does not establish correct behavior after a directly captured relationship changes. No project material was changed to fabricate a failure."
+    },
+    "method": "Declare the exact regression and existing AC-1/AC-2 queue checks before the formal run. Use a disposable project and real Tracer implementation to exercise a normal directly captured relationship edit/removal, retaining the original output outcome and exact candidate/procedure hashes. Only a genuine failed assertion selects this as the real requirement proof. Complete all unchanged AC-1/AC-2 checks before promoting requirement verification; the focused regression alone is partial evidence.",
+    "executionScope": "Synthetic engineering fixture data testing an actual product obligation and production code; not physical engineering verification or user validation."
+  },
+  "proofObligations": [
+    "Audit and preserve all ten unchanged criteria and the full active goal.",
+    "Execute two differently configured vocabularies through real core/HTTP/CLI, including negative/recovery and complete lifecycle cases.",
+    "Carry the selected real requirement through genuine failure, justified correction, complete passing evidence and later reassessment using the new capability; early characterization evidence alone does not finish it.",
+    "Shared UI verification and independent fresh-agent task; retain first attempt, assistance, findings and corrections separately from representative-human validation.",
+    "Exact source/procedure/report manifests, immutable observations/receipts, command recovery, prior-data preservation, export/backup parity and final unchanged quality gates."
+  ],
+  "notClaimed": [
+    "Current implementation of this specification",
+    "Representative-human validation",
+    "Regulatory/standards conformance",
+    "Authenticated-team or other-backend parity",
+    "Hosted providers or external-byte retention",
+    "Arbitrary-scale latency",
+    "Automatic engineering truth or release approval"
+  ],
+  "implementationQuestions": [
+    "Concrete wire/type names and response unions must be settled against the bounded specification before implementation.",
+    "Validate available repository queries against per-case execution discovery; add an indexed port only if measurements demonstrate a missing bounded read.",
+    "Measure source/range and result metadata against existing receipt capture bounds before finalizing request sub-budgets."
+  ]
+}

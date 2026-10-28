@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-28",
+  "kind": "actual_failed_product_requirement_execution",
+  "requirement": {
+    "id": "8695fe57-7b5f-4bf2-82b2-f053b03346e2",
+    "key": "REQ-011",
+    "version": 1,
+    "acceptance": "AC-1: Each configured queue explains its population and qualifying gap. AC-2: Structural gaps do not imply failed execution or missing implementation when code may be unlinked."
+  },
+  "plan": {
+    "id": "20d60a4c-ce23-4161-b48a-2bfc370ddc2e",
+    "key": "VER-011",
+    "version": 3,
+    "method": "Use a disposable project and record the requirement version, component implementation hashes, setup, steps and actual result. Exercise every acceptance criterion, including rejected/unknown states. Use automated integration/browser checks where applicable and retain inspection evidence for the rest. Formal candidate extension declared 2026-10-28 before execution: projects/tracer/requirement-verification-real-case-method.json; node --test test/next-work-relationship-evidence.test.ts; exact procedure SHA-256 3b2c1e6ae74a48fe470c3a2be648aab244f453a94c9c5331940b79a0b74b48f5. Compare direct relationship input state to next-work row counts after edit/removal, preserve outcome and read-only export. Run existing queue unit/browser checks for full unchanged AC-1/AC-2. A failed focused execution is scoped failure evidence; a focused pass alone does not establish complete verification. Declaration revision 2 corrects the fixture update to supply existing relationship type/source/target, retaining all assertions. Initial harness error is not product failure; retained at projects/tracer/requirement-verification-real-case-method-initial.json. Exact corrected procedure SHA-256 1487cd3e379514c6cacb8fccfc5418df832a9fd1e3eecb52d8a0c7930ceaa69c. Revised method projects/tracer/requirement-verification-real-case-method.json SHA-256 a4814c613a298916b733f95b487b682dc88e0c5979101d5b0a99b25901c9bc1b declared before rerun."
+  },
+  "declaration": {
+    "path": "projects/tracer/requirement-verification-real-case-method.json",
+    "sha256": "a4814c613a298916b733f95b487b682dc88e0c5979101d5b0a99b25901c9bc1b"
+  },
+  "candidate": {
+    "commit": "acc8b65",
+    "files": [
+      {
+        "path": "src/application/next-work-evidence.ts",
+        "sha256": "3453050c3c5bead3f5dfda490561c45a7e28c50f865bee39f71473917d5fe067"
+      },
+      {
+        "path": "src/core/next-work.ts",
+        "sha256": "7a2b66c67305ef9079c8a622fc225cb7c1fe58a4e1e7f65949b233968767964e"
+      },
+      {
+        "path": "ui/next-work-queues.tsx",
+        "sha256": "c6d907db9585055945ec9c69d4c70aed5a68a96d6ff45aca1d4fe5bca3c5971d"
+      },
+      {
+        "path": "test/next-work-relationship-evidence.test.ts",
+        "sha256": "1487cd3e379514c6cacb8fccfc5418df832a9fd1e3eecb52d8a0c7930ceaa69c"
+      },
+      {
+        "path": "projects/tracer/requirement-verification-real-case-method.json",
+        "sha256": "a4814c613a298916b733f95b487b682dc88e0c5979101d5b0a99b25901c9bc1b"
+      },
+      {
+        "path": "projects/tracer/requirement-verification-real-case-method-initial.json",
+        "sha256": "69fddfbf7a99e6070f44898d840d14378b1cb277a11baa362fbab94489969d8f"
+      }
+    ]
+  },
+  "execution": {
+    "command": "node --test test/next-work-relationship-evidence.test.ts",
+    "exitCode": 1,
+    "tests": 1,
+    "passed": 0,
+    "failed": 1,
+    "log": {
+      "path": "output/verification-capability/req011-genuine-failure.log",
+      "sha256": "ecc50884a29fe205cf3ea032e155fa848c7a4559c6a40ea3e381c1b05f25c01e"
+    },
+    "assertion": "The qualifying directly captured relationship is counted",
+    "expected": 1,
+    "actual": 0
+  },
+  "criterionResults": [
+    {
+      "id": "AC-1",
+      "result": "failed",
+      "scope": "Directly captured relationship edit qualifies changed-evidence but the displayed row reports zero changed inputs. Production comparison sees the changed link; the queue omits it from its counts."
+    },
+    {
+      "id": "AC-2",
+      "result": "not_run",
+      "scope": "This focused failing run stops before complete queue verification. No successful execution/satisfaction inference is made."
+    }
+  ],
+  "priorHarnessAttempt": {
+    "log": "output/verification-capability/req011-before.log",
+    "sha256": "6f92028ea5a3924a15290e1b5d95c4d602194f825268407c69df455a16cce273",
+    "classification": "invalid test harness; not product conformance failure",
+    "reason": "Relationship update omitted required type/source/target, detected by compiler and runtime before the intended count assertion. Added the existing relationship identity/endpoints, retaining every product assertion."
+  },
+  "interpretation": "Genuine production behavior defect under the existing criterion requiring qualifying gaps to be explained. Synthetic engineering fixture data exercise actual Tracer operations; this is software requirement verification, not a physical-product or user-validation claim. No requirement or expected assertion was weakened and no product failure was fabricated.",
+  "limits": [
+    "A focused failure is sufficient to disprove full AC-1 conformance but not to audit every queue or complete AC-2.",
+    "New requirement-to-verification application services/UI are not implemented by this characterization.",
+    "Failing evidence is recorded using existing raw evaluation capture; later controlled execution must retain these original candidate/result facts rather than imply a new run."
+  ]
+}
