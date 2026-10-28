@@ -75,6 +75,24 @@ export class ChangeAssessments {
     this.repository = repository;
     this.executor = executor;
   }
+  async locate(assessmentId: string) {
+    assessmentText(assessmentId, 200);
+    return this.repository.transaction(async (tx) => {
+      const first = await tx.evidence("receipt", { subject: assessmentId, limit: 1 });
+      const receipt = first.items[0];
+      ensure(receipt, "not_found", "No recorded assessment opening was found");
+      const openingCommandId = await tx.evaluationCommandForReceipt(receipt.id);
+      ensure(openingCommandId, "conflict", "This record has no controlled assessment opening");
+      const { view } = await assessmentContext(tx, { assessmentId, openingCommandId });
+      ensure(
+        new TextEncoder().encode(JSON.stringify(view)).byteLength <=
+          changeAssessmentLimits.viewBytes,
+        "validation",
+        "Assessment view exceeds 256 KiB",
+      );
+      return view;
+    });
+  }
   async analyze(input: AssessmentSelection) {
     input = prepareAssessmentSelection(input);
     return this.repository.transaction(async (tx) => {

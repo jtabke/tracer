@@ -1,0 +1,110 @@
+.native-task:has(> div:not([hidden]) > .scoped-assessments) {
+  width: min(1200px, calc(100vw - 32px));
+  height: 92dvh;
+  max-height: 92dvh;
+}
+.native-task:has(> div:not([hidden]) > .scoped-assessments) > .native-task-header {
+  position: sticky;
+  top: -22px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--panel, #151c20);
+  padding-block: 12px;
+}
+.scoped-assessments {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 12px;
+}
+.scoped-assessments header,
+.assessment-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.scoped-assessments header > div {
+  flex: 1;
+  min-width: 200px;
+}
+.assessment-layout {
+  display: grid;
+  grid-template-columns: minmax(170px, 240px) minmax(0, 1fr);
+  gap: 24px;
+}
+.assessment-layout nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+.assessment-main,
+.assessment-layout nav {
+  min-width: 0;
+}
+.scoped-assessments label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-block: 10px;
+}
+.scoped-assessments input,
+.scoped-assessments select,
+.scoped-assessments textarea {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+.scoped-assessments textarea {
+  min-height: 85px;
+}
+.scoped-assessments fieldset {
+  min-width: 0;
+  margin-block: 12px;
+}
+.assessment-obligations {
+  padding-left: 24px;
+}
+.assessment-obligations li {
+  padding-block: 7px;
+}
+.assessment-obligations li > span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85em;
+}
+.scoped-assessments button[aria-pressed="true"] {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+.assessment-candidate-context,
+.assessment-support,
+.scoped-assessments [aria-label="Assessment lifecycle"] {
+  border-top: 1px solid var(--line, #626d7d);
+  padding-top: 12px;
+  margin-top: 18px;
+}
+.scoped-assessments pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.scoped-assessments p,
+.scoped-assessments small,
+.scoped-assessments button {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 680px) {
+  .assessment-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .scoped-assessments {
+    padding: 4px;
+  }
+  .assessment-layout nav {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+}

@@ -140,9 +140,16 @@ function ProjectTools({
       onInputCapture={() => {
         if (
           task &&
-          !["schema", "create", "item", "references", "import", "export", "next-work"].includes(
-            task,
-          )
+          ![
+            "schema",
+            "create",
+            "item",
+            "references",
+            "import",
+            "export",
+            "next-work",
+            "assessments",
+          ].includes(task)
         )
           onDirty(task, true);
       }}
@@ -157,6 +164,7 @@ function ProjectTools({
           {(
             [
               ["next-work", "Next work"],
+              ["assessments", "Change assessments"],
               ["item", "Edit item and connections"],
               ["references", "References for selected record"],
               ["create", "New item"],
@@ -203,6 +211,7 @@ function ProjectTools({
           <NativeTasks
             task={task}
             schema={native.projectSnapshot.schema}
+            entities={native.projectSnapshot.entities}
             entity={native.projectSnapshot.entities.find(
               (entity) => (entity.key ?? entity.id) === options.selected(),
             )}

@@ -16,6 +16,10 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "assessment locate": ({ tracer, args }) => {
+    arity(args, 1);
+    return tracer.changeAssessments.locate(args[0]!);
+  },
   "assessment analyze": ({ tracer, args }) =>
     tracer.changeAssessments.analyze(
       requiredInput<import("../core/change-assessment.ts").AssessmentSelection>(args),

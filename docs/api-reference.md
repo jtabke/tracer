@@ -23,6 +23,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/application-model` | `entityId`* (text), `version`* (integer), `field`* (text) |
 | GET | `/api/assessment-analysis` | `assessmentId`* (text), `openingCommandId`* (text) |
 | GET | `/api/assessment-disposition` | `assessmentId`* (text), `openingCommandId`* (text), `kind`* (text), `id`* (text) |
+| GET | `/api/assessment-locate` | `assessmentId`* (text) |
 | GET | `/api/baseline` | `id`* (text) |
 | GET | `/api/baseline-contents` | `after` (text), `limit` (integer), `baselineId`* (text), `kind`* (text) |
 | GET | `/api/baselines` | `after` (text), `limit` (integer) |

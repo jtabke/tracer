@@ -6,6 +6,7 @@ Commands:
   application-model resolve JSON
   assessment open JSON                guarded model-bound scope; recover with evaluation outcome COMMAND_ID
   assessment get JSON                 assessmentId + openingCommandId; controlled scope and exact model
+  assessment locate ID                resolve controlled opening from a record identity
   assessment refresh JSON             guarded rediscovery retains prior obligations; no automatic retry
   assessment analyze JSON             bounded obligations, discovery and effective completion
   assessment disposition JSON         selection + subject; full controlled judgment or null

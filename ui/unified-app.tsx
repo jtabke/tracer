@@ -189,6 +189,7 @@ export function UnifiedApp() {
         task={task}
         entity={entity}
         schema={snapshot.schema}
+        entities={snapshot.entities}
         editing={editing}
         onClose={() => setTask(null)}
         changed={changed}
@@ -288,6 +289,7 @@ function ProjectActions({
         New item
       </button>
       <button onClick={() => onTask("schema")}>Configure model</button>
+      <button onClick={() => onTask("assessments")}>Change assessments</button>
       <button onClick={() => onTask("evaluations")}>Evaluations</button>
       <button onClick={() => onTask("configurations")}>Configurations</button>
       <button onClick={() => onTask("docs")}>Documentation</button>

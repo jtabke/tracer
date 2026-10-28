@@ -137,6 +137,8 @@ export type SetAssessmentDisposition = Omit<RefreshChangeAssessment, "reason"> &
 };
 export type AssessmentObligation = {
   subject: CandidateKey;
+  /** Bounded presentation context; never part of the assessed fingerprint. */
+  label?: string;
   currentDigest: string;
   hasUnknown: boolean;
   disposition: {

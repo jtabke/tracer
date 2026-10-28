@@ -47,7 +47,12 @@ async function reopenedOutcome(
   expected: EvaluationResult,
   saved: ProjectExport,
 ) {
-  const reopened = new Tracer(await fixture.reopen());
+  const repository = await fixture.reopen(),
+    reopened = new Tracer(repository);
+  assert.equal(
+    await repository.transaction((tx) => tx.evaluationCommandForReceipt(expected.receipt.id)),
+    expected.commandId,
+  );
   assert.deepEqual(await reopened.evaluations.getOutcome(expected.commandId), expected);
   assert.deepEqual(await reopened.exportProject(), saved);
   return reopened;

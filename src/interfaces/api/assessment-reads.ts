@@ -28,6 +28,8 @@ export function assessmentViewResponse(
   if (
     decoded.assessment.id !== input.assessmentId ||
     decoded.opening.commandId !== input.openingCommandId ||
+    (decoded.scope.control !== undefined &&
+      decoded.scope.control.openingCommandId !== input.openingCommandId) ||
     decoded.scope.discovery.excludedReceiptOutputId !== input.assessmentId ||
     decoded.control.commandId !== (decoded.scope.control?.commandId ?? input.openingCommandId) ||
     decoded.control.assessmentVersion > decoded.assessment.version ||
@@ -43,6 +45,22 @@ export function assessmentViewResponse(
   return { ...decoded, model };
 }
 export const assessmentReads = {
+  "/api/assessment-locate": read({
+    features: ["change-assessment-scope-refresh"],
+    query: q.query({ assessmentId: q.textParam }),
+    response: (value: unknown, input): ChangeAssessmentView => {
+      if (!record(value) || !record(value.opening) || typeof value.opening.commandId !== "string")
+        throw Error("Missing controlled assessment opening");
+      return assessmentViewResponse(value, {
+        assessmentId: input.assessmentId,
+        openingCommandId: value.opening.commandId,
+      });
+    },
+    handle: ({ tracer }, input) => {
+      const assessments: ChangeAssessments = tracer.changeAssessments;
+      return assessments.locate(input.assessmentId);
+    },
+  }),
   "/api/change-assessment": read({
     features: ["change-assessment-scope-refresh"],
     query: q.query({ assessmentId: q.textParam, openingCommandId: q.textParam }),

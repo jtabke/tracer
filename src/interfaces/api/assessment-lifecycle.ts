@@ -21,6 +21,7 @@ import {
   nullable,
   number,
   object,
+  optional,
   text,
 } from "../decode.ts";
 import { read, write } from "./definition.ts";
@@ -33,6 +34,7 @@ const result = object({
   obligations: array(
     object({
       subject: parseCandidate,
+      label: optional(text),
       currentDigest: text,
       hasUnknown: boolean,
       disposition: nullable(
@@ -68,15 +70,7 @@ function analysis(value: unknown, input: AssessmentSelection): AssessmentAnalysi
     !view.scope.candidates.every((item) => keys.has(item.kind + ":" + item.id))
   )
     throw Error("Analysis does not cover the declared population");
-  for (const item of parsed.obligations)
-    if (
-      !/^sha256:[a-f0-9]{64}$/.test(item.currentDigest) ||
-      item.openActions + item.waivedActions > 5 ||
-      (item.state === "undisposed") !== (item.disposition === null) ||
-      (item.state === "accounted" && item.openActions !== 0) ||
-      (item.disposition && item.disposition.rationalePreview.length > 200)
-    )
-      throw Error("Invalid obligation summary");
+  for (const item of parsed.obligations) validateObligationSummary(item);
   const closed = view.assessment.state === view.model.definition.states.closed;
   if (
     (parsed.completion.state === "open") === closed ||
@@ -87,6 +81,17 @@ function analysis(value: unknown, input: AssessmentSelection): AssessmentAnalysi
   )
     throw Error("Completion does not match controlled application state");
   return { ...parsed, view };
+}
+function validateObligationSummary(item: ReturnType<typeof result>["obligations"][number]) {
+  if (
+    !/^sha256:[a-f0-9]{64}$/.test(item.currentDigest) ||
+    item.openActions + item.waivedActions > 5 ||
+    (item.state === "undisposed") !== (item.disposition === null) ||
+    (item.state === "accounted" && item.openActions !== 0) ||
+    (item.disposition && item.disposition.rationalePreview.length > 200) ||
+    (item.label !== undefined && item.label.length > 200)
+  )
+    throw Error("Invalid obligation summary");
 }
 const command = {
   commandId: text,

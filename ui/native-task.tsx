@@ -1,3 +1,4 @@
+import { AssessmentWorkspace } from "./assessments/workspace.tsx";
 import { ReferenceWorkspace } from "./reference-workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
@@ -26,10 +27,12 @@ export type NativeTask =
   | "docs"
   | "import"
   | "export"
-  | "next-work";
+  | "next-work"
+  | "assessments";
 export function NativeTasks({
   task,
   entity,
+  entities,
   schema,
   editing,
   onClose,
@@ -40,6 +43,7 @@ export function NativeTasks({
 }: {
   task: NativeTask | null;
   entity?: Entity;
+  entities: Entity[];
   schema: SchemaObject | null;
   editing: Editing;
   onTaskDirty?(task: NativeTask, value: boolean): void;
@@ -72,6 +76,16 @@ export function NativeTasks({
     adoptEntity();
   }, [entity?.id]);
   const panels = {
+    assessments: () => (
+      <AssessmentWorkspace
+        entities={entities}
+        schema={schema}
+        editing={editing}
+        active={task === "assessments"}
+        changed={changed}
+        onDirty={taskDirty(onTaskDirty, "assessments")}
+      />
+    ),
     references: () =>
       schema ? (
         <ReferenceWorkspace
@@ -101,11 +115,7 @@ export function NativeTasks({
       ) : null,
     create: () =>
       schema ? (
-        <CreateItem
-          schema={schema}
-          editing={editing}
-          onDirty={(value) => onTaskDirty?.("create", value)}
-        />
+        <CreateItem schema={schema} editing={editing} onDirty={taskDirty(onTaskDirty, "create")} />
       ) : null,
     schema: () => (
       <SchemaEditor
@@ -114,7 +124,7 @@ export function NativeTasks({
         busy={editing.busy}
         onSave={onSchema}
         onCancel={onClose}
-        onDirty={(value) => onTaskDirty?.("schema", value)}
+        onDirty={taskDirty(onTaskDirty, "schema")}
       />
     ),
     evaluations: () => (
@@ -138,7 +148,7 @@ export function NativeTasks({
         schema={schema}
         editing={editing}
         changed={changed}
-        onDirty={(value) => onTaskDirty?.("import", value)}
+        onDirty={taskDirty(onTaskDirty, "import")}
       />
     ),
     docs: () => <DocumentationView active={task === "docs"} />,
@@ -176,7 +186,7 @@ export function NativeTasks({
         }}
       >
         <header className="native-task-header">
-          <strong>{task ? taskTitles[task] : "Project task"}</strong>
+          <strong>{taskHeading(task)}</strong>
           <button onClick={onClose}>Return to map</button>
         </header>
         {editing.error && <p role="alert">{editing.error}</p>}
@@ -264,6 +274,7 @@ const taskTitles = {
   import: "Import CSV",
   export: "Export project",
   "next-work": "Next work",
+  assessments: "Change assessments",
 };
 
 function CreateItem({
@@ -429,4 +440,15 @@ function useReferenceTaskDirty(report: ((task: NativeTask, value: boolean) => vo
     report?.("references", dirty);
   }, [dirty, report]);
   return [dirty, setDirty] as const;
+}
+
+function taskDirty(
+  report: ((task: NativeTask, value: boolean) => void) | undefined,
+  task: NativeTask,
+) {
+  return (value: boolean) => report?.(task, value);
+}
+
+function taskHeading(task: NativeTask | null) {
+  return task ? taskTitles[task] : "Project task";
 }

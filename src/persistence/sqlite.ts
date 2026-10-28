@@ -374,6 +374,13 @@ export class SQLiteRepository implements Repository {
             ? { intent: String(row.intent_json), result: JSON.parse(String(row.result_json)) }
             : undefined;
         },
+        evaluationCommandForReceipt: async (receiptId) => {
+          check();
+          const row = this.db
+            .prepare("SELECT command_id FROM evaluation_commands WHERE receipt_id=?")
+            .get(receiptId);
+          return row ? String(row.command_id) : undefined;
+        },
         appendEvaluationCommand: async (commandId, intent, result) => {
           check();
           ensure(result.commandId === commandId, "storage", "Evaluation outcome identity mismatch");

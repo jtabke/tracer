@@ -31,6 +31,10 @@ test("headless refresh preserves original intent through lost response, reopen, 
     await client.checkCompatibility();
     await client.connect();
     const view = await client.read("/api/change-assessment", selection);
+    assert.deepEqual(
+      await client.read("/api/assessment-locate", { assessmentId: opening.assessmentId }),
+      view,
+    );
     const request: RefreshChangeAssessment = {
       ...selection,
       commandId: "headless-refresh",
@@ -76,8 +80,19 @@ test("headless refresh preserves original intent through lost response, reopen, 
     assert.deepEqual(JSON.parse(repeated.stdout), outcome);
     const current = await recovery.read("/api/change-assessment", selection),
       read = cli("get", JSON.stringify(selection));
+    const corruptLocate = createClient({
+      fetch: async () =>
+        Response.json({ ...current, opening: { ...current.opening, commandId: "wrong-opening" } }),
+    });
+    await assert.rejects(
+      corruptLocate.read("/api/assessment-locate", { assessmentId: opening.assessmentId }),
+      { code: "read_failed" },
+    );
     assert.equal(read.status, 0, read.stderr);
     assert.deepEqual(JSON.parse(read.stdout), current);
+    const located = cli("locate", opening.assessmentId);
+    assert.equal(located.status, 0, located.stderr);
+    assert.deepEqual(JSON.parse(located.stdout), current);
     assert.equal(current.control.assessmentVersion, 2);
     await assert.rejects(
       recovery.write("/api/change-assessments/refresh", { ...request, reason: "Different intent" }),

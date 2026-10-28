@@ -62,6 +62,8 @@ export interface Transaction {
     | { intent: string; result: import("../../core/evaluation-command.ts").EvaluationResult }
     | undefined
   >;
+  /** Reverse lookup uses the same immutable successful-outcome identity after reopen. */
+  evaluationCommandForReceipt(receiptId: string): Promise<string | undefined>;
   appendEvaluationCommand(
     commandId: string,
     intent: string,

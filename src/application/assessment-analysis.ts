@@ -7,6 +7,7 @@ import type {
   DispositionView,
   ResolvedSupport,
   AssessmentSelection,
+  CandidateKey,
 } from "../core/change-assessment.ts";
 import { assessmentContext } from "./assessment-context.ts";
 import { assessmentDispositions } from "./assessment-dispositions.ts";
@@ -32,6 +33,7 @@ async function obligation(
   const basis = await candidateBasis(tx, view.scope, subject);
   const result: AssessmentObligation = {
     subject,
+    label: await candidateLabel(tx, subject),
     currentDigest: basis.digest,
     hasUnknown: basis.hasUnknown,
     disposition: null,
@@ -71,6 +73,17 @@ async function obligation(
     !exception && (support.unknown || (basis.hasUnknown && !replaced)),
   );
   return result;
+}
+async function candidateLabel(tx: Transaction, subject: CandidateKey) {
+  const value =
+    subject.kind === "receipt"
+      ? (await tx.getEvidence("receipt", subject.id))?.output
+      : await tx.get(subject.kind, subject.id);
+  if (!value) return `Removed ${subject.kind} ${subject.id.slice(0, 8)}`;
+  const title = typeof value.fields.title === "string" ? value.fields.title : undefined;
+  const identity =
+    "source" in value ? value.type : (value.key ?? value.resource?.label ?? value.type);
+  return (title && title !== identity ? `${identity} · ${title}` : identity).slice(0, 200);
 }
 function obligationState(
   changed: boolean,
