@@ -7,7 +7,7 @@ import { operation, receiptCommandInput, strictObject } from "./input.ts";
 import * as q from "./query.ts";
 const feature = ["atomic-evaluation-commands"];
 const result = object({ commandId: text, native: nullable(changesetResult), receipt });
-function evaluation(
+export function evaluation(
   value: unknown,
   input?: Pick<EvaluationCommand, "commandId">,
 ): EvaluationResult {

@@ -1,4 +1,6 @@
+import { ChangeAssessments } from "./change-assessments.ts";
 import { ApplicationModels } from "./application-models.ts";
+import { EvaluationExecutor } from "./evaluation-executor.ts";
 import { Evaluations } from "./evaluations.ts";
 import { referenceContext } from "./reference-query.ts";
 import { createReference, checkResourceIdentity } from "./reference-command.ts";
@@ -91,6 +93,7 @@ export class Tracer {
   readonly evidence: EvidenceService;
   readonly evaluations: Evaluations;
   readonly applicationModels: ApplicationModels;
+  readonly changeAssessments: ChangeAssessments;
   readonly savedViews: SavedViews;
   readonly configurations: Configurations;
   readonly baselines: Baselines;
@@ -109,11 +112,13 @@ export class Tracer {
     this.runtime = runtime;
     this.applicationModels = new ApplicationModels(repository);
     this.evidence = new EvidenceService(repository, () => this.runtime.newId(), observer);
-    this.evaluations = new Evaluations(
+    const evaluations = new EvaluationExecutor(
       repository,
       (tx, schema, operations, actor) => this.nativeBatch(tx, schema, operations, actor),
       () => this.runtime.newId(),
     );
+    this.evaluations = new Evaluations(evaluations);
+    this.changeAssessments = new ChangeAssessments(evaluations);
     this.queries = new NativeQueries(repository, this.evidence);
     this.workingContext = new WorkingContextService(repository);
     this.savedViews = new SavedViews(repository, () => this.runtime.newId());

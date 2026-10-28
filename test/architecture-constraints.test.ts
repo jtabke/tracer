@@ -238,6 +238,18 @@ void client.read("/api/application-model", {id: "model", schemaVersion: 1});
 
 const evaluationRequest = {commandId: "analysis-1", expectedSchemaVersion: 1, expectedEvidenceRevision: 0, operations: [], receipt: {outputId: "output", outcome: "recorded", inputs: []}};
 const evaluationResult: Promise<import("../src/core/evaluation-command.ts").EvaluationResult> = client.write("/api/evaluation-commands", evaluationRequest);
+const assessmentRequest: import("../src/core/change-assessment.ts").OpenChangeAssessment = {
+  commandId: "assessment", assessmentId: "identity", title: "Scope", purpose: "Impact",
+  model: {entityId: "model", version: 1, field: "definition"},
+  query: {baselineId: "baseline", rootId: "root", direction: "outgoing", relationshipTypes: []},
+  additionalFields: {}, expectedSchemaVersion: 1, expectedProjectRevision: 1, expectedEvidenceRevision: 0,
+};
+const assessmentResult: typeof evaluationResult = client.write("/api/change-assessments/open", assessmentRequest);
+void assessmentResult;
+// @ts-expect-error assessment basis is mandatory
+void client.write("/api/change-assessments/open", {...assessmentRequest, expectedEvidenceRevision: undefined});
+// @ts-expect-error a paged population cannot be claimed as complete assessment scope
+void client.write("/api/change-assessments/open", {...assessmentRequest, query: {...assessmentRequest.query, after: "cursor"}});
 const evaluationOutcome: Promise<import("../src/core/evaluation-command.ts").EvaluationResult | null> = client.read("/api/evaluation-outcome", {commandId: "analysis-1"});
 void evaluationResult; void evaluationOutcome;
 // @ts-expect-error evidence guards are numeric watermarks, not timestamps

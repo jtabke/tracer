@@ -16,6 +16,11 @@ import {
 } from "./cli-input.ts";
 
 export const dataCommands: Record<string, CliCommand> = {
+  "assessment open": ({ tracer, args, origin }) =>
+    tracer.changeAssessments.open(
+      requiredInput<import("../core/change-assessment.ts").OpenChangeAssessment>(args),
+      origin,
+    ),
   "application-model resolve": ({ tracer, args }) =>
     tracer.applicationModels.resolve(
       requiredInput<import("../core/application-model.ts").ApplicationModelPin>(args),

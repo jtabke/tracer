@@ -1,3 +1,4 @@
+import type { OpenChangeAssessment } from "../src/core/change-assessment.ts";
 import { evaluationFixture, evaluationActor } from "./evaluation-fixture.ts";
 import type { ChangeAssessmentModel, ApplicationModelPin } from "../src/core/application-model.ts";
 import { changeAssessmentSchema } from "../src/core/application-model.ts";
@@ -136,4 +137,28 @@ export async function applicationModelFixture(domain: "engineering" | "research"
     f.close();
     throw error;
   }
+}
+
+export async function assessmentOpenRequest(
+  f: Awaited<ReturnType<typeof applicationModelFixture>>,
+) {
+  const model = await f.tracer.applicationModels.resolve(f.pin);
+  return {
+    commandId: "open-assessment",
+    assessmentId: crypto.randomUUID(),
+    title: "Assess recorded criterion change",
+    purpose: "Synthetic scope test, not an engineering conclusion",
+    model: f.pin,
+    query: {
+      baselineId: f.baseline.id,
+      rootId: f.criterion.id,
+      direction: "outgoing",
+      relationshipTypes: [],
+      depth: 1,
+    },
+    additionalFields: {},
+    expectedSchemaVersion: model.context.schemaVersion,
+    expectedProjectRevision: model.context.projectRevision,
+    expectedEvidenceRevision: model.context.evidenceRevision,
+  } satisfies OpenChangeAssessment;
 }

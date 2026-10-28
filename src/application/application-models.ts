@@ -19,7 +19,7 @@ import { projectSchema } from "./native-query-support.ts";
 function own<T>(values: Record<string, T>, name: string): T | undefined {
   return Object.hasOwn(values, name) ? values[name] : undefined;
 }
-function prepareModelPin(input: ApplicationModelPin) {
+export function prepareModelPin(input: ApplicationModelPin) {
   input = snapshotInput(input);
   ensure(record(input), "validation", "Select an exact application model pin");
   knownProperties(input, ["entityId", "version", "field"]);
@@ -102,7 +102,7 @@ function modelCompatibility(model: ChangeAssessmentModel, schema: SchemaObject) 
   return { requiredFields, compatibility: { writable: issues.length === 0, issues } };
 }
 /** Resolve explicit native annotations; external bytes and current profile edits are not model definitions. */
-async function resolveApplicationModel(
+export async function resolveApplicationModel(
   tx: Transaction,
   input: ApplicationModelPin,
 ): Promise<ResolvedApplicationModel> {

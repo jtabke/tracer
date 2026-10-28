@@ -18,6 +18,7 @@ import type {
   MutationContext,
 } from "./api/definition.ts";
 import { applicationModelReads } from "./api/application-models.ts";
+import { changeAssessmentWrites } from "./api/change-assessments.ts";
 import { nativeReads, nativeWrites } from "./api/native.ts";
 import { analysisReads, analysisWrites } from "./api/analysis.ts";
 import { evidenceReads, evidenceWrites } from "./api/evidence.ts";
@@ -33,6 +34,7 @@ export const readEndpoints = {
   ...evaluationReads,
 };
 export const writeEndpoints = {
+  ...changeAssessmentWrites,
   ...nativeWrites,
   ...analysisWrites,
   ...evidenceWrites,

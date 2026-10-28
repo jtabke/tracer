@@ -59,3 +59,5 @@ export type { EvaluationResult } from "./core/evaluation-command.ts";
 export type * from "./core/application-model.ts";
 
 export { changeAssessmentSchema } from "./core/application-model.ts";
+
+export type * from "./core/change-assessment.ts";
