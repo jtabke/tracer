@@ -535,6 +535,16 @@ The selected requirement-verification capability currently exposes model resolut
 
 Preparation returns the selected historical source text, exact method/link states, current native/schema/evidence read clocks, declared/source completeness and unassigned criterion IDs. A complete source selection with unassigned criteria is still unplanned work; a deliberate partial declaration remains partial even when all text happens to be covered. Selection/output must each fit 64 KiB. No source observation, capture, native revision or engineering approval is created. Preparation can inspect historical basis even after current source or schema changes; current applicability uses the lifecycle contract below. There is no JSON-in-URL HTTP basis authoring route; controlled opening uses a bounded mutation body.
 
+## Compare two fixed configurations
+
+Call `tracer.configurations.compare({beforeId, afterId})`, GET `/api/configuration-comparison?beforeId=...&afterId=...`, or `configuration compare BEFORE AFTER`. Discover `configuration-comparison` before using the endpoint. Both IDs select immutable local captures; the read creates no receipt and never adopts newer native revisions or observations.
+
+The result includes the complete before/after pins, sorted member/relationship differences, changed property values, content fingerprints and an ordered pair/policy digest. `versionOnly` distinguishes an edited revision with unchanged compared properties. Missing JSON properties differ from null; array order remains significant. Inspect `comparability.issues` and `completeness`: legacy omitted topology/content is unknown, scope/schema differences require interpretation, and incompatible subjects do not establish a common engineering comparison. A removed member may still exist in the project. Equal fingerprints retain separate resource/observation identities and establish neither passage relevance nor retained source bytes.
+
+Inspect `contextChanges` for captured subject/scope/schema changes, including a subject deliberately outside the selected membership. The typed client checks that every difference and completeness statement matches the returned captured states; a truncated population is an invalid response.
+
+The read covers the full selected population or refuses: at most 100 members/200 links/100 content selections per controlled capture, 1 MiB canonical JSON per side and 4 MiB complete output. Larger captures need an explicitly narrower comparison scope through new captures; nothing is silently truncated. This is structural comparison. Pair-bound impact judgments, assessment/verification follow-through and the shared authoring workspace remain under development.
+
 ## Capture exact configurations with observed content
 
 Use `tracer.configurations.captureContext()` to obtain the current schema/native/evidence clocks, then explicitly prepare `captureExact(input, provenance)`. The equivalent interfaces are GET `/api/configuration-capture-context`, POST `/api/configuration-captures`, and CLI `configuration context` / `configuration capture-exact JSON`. Feature discovery advertises `exact-configuration-captures`.

@@ -1,4 +1,5 @@
 import type { ExactConfigurationInput } from "../../core/configuration.ts";
+import { configurationComparison } from "./configuration-comparison.ts";
 import { exactConfigurationInputFields } from "./configuration-input.ts";
 import { canonical } from "../../core/evidence.ts";
 import { viewDefinition } from "../../core/presentation.ts";
@@ -37,6 +38,12 @@ import { read, write } from "./definition.ts";
 import { inputSchema, operation, strictObject } from "./input.ts";
 import * as q from "./query.ts";
 export const nativeReads = {
+  "/api/configuration-comparison": read({
+    features: ["configuration-comparison"],
+    query: q.query({ beforeId: q.textParam, afterId: q.textParam }),
+    response: configurationComparison,
+    handle: ({ tracer }, input) => tracer.configurations.compare(input),
+  }),
   "/api/configuration-capture-context": read({
     features: ["exact-configuration-captures"],
     query: q.query({}, { empty: "Configuration capture context accepts no filters" }),

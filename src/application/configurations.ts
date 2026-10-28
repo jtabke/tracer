@@ -15,6 +15,8 @@ import {
   validateConfigurationCapture,
 } from "../core/configuration-capture-validation.ts";
 import { captureRelationships } from "./configuration-relationships.ts";
+import type { ConfigurationPair } from "../core/configuration-comparison.ts";
+import { compareConfigurations, validateConfigurationPair } from "./configuration-comparison.ts";
 
 function validateCapture(input: ConfigurationInput) {
   ensure(
@@ -83,6 +85,11 @@ export class Configurations {
   }
   captureContext() {
     return this.repository.transaction((tx) => configurationCaptureContext(tx));
+  }
+  async compare(input: ConfigurationPair) {
+    input = snapshotInput(input);
+    validateConfigurationPair(input);
+    return this.repository.transaction((tx) => compareConfigurations(tx, input));
   }
   async captureExact(input: ExactConfigurationInput, origin: Provenance): Promise<Configuration> {
     const actor = validateProvenance(origin);

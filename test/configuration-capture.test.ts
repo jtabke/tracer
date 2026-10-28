@@ -258,6 +258,15 @@ test("exact capture accepts full 100-member/200-link/100-content scope and refus
     assert.equal(saved.members.length, 100);
     assert.equal(saved.relationships!.length, 200);
     assert.equal(saved.capture!.content.length, 100);
+    const comparison = await f.tracer.configurations.compare({
+      beforeId: saved.id,
+      afterId: saved.id,
+    });
+    assert.equal(comparison.members.length, 100);
+    assert.equal(comparison.relationships.length, 200);
+    assert.equal(comparison.content.length, 100);
+    assert.ok(comparison.members.every((item) => item.state === "unchanged"));
+    assert.ok(comparison.content.every((item) => item.content === "same"));
     const before = await f.tracer.exportProject();
     for (const invalid of [
       { ...input, id: "overflow-members", members: [...input.members, input.members[0]] },

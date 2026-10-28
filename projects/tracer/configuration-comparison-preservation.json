@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-28",
+  "scope": "Verified immutable comparison foundation only; full configuration-change goal/AC-1–12 remains pending.",
+  "nativeRevision": 119,
+  "schemaVersion": 7,
+  "physicalFormatUnchanged": true,
+  "report": {
+    "path": "projects/tracer/configuration-comparison-verification.json",
+    "sha256": "d7f5a3db7abebe8f583f0606459ae8ea97435a8ea27863b9003b3bbcc2d1904f"
+  },
+  "originalCase": {
+    "path": "projects/tracer/configuration-change-original-case.json",
+    "sha256": "72bf64f0cb4238c20ec39ed30bf0f4a9a2e3ab30788241b96029c80b827fea8f"
+  },
+  "originalLegacyConfigurationId": "8d55e049-0a70-468f-88af-0efebfdbb453",
+  "narrowerConfigurationId": "9679184e-3653-4717-99d0-aa1f650d7dee",
+  "expandedConfigurationId": "c37b8600-af52-41b6-9053-dcb028c4d4e1",
+  "qualification": "New explicit scope reconstruction after implementation; original source bytes/observation provenance are retained, not retroactively edited.",
+  "phaseReceiptId": "3db1cbe8-a298-423a-902c-d36309da1e16",
+  "priorBackup": "projects/tracer/backups/register-2026-10-28-before-configuration-composition.sqlite",
+  "backup": {
+    "path": "projects/tracer/backups/register-2026-10-28-configuration-comparison.sqlite",
+    "sha256": "a74c91bbeb93bf349c7e05578454cce0e5dfd166cb1e6f53766bb557ad011855"
+  },
+  "export": {
+    "path": "projects/tracer/project-export.json",
+    "sha256": "dcc970b33d45e545bf7e2454b6fcec1a26af3195e81a8f025c998f76b1fff99a"
+  },
+  "ledgers": {
+    "changeset_commands": {
+      "priorRows": 48,
+      "currentRows": 49,
+      "priorRowsUnchanged": true,
+      "backupEqual": true
+    },
+    "evaluation_commands": {
+      "priorRows": 41,
+      "currentRows": 42,
+      "priorRowsUnchanged": true,
+      "backupEqual": true
+    }
+  },
+  "checks": [
+    {
+      "database": "projects/tracer/tracer.sqlite",
+      "nativeRevision": 119,
+      "schemaVersion": 7,
+      "partialComparisonReceiptCurrent": true,
+      "fullRequirementNotVerified": true,
+      "originalNativeAndSourceCapturesRetained": true,
+      "allTwentyOneOriginalSourceStatesMatchGit": true,
+      "priorObjectsHistoryEvidenceAndOutcomesPreserved": true,
+      "realREQ011StillVerifiedWithOriginalFailure": true,
+      "exactCoreHTTPCLIRecoveryWithoutWrites": true,
+      "canonicalExportAndBackupParity": true
+    },
+    {
+      "database": "projects/tracer/backups/register-2026-10-28-configuration-comparison.sqlite",
+      "nativeRevision": 119,
+      "schemaVersion": 7,
+      "partialComparisonReceiptCurrent": true,
+      "fullRequirementNotVerified": true,
+      "originalNativeAndSourceCapturesRetained": true,
+      "allTwentyOneOriginalSourceStatesMatchGit": true,
+      "priorObjectsHistoryEvidenceAndOutcomesPreserved": true,
+      "realREQ011StillVerifiedWithOriginalFailure": true,
+      "exactCoreHTTPCLIRecoveryWithoutWrites": true,
+      "canonicalExportAndBackupParity": true
+    }
+  ],
+  "procedure": {
+    "path": "output/configuration-change/verify-comparison-phase.mjs",
+    "sha256": "90c51c3143cd0a80adfcace768952a54c1bd3781b5b37571a98b21adf44fe013"
+  }
+}
