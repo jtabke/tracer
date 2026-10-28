@@ -1,0 +1,119 @@
+{
+  "date": "2026-10-28",
+  "status": "owner-selected bounded specification; implementation not yet started",
+  "requirement": "REQ-035",
+  "plan": "VER-035",
+  "work": "WORK-027",
+  "investigation": "WORK-004",
+  "ownerRequest": "Build configuration-aware engineering change management after the completed requirement-to-verification capability; goal recorded explicitly on 2026-10-28.",
+  "question": "Between two exact engineering configurations, what changed, what remains supported, what may be affected, and what engineering work is required?",
+  "audit": {
+    "path": "projects/tracer/configuration-change-audit.json",
+    "sha256": "a0285f7699f5445b58700c59239d14927b692c588508113ee746c8648492fdd6"
+  },
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "expected": "Controlled capture retains an explicit bounded set of exact native member/relationship revisions, external observation selections, schema/context and declared scope; omissions and legacy captures never imply undeclared topology/content completeness. Stable caller identity and captured original intent recover an identical committed capture after lost response/restart without duplicate creation or silent rebasing; conflicting intent/guards/provenance reject.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-2",
+      "expected": "A deterministic read-only comparison binds two immutable configuration identities and all governing policy/state digests. Later live native/evidence changes do not alter that pair comparison; switching either side is explicit. Incompatible subject/project/model/schema/scope and unavailable historical information produce explained comparability/uncertainty or refusal rather than inferred equivalence.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-3",
+      "expected": "Native comparison explains added/removed membership, type/key/resource/field differences and version-only changes with exact original/current-selected versions, schemas and provenance. Missing versus null, ordered arrays and nested JSON remain meaningful. Removed-from-configuration is distinct from deleted-from-project, and mutable current liveness is not silently substituted for the selected state.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-4",
+      "expected": "Selected relationship topology comparison preserves exact endpoints, type, metadata and contextual-reference role/selector/state changes, including relinking, removed relationships and historical endpoints. Undeclared legacy topology is explicitly unknown, not an empty complete graph; no reachability implies engineering causation or membership.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-5",
+      "expected": "Content comparison uses explicitly captured resource/observation identities, availability and hashes/commits; annotation changes and observed-byte changes remain separate. Same hash is not identity merging or byte retention, and document change cannot establish passage change without sufficient selected evidence. Reads perform no observer IO and never replace pinned selections with the latest observation.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-6",
+      "expected": "Configuration-bound dependency/applicability analysis explains changed inputs, potentially affected and unaffected declared scope, exact inclusion/exclusion basis and remaining uncertainty. Captured input field/path/direct-link/content semantics are reused; incomplete scope, absent evidence and unknown availability cannot establish no impact. Bounded populations and summaries state completeness and refuse overflow explicitly.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-7",
+      "expected": "Controlled pair-bound assessments preserve the original pair/policy and every discovered obligation, reasoned disposition, action and immutable conclusion. No-action, investigation, required revision and re-verification remain distinct. Pair/policy changes require explicit reassessment while retaining prior judgments; closure requires complete accounting under the pinned policy and never implies release approval.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-8",
+      "expected": "Verification follow-through retains exact criterion/method/candidate/support states and explains whether selected recorded outcomes apply to the target configuration, independently of unrelated live-head changes. Existing current-head verification keeps its meaning. Failed/not_run results stay non-passing; generic reviews/status strings cannot override changed governing criteria, incomplete accounting or unknown support. Work executed after configuration capture can support that candidate only through validated exact input correspondence and explicit provenance, never by silently adding membership.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-9",
+      "expected": "Core, typed HTTP/client and CLI/agent interfaces share the same domain operations, captured queries and original-intent recovery. Atomic guards reject stale/concurrent/invalid proposals without partial state/history/evidence/outcomes; failed reads pause writes and uncertain writes are inspected without automatic replay. Existing API/storage/receipt/configuration/baseline/assessment/verification contracts retain their semantics and historical readability.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-10",
+      "expected": "The shared workspace captures/selects the pair, explains native/content/topology differences and comparable/unknown scope, investigates consequences, records dispositions, opens appropriate existing assessment/verification follow-through and shows outstanding/resolved work. Drafts survive navigation, stale inputs require explicit adoption, lost responses use shared recovery and supported responsive views preserve exact context. A fresh independent agent completes an unfamiliar task and material findings are addressed; human validation remains separate.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-11",
+      "expected": "A justified real Tracer software change retains exact before/after configurations and original conclusions, identifies actual changed and unaffected scope, completes necessary assessment/verification and explains final remaining work without manufactured engineering claims. A materially different configured domain demonstrates the same semantics. Exact candidate/procedure/results cover additions/removals, reference/content changes, unavailable/deleted inputs, partial/incompatible scope, drift, supersession/reassessment and workload/payload boundaries.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-12",
+      "expected": "Existing identities, native/evidence history, command outcomes and both prior application capabilities are preserved; necessary migrations are rehearsed and deterministic export/online SQLite backup/restored recovery verified. Appropriate regression, browser, architecture and quality gates pass unchanged. Owning architecture/usage docs, checkpoint and register retain exact evidence, unchanged criteria, delivery/verification/human-validation distinctions and remaining limits. Full goal acceptance is audited before completion.",
+      "verification": "not_run"
+    }
+  ],
+  "realCase": {
+    "selection": "The actual required enhancement to src/application/configurations.ts and its capture/interface/receipt integration, changing native-only captures without stable recovery into explicit recoverable configurations with selected content/context. This is directly necessary for fixed-candidate comparison, not an artificial product defect or cosmetic change.",
+    "originalCandidate": "Current committed native-only configurations at commit 99bfe3a, identified by exact audit source hashes; preserve these bytes/captures before changing the implementation.",
+    "engineeringContext": "Use the existing real Tracer requirements/methods, component and reusable source-resource identities. Declare a bounded actual verification basis for the new capture/comparison semantics. Keep unrelated currently verified REQ-011 and its three activities/two conclusions available as an unaffected control; determine applicability from actual selected inputs rather than treating the entire project as affected.",
+    "before": "Capture the installed model, exact relevant requirement/method/design/source states, declared relationships and existing supporting observations. Legacy lack of content/topology scope must remain visible; an explicit new captured state may reuse old observations and native versions without rewriting the legacy capture.",
+    "change": "Implement only the selected specification through shared contracts; retain original source states and genuinely executed verification evidence.",
+    "after": "Capture the changed source/native candidate with explicit content/context, compare the exact pair, reason about changed capture semantics and affected/unaffected declared uses, perform justified follow-through and retain exact final judgments/results.",
+    "qualification": "Software engineering verification on Tracer; no representative-human, physical-product or standards-conformity claim. A planned real case is not an executed proof."
+  },
+  "representationDecisions": [
+    "No new structural primitive or second evidence store. Configuration capture remains an immutable capture protocol over native pins and identified observed content.",
+    "Extend configuration capture additively with caller identity, exact original intent/guards and explicit optional context/content scope; retain legacy absence meanings. Choose final wire fields only after checking stored decoder/export compatibility and capture recovery invariants.",
+    "Reuse existing comparison/value/capture semantics through explicit selected-state resolvers; do not spoof a repository current head, substitute latest observations or duplicate verification rules.",
+    "Reuse controlled assessment/disposition/action/conclusion mechanisms with an explicit pair-bound source. Decide the least disruptive additive source/version/API representation through a concrete composition probe before implementing lifecycle changes; never reinterpret existing baseline/current scopes.",
+    "Configuration removal is membership change, not an inferred native tombstone. A document hash delta alone leaves passage impact unknown.",
+    "Allow engineering work/evidence to be recorded after the candidate capture with explicit correspondence; do not mutate the immutable configuration to pretend those activities existed at capture time."
+  ],
+  "initialBounds": {
+    "reuse": "Existing configurations bound 100 native members and 200 explicit relationship pins. Select concrete content/response/comparison/work budgets during contract design and prove boundary/overflow behavior; do not relax existing limits or call a partial list complete.",
+    "ui": "Use the selected shared medical-device map experience and existing native task/draft/recovery owners across examples.",
+    "backend": "Local SQLite only; retain portable application/repository boundaries."
+  },
+  "implementationSequence": [
+    "Register scope and acceptance; preserve native112 backup and audit evidence; resolve additive capture/state/composition contracts.",
+    "Build/reuse exact immutable configuration capture and deterministic complete comparison, with stale/unknown/legacy/payload cases.",
+    "Compose pair-bound applicability/assessment and exact target-configuration verification through shared services; prove core/HTTP/CLI parity.",
+    "Expose complete shared workspace tasks with retained drafts, original-intent recovery and outstanding-work explanations.",
+    "Execute real Tracer and second-domain tasks, fresh-agent comprehension, full unchanged gates, complete acceptance audit, final register/export/backup/preservation."
+  ],
+  "exclusions": [
+    "Restoration/rollback or arbitrary branching/merging.",
+    "Universal approval/release lifecycle or regulatory conformity.",
+    "Authenticated team hosting, PostgreSQL/new backends or cloud providers.",
+    "Automatic engineering causation, inferred undeclared scope, passage reanchoring or retained external file bytes.",
+    "Arbitrary-scale readiness or representative-human validation without participant evidence."
+  ],
+  "unresolvedDesignQuestions": [
+    "Exact additive capture fields and compatible validation for legacy configurations, including mixed historical schemas and explicit unavailable content states.",
+    "Least disruptive alternate source for controlled change assessment, keeping existing operation/response contracts interpretable by old callers.",
+    "Shared selected-state projection sufficient for configuration-bound verification without duplicating existing governing/support/accounting rules.",
+    "Concrete measured cardinality/byte/work budgets and complete paged discovery ownership.",
+    "Configured second-domain case and an explicit real-case criterion/method/input selection before final execution."
+  ]
+}

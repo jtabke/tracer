@@ -23,9 +23,9 @@ The [2026-10-21 audit](../../docs/development-model-plan.md) identified mixed gr
 - `goal`: the existing UN-001–005 product direction.
 - `user_need`: PN-01–09, with evidence qualifications and validation status.
 - `story`: ND/SC/Q/R candidate tasks, retaining acceptance examples and uncertainties.
-- `requirement`: REQ-001–034 behavioral obligations, including the selected local primitive slice REQ-027–030 and the selected requirement-verification specification REQ-034, with numbered criteria, capability area and independent status; TR-001–017 are preserved historical summaries.
+- `requirement`: REQ-001–035 behavioral obligations, including the selected local primitive slice REQ-027–030 and the completed local requirement-verification capability REQ-034 and selected configuration-change specification REQ-035, with numbered criteria, capability area and independent status; TR-001–017 are preserved historical summaries.
 - `component`: COMP-TRACER and its system/subcomponent responsibilities, organized by `part_of` and allocated from requirements.
-- `verification_plan`: VER-001–034 planned methods and expected results against exact acceptance. A plan is not an executed result.
+- `verification_plan`: VER-001–035 planned methods and expected results against exact acceptance. A plan is not an executed result.
 - `work_item`: selected work and proposed next/later actions, with rationale and requirement links.
 - `source`: captured document sections or owner requests, with paths, headings and whole-file SHA-256 hashes where applicable.
 - `artifact`: exact design/source/test/report references. Initial component source references identify ownership boundaries; they do not establish conformance.
