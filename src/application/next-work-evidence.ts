@@ -28,12 +28,13 @@ export async function evidenceWork(tx: Transaction) {
   const account = workByteBudget();
   for (const receipt of current) {
     const comparison = await compareReceiptState(tx, receipt);
+    const comparedInputs = [...comparison.inputs, ...(comparison.relationshipInputs ?? [])];
     const row: WorkEvidence = {
       receiptId: receipt.id,
       output: workRecord(receipt.output),
       outcome: receipt.outcome,
-      changedInputs: comparison.inputs.filter((input) => input.hasChanged).length,
-      unknownInputs: comparison.inputs.filter((input) => input.hasUnknown).length,
+      changedInputs: comparedInputs.filter((input) => input.hasChanged).length,
+      unknownInputs: comparedInputs.filter((input) => input.hasUnknown).length,
       reviewState: comparison.review.state,
       reviewReason: reviewReason(comparison.review),
     };
