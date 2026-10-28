@@ -519,6 +519,22 @@ A selected definition is validated against its original governing schema and is 
 
 This read service prepares shared application configuration. Assessment scope, disposition/action operations and controlled completion remain under implementation; a writable compatibility result does not establish those capabilities or an engineering conclusion.
 
+## Open a scoped change assessment
+
+Use `tracer.changeAssessments.open(request, provenance)`, POST `/api/change-assessments/open`, or CLI `assessment open JSON`. This currently opens an assessment; disposition, refresh, closure and dedicated UI authoring remain under implementation.
+
+A request contains:
+
+- `commandId` and `assessmentId`: stable identities captured before sending. Use a new command ID for deliberately changed intent.
+- `title`, `purpose`, and `model: {entityId, version, field}`: explicit engineering purpose and exact resolved model selection.
+- `query: {baselineId, rootId, direction, relationshipTypes, depth?}`: the selected impact traversal. An empty type list selects only the root. Pages/cursors are not accepted as a complete population.
+- `additionalFields`: explicit project fields outside the controlled role bindings, commonly `{}`.
+- `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`: all required. Resolve the model to obtain a consistent preparation context; a conflict requires deliberate re-preparation.
+
+The result is the same native-plus-receipt shape as an evaluation command. The assessment's configured scope field retains its exact population, reasons/reachability and read basis. The opening receipt captures that assessment output and the native model version, and establishes no engineering conclusion. Discovery rejects above 25 candidates, 25 examined receipt rows or 64 KiB, retaining the existing impact traversal bounds. Narrow the declared investigation explicitly rather than treating a truncated page as complete.
+
+After an uncertain response, read `/api/evaluation-outcome?commandId=...` or run `evaluation outcome COMMAND_ID`. `null` means no visible success and does not prove an in-flight request failed. A deliberate exact repeat recovers the original result before current guards; clients never retry automatically. Never use an ordinary edited closed status as proof that the pending closure contract has been executed.
+
 ## Atomic evaluation operations
 
 Use `tracer.evaluations.commit(command, provenance)` when native project updates and one execution/analysis receipt must succeed together. Separate `applyChangeset` and `evidence.recordReceipt` calls remain separate transactions. Project schema and captured roles define engineering meaning; the operation does not execute tests or infer verification status.
