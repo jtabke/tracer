@@ -101,6 +101,10 @@ The UI searches the complete bounded project snapshot and shows up to 50 matchin
 
 ## Scoped change assessments
 
+For an exact captured change, start in **Configurations → Compare configurations**, apply the pair and choose **Assess displayed pair** with an explicit investigation root. Explicitly start the offered assessment, choose its model/traversal and prepare it. Pair candidate context reads the selected before/after states; later project edits do not replace them. The baseline/current workflow below remains available.
+
+Within a pair assessment, **Verify after configuration** offers a case bound to the after capture. Prepare criteria and methods from that target, record actual results, select/account for activities and conclude. Supporting inputs distinguish selected resource defaults from independent contextual reference uses. Inspect target-qualified support judgments separately from live-head drift. Return to the assessment and attach the controlled conclusion under an action's **After-target verification conclusion**. Refresh scope and account for new candidates before completion. A raw passing report, review or link does not establish controlled verification.
+
 Use **Project tools → Change assessments** when a change needs an independently tracked scope, candidate judgments and unfinished actions. This is different from reviewing one captured receipt's applicability. The project must already contain a versioned change-assessment application model; [application-model setup](developer-reference.md#pinned-application-models) explains installation without silently changing existing projects.
 
 1. Choose **New assessment**, select the application model/version, and enter a title and purpose. Select the changed record and a named native baseline. Choose direction, relationship kinds and depth deliberately. No relationship kinds means the root record and its declared captured uses. If there are no baselines, name and capture the current native state first.

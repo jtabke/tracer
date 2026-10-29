@@ -54,7 +54,7 @@ export function ControlledConfigurationCapture({
         Select exact native revisions, explicit relationships and observed content. Omitted scope is
         not inferred.
       </p>
-      <ApplicationRecovery report={editing.report} refresh={refresh} />
+      {active && <ApplicationRecovery report={editing.report} refresh={refresh} />}
       <button disabled={editing.busy} onClick={refresh}>
         Refresh capture context
       </button>

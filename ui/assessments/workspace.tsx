@@ -1,3 +1,4 @@
+import type { ConfigurationHandoff } from "../configuration-handoff.ts";
 import { useState } from "react";
 import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import type { Editing } from "../editing.ts";
@@ -16,7 +17,11 @@ export function AssessmentWorkspace({
   active,
   changed,
   onDirty,
+  intent,
+  onVerify,
 }: {
+  intent?: ConfigurationHandoff;
+  onVerify?(value: Omit<ConfigurationHandoff, "sequence">): void;
   entities: Entity[];
   schema: SchemaObject | null;
   editing: Editing;
@@ -24,22 +29,32 @@ export function AssessmentWorkspace({
   changed(): void;
   onDirty(value: boolean): void;
 }) {
-  const [selected, setSelected] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [newKey, setNewKey] = useState(0);
-  const [dirty, setDirty] = useState(false);
-  const [epoch, setEpoch] = useState(0);
+  const [navigation, setNavigation] = useState<{
+    selected: string;
+    creating: boolean;
+    key: number;
+    openingPair?: ConfigurationHandoff;
+    acceptedSequence: number;
+  }>({ selected: "", creating: false, key: 0, acceptedSequence: 0 });
+  const { selected, creating, key: newKey, openingPair, acceptedSequence } = navigation;
+  const [dirty, setDirty] = useState(false),
+    [epoch, setEpoch] = useState(0);
   const models = modelChoices(entities, schema),
     candidates = assessmentChoices(entities);
   useAssessmentDirty(dirty, onDirty);
-  const navigate = (id: string, create: boolean) => {
+  const navigate = (id: string, create: boolean, pair?: ConfigurationHandoff) => {
     if (editing.busy) return;
     if (dirty && !window.confirm("Discard this assessment draft to choose another assessment?"))
       return;
     setDirty(false);
-    setSelected(id);
-    setCreating(create);
-    setNewKey((value) => value + 1);
+    setNavigation((previous) => ({
+      ...previous,
+      selected: id,
+      creating: create,
+      key: previous.key + 1,
+      openingPair: pair,
+      acceptedSequence: pair?.sequence ?? previous.acceptedSequence,
+    }));
   };
   const refresh = () => {
     setEpoch((value) => value + 1);
@@ -56,7 +71,21 @@ export function AssessmentWorkspace({
         create={() => navigate("", true)}
         refresh={refresh}
       />
-      <ApplicationRecovery report={editing.report} refresh={refresh} />
+      {active && <ApplicationRecovery report={editing.report} refresh={refresh} />}
+      {intent && intent.sequence !== acceptedSequence && (
+        <section aria-label="Incoming configuration investigation">
+          <p>
+            A compared pair is available. Your current assessment draft is retained until you
+            explicitly start another assessment.
+          </p>
+          <p>
+            {intent.pair.beforeId} → {intent.pair.afterId} · root {intent.rootId}
+          </p>
+          <button disabled={editing.busy} onClick={() => navigate("", true, intent)}>
+            Start assessment for displayed pair
+          </button>
+        </section>
+      )}
       <div className="assessment-layout">
         <AssessmentCatalogue
           candidates={candidates}
@@ -68,6 +97,7 @@ export function AssessmentWorkspace({
           {creating && (
             <AssessmentOpening
               key={newKey}
+              pair={openingPair}
               entities={entities}
               schema={schema}
               models={models}
@@ -76,14 +106,14 @@ export function AssessmentWorkspace({
               changed={refresh}
               onOpened={(id) => {
                 setDirty(false);
-                setCreating(false);
-                setSelected(id);
+                setNavigation((previous) => ({ ...previous, creating: false, selected: id }));
                 refresh();
               }}
             />
           )}
           {!creating && selected && (
             <LocatedAssessment
+              onVerify={onVerify}
               selected={selected}
               entities={entities}
               editing={editing}
@@ -94,8 +124,8 @@ export function AssessmentWorkspace({
           )}
           {!creating && !selected && (
             <p>
-              Select a recorded assessment or start one from a named baseline and explicit change
-              scope.
+              Select a recorded assessment or start one from a named baseline or exact configuration
+              pair and explicit change scope.
             </p>
           )}
         </div>
@@ -105,6 +135,7 @@ export function AssessmentWorkspace({
 }
 
 function LocatedAssessment({
+  onVerify,
   selected,
   entities,
   editing,
@@ -112,6 +143,7 @@ function LocatedAssessment({
   onDirty,
   changed,
 }: {
+  onVerify?(value: Omit<ConfigurationHandoff, "sequence">): void;
   selected: string;
   entities: Entity[];
   editing: Editing;
@@ -136,6 +168,7 @@ function LocatedAssessment({
       )}
       {located.retained && (
         <AssessmentDetail
+          onVerify={onVerify}
           key={selected}
           view={located.retained}
           entities={entities}

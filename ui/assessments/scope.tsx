@@ -8,6 +8,7 @@ import type {
 import { useProjection } from "../use-projection.ts";
 import { EvidenceInputs } from "../evidence-inputs.tsx";
 import { label } from "../entity-label.ts";
+import { PairCandidateContext } from "./pair-context.tsx";
 
 export function AssessmentCandidateContext({
   subject,
@@ -27,7 +28,9 @@ export function AssessmentCandidateContext({
   )!;
   return (
     <section className="assessment-candidate-context" aria-label="Selected candidate context">
-      {candidate.kind === "receipt" ? (
+      {view.scope.version === 2 ? (
+        <PairCandidateContext scope={view.scope} subject={subject} epoch={epoch} report={report} />
+      ) : candidate.kind === "receipt" ? (
         <ReceiptCandidateContext candidate={candidate} epoch={epoch} report={report} />
       ) : (
         <NativeCandidateContext

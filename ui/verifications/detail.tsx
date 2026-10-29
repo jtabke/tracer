@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { VerificationAnalysis } from "../../src/core/verification-lifecycle.ts";
 import type { VerificationEditorProps } from "./common.ts";
 import { verificationCommand, executionName, useRecoveredVerification } from "./common.ts";
@@ -38,7 +38,12 @@ export function VerificationDetail({
       <h3>{analysis.view.case.title}</h3>
       <VerificationSummary analysis={analysis} />
       <VerificationObligations analysis={analysis} />
-      <VerificationActivities analysis={analysis} entities={entities} onInspect={setInspect} />
+      <VerificationActivities
+        analysis={analysis}
+        entities={entities}
+        blocked={Boolean(analysis.view.scope.target && review.dirty)}
+        onInspect={setInspect}
+      />
       {inspect && (
         <ExecutionInspection
           analysis={analysis}
@@ -46,40 +51,23 @@ export function VerificationDetail({
           epoch={epoch}
           editing={editing}
           reviewBlocked={!current || dirty}
+          changed={changed}
+          onTargetDirty={(dirty) => setReview((previous) => ({ ...previous, dirty }))}
           onReview={(receiptId) =>
             setReview((previous) => ({ ...previous, receiptId, active: true }))
           }
         />
       )}
-      {review.receiptId && (
-        <>
-          <p>
-            Reviewing inputs judges applicability; it does not change recorded outcomes or verify
-            changed governing criteria. The pinned project policy controls whether assessed design
-            changes can support a conclusion.
-          </p>
-          {!review.active && (
-            <button onClick={() => setReview((previous) => ({ ...previous, active: true }))}>
-              Return to activity input review
-            </button>
-          )}
-          <EvidenceReviewStage
-            receiptId={review.receiptId}
-            active={review.active}
-            epoch={epoch + editing.epoch}
-            busy={!current || dirty}
-            changed={changed}
-            mutate={editing.mutate}
-            report={editing.report}
-            returnLabel="Return to verification activity"
-            onReturn={() => setReview((previous) => ({ ...previous, active: false }))}
-            onDraftChange={(dirty) => setReview((previous) => ({ ...previous, dirty }))}
-            onReceiptChangeBlocked={(receiptId) =>
-              setReview((previous) => ({ ...previous, receiptId }))
-            }
-          />
-        </>
-      )}
+      <ActivityInputReview
+        analysis={analysis}
+        review={review}
+        setReview={setReview}
+        epoch={epoch}
+        editing={editing}
+        current={current}
+        dirty={dirty}
+        changed={changed}
+      />
       {review.dirty && (
         <p role="status">
           Save or discard the retained input review before authoring or concluding verification.
@@ -209,6 +197,14 @@ function VerificationSummary({ analysis: a }: { analysis: VerificationAnalysis }
     <section aria-label="Verification status">
       <h4>{text}</h4>
       <p>{a.view.scope.purpose}</p>
+      {a.view.scope.target ? (
+        <p>
+          Selected configuration: {a.view.scope.target.configurationId} ·{" "}
+          {a.view.scope.target.policy}. Live engineering changes do not rebase this target.
+        </p>
+      ) : (
+        <p>Engineering context: current project head.</p>
+      )}
       <p>
         Requirement {a.view.scope.basis.requirement.title} · declared v
         {a.view.scope.basis.requirement.version} · Governing basis: {a.basis.state}
@@ -284,7 +280,9 @@ function VerificationActivities({
   analysis,
   entities,
   onInspect,
+  blocked,
 }: {
+  blocked: boolean;
   analysis: VerificationAnalysis;
   entities: VerificationEditorProps["entities"];
   onInspect(id: string): void;
@@ -296,7 +294,7 @@ function VerificationActivities({
       <ul aria-label="Verification activities">
         {analysis.executions.map((x) => (
           <li key={x.id}>
-            <button type="button" onClick={() => onInspect(x.id)}>
+            <button type="button" disabled={blocked} onClick={() => onInspect(x.id)}>
               {executionName(analysis, x.id, entities)}
             </button>
             <span>
@@ -393,4 +391,56 @@ function VerificationEditor({
     default:
       return null;
   }
+}
+
+type ActivityReviewState = { receiptId: string; active: boolean; dirty: boolean };
+function ActivityInputReview({
+  analysis,
+  review,
+  setReview,
+  epoch,
+  editing,
+  current,
+  dirty,
+  changed,
+}: {
+  analysis: VerificationAnalysis;
+  review: ActivityReviewState;
+  setReview: Dispatch<SetStateAction<ActivityReviewState>>;
+  epoch: number;
+  editing: VerificationEditorProps["editing"];
+  current: boolean;
+  dirty: boolean;
+  changed(): void;
+}) {
+  if (!review.receiptId || analysis.view.scope.target) return null;
+  return (
+    <>
+      <p>
+        Reviewing inputs judges applicability; it does not change recorded outcomes or verify
+        changed governing criteria. The pinned project policy controls whether assessed design
+        changes can support a conclusion.
+      </p>
+      {!review.active && (
+        <button onClick={() => setReview((previous) => ({ ...previous, active: true }))}>
+          Return to activity input review
+        </button>
+      )}
+      <EvidenceReviewStage
+        receiptId={review.receiptId}
+        active={review.active}
+        epoch={epoch + editing.epoch}
+        busy={!current || dirty}
+        changed={changed}
+        mutate={editing.mutate}
+        report={editing.report}
+        returnLabel="Return to verification activity"
+        onReturn={() => setReview((previous) => ({ ...previous, active: false }))}
+        onDraftChange={(dirty) => setReview((previous) => ({ ...previous, dirty }))}
+        onReceiptChangeBlocked={(receiptId) =>
+          setReview((previous) => ({ ...previous, receiptId }))
+        }
+      />
+    </>
+  );
 }

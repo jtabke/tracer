@@ -1,16 +1,36 @@
 import { useState } from "react";
 import type { Entity } from "../../src/core/model.ts";
-import type { InputDeclaration, RelationshipDeclaration } from "../../src/core/evidence.ts";
+import type { Configuration } from "../../src/core/configuration.ts";
+import type { VerificationTargetPolicy } from "../../src/core/verification-case.ts";
+import type { VerificationSupportDraft } from "./common.ts";
+export type { VerificationSupportDraft } from "./common.ts";
+import { TargetVerificationInputs } from "./target-inputs.tsx";
 import type { Editing } from "../editing.ts";
 import { RecordChoice } from "../application-choices.tsx";
 import { RecordedMaterialChoice } from "../recorded-material.tsx";
 import type { RecordedMaterial } from "../recorded-material.tsx";
 import { label } from "../entity-label.ts";
-export type VerificationSupportDraft = {
-  inputs: InputDeclaration[];
-  relationshipInputs: RelationshipDeclaration[];
-};
 export function VerificationInputs({
+  target,
+  policy,
+  ...props
+}: Parameters<typeof CurrentVerificationInputs>[0] & {
+  target?: Configuration;
+  policy?: VerificationTargetPolicy;
+}) {
+  return target ? (
+    <TargetVerificationInputs
+      target={target}
+      policy={policy ?? "target-input-correspondence-v1"}
+      editing={props.editing}
+      value={props.value}
+      onChange={props.onChange}
+    />
+  ) : (
+    <CurrentVerificationInputs {...props} />
+  );
+}
+function CurrentVerificationInputs({
   entities,
   editing,
   value,

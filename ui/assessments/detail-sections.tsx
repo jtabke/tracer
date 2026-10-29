@@ -100,6 +100,12 @@ export function AssessmentObligations({
               aria-pressed={subject?.id === item.subject.id && subject?.kind === item.subject.kind}
               onClick={() => choose(item.subject)}
             >
+              {item.subject.kind === "receipt"
+                ? "Evaluation"
+                : item.subject.kind === "entity"
+                  ? "Record"
+                  : "Connection"}{" "}
+              · {item.subject.id.slice(0, 8)} ·{" "}
               {item.label ??
                 candidateName(item.subject, entities, analysis.obligations.indexOf(item))}{" "}
               · {item.state.replaceAll("_", " ")}

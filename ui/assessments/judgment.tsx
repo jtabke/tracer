@@ -141,6 +141,9 @@ function JudgmentForm(props: JudgmentProps) {
           />
         </label>
         <AssessmentSupport
+          configurationId={
+            analysis.view.scope.version === 2 ? analysis.view.scope.query.afterId : undefined
+          }
           title="Judgment support"
           value={draft.support}
           entities={entities}
@@ -148,6 +151,9 @@ function JudgmentForm(props: JudgmentProps) {
           onChange={(support) => patch({ support })}
         />
         <AssessmentActions
+          configurationId={
+            analysis.view.scope.version === 2 ? analysis.view.scope.query.afterId : undefined
+          }
           value={draft.actions}
           existingIds={existing?.actions.map((action) => action.id) ?? []}
           allowWaiver={analysis.view.model.definition.policy.allowActionWaiver === true}

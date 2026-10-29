@@ -4,6 +4,7 @@ import type { SupportReference } from "../../src/core/change-assessment.ts";
 import type { Editing } from "../editing.ts";
 import { label } from "../entity-label.ts";
 import { RecordChoice } from "./choices.tsx";
+import { ConfigurationConclusionSupport } from "./conclusion-support.tsx";
 import { SupportMaterialChoice } from "./support-material.tsx";
 
 export function AssessmentSupport({
@@ -12,7 +13,9 @@ export function AssessmentSupport({
   entities,
   editing,
   onChange,
+  configurationId,
 }: {
+  configurationId?: string;
   title: string;
   value: SupportReference[];
   entities: Entity[];
@@ -110,6 +113,16 @@ export function AssessmentSupport({
       <button type="button" disabled={!selected || value.length >= 10} onClick={add}>
         Add {title.toLowerCase()}
       </button>
+      {configurationId && (
+        <ConfigurationConclusionSupport
+          title={title}
+          configurationId={configurationId}
+          entities={entities}
+          editing={editing}
+          full={value.length >= 10}
+          add={(reference) => onChange([...value, reference])}
+        />
+      )}
     </details>
   );
 }

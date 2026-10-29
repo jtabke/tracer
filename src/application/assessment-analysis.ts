@@ -1,3 +1,4 @@
+import type { Entity, Relationship } from "../core/model.ts";
 import { ensure, TracerError } from "../core/model.ts";
 import type { Transaction } from "./ports/repository.ts";
 import type {
@@ -94,17 +95,23 @@ async function candidateLabel(
   subject: CandidateKey,
   selected?: PairAssessmentState,
 ) {
-  const value =
-    subject.kind === "receipt"
-      ? (await tx.getEvidence("receipt", subject.id))?.output
-      : selected
-        ? subject.kind === "entity"
-          ? ((await selected.after.getEntity(subject.id)) ??
-            (await selected.before.getEntity(subject.id)))
-          : ((await selected.after.getRelationship(subject.id)) ??
-            (await selected.before.getRelationship(subject.id)))
-        : await tx.get(subject.kind, subject.id);
+  if (subject.kind === "receipt") {
+    const receipt = await tx.getEvidence("receipt", subject.id);
+    return receipt
+      ? `${receipt.outcome.slice(0, 120)} · ${candidateObjectLabel(receipt.output)}`.slice(0, 200)
+      : `Removed receipt ${subject.id.slice(0, 8)}`;
+  }
+  const value = selected
+    ? subject.kind === "entity"
+      ? ((await selected.after.getEntity(subject.id)) ??
+        (await selected.before.getEntity(subject.id)))
+      : ((await selected.after.getRelationship(subject.id)) ??
+        (await selected.before.getRelationship(subject.id)))
+    : await tx.get(subject.kind, subject.id);
   if (!value) return `Removed ${subject.kind} ${subject.id.slice(0, 8)}`;
+  return candidateObjectLabel(value);
+}
+function candidateObjectLabel(value: Entity | Relationship) {
   const title = typeof value.fields.title === "string" ? value.fields.title : undefined;
   const identity =
     "source" in value ? value.type : (value.key ?? value.resource?.label ?? value.type);

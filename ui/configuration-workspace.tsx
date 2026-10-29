@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Configuration } from "../src/core/configuration.ts";
 import type { Entity } from "../src/core/model.ts";
 import type { Editing } from "./editing.ts";
+import type { ConfigurationHandoff } from "./configuration-handoff.ts";
 import { ControlledConfigurationCapture } from "./configuration-capture.tsx";
 import { ConfigurationPairWorkspace } from "./configuration-pair.tsx";
 import { useApplicationDirty } from "./application-choices.tsx";
@@ -12,17 +13,21 @@ import { useProjection } from "./use-projection.ts";
 export type ConfigurationIntent = { id: string; sequence: number };
 
 export function ConfigurationWorkspace({
+  active = true,
   editing,
   entities,
   onDirty,
+  onAssess,
   changed,
   intent,
   returnLabel,
   onReturn,
 }: {
+  active?: boolean;
   editing: Editing;
   entities: Entity[];
   onDirty(value: boolean): void;
+  onAssess?(value: Omit<ConfigurationHandoff, "sequence">): void;
   changed(): void;
   intent?: ConfigurationIntent;
   returnLabel?: string;
@@ -35,6 +40,7 @@ export function ConfigurationWorkspace({
     captureKey: 0,
   });
   const [dirty, setDirty] = useState(false);
+  const captureActive = active && mode === "capture";
   const capturing = mode === "capture",
     comparing = mode === "compare";
   const setMode = (mode: string) => setNavigation((previous) => ({ ...previous, mode }));
@@ -63,11 +69,7 @@ export function ConfigurationWorkspace({
           <button onClick={() => setMode("capture")}>Capture configuration</button>
           <button onClick={() => setMode("compare")}>Compare configurations</button>
           <NewCaptureButton dirty={dirty} busy={editing.busy} start={startCapture} />
-          {onReturn && (
-            <button className="text-action" onClick={onReturn}>
-              {returnLabel ?? "Return to previous task"}
-            </button>
-          )}
+          <ConfigurationReturn onReturn={onReturn} label={returnLabel} />
         </header>
         <div className={`configuration-catalog-layout ${selected ? "has-selection" : ""}`}>
           <ConfigurationCatalog catalog={catalog} selected={selected} onSelect={setSelected} />
@@ -83,7 +85,7 @@ export function ConfigurationWorkspace({
       </div>
       <ControlledConfigurationCapture
         key={captureKey}
-        active={capturing}
+        active={captureActive}
         onReturn={() => setMode("catalog")}
         entities={entities}
         editing={editing}
@@ -91,6 +93,7 @@ export function ConfigurationWorkspace({
         changed={changed}
       />
       <ConfigurationPairWorkspace
+        onAssess={onAssess}
         catalog={catalog}
         editing={editing}
         active={comparing}
@@ -225,5 +228,14 @@ function SelectedConfiguration({
       )}
       {value && <ConfigurationDetails key={value.id} value={value} />}
     </section>
+  );
+}
+
+function ConfigurationReturn({ onReturn, label }: { onReturn?: () => void; label?: string }) {
+  if (!onReturn) return null;
+  return (
+    <button className="text-action" onClick={onReturn}>
+      {label ?? "Return to previous task"}
+    </button>
   );
 }

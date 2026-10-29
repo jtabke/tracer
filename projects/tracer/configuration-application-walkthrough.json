@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-28",
+  "status": "synthetic_unfamiliar_agent_task_completed_findings_addressed_with_actual_project_orientation_pending",
+  "method": "Fresh agent without parent history; UI-only disposable project; no source, API or SQL inspection. Browser preview/CUA failed; Node Playwright UI fallback explicitly authorized. Both browser sessions closed.",
+  "original": {
+    "path": "output/configuration-change/application-first-use-findings.md",
+    "sha256": "d5890be4dd715c077775f91486ed592b71acf8bf574ce7a04fd1da43496dfdd5",
+    "markdown": "# First-use configuration-change walkthrough\n\nCompleted in the disposable project at http://127.0.0.1:58115 using browser UI only. No repository/source, direct application API, SQL, or fixture internals were read. All engineering records and performed checks are synthetic software interaction exercises; none establishes physical performance, representative-human validation, release approval, or external artifact behavior.\n\n## Outcome\n\n- Compared **Before requirement change** with **After requirement change**: exact comparability; requirement v1 → v2, schema changed; two native selections and one relationship unchanged; no observed-content selections.\n- Statement changed from “Use the explicit engineering criterion and method” to “The changed candidate must preserve exact input context and explain its result.” Acceptance remains “AC-1: Retain exact 🧪 inputs. AC-2: Explain the recorded result.”\n- Created **Synthetic criterion change follow-through**, judged the changed requirement as requiring reverification, and recorded a reverify action.\n- Created **Synthetic after-candidate input and result exercise**, pinned to After configuration `aacae86e-5d48-4e9d-af20-e45e24682b83`, requirement v2, declared method v1, verification model v1. Deliberately selected the entire acceptance field and assigned the method.\n- Performed and recorded only the actual synthetic UI exercise: fixed pair context was displayed, after-target context survived preparation/opening, full acceptance including 🧪 was retained, and observations explicitly explained both acceptance clauses. Recorded that limited exercise as passed, explicitly selected its execution, accounted for the activity, and concluded verification.\n- UI showed **Verified for this declared scope**, case v4, retained conclusion at native revision 14, source coverage complete, zero unassigned criteria, current result selection, zero unassessed activities, passed/current obligation.\n- Attached the genuine controlled after-target conclusion to the requirement action and saved **Done with evidence**. Refreshed discovery and judged all eight candidates, including intermediate verification receipts.\n- Final UI: **Scope accounted · 8 of 8 candidates accounted**; recorded state **assessed · v12 · model v1**, native revision 24; **Discovery: current**; every candidate has zero open actions.\n- Original evaluation `86b27997-d283-431a-9dfb-4bd1b16504af` was inspected and preserved: **Synthetic original failure retained for change investigation**, requirement v1 statement input. It was explicitly treated as historical, never rewritten into a pass.\n\nNothing remains before completion of this declared synthetic assessment scope. Any broader validation needs its own real evidence and scope; no such work was represented as completed.\n\n## Exact UI route and decisions\n\n1. Opened the project; initial map selected an opaque model-definition UUID with one artifact and zero links.\n2. **Project tools → Configurations → Before requirement change → Compare configurations**. Selected Before and After by name and clicked **Compare selected pair**.\n3. Selected **Criterion-bearing record · v2** as investigation root; **Assess displayed pair → Start assessment for displayed pair**.\n4. Selected the available application model, entered title/purpose, chose both directions, all four offered relationship kinds, depth 1, **Prepare assessment → Open assessment**.\n5. Opened requirement candidate, inspected fixed after JSON, chose **Reverification required**, supplied rationale, **Add action**, kind **Reverify**, then saved judgment.\n6. **Verify after configuration → Start verification for after configuration**. Selected available verification model, requirement, title/purpose, **Prepare verification basis → Use entire acceptance field**, checked method assignment, supplied basis rationale, **Open verification**.\n7. **Record activity**, selected Declared method, entered actual conditions/observations/result rationale and limited synthetic outcome; saved. **Choose results**, selected activity, entered accounting rationale and selection reason, saved. Supplied lifecycle reason, **Conclude verification**.\n8. **Return to change assessments**, opened requirement, expanded **Action 1 support**, selected genuine controlled conclusion under **After-target verification conclusion**, added it, changed state to **Done with evidence**, supplied resolution and saved.\n9. UI warned discovery changed; supplied reason and **Refresh selected scope**. Candidate count grew from 4 to 8. Opened every remaining candidate, inspected its native facts or recorded outcome, and saved individual no-additional-action judgments with scoped rationale. Original failure was preserved as historical, not applicable proof of after success.\n10. With 8/8 accounted, discovery current and zero open actions, supplied explicit scope-limited reason and **Complete assessment**. Verified assessed state.\n\n## Findings by severity\n\n**Medium — candidate identity is hard to distinguish.** Initially two rows both read `test_plan · Declared method · undisposed`; one was a native method and one the original failed evaluation. After verification, three rows shared the verification-case title but represented opening, selection and conclusion receipts. Their differences became clear only after opening each. Add candidate kind/receipt purpose and short identity to the list.\n\n**Medium — first landing gives weak task orientation.** The initial map showed a model-definition UUID, no meaningful title, one artifact, and no links. Finding the named configurations required opening Project tools. The task was still discoverable without workflow hints, but the landing context did not explain the project or next useful action.\n\n**Medium — transient absence text can mislead.** Starting verification briefly showed “No verification model definitions are installed. Configure the project through Model or the headless installation interface first.” Once loading settled, the existing model appeared. Similarly, configurations and exact candidates initially rendered loading/empty intermediate states. Loading should not temporarily assert absence or recommend installation.\n\n**Low — dependency uncertainty is technically precise but difficult to interpret.** Newly created case/execution receipts showed selected after native `vunknown`, while the receipt said no known changed inputs and the controlled verification was current. I kept judgments limited to the selected scope and did not infer full applicability. Plain-language explanation of out-of-pair dependencies would help.\n\n**Positive — completion gates explain the distinction between records and conclusions.** Activity recording did not select results; selected passing results still required explicit conclusion. After-target action support required a genuine controlled conclusion. Discovery refresh preserved old obligations and added new receipt candidates. Assessed scope was distinct from release approval.\n\n## Mistakes, assistance, and status interpretation\n\n- No engineering data entry was rejected, no failure overwritten, and no workflow hints were requested. I chose the entire acceptance field intentionally rather than selecting separate clauses; observations explicitly accounted for both.\n- I initially read bodies immediately after some transitions and saw loading or transient empty states, then reread once settled. I also inspected all offered UI form labels/options to locate controls; no application internals were consulted.\n- “Exact” means selected captures are comparable, not engineering impact assessed. “Undisposed” means no candidate judgment. “Open actions” means a judgment exists but follow-through remains. “Accounted” means candidate obligations are handled. “Discovery: changed” means scope must be refreshed before completion. “Verified for this declared scope” means an explicit controlled conclusion for that scope. “Scope accounted / assessed” means selected assessment scope complete, not release approval.\n\n## Responsive inspection (separate from completion)\n\nAt 390 × 844, body width and scroll width were both 390; task dialog width and scroll width were both 354. Title, purpose, assessed status, current discovery and action controls were readable with wrapping and vertical scrolling. The recorded-assessment list has its own short scroll region; its selected row was vertically clipped before scrolling, which adds navigation friction but did not cause horizontal overflow. Screenshots: `first-use-mobile.png`, `first-use-mobile-status.png`, `first-use-mobile-context.png`.\n\n## Tool failures (not product findings)\n\nUsed preview_status first, then preview_open. Open reported Tracer loaded, but three preview_snapshot attempts timed out (with and without explicit tab/image options). CUA fallback reported no available browsers/IAB; native Chrome getApp timed out and reset. Parent explicitly authorized Node Playwright fallback for DOM/UI-only interaction after these failures. No workflow guidance was supplied. Used one inspectable persistent browser session, confined to the requested origin; closed it and the preview tab before returning.\n"
+  },
+  "taskResult": {
+    "candidatesAccounted": 8,
+    "candidatesTotal": 8,
+    "openActions": 0,
+    "discovery": "current",
+    "assessmentState": "assessed",
+    "controlledExactAfterVerification": true,
+    "originalFailurePreserved": true
+  },
+  "triage": [
+    {
+      "finding": "Indistinguishable native and evaluation candidates",
+      "action": "Candidate rows identify kind, short identity and recorded evaluation purpose. Receipt purpose uses its recorded outcome as bounded display context; no engineering meaning is inferred from text.",
+      "files": ["src/application/assessment-analysis.ts", "ui/assessments/detail-sections.tsx"],
+      "status": "fixed_focused_browser_regression_passed"
+    },
+    {
+      "finding": "Loading briefly claims models absent",
+      "action": "Only report absent target models after the exact target read succeeds; delayed read regression asserts loading without installation advice.",
+      "files": ["ui/verifications/basis.tsx", "test/configuration-application-browser.spec.ts"],
+      "status": "fixed_focused_browser_regression_passed"
+    },
+    {
+      "finding": "Selected after vunknown wording",
+      "action": "Explicitly say there is no selected after native state and that it is outside or unresolved in the pair.",
+      "files": ["ui/assessments/pair-context.tsx"],
+      "status": "clarified"
+    },
+    {
+      "finding": "Weak initial map orientation",
+      "action": "Retain for actual-project walkthrough. This tiny fixture initially selects an unconfigured model-definition identity; it does not establish a new product requirement or justify a new dashboard.",
+      "status": "actual_project_evaluation_pending"
+    }
+  ],
+  "focusedRegression": {
+    "command": "npx playwright test test/configuration-application-browser.spec.ts test/configuration-reference-authoring-browser.spec.ts test/assessment-ui-browser.spec.ts test/verification-ui-browser.spec.ts --workers=1",
+    "passed": 16,
+    "log": "output/configuration-change/application-handoff-first-use-fixes-browser.log",
+    "sha256": "ee0862b8a6c5cc84e395c6de72a7ab7a66fbc3ec568950634d3a22045ad419d3"
+  },
+  "responsive": {
+    "width": 390,
+    "bodyScrollWidth": 390,
+    "dialogWidth": 354,
+    "dialogScrollWidth": 354,
+    "horizontalOverflow": false
+  },
+  "qualifications": [
+    "Synthetic agent comprehension is not representative-human validation.",
+    "Recorded passing results cover the actual synthetic UI exercise, not physical method execution or external artifact performance.",
+    "Actual real/second-domain engineering follow-through and complete original acceptance remain pending."
+  ]
+}

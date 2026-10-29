@@ -1,3 +1,4 @@
+import { useVerificationActivityTarget, VerificationTargetReadStatus } from "./activity-target.tsx";
 import { useState } from "react";
 import type { VerificationCriterionResult } from "../../src/core/verification-case.ts";
 import type { VerificationEditorProps } from "./common.ts";
@@ -9,6 +10,7 @@ import type { RecordedMaterial } from "../recorded-material.tsx";
 import { VerificationInputs } from "./inputs.tsx";
 import type { VerificationSupportDraft } from "./inputs.tsx";
 type ActivityDraft = {
+  attempt?: string;
   methodId: string;
   title: string;
   conditions: string;
@@ -38,16 +40,26 @@ export function VerificationExecutionEditor({
       support: { inputs: [], relationshipInputs: [] },
       extra: {},
     }),
-    [attempt, setAttempt] = useState<string>(),
     [ids] = useState(() => ({
       executionId: crypto.randomUUID(),
       membershipId: crypto.randomUUID(),
     }));
-  const { methodId, title, conditions, prior, source, sourceReason, results, support, extra } =
-    draft;
+  const {
+    methodId,
+    title,
+    conditions,
+    prior,
+    source,
+    sourceReason,
+    results,
+    support,
+    extra,
+    attempt,
+  } = draft;
   function update(patch: Partial<ActivityDraft>) {
     setDraft((previous) => ({ ...previous, ...patch }));
   }
+  const setAttempt = (attempt: string | undefined) => update({ attempt });
   const setMethodId = (value: string) => update({ methodId: value });
   const setTitle = (value: string) => update({ title: value });
   const setConditions = (value: string) => update({ conditions: value });
@@ -57,9 +69,10 @@ export function VerificationExecutionEditor({
   const setResults = (value: ActivityDraft["results"]) => update({ results: value });
   const setSupport = (value: VerificationSupportDraft) => update({ support: value });
   const setExtra = (value: Record<string, string>) => update({ extra: value });
+  const target = useVerificationActivityTarget(captured, editing);
   const method = captured.view.scope.basis.methods.find((x) => x.entityId === methodId),
     stale = !samePreparation(captured, analysis),
-    current = ready && !editing.busy && !stale;
+    current = ready && !editing.busy && !stale && target.ready;
   useApplicationDirty(
     !!(
       title ||
@@ -131,6 +144,7 @@ export function VerificationExecutionEditor({
           </button>
         </p>
       )}
+      <VerificationTargetReadStatus failed={target.failed} />
       <fieldset disabled={!current}>
         <label>
           Activity title
@@ -219,6 +233,8 @@ export function VerificationExecutionEditor({
           setResults={setResults}
         />
         <VerificationInputs
+          target={target.retained}
+          policy={captured.view.scope.target?.policy}
           entities={entities}
           editing={editing}
           value={support}

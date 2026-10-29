@@ -10,7 +10,9 @@ export function AssessmentActions({
   entities,
   editing,
   onChange,
+  configurationId,
 }: {
+  configurationId?: string;
   value: AssessmentAction[];
   existingIds: string[];
   allowWaiver: boolean;
@@ -70,6 +72,7 @@ export function AssessmentActions({
             />
           </label>
           <AssessmentSupport
+            configurationId={configurationId}
             title={`Action ${index + 1} support`}
             value={action.support}
             entities={entities}
@@ -103,8 +106,9 @@ export function AssessmentActions({
         Add action
       </button>
       <p>
-        Recorded actions keep their identity. Done requires known current support; reverification
-        requires a related current evaluation. The application validates these rules when saving.
+        Recorded actions keep their identity. Done requires known current or applicable target
+        support. Pair reverification requires a genuine controlled conclusion for the exact after
+        target and related engineering scope. The application validates these rules when saving.
       </p>
     </section>
   );

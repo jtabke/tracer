@@ -4,19 +4,24 @@ import type { ConfigurationPair } from "../src/core/configuration-comparison.ts"
 import type { Editing } from "./editing.ts";
 import { useConfigurations, ConfigurationPaging } from "./configurations.tsx";
 import { useProjection } from "./use-projection.ts";
+import { ConfigurationChoice } from "./configuration-choice.tsx";
 import { ConfigurationDifferences } from "./configuration-differences.tsx";
 import { ConfigurationDependencies } from "./configuration-dependencies.tsx";
+import { ConfigurationInvestigation } from "./configuration-investigation.tsx";
+import type { ConfigurationHandoff } from "./configuration-handoff.ts";
 
 export function ConfigurationPairWorkspace({
   catalog,
   editing,
   active,
   onReturn,
+  onAssess,
 }: {
   catalog: ReturnType<typeof useConfigurations>;
   editing: Editing;
   active: boolean;
   onReturn(): void;
+  onAssess?(value: Omit<ConfigurationHandoff, "sequence">): void;
 }) {
   const [before, setBefore] = useState<Configuration>(),
     [after, setAfter] = useState<Configuration>();
@@ -69,44 +74,8 @@ export function ConfigurationPairWorkspace({
           explicitly to adopt these choices.
         </p>
       )}
-      <ReadConfigurationPair pair={pair} editing={editing} epoch={epoch} />
+      <ReadConfigurationPair pair={pair} editing={editing} epoch={epoch} onAssess={onAssess} />
     </section>
-  );
-}
-
-function ConfigurationChoice({
-  title,
-  value,
-  items,
-  onChange,
-  disabled = false,
-}: {
-  title: string;
-  value?: Configuration;
-  items: Configuration[];
-  onChange(value: Configuration | undefined): void;
-  disabled?: boolean;
-}) {
-  return (
-    <label>
-      {title}
-      <select
-        aria-label={title}
-        value={value?.id ?? ""}
-        disabled={disabled}
-        onChange={(e) => onChange(items.find((x) => x.id === e.target.value))}
-      >
-        <option value="">Choose an exact capture</option>
-        {value && !items.some((x) => x.id === value.id) && (
-          <option value={value.id}>{value.name} · retained selection</option>
-        )}
-        {items.map((x) => (
-          <option key={x.id} value={x.id}>
-            {x.name} · {x.members.length} members · {x.at}
-          </option>
-        ))}
-      </select>
-    </label>
   );
 }
 
@@ -114,10 +83,12 @@ function ReadConfigurationPair({
   pair,
   editing,
   epoch,
+  onAssess,
 }: {
   pair: ConfigurationPair | undefined;
   editing: Editing;
   epoch: number;
+  onAssess?(value: Omit<ConfigurationHandoff, "sequence">): void;
 }) {
   const [retry, setRetry] = useState(0);
   const comparison = useProjection(
@@ -144,6 +115,14 @@ function ReadConfigurationPair({
       {comparison.retained && (
         <>
           <ConfigurationDifferences value={comparison.retained} />
+          {onAssess && (
+            <ConfigurationInvestigation
+              key={comparison.retained.basis.digest}
+              value={comparison.retained}
+              ready={comparison.ready && !editing.busy}
+              onAssess={onAssess}
+            />
+          )}
           <ConfigurationDependencies
             key={comparison.retained.basis.digest}
             pair={comparison.retained.basis}

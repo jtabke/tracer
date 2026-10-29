@@ -6,11 +6,15 @@ import type { Editing } from "../editing.ts";
 import { AdditionalFields, RecordChoice, useApplicationDirty } from "../application-choices.tsx";
 import type { applicationModelChoices } from "../application-choices.tsx";
 import { fieldsFrom } from "../fields.tsx";
-import { useProjection } from "../use-projection.ts";
+import { useVerificationBasisSource } from "./basis-source-state.ts";
+import { VerificationTargetChoice } from "./target-choice.tsx";
+import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { VerificationTargetPolicy } from "../../src/core/verification-case.ts";
 import { CriterionSource, MethodAssignments } from "./basis-source.tsx";
 import type { BasisCapture } from "./basis-source.tsx";
 import { verificationCommand, useRecoveredVerification } from "./common.ts";
 type BasisEditorProps = {
+  intent?: ConfigurationHandoff;
   models?: ReturnType<typeof applicationModelChoices>;
   entities: Entity[];
   editing: Editing;
@@ -21,6 +25,8 @@ type BasisEditorProps = {
   ready?: boolean;
 };
 type BasisFields = {
+  targetId: string;
+  targetPolicy: VerificationTargetPolicy;
   modelKey: string;
   requirementId: string;
   title: string;
@@ -32,10 +38,15 @@ type BasisFields = {
   assignments: Record<string, string[]>;
   mapping: Record<string, string | null>;
 };
-function initialBasisFields(revision: VerificationAnalysis | undefined): BasisFields {
+function initialBasisFields(
+  revision: VerificationAnalysis | undefined,
+  intent?: ConfigurationHandoff,
+): BasisFields {
   return {
     modelKey: "",
-    requirementId: revision?.view.scope.basis.requirement.entityId ?? "",
+    targetId: revision?.view.scope.target?.configurationId ?? intent?.pair.afterId ?? "",
+    targetPolicy: revision?.view.scope.target?.policy ?? "target-reference-uses-v2",
+    requirementId: revision?.view.scope.basis.requirement.entityId ?? intent?.rootId ?? "",
     title: "",
     purpose: "",
     reason: "",
@@ -57,17 +68,9 @@ function useBasisDraft({
   saved,
   revision,
   ready = true,
-}: {
-  models?: ReturnType<typeof applicationModelChoices>;
-  entities: Entity[];
-  editing: Editing;
-  epoch: number;
-  onDirty(value: boolean): void;
-  saved(id: string): void;
-  revision?: VerificationAnalysis;
-  ready?: boolean;
-}) {
-  const [draft, setDraft] = useState(() => initialBasisFields(revision)),
+  intent,
+}: BasisEditorProps) {
+  const [draft, setDraft] = useState(() => initialBasisFields(revision, intent)),
     [preparation, setPreparation] = useState<{
       capture: BasisCapture;
       revision: VerificationAnalysis | undefined;
@@ -76,6 +79,8 @@ function useBasisDraft({
     [ids] = useState(() => ({ caseId: crypto.randomUUID(), membershipId: crypto.randomUUID() }));
   const {
       modelKey,
+      targetId,
+      targetPolicy,
       requirementId,
       title,
       purpose,
@@ -104,44 +109,47 @@ function useBasisDraft({
   function setCapture(value: BasisCapture | undefined) {
     setPreparation(value ? { capture: value, revision } : undefined);
   }
-  const pin =
-    revision?.view.model.pin ?? (modelKey !== "" ? models[Number(modelKey)]?.pin : undefined);
-  const model = useProjection(
-      "/api/verification-model",
-      pin,
-      editing.epoch + epoch,
-      editing.report,
-    ),
-    definition = model.retained?.definition;
-  const links = useProjection(
-    "/api/relationships",
-    definition && requirementId
-      ? { source: requirementId, type: definition.relationships.requirementMethod, limit: 100 }
-      : undefined,
-    editing.epoch + epoch,
-    editing.report,
+  const source = useVerificationBasisSource(
+    { models, entities, modelKey, requirementId, targetId, modelPin: revision?.view.model.pin },
+    editing,
+    epoch,
   );
-  const dirty = !!(title || purpose || reason || criteria.length || Object.keys(extra).length);
+  const { model, definition } = source;
+  const dirty = [
+    title,
+    purpose,
+    reason,
+    criteria.length,
+    Object.keys(extra).length,
+    targetId,
+    modelKey,
+  ].some(Boolean);
   useApplicationDirty(dirty, onDirty);
   useRecoveredVerification(attempt, revision?.view.case.id ?? ids.caseId, editing, epoch, () =>
     saved(revision?.view.case.id ?? ids.caseId),
   );
   const stale =
-    !!capture && JSON.stringify(capture.model.context) !== JSON.stringify(model.retained?.context);
+    !!capture &&
+    (JSON.stringify(capture.model.context) !== JSON.stringify(model.retained?.context) ||
+      (capture.target?.id ?? "") !== targetId ||
+      (capture.targetPolicy ?? targetPolicy) !== targetPolicy);
   function prepare() {
-    const requirement = entities.find((x) => x.id === requirementId);
-    if (!model.ready || !model.data || !links.ready || !requirement) return;
+    const requirement = source.entities.find((x) => x.id === requirementId);
+    if (!model.ready || !model.data || !source.ready || !requirement) return;
     setCapture(
       structuredClone({
         model: model.data,
         requirement,
-        methods: entities.filter((x) => x.type === model.data!.definition.method.type),
-        links: links.data!.items,
+        methods: source.entities.filter((x) => x.type === model.data!.definition.method.type),
+        links: source.relationships,
+        ...(source.target.data
+          ? { target: { id: source.target.data.id, name: source.target.data.name }, targetPolicy }
+          : {}),
       }),
     );
   }
   async function submit() {
-    if (!ready || !capture || stale || !model.ready || !links.ready) return;
+    if (!ready || !capture || stale || !model.ready || !source.ready) return;
     const basis: PrepareVerificationBasis = {
       model: capture.model.pin,
       requirement: { entityId: capture.requirement.id, version: capture.requirement.version },
@@ -169,6 +177,9 @@ function useBasisDraft({
         const request = {
           ...verificationCommand(preparedRevision, reason),
           basis,
+          ...(capture.target
+            ? { targetConfigurationId: capture.target.id, targetPolicy: capture.targetPolicy }
+            : {}),
           mapping: preparedRevision.view.scope.basis.criteria.map((c) => ({
             fromId: c.id,
             toId: Object.hasOwn(mapping, c.id)
@@ -190,6 +201,9 @@ function useBasisDraft({
           title,
           purpose,
           basis,
+          ...(capture.target
+            ? { targetConfigurationId: capture.target.id, targetPolicy: capture.targetPolicy }
+            : {}),
           additionalFields: fieldsFrom(extra, capture.model.requiredFields.case ?? {}),
           expectedSchemaVersion: capture.model.context.schemaVersion,
           expectedProjectRevision: capture.model.context.projectRevision,
@@ -206,12 +220,27 @@ function useBasisDraft({
     }
   }
   return {
-    models,
-    entities,
+    models: source.models,
+    entities: source.entities,
     editing,
     epoch,
     revision,
     ready,
+    targetId,
+    targetPolicy,
+    source,
+    setTargetId: (targetId: string) => {
+      if (
+        criteria.length &&
+        !window.confirm(
+          "Changing the engineering target clears criterion ranges and method assignments. Continue?",
+        )
+      )
+        return;
+      update({ targetId, modelKey: "", criteria: [], assignments: {} });
+      setCapture(undefined);
+    },
+    setTargetPolicy: (targetPolicy: VerificationTargetPolicy) => update({ targetPolicy }),
     modelKey,
     setModelKey,
     requirementId,
@@ -237,7 +266,6 @@ function useBasisDraft({
     preparedRevision,
     model,
     definition,
-    links,
     stale,
     prepare,
     submit,
@@ -246,7 +274,8 @@ function useBasisDraft({
 type BasisDraft = ReturnType<typeof useBasisDraft>;
 export function VerificationBasisEditor(props: BasisEditorProps) {
   const draft = useBasisDraft(props);
-  const { revision, ready, editing, submit, model, links, requirementId, capture, prepare } = draft;
+  const { revision, ready, editing, submit, model, source, requirementId, capture, prepare } =
+    draft;
   return (
     <form
       aria-label={revision ? "Revise verification basis" : "Open verification case"}
@@ -257,11 +286,20 @@ export function VerificationBasisEditor(props: BasisEditorProps) {
     >
       <h3>{revision ? "Revise the governing basis" : "New verification"}</h3>
       <fieldset disabled={!ready || editing.busy}>
+        <VerificationTargetChoice
+          id={draft.targetId}
+          target={source.target.retained}
+          policy={draft.targetPolicy}
+          bound={Boolean(revision?.view.scope.target)}
+          editing={editing}
+          onChange={draft.setTargetId}
+          onPolicy={draft.setTargetPolicy}
+        />
         {!revision && <BasisIdentity draft={draft} />}
-        {(model.loading || links.loading) && (
+        {(model.loading || source.loading) && (
           <p role="status">Reading model and method connections…</p>
         )}
-        {(model.failed || links.failed) && (
+        {(model.failed || source.failed) && (
           <p role="alert">
             Preparation could not be read; retained choices are not permission to save.
           </p>
@@ -269,13 +307,13 @@ export function VerificationBasisEditor(props: BasisEditorProps) {
         <button
           type="button"
           disabled={
-            !model.ready || !links.ready || !model.data?.compatibility.writable || !requirementId
+            !model.ready || !source.ready || !model.data?.compatibility.writable || !requirementId
           }
           onClick={prepare}
         >
           {capture ? "Reprepare current basis" : "Prepare verification basis"}
         </button>
-        {links.retained?.nextAfter && (
+        {source.truncated && (
           <p>
             Only the first 100 method connections are offered. Narrow the project requirement/method
             scope before choosing additional methods; this list is not complete coverage.
@@ -304,6 +342,7 @@ function BasisIdentity({ draft }: { draft: BasisDraft }) {
     criteria,
     setCriteria,
     setAssignments,
+    source,
   } = draft;
   return (
     <>
@@ -336,7 +375,7 @@ function BasisIdentity({ draft }: { draft: BasisDraft }) {
           ))}
         </select>
       </label>
-      {!models.length && (
+      {!models.length && (!draft.targetId || source.target.ready) && (
         <p>
           No verification model definitions are installed. Configure the project through Model or
           the headless installation interface first.
@@ -400,11 +439,16 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
     extra,
     setExtra,
     model,
-    links,
+    source,
   } = draft;
   if (!capture) return null;
   return (
     <>
+      {capture.target && (
+        <p>
+          Target: {capture.target.name} · {capture.target.id} · {capture.targetPolicy}
+        </p>
+      )}
       <p>
         Requirement:{" "}
         {String(capture.requirement.fields[capture.model.definition.requirement.fields.title])} · v
@@ -455,7 +499,7 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
           onChange={setExtra}
         />
       )}
-      <button type="submit" disabled={stale || !model.ready || !links.ready || !criteria.length}>
+      <button type="submit" disabled={stale || !model.ready || !source.ready || !criteria.length}>
         {revision ? "Save revised basis" : "Open verification"}
       </button>
     </>

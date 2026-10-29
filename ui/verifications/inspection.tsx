@@ -2,6 +2,7 @@ import type { Receipt } from "../../src/core/evidence.ts";
 import type { VerificationExecutionView } from "../../src/core/verification-case.ts";
 import type { VerificationAnalysis } from "../../src/core/verification-lifecycle.ts";
 import type { VerificationEditorProps } from "./common.ts";
+import { VerificationTargetReview } from "./target-review.tsx";
 import { useProjection } from "../use-projection.ts";
 export function ExecutionInspection({
   analysis,
@@ -10,7 +11,11 @@ export function ExecutionInspection({
   editing,
   onReview,
   reviewBlocked,
+  changed,
+  onTargetDirty,
 }: {
+  changed(): void;
+  onTargetDirty(value: boolean): void;
   analysis: VerificationAnalysis;
   executionId: string;
   epoch: number;
@@ -46,37 +51,25 @@ export function ExecutionInspection({
       )}
       {detail && (
         <>
-          <p>
-            Method v{detail.data.methodVersion} · case basis v{detail.data.basisVersion} · current
-            record {detail.execution.currentVersion ?? "unavailable"}
-          </p>
-          <p>
-            Interpretation inputs: {detail.comparison.record.state}
-            {detail.comparison.source &&
-              ` · Original activity inputs: ${detail.comparison.source.state}`}
-          </p>
+          <RecordedActivityIdentity detail={detail} />
           <ActivitySource
+            target={Boolean(detail.targetSupport)}
             detail={detail}
             blocked={reviewBlocked || !read.ready}
             onReview={onReview}
           />
-          <h5>Conditions</h5>
-          <pre>
-            {typeof detail.data.conditions === "string"
-              ? detail.data.conditions
-              : JSON.stringify(detail.data.conditions, null, 2)}
-          </pre>
-          <ol>
-            {detail.data.results.map((x) => (
-              <li key={x.criterionId}>
-                <strong>
-                  {x.criterionId} · {analysis.view.model.definition.outcomes[x.outcome]}
-                </strong>
-                <p>{x.actual}</p>
-                <p>{x.rationale}</p>
-              </li>
-            ))}
-          </ol>
+          {detail.targetSupport && (
+            <VerificationTargetReview
+              support={detail.targetSupport}
+              analysis={analysis}
+              executionId={executionId}
+              editing={editing}
+              ready={read.ready && !reviewBlocked}
+              changed={changed}
+              onDirty={onTargetDirty}
+            />
+          )}
+          <RecordedActivityResults detail={detail} analysis={analysis} />
         </>
       )}
       {receipt.failed && <p role="alert">Captured supporting inputs could not be read.</p>}
@@ -89,7 +82,9 @@ function ActivitySource({
   detail,
   blocked,
   onReview,
+  target,
 }: {
+  target: boolean;
   detail: VerificationExecutionView;
   blocked: boolean;
   onReview(receiptId: string): void;
@@ -102,10 +97,12 @@ function ActivitySource({
           ? `Earlier activity, explicitly interpreted. Original actor: ${source.actor}; recorded at ${source.recordedAt}. ${source.rationale}`
           : "Current activity and execution state recorded with explicit conditions and results. A not-run result does not claim method execution."}
       </p>
-      <button disabled={blocked} onClick={() => onReview(detail.receiptId)}>
-        Compare and review activity inputs
-      </button>
-      {source.kind === "prior_receipt" && (
+      {!target && (
+        <button disabled={blocked} onClick={() => onReview(detail.receiptId)}>
+          Compare and review activity inputs
+        </button>
+      )}
+      {!target && source.kind === "prior_receipt" && (
         <button disabled={blocked} onClick={() => onReview(source.receiptId)}>
           Compare and review original activity inputs
         </button>
@@ -139,5 +136,51 @@ function CapturedActivityInputs({ receipt }: { receipt: Receipt }) {
         ))}
       </ul>
     </details>
+  );
+}
+
+function RecordedActivityResults({
+  detail,
+  analysis,
+}: {
+  detail: VerificationExecutionView;
+  analysis: VerificationAnalysis;
+}) {
+  return (
+    <>
+      <h5>Conditions</h5>
+      <pre>
+        {typeof detail.data.conditions === "string"
+          ? detail.data.conditions
+          : JSON.stringify(detail.data.conditions, null, 2)}
+      </pre>
+      <ol>
+        {detail.data.results.map((x) => (
+          <li key={x.criterionId}>
+            <strong>
+              {x.criterionId} · {analysis.view.model.definition.outcomes[x.outcome]}
+            </strong>
+            <p>{x.actual}</p>
+            <p>{x.rationale}</p>
+          </li>
+        ))}
+      </ol>{" "}
+    </>
+  );
+}
+
+function RecordedActivityIdentity({ detail }: { detail: VerificationExecutionView }) {
+  return (
+    <>
+      <p>
+        Method v{detail.data.methodVersion} · case basis v{detail.data.basisVersion} · current
+        record {detail.execution.currentVersion ?? "unavailable"}
+      </p>
+      <p>
+        Interpretation inputs: {detail.comparison.record.state}
+        {detail.comparison.source &&
+          ` · Original activity inputs: ${detail.comparison.source.state}`}
+      </p>
+    </>
   );
 }

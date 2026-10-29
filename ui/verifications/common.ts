@@ -1,3 +1,4 @@
+import type { InputDeclaration, RelationshipDeclaration } from "../../src/core/evidence.ts";
 import type { VerificationAnalysis } from "../../src/core/verification-lifecycle.ts";
 import type { Entity } from "../../src/core/model.ts";
 import { label } from "../entity-label.ts";
@@ -34,35 +35,9 @@ export type VerificationEditorProps = {
   saved(): void;
   onDirty(value: boolean): void;
 };
-import { useEffect, useEffectEvent, useRef } from "react";
-import { useProjection } from "../use-projection.ts";
-export function useRecoveredVerification(
-  commandId: string | undefined,
-  outputId: string,
-  editing: import("../editing.ts").Editing,
-  epoch: number,
-  saved: () => void,
-) {
-  const outcome = useProjection(
-      "/api/evaluation-outcome",
-      commandId ? { commandId } : undefined,
-      editing.epoch + epoch,
-      editing.report,
-    ),
-    handled = useRef("");
-  const confirmed = useEffectEvent(saved);
-  useEffect(() => {
-    if (
-      editing.busy ||
-      !outcome.ready ||
-      !outcome.data ||
-      !commandId ||
-      handled.current === commandId
-    )
-      return;
-    if (outcome.data.commandId === commandId && outcome.data.receipt.output.id === outputId) {
-      handled.current = commandId;
-      confirmed();
-    }
-  }, [editing.busy, outcome.ready, outcome.data, commandId, outputId]);
-}
+export { useRecoveredApplication as useRecoveredVerification } from "../use-application-outcome.ts";
+
+export type VerificationSupportDraft = {
+  inputs: InputDeclaration[];
+  relationshipInputs: RelationshipDeclaration[];
+};

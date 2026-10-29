@@ -102,6 +102,8 @@ Drafts retain captured basis through refresh and map returns; stale context requ
 
 ### Configuration-change task — selected direction, workspace pending
 
+Implementation status: capture/comparison, explicit pair-to-assessment and after-target verification handoffs, independent supporting-reference choices, target-qualified support review and controlled-conclusion selection are implemented. Integrated verification is in progress; actual real/second-domain follow-through, actual-project orientation review and full original acceptance remain pending. A fresh agent completed the synthetic task; candidate identity and loading findings were addressed. The heading retains its existing anchor for prior evidence links.
+
 REQ-035 / WORK-027 extends the existing Configurations, Change assessments and Verification tasks in this shared workspace. The complete task starts with an explicitly named before/after pair and keeps those identities visible through comparison, investigation and follow-through. Changing either side is deliberate and starts a fresh judgment context; a refresh of live evidence does not change the selected pair. Existing baseline/current tasks remain available with their original meanings.
 
 Capture authoring must select exact native members, relationship revisions and observed content separately, disclose scope/completeness, and distinguish unavailable content from an unselected dependency. Reuse the controlled capture operation and shared uncertain-save recovery with a retained stable identity and original proposal. Existing native-only captures stay readable with their qualifications. Do not automatically fill omitted relationships or latest observations.

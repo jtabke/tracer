@@ -587,7 +587,15 @@ Use **Compare configurations** to choose before/after captures, then **Compare s
 
 When recording a native-input receipt against a controlled capture, choose **Configuration input facet** for each input. Native annotations retain the exact native pin; observed content uses that configuration's exact observation and cannot select a latest replacement. A null/unselected content state has no selectable observed-content facet; a recorded unavailable observation retains its unavailable meaning. Changing the facet resets field scope, and content inputs do not carry native field selectors. Legacy native-only capture bases retain their original meaning.
 
-Controlled capture and pair/dependency inspection are exposed here. Pair-assessment and target-verification authoring/handoff remain headless while the complete workspace task is integrated; use their documented shared operations below rather than infer completion from this screen.
+To follow through, select an **Investigation root** under the displayed comparison and choose **Assess displayed pair**. This passes the displayed pair, even if you have changed a picker without applying it. **Start assessment for displayed pair** explicitly opens another assessment draft; an existing draft is retained until you confirm replacing it. Select the assessment model and traversal, then prepare and open the assessment. The **Exact configuration pair** source can also be chosen directly in New assessment.
+
+From that assessment, **Verify after configuration** offers a new case targeting its exact after capture. Explicitly start the case, select the captured verification model and requirement, prepare the basis, assign exact criteria to captured methods, and explain coverage. The requirement, methods and mappings resolve from the target rather than later live edits. A target change requires explicit basis revision; it cannot silently return an existing targeted case to current-head semantics.
+
+Record activity results and supporting inputs separately. Target input choices distinguish native annotations, observed content and selected direct connections. Under the V2 target policy, choose each **Supporting contextual reference** independently; B/C/B uses of one resource retain separate states and selectors. Selecting a reference also declares its exact qualified connection. Passage relevance remains unknown unless separately established. In activity inspection, **Target support layer** judgments use the selected configuration namespace; generic live-head reviews cannot establish target applicability.
+
+Return to the assessment to retain its pending judgment. Under an action's support, use **After-target verification conclusion** to select the genuine controlled conclusion for the exact target. The service validates coverage and related engineering scope; a generic passing report cannot discharge reverification. Explicitly refresh selected scope to discover new evaluations, retain earlier obligations, and account for newly discovered candidates before completing.
+
+These shared authoring paths are implemented and under integrated verification. Full real-task acceptance and representative-human evaluation remain pending. A [fresh-agent synthetic walkthrough](../projects/tracer/configuration-application-walkthrough.json) completed scoped follow-through and records its findings and limits.
 
 For explicit historical annotation reads, use `getNativePin(id, version, "annotations")`, GET `/api/native-pin?facet=annotations&id=...&version=...`, or `native-pin annotations ID VERSION`. Discover `native-annotation-pins`. Default native-pin reads still refuse external members, and neither form observes or retains bytes.
 
@@ -625,7 +633,7 @@ The shared engine checks authenticated origin, selected target, complete passing
 
 Use existing guarded disposition/action and close operations. Unknown scope cannot establish no impact, and closure accounts only for declared scope. Candidate/population/work limits refuse overflow; narrow the investigation explicitly rather than assuming a partial list is complete. After a lost response, inspect `evaluation outcome COMMAND_ID` and retain the original request. Exact repeat recovery preserves original intent; changed input under the same identity conflicts. Do not automatically retry an uncertain write.
 
-Pair assessment is currently a headless capability undergoing integrated verification; shared workspace authoring and full real-task acceptance are still pending. Existing baseline queries and historical/current support modes retain their meanings.
+Pair assessment is exposed through the shared workspace and headless operations; full real-task acceptance remains pending. Existing baseline queries and historical/current support modes retain their meanings.
 
 ## Controlled verification cases and execution capture
 

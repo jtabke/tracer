@@ -4,8 +4,20 @@ import type {
   ApplicationModelPin,
   ResolvedApplicationModel,
 } from "../../src/core/application-model.ts";
+import { canonical } from "../../src/core/evidence.ts";
+import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { AssessmentScopeQuery } from "../../src/core/change-assessment.ts";
+import {
+  AssessmentPairChoice,
+  useAssessmentSource,
+  assessmentRootChoices,
+  assessmentRelationshipChoices,
+} from "./opening-source.tsx";
+import type { AssessmentSourceDraft } from "./opening-source.tsx";
 import type { OpenChangeAssessment } from "../../src/core/change-assessment.ts";
 import type { Editing } from "../editing.ts";
+import { ModelChoice, BaselineChoice, TraversalChoice } from "./opening-fields.tsx";
+import { useRecoveredApplication } from "../use-application-outcome.ts";
 import { fieldsFrom } from "../fields.tsx";
 import { useProjection } from "../use-projection.ts";
 import {
@@ -16,6 +28,7 @@ import {
 } from "./choices.tsx";
 
 type OpeningProps = {
+  pair?: ConfigurationHandoff;
   models: ReturnType<typeof modelChoices>;
   entities: Entity[];
   schema: SchemaObject | null;
@@ -52,6 +65,10 @@ export function AssessmentOpening(props: OpeningProps) {
     setAfter,
     model,
     baselines,
+    sourceState,
+    setSource,
+    sourceRead,
+    prepare,
     stale,
     blocked,
     open,
@@ -106,25 +123,55 @@ export function AssessmentOpening(props: OpeningProps) {
         <RecordChoice
           name="Changed record"
           required
-          entities={entities}
+          entities={assessmentRootChoices(entities, sourceRead.comparison.retained)}
           value={rootId}
           onChange={setRootId}
         />
-        <BaselineChoice
-          baselines={baselines}
-          baselineId={baselineId}
-          after={after}
-          editing={editing}
-          model={model.data}
-          changed={changed}
-          onChoose={setBaselineId}
-          onPage={(cursor) => {
-            setBaselineId("");
-            setAfter(cursor);
-          }}
-        />
+        <label>
+          Investigation source
+          <select
+            aria-label="Assessment investigation source"
+            value={sourceState.source}
+            onChange={(e) =>
+              setSource({ source: e.target.value as AssessmentSourceDraft["source"] })
+            }
+          >
+            <option value="baseline">Baseline compared with current state</option>
+            <option value="configuration_pair">Exact configuration pair</option>
+          </select>
+        </label>
+        {sourceState.source === "configuration_pair" ? (
+          <AssessmentPairChoice
+            value={sourceState}
+            comparison={sourceRead.comparison.retained}
+            editing={editing}
+            onChange={setSource}
+          />
+        ) : (
+          <>
+            <BaselineChoice
+              baselines={baselines}
+              baselineId={baselineId}
+              after={after}
+              editing={editing}
+              model={model.data}
+              changed={changed}
+              onChoose={setBaselineId}
+              onPage={(cursor) => {
+                setBaselineId("");
+                setAfter(cursor);
+              }}
+            />
+          </>
+        )}
+        {sourceRead.comparison.failed && (
+          <p role="alert">
+            The selected pair could not be read. Draft scope is retained; preparation and opening
+            are paused.
+          </p>
+        )}
         <TraversalChoice
-          schema={schema}
+          availableTypes={assessmentRelationshipChoices(schema, sourceRead.comparison.retained)}
           direction={direction}
           types={types}
           depth={depth}
@@ -146,8 +193,10 @@ export function AssessmentOpening(props: OpeningProps) {
       )}
       <button
         type="button"
-        disabled={editing.busy || !model.ready || !model.data?.compatibility.writable}
-        onClick={() => setPrepared(model.data)}
+        disabled={
+          editing.busy || !model.ready || !model.data?.compatibility.writable || !sourceRead.ready
+        }
+        onClick={prepare}
       >
         {prepared ? "Adopt refreshed scope context" : "Prepare assessment"}
       </button>
@@ -161,10 +210,11 @@ export function AssessmentOpening(props: OpeningProps) {
     </form>
   );
 }
-type OpeningDraft = {
+type OpeningPreparation = { model: ResolvedApplicationModel; query: AssessmentScopeQuery };
+type OpeningDraft = AssessmentSourceDraft & {
   modelKey: string;
   pin: ApplicationModelPin | undefined;
-  prepared: ResolvedApplicationModel | undefined;
+  prepared: OpeningPreparation | undefined;
   title: string;
   purpose: string;
   rootId: string;
@@ -176,14 +226,18 @@ type OpeningDraft = {
   after: string | undefined;
   identity: { assessmentId: string; commandId: string };
 };
-function useOpening({ editing, onOpened, onDirty }: OpeningProps) {
+function useOpening({ editing, onOpened, onDirty, pair }: OpeningProps) {
+  const [attempt, setAttempt] = useState<string>();
   const [draft, setDraft] = useState<OpeningDraft>(() => ({
     modelKey: "",
     pin: undefined,
     prepared: undefined,
     title: "",
     purpose: "",
-    rootId: "",
+    rootId: pair?.rootId ?? "",
+    source: pair ? "configuration_pair" : "baseline",
+    beforeId: pair?.pair.beforeId ?? "",
+    afterId: pair?.pair.afterId ?? "",
     baselineId: "",
     direction: "outgoing",
     types: [],
@@ -212,20 +266,30 @@ function useOpening({ editing, onOpened, onDirty }: OpeningProps) {
     (value: OpeningDraft[K]) =>
       setDraft((current) => ({ ...current, [key]: value }));
   const model = useProjection("/api/application-model", pin, editing.epoch, editing.report);
-  const baselines = useProjection(
-    "/api/baselines",
-    { limit: 25, after },
-    editing.epoch,
-    editing.report,
-  );
+  const query = openingQuery(draft);
+  const sourceRead = useAssessmentSource(query, after, editing);
+  const baselines = sourceRead.baselines;
   const { stale, blocked } = preparationState(
     prepared,
     model.data,
     model.ready,
-    baselines.ready,
+    sourceRead.ready,
     editing.busy,
+    query,
   );
-  useAssessmentDirty([modelKey, title, purpose, rootId, baselineId].some(Boolean), onDirty);
+  useAssessmentDirty(
+    [modelKey, title, purpose, rootId, baselineId, draft.beforeId, draft.afterId].some(Boolean),
+    onDirty,
+  );
+  const setSource = (patch: Partial<AssessmentSourceDraft>) =>
+    setDraft((current) => ({ ...current, ...patch }));
+  const prepare = () => {
+    if (model.ready && model.data && sourceRead.ready)
+      set("prepared")(structuredClone({ model: model.data, query }));
+  };
+  useRecoveredApplication(attempt, identity.assessmentId, editing, 0, () =>
+    onOpened(identity.assessmentId),
+  );
   const open = () =>
     commitOpening(
       prepared,
@@ -234,11 +298,11 @@ function useOpening({ editing, onOpened, onDirty }: OpeningProps) {
         ...identity,
         title,
         purpose,
-        query: { baselineId, rootId, direction, relationshipTypes: types, depth },
         values: extra,
       },
       editing,
       onOpened,
+      setAttempt,
     );
   return {
     modelKey,
@@ -266,276 +330,77 @@ function useOpening({ editing, onOpened, onDirty }: OpeningProps) {
     setAfter: set("after"),
     model,
     baselines,
+    sourceState: draft,
+    setSource,
+    sourceRead,
+    prepare,
     stale,
     blocked,
     open,
   };
 }
 
-function CaptureBaseline({
-  editing,
-  context,
-  changed,
-}: {
-  editing: Editing;
-  context?: { projectRevision: number };
-  changed(): void;
-}) {
-  const [name, setName] = useState("");
-  const [id] = useState(() => crypto.randomUUID());
-  return (
-    <div>
-      <label>
-        New baseline name
-        <input
-          aria-label="New assessment baseline name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </label>
-      <button
-        type="button"
-        disabled={editing.busy || !context || !name.trim()}
-        onClick={() => {
-          if (context)
-            void editing
-              .mutate("/api/baselines", {
-                id,
-                name,
-                expectedProjectRevision: context.projectRevision,
-              })
-              .then((saved) => {
-                if (saved) changed();
-              });
-        }}
-      >
-        Capture current baseline
-      </button>
-    </div>
-  );
-}
-
-function ModelChoice({
-  models,
-  modelKey,
-  model,
-  onChoose,
-}: {
-  models: ReturnType<typeof modelChoices>;
-  modelKey: string;
-  model: import("../use-projection.ts").Projection<"/api/application-model">;
-  onChoose(value: string): void;
-}) {
-  return (
-    <>
-      {" "}
-      <label>
-        Application model
-        <select
-          aria-label="Assessment application model"
-          value={modelKey}
-          onChange={(e) => onChoose(e.target.value)}
-        >
-          <option value="">Choose a model and version</option>
-          {modelKey && !models.some((item) => item.name === modelKey) && (
-            <option value={modelKey}>{modelKey} · retained pin</option>
-          )}
-          {models.map((item) => (
-            <option key={item.name} value={item.name}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      {model.loading && <p role="status">Checking model compatibility…</p>}
-      {model.data && (
-        <p>
-          Model v{model.data.pin.version} · schema v{model.data.context.schemaVersion} ·{" "}
-          {model.data.compatibility.writable ? "Compatible" : "Incompatible"}
-        </p>
-      )}
-      {model.data?.compatibility.issues.map((issue) => (
-        <p role="alert" key={issue.path.join(".")}>
-          {issue.message}
-        </p>
-      ))}
-    </>
-  );
-}
-
-function BaselineChoice({
-  baselines,
-  baselineId,
-  after,
-  editing,
-  model,
-  changed,
-  onChoose,
-  onPage,
-}: {
-  baselines: import("../use-projection.ts").Projection<"/api/baselines">;
-  baselineId: string;
-  after: string | undefined;
-  editing: Editing;
-  model: ResolvedApplicationModel | undefined;
-  changed(): void;
-  onChoose(id: string): void;
-  onPage(after: string | undefined): void;
-}) {
-  return (
-    <>
-      {" "}
-      {baselines.failed && (
-        <p role="alert">Baselines could not be read. Refresh assessments before opening.</p>
-      )}
-      <label>
-        Baseline
-        <select
-          required
-          aria-label="Assessment baseline"
-          value={baselineId}
-          onChange={(e) => onChoose(e.target.value)}
-        >
-          <option value="">Choose a recorded baseline</option>
-          {baselines.retained?.items.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name} · r{item.projectRevision}
-            </option>
-          ))}
-        </select>
-      </label>
-      {baselines.retained?.nextAfter && (
-        <button
-          type="button"
-          disabled={!baselines.ready}
-          onClick={() => {
-            onPage(baselines.retained?.nextAfter);
-          }}
-        >
-          More baselines
-        </button>
-      )}
-      {after && (
-        <button
-          type="button"
-          onClick={() => {
-            onPage(undefined);
-          }}
-        >
-          First baselines
-        </button>
-      )}
-      {baselines.ready && !baselines.retained?.items.length && (
-        <CaptureBaseline editing={editing} context={model?.context} changed={changed} />
-      )}
-    </>
-  );
-}
-
-function TraversalChoice({
-  schema,
-  direction,
-  types,
-  depth,
-  setDirection,
-  setTypes,
-  setDepth,
-}: {
-  schema: SchemaObject | null;
-  direction: "outgoing" | "incoming" | "both";
-  types: string[];
-  depth: number;
-  setDirection(value: "outgoing" | "incoming" | "both"): void;
-  setTypes(value: string[]): void;
-  setDepth(value: number): void;
-}) {
-  return (
-    <>
-      {" "}
-      <label>
-        Direction
-        <select
-          aria-label="Assessment direction"
-          value={direction}
-          onChange={(e) => setDirection(e.target.value as typeof direction)}
-        >
-          <option value="outgoing">Outgoing</option>
-          <option value="incoming">Incoming</option>
-          <option value="both">Both directions</option>
-        </select>
-      </label>
-      <label>
-        Relationship kinds
-        <select
-          multiple
-          aria-label="Assessment relationship kinds"
-          value={types}
-          onChange={(e) => setTypes(Array.from(e.target.selectedOptions, (item) => item.value))}
-        >
-          {Object.keys(schema?.relationshipTypes ?? {}).map((name) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <p>
-        {types.length
-          ? `Follow ${types.join(", ")} within the selected depth.`
-          : "No relationship kinds selected: assess only the changed record and its declared captured uses."}
-      </p>
-      <label>
-        Depth
-        <input
-          aria-label="Assessment depth"
-          type="number"
-          min={1}
-          max={6}
-          value={depth}
-          onChange={(e) => setDepth(Number(e.target.value))}
-        />
-      </label>
-    </>
-  );
-}
-
 function preparationState(
-  prepared: ResolvedApplicationModel | undefined,
+  prepared: OpeningPreparation | undefined,
   current: ResolvedApplicationModel | undefined,
   modelReady: boolean,
   baselinesReady: boolean,
   busy: boolean,
+  query: AssessmentScopeQuery,
 ) {
-  const stale = !prepared || JSON.stringify(prepared.context) !== JSON.stringify(current?.context);
+  const stale =
+    !prepared ||
+    canonical(prepared.model.context) !== canonical(current?.context) ||
+    canonical(prepared.query) !== canonical(query);
   const blocked =
-    busy || stale || !modelReady || !prepared?.compatibility.writable || !baselinesReady;
+    busy || stale || !modelReady || !prepared?.model.compatibility.writable || !baselinesReady;
   return { stale, blocked };
 }
 
 async function commitOpening(
-  prepared: ResolvedApplicationModel | undefined,
+  prepared: OpeningPreparation | undefined,
   blocked: boolean,
-  draft: Pick<
-    OpenChangeAssessment,
-    "commandId" | "assessmentId" | "title" | "purpose" | "query"
-  > & { values: Record<string, string> },
+  draft: Pick<OpenChangeAssessment, "commandId" | "assessmentId" | "title" | "purpose"> & {
+    values: Record<string, string>;
+  },
   editing: Editing,
   onOpened: (id: string) => void,
+  onAttempt: (id: string) => void,
 ) {
   if (blocked || !prepared) return;
   try {
     const { values, ...input } = draft;
-    const context = prepared.context;
+    const context = prepared.model.context;
     const request: OpenChangeAssessment = {
       ...input,
-      model: prepared.pin,
-      additionalFields: fieldsFrom(values, prepared.requiredFields.assessment ?? {}),
+      model: prepared.model.pin,
+      query: prepared.query,
+      additionalFields: fieldsFrom(values, prepared.model.requiredFields.assessment ?? {}),
       expectedSchemaVersion: context.schemaVersion,
       expectedProjectRevision: context.projectRevision,
       expectedEvidenceRevision: context.evidenceRevision,
     };
+    onAttempt(request.commandId);
     if (await editing.mutate("/api/change-assessments/open", request)) onOpened(draft.assessmentId);
   } catch (error) {
     editing.report(error);
   }
+}
+
+function openingQuery(draft: OpeningDraft): AssessmentScopeQuery {
+  const traversal = {
+    rootId: draft.rootId,
+    direction: draft.direction,
+    relationshipTypes: draft.types,
+    depth: draft.depth,
+  };
+  return draft.source === "configuration_pair"
+    ? {
+        ...traversal,
+        source: "configuration_pair",
+        beforeId: draft.beforeId,
+        afterId: draft.afterId,
+        policy: "scoped-reference-dependencies-v1",
+      }
+    : { ...traversal, baselineId: draft.baselineId };
 }

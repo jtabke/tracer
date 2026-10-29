@@ -5,6 +5,7 @@ import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
 import { ConfigurationWorkspace } from "./configuration-workspace.tsx";
+import { useConfigurationHandoff } from "./use-configuration-handoff.ts";
 import { CsvImport } from "./csv-import.tsx";
 import { ProjectExport } from "./project-export.tsx";
 import { NextWork } from "./next-work.tsx";
@@ -58,28 +59,13 @@ export function NativeTasks({
     initialViews?: InitialView[],
   ): Promise<SchemaObject | false>;
 }) {
-  const dialog = useRef<HTMLDialogElement>(null);
-  const [visited, setVisited] = useState<NativeTask[]>([]);
-  const [focused, setFocused] = useState(entity);
-  const [dirty, setDirty] = useState(false);
-  const [referenceDirty, setReferenceDirty] = useReferenceTaskDirty(onTaskDirty);
-  useEffect(() => {
-    if (task) setVisited((current) => (current.includes(task) ? current : [...current, task]));
-    syncTaskSurface(dialog.current, task);
-  }, [task]);
-  const adoptEntity = useEffectEvent(() => {
-    const next = chooseFocusedEntity(entity, focused?.id, dirty || referenceDirty);
-    if (next) {
-      setFocused(next);
-      setDirty(false);
-    }
-  });
-  useEffect(() => {
-    adoptEntity();
-  }, [entity?.id]);
+  const { dialog, visited, focused, setFocused, setDirty, setReferenceDirty, handoffs } =
+    useNativeTaskState(task, entity, onTaskDirty, onTask);
   const panels = {
     verification: () => (
       <VerificationWorkspace
+        intent={handoffs.verification}
+        returnToAssessments={onTask ? () => onTask("assessments") : undefined}
         entities={entities}
         schema={schema}
         editing={editing}
@@ -90,6 +76,8 @@ export function NativeTasks({
     ),
     assessments: () => (
       <AssessmentWorkspace
+        intent={handoffs.assessment}
+        onVerify={onTask ? handoffs.verify : undefined}
         entities={entities}
         schema={schema}
         editing={editing}
@@ -149,6 +137,8 @@ export function NativeTasks({
     ),
     configurations: () => (
       <ConfigurationWorkspace
+        active={task === "configurations"}
+        onAssess={onTask ? handoffs.assess : undefined}
         editing={editing}
         entities={entities}
         onDirty={taskDirty(onTaskDirty, "configurations")}
@@ -464,4 +454,43 @@ function taskDirty(
 
 function taskHeading(task: NativeTask | null) {
   return task ? taskTitles[task] : "Project task";
+}
+
+function useNativeTaskState(
+  task: NativeTask | null,
+  entity: Entity | undefined,
+  onTaskDirty: ((task: NativeTask, value: boolean) => void) | undefined,
+  onTask: ((task: NativeTask) => void) | undefined,
+) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [visited, setVisited] = useState<NativeTask[]>([]);
+  const [focused, setFocused] = useState(entity);
+  const [dirty, setDirty] = useState(false);
+  const [referenceDirty, setReferenceDirty] = useReferenceTaskDirty(onTaskDirty);
+  const handoffs = useConfigurationHandoff(onTask);
+  useEffect(() => {
+    if (task) setVisited((current) => (current.includes(task) ? current : [...current, task]));
+    syncTaskSurface(dialog.current, task);
+  }, [task]);
+  const adoptEntity = useEffectEvent(() => {
+    const next = chooseFocusedEntity(entity, focused?.id, dirty || referenceDirty);
+    if (next) {
+      setFocused(next);
+      setDirty(false);
+    }
+  });
+  useEffect(() => {
+    adoptEntity();
+  }, [entity?.id]);
+  return {
+    dialog,
+    visited,
+    focused,
+    setFocused,
+    dirty,
+    setDirty,
+    referenceDirty,
+    setReferenceDirty,
+    handoffs,
+  };
 }

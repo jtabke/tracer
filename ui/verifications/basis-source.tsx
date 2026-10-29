@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { VerificationTargetPolicy } from "../../src/core/verification-case.ts";
 import type { Entity, Relationship } from "../../src/core/model.ts";
 import type { PrepareVerificationBasis } from "../../src/core/verification-basis.ts";
 import type { ResolvedVerificationModel } from "../../src/core/verification-model.ts";
@@ -8,6 +9,8 @@ export type BasisCapture = {
   requirement: Entity;
   methods: Entity[];
   links: Relationship[];
+  target?: { id: string; name: string };
+  targetPolicy?: VerificationTargetPolicy;
 };
 export function CriterionSource({
   capture,

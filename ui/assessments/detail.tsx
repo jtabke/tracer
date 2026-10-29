@@ -1,3 +1,4 @@
+import type { ConfigurationHandoff } from "../configuration-handoff.ts";
 import { useRef, useState } from "react";
 import type { Entity } from "../../src/core/model.ts";
 import type { CandidateKey, ChangeAssessmentView } from "../../src/core/change-assessment.ts";
@@ -20,7 +21,9 @@ export function AssessmentDetail({
   epoch,
   onDirty,
   changed,
+  onVerify,
 }: {
+  onVerify?(value: Omit<ConfigurationHandoff, "sequence">): void;
   view: ChangeAssessmentView;
   entities: Entity[];
   editing: Editing;
@@ -80,6 +83,12 @@ export function AssessmentDetail({
       {analysis && (
         <>
           <AssessmentSummary analysis={analysis} entities={entities} />
+          <AssessmentVerificationHandoff
+            analysis={analysis}
+            subject={subject}
+            current={current}
+            onVerify={onVerify}
+          />
           <AssessmentObligations
             analysis={analysis}
             entities={entities}
@@ -133,5 +142,33 @@ export function AssessmentDetail({
         </>
       )}
     </section>
+  );
+}
+
+function AssessmentVerificationHandoff({
+  analysis,
+  subject,
+  current,
+  onVerify,
+}: {
+  analysis: import("../../src/core/change-assessment.ts").AssessmentAnalysis;
+  subject: CandidateKey | undefined;
+  current: boolean;
+  onVerify: ((value: Omit<ConfigurationHandoff, "sequence">) => void) | undefined;
+}) {
+  const scope = analysis.view.scope;
+  if (scope.version !== 2 || !onVerify) return null;
+  return (
+    <button
+      disabled={!current}
+      onClick={() =>
+        onVerify({
+          pair: { beforeId: scope.query.beforeId, afterId: scope.query.afterId },
+          rootId: subject?.kind === "entity" ? subject.id : scope.query.rootId,
+        })
+      }
+    >
+      Verify after configuration
+    </button>
   );
 }

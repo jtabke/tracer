@@ -50,7 +50,11 @@ export function ConfigurationPaging({
 }) {
   return (
     <div className="toolbar">
-      <button disabled={catalog.read.loading} onClick={() => (onRefresh ?? catalog.refresh)()}>
+      <button
+        type="button"
+        disabled={catalog.read.loading}
+        onClick={() => (onRefresh ?? catalog.refresh)()}
+      >
         Refresh configurations
       </button>
       <ConfigurationPageLinks catalog={catalog} />
@@ -65,12 +69,14 @@ function ConfigurationPageLinks({ catalog }: { catalog: ReturnType<typeof useCon
   return (
     <>
       <button
+        type="button"
         disabled={catalog.read.loading || !catalog.cursor.hasPrevious}
         onClick={catalog.cursor.previous}
       >
         Previous configurations
       </button>
       <button
+        type="button"
         disabled={catalog.read.loading || !catalog.read.data?.nextAfter}
         onClick={() => catalog.cursor.next(catalog.read.data?.nextAfter)}
       >

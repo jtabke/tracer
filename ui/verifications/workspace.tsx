@@ -1,3 +1,4 @@
+import type { ConfigurationHandoff } from "../configuration-handoff.ts";
 import { useState } from "react";
 import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import { record } from "../../src/core/model.ts";
@@ -19,7 +20,11 @@ export function VerificationWorkspace({
   active,
   changed,
   onDirty,
+  intent,
+  returnToAssessments,
 }: {
+  intent?: ConfigurationHandoff;
+  returnToAssessments?(): void;
   entities: Entity[];
   schema: SchemaObject | null;
   editing: Editing;
@@ -27,23 +32,33 @@ export function VerificationWorkspace({
   changed(): void;
   onDirty(value: boolean): void;
 }) {
-  const [selected, setSelected] = useState(""),
-    [creating, setCreating] = useState(false),
-    [dirty, setDirty] = useState(false),
-    [epoch, setEpoch] = useState(0),
-    [editor, setEditor] = useState(0);
+  const [navigation, setNavigation] = useState<{
+    selected: string;
+    creating: boolean;
+    editor: number;
+    target?: ConfigurationHandoff;
+    acceptedSequence: number;
+  }>({ selected: "", creating: false, editor: 0, acceptedSequence: 0 });
+  const { selected, creating, editor, target, acceptedSequence } = navigation;
+  const [dirty, setDirty] = useState(false),
+    [epoch, setEpoch] = useState(0);
   const models = applicationModelChoices(entities, schema, "requirement_verification"),
     cases = entities.filter((e) =>
       Object.values(e.fields).some((x) => record(x) && x.contract === "verification_case_scope"),
     );
   useApplicationDirty(dirty, onDirty);
-  function navigate(id: string, create: boolean) {
+  function navigate(id: string, create: boolean, target?: ConfigurationHandoff) {
     if (editing.busy) return;
     if (dirty && !window.confirm("Discard this verification draft to choose another case?")) return;
     setDirty(false);
-    setSelected(id);
-    setCreating(create);
-    setEditor((x) => x + 1);
+    setNavigation((previous) => ({
+      ...previous,
+      selected: id,
+      creating: create,
+      editor: previous.editor + 1,
+      target,
+      acceptedSequence: target?.sequence ?? previous.acceptedSequence,
+    }));
   }
   function refresh() {
     setEpoch((x) => x + 1);
@@ -64,7 +79,24 @@ export function VerificationWorkspace({
         create={() => navigate("", true)}
         refresh={refresh}
       />
-      <ApplicationRecovery report={editing.report} refresh={refresh} />
+      {active && <ApplicationRecovery report={editing.report} refresh={refresh} />}
+      {returnToAssessments && (
+        <button onClick={returnToAssessments}>Return to change assessments</button>
+      )}
+      {intent && intent.sequence !== acceptedSequence && (
+        <section aria-label="Incoming verification target">
+          <p>
+            The after configuration is available for a new verification. Existing drafts are
+            retained until you explicitly start another case.
+          </p>
+          <p>
+            {intent.pair.afterId} · investigation root {intent.rootId}
+          </p>
+          <button disabled={editing.busy} onClick={() => navigate("", true, intent)}>
+            Start verification for after configuration
+          </button>
+        </section>
+      )}
       <div className="verification-layout">
         <nav aria-label="Verification cases">
           <RecordChoice
@@ -81,6 +113,7 @@ export function VerificationWorkspace({
           {creating ? (
             <VerificationBasisEditor
               key={editor}
+              intent={target}
               models={models}
               entities={entities}
               editing={editing}
@@ -88,8 +121,7 @@ export function VerificationWorkspace({
               onDirty={setDirty}
               saved={(id) => {
                 setDirty(false);
-                setCreating(false);
-                setSelected(id);
+                setNavigation((previous) => ({ ...previous, creating: false, selected: id }));
                 refresh();
               }}
             />
