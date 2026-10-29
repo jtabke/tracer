@@ -1,0 +1,187 @@
+{
+  "status": "partial_foundation_verified_full_requirement_in_progress",
+  "requirement": "REQ-035",
+  "work": "WORK-027",
+  "originalAcceptance": "projects/tracer/configuration-change-specification.json; AC-1\u201312 unchanged",
+  "sourceCommit": "8e632e735b2cc16a712283150e92eadcafab2271",
+  "candidateFiles": [
+    {
+      "path": "src/application/configuration-applicability.ts",
+      "sha256": "67c1a4a35f937f2c6ef396f9501a7ba2578801c757f24d0ca6a6e1c890ec9d24"
+    },
+    {
+      "path": "src/application/engineering-state.ts",
+      "sha256": "a48bee34e260fad1f37fe02b0b1f18bd08aa3a5f3f025efaa559a9e5f39faaa3"
+    },
+    {
+      "path": "src/application/evidence.ts",
+      "sha256": "ad670b15eb00cb2b1ee2f7ba40bb5d22e5be94bd3875674121e9235e04c47828"
+    },
+    {
+      "path": "src/application/review-capture.ts",
+      "sha256": "13c98a617359131dba37fe0a119cd589a39d9b0928aa8ca6f1dafa52f0fd29e3"
+    },
+    {
+      "path": "src/application/verification-analysis.ts",
+      "sha256": "3bad863e96749a56d2cc4354a7d17ba358451c2408d4b03924196f204f78b8b6"
+    },
+    {
+      "path": "src/application/verification-context.ts",
+      "sha256": "0f83e1ddd6eda1eecd92948509748fdb0a80cda4fca5d9882c7fa230ddc7c342"
+    },
+    {
+      "path": "src/application/verification-execution-read.ts",
+      "sha256": "269bc8847c2fb0855cf83b44a3a2974cab5fb7c21a2cacd1e567b25b1ae5b2f3"
+    },
+    {
+      "path": "src/application/verification-governing.ts",
+      "sha256": "142869809318d6c0a3eb1f3e547339aac598efdc7ee9adb7f707316a067e6db2"
+    },
+    {
+      "path": "src/application/verification-inputs.ts",
+      "sha256": "42b956d2869cef7011f50738793d5a4c853bec20257ba5928b1e7ebea01a8725"
+    },
+    {
+      "path": "src/application/verification-open.ts",
+      "sha256": "acfc576d0dc45534b1ee339b3328d074f53ae9fa2a739920cd8f98976e0a396d"
+    },
+    {
+      "path": "src/application/verification-prior-results.ts",
+      "sha256": "35bb654903d936b8080feeffb518c779e02239a33cf227b2ff81f222fdc0aeaa"
+    },
+    {
+      "path": "src/application/verification-receipt-origin.ts",
+      "sha256": "13cd92f670d8456b1f6c1e517ec1646de84117755002b16aa48764354dd95df9"
+    },
+    {
+      "path": "src/application/verification-revise.ts",
+      "sha256": "c0af4cf36b59a38b2b0fcd1452f72fe6c4565f8c0210ed84d75df57403f87c77"
+    },
+    {
+      "path": "src/application/verification-source.ts",
+      "sha256": "9627857b28aede8c24d48145ec60c8560d947328cb9444dd75775990bc96ea07"
+    },
+    {
+      "path": "src/application/verification-support-inspection.ts",
+      "sha256": "99dae45ab4e3e82d34dd7cf1cacdf84c4f7b28a53d35273f67886fc1e1a30813"
+    },
+    {
+      "path": "src/application/verification-support.ts",
+      "sha256": "85f1427f40edcfa076d79180c58b626ef6aa38860f84e23c5be4ce8c097cb9de"
+    },
+    {
+      "path": "src/application/verification-target.ts",
+      "sha256": "ddbddc6c4bc28e35804b68ded44334682a30ebe60adeab93b3c99f833b45e5fa"
+    },
+    {
+      "path": "src/core/verification-case-validation.ts",
+      "sha256": "3b120a8dec109720546815264ee5194889cd14a3582e4a4d8a0518841775773d"
+    },
+    {
+      "path": "src/core/verification-case.ts",
+      "sha256": "e78001b915e55474873fdd33eed5611703096005b7f4b8e90857a3f5b5564911"
+    },
+    {
+      "path": "src/core/verification-lifecycle.ts",
+      "sha256": "99b653875737deb791072952936bbec1313af839158500583f7f0b333707e1ad"
+    },
+    {
+      "path": "src/interfaces/api/verification-case-responses.ts",
+      "sha256": "05709ae4023931815a27d24cc4fc8734072d067ac09b1620452972a6860bfb0a"
+    },
+    {
+      "path": "src/interfaces/api/verification-cases.ts",
+      "sha256": "d02504816a3674891d4a7b608b412aa3295616dec36400ac1656d156dc50f48f"
+    },
+    {
+      "path": "src/interfaces/api/verification-lifecycle-responses.ts",
+      "sha256": "40a3060cfec424e978a41a419b97511b37c380c0c0562209a6c5b2f7ce86e901"
+    },
+    {
+      "path": "src/interfaces/api/verification-lifecycle.ts",
+      "sha256": "47390b026cf26c99e36762f2229254d0293c3b54866795fe8cc24f50cbb3eef8"
+    },
+    {
+      "path": "src/interfaces/api/verification-support-response.ts",
+      "sha256": "619fe4831f9e5d8e4033d833cb7776ac279a0e54c0a732b36c9783e17039989f"
+    },
+    {
+      "path": "src/interfaces/cli-help.ts",
+      "sha256": "f76db827ed2196aa4933c2f3963b8e06d45c2feb038f34c0464267adaf5ac85b"
+    },
+    {
+      "path": "test/api-capabilities.test.ts",
+      "sha256": "336856efad6df822521e6f45f5a66d3823f6f579979029f2283d9667bff2582f"
+    },
+    {
+      "path": "test/fixtures/verification-unsafe-prior.json",
+      "sha256": "dd8568e6f5ccaa3ad3c5f704ac3c568e444a1afc6b4cfc4d97ffb384879d4730"
+    },
+    {
+      "path": "test/fixtures/verification-unsafe-prior.sqlite.gz",
+      "sha256": "146f915c08b1d12cdd5142db358df76c4a4b2a2601dfd84091f77eb6e80d2836"
+    },
+    {
+      "path": "test/review-capture.test.ts",
+      "sha256": "e1c7e61ad3737fe94c9629d37b288a602ed1797be8b53a9e3e332839c3660b8c"
+    },
+    {
+      "path": "test/verification-prior-history.test.ts",
+      "sha256": "dd6eb452d3d26f5d4a232fd33636775b36b3436be44354a60f7318744efbd4c9"
+    },
+    {
+      "path": "test/verification-prior-results.test.ts",
+      "sha256": "00c708c5b7a1a7739f9c3b1c83114b0bad12bd0f8c9eed50bdd9865df7c8d4a7"
+    },
+    {
+      "path": "test/verification-target.test.ts",
+      "sha256": "77e250c296114e801705cb079fbe2126e73ec4c63e4c0d97d2cf10c4acf7b5fc"
+    }
+  ],
+  "verifiedScope": [
+    "Controlled target binding at case opening and explicit basis revision; earlier target/conclusion history remains intact.",
+    "Current-head and selected-state engineering input resolution remain distinct.",
+    "Typed prior-source passing coverage guards and historical unsupported-source reassessment without rewriting outcomes or command recovery.",
+    "Target source inspection shares analysis projection, authenticated source closure, exact context fingerprints and bounded read/response behavior.",
+    "Core, typed HTTP/client and CLI inspection/recovery parity; missing selected inputs never fall back to current observations.",
+    "Transaction-local reuse of the existing Review primitive with shared stale/unknown guards and enclosing transaction rollback."
+  ],
+  "procedure": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "log": "output/configuration-change/target-inspection-final-check.log",
+    "logSha256": "d79d21a36d2df1243e330248a68598c5c85788c672eb30edfa3460a6899b17e4",
+    "unitTests": 659,
+    "browserScenarios": 209,
+    "workbenchOriginalScreenshots": 18,
+    "formatTypesLintBuilds": true,
+    "architectureDeadCodeDuplicationComplexityGates": "passed unchanged"
+  },
+  "earlierFinding": {
+    "log": "output/configuration-change/target-inspection-full-check.log",
+    "unitTestsPassed": 659,
+    "browserScenariosPassed": 209,
+    "workbenchPassed": true,
+    "qualityFailure": "obligation analysis cognitive complexity 16",
+    "correction": "Extracted applicability classification from explanation construction; no gate/threshold/exclusion changes. Complete final-source check rerun passed."
+  },
+  "preservation": {
+    "nativeRevision": 121,
+    "schemaVersion": 7,
+    "nativeObjectsHistoryConfigurationsUnchanged": true,
+    "priorEvidencePreserved": true,
+    "newOriginalObservation": "output/configuration-change/review-capture-original.json",
+    "readOnlyAudit": "output/configuration-change/target-inspection-preservation.json",
+    "restoredBackupProof": "output/configuration-change/review-original-restored-proof.json",
+    "backup": "projects/tracer/backups/register-2026-10-28-review-capture-original.sqlite",
+    "realREQ011": "Original v9 case, three activities and conclusion preserved; current applicability needs reassessment."
+  },
+  "remaining": [
+    "Authenticated qualified target-review authoring and exact-context review selection.",
+    "Explicit contextual reference-use resolution; see configuration-reference-use-audit.json.",
+    "Configuration-pair impact/discovery and controlled assessment composition.",
+    "Shared configuration-change workspace, real task follow-through, second configured domain task and fresh-agent walkthrough.",
+    "Complete AC-1\u201312 acceptance/preservation audit and final publication; representative-human validation remains separate."
+  ],
+  "claims": "No full REQ-035 verification, representative-human validation, physical/regulatory conformance or arbitrary-scale claim. No acceptance criteria were relaxed."
+}

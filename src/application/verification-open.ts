@@ -7,6 +7,7 @@ import { resolveVerificationBasis } from "./verification-basis.ts";
 import type { Transaction } from "./ports/repository.ts";
 import type { EvaluationComposition } from "./evaluation-executor.ts";
 import { verificationContext } from "./verification-context.ts";
+import { bindVerificationTarget } from "./verification-target.ts";
 
 export async function openVerificationCase(
   tx: Transaction,
@@ -40,6 +41,13 @@ export async function openVerificationCase(
     membershipId: request.membershipId,
     control: { commandId: request.commandId, openingCommandId: request.commandId },
   };
+  const target = await bindVerificationTarget(
+    tx,
+    request.targetConfigurationId,
+    basis,
+    request.targetPolicy,
+  );
+  if (target) scope.target = target;
   parseVerificationScope(scope);
   return {
     maxResultBytes: verificationCaseLimits.responseBytes,

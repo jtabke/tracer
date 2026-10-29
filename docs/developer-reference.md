@@ -567,7 +567,9 @@ The operation accepts at most 100 members, 200 links, 100 content selections and
 
 ## Controlled verification cases and execution capture
 
-Use `tracer.verification.open(input)`, POST `/api/verifications/open` or CLI `verification open JSON` with `commandId`, `caseId`, `membershipId`, `title`, `purpose`, the `basis` selection described above, explicit `additionalFields`, and exact `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`. A successful command creates the case/membership and one immutable opening receipt atomically. Recover through `evaluation outcome COMMAND_ID`; exact repeats return the original result before current guards, while changed intent conflicts. No result or verified conclusion is inferred by opening.
+Use `tracer.verification.open(input, provenance)`, POST `/api/verifications/open` or CLI `verification open JSON` with `commandId`, `caseId`, `membershipId`, `title`, `purpose`, the `basis` selection described above, explicit `additionalFields`, and exact `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`. A successful command creates the case/membership and one immutable opening receipt atomically. Recover through `evaluation outcome COMMAND_ID`; exact repeats return the original result before current guards, while changed intent conflicts. No result or verified conclusion is inferred by opening.
+
+To bind a case to a captured candidate, discover `configuration-bound-verification` and include `targetConfigurationId` at opening. The capture must contain the exact model/requirement/method versions and method mappings in the prepared basis. Inspect `view.scope.target` before interpreting analysis: the configuration ID/digest/policy stays fixed for the selected basis while execution accounting and command guards remain live. Without this field, existing cases compare against current-head engineering inputs. A new candidate requires an explicit guarded basis revision with `targetConfigurationId`, reason and criterion mapping; omission retains the existing target. The revision clears current selection/conclusion and preserves the earlier context in history. A query cannot change a case's context. Source availability and criterion coverage remain separate from the configuration's declared coverage.
 
 Read a controlled case with `verification.get({caseId, openingCommandId})`, GET `/api/verification-case` or CLI `verification get JSON`. `verification.locate(caseId)`, GET `/api/verification-case-locate` and CLI `verification locate ID` resolve its original opening. The view validates controlled history and exposes its complete bounded execution registry; a type/status/JSON field alone is insufficient.
 
@@ -575,7 +577,64 @@ Read a controlled case with `verification.get({caseId, openingCommandId})`, GET 
 
 For a newly attested activity use `source: {kind: "performed"}`. To interpret an already recorded activity use `{kind: "prior_receipt", receiptId, rationale}`; its original receipt must explicitly capture matching requirement/method semantic inputs. The original actor/time and captured revisions remain historical facts. This does not automatically infer typed results from a report, claim a new execution or erase original input drift. Inspect `verification.execution(selection, executionId)`, GET `/api/verification-execution` or CLI `verification execution JSON`: `comparison.record` covers the new interpretation's captured inputs, while `comparison.source` separately covers the original activity. Unknown/drift/supersession and recorded outcome retain separate meanings.
 
-Require features `verification-cases` / `verification-executions` when depending on these operations. Use the normal uncertain-save inspection flow; no retry is automatic. Scope/registry, command/response and supporting-material bounds are documented in [the owning contract](architecture.md#controlled-verification-opening-and-execution-capture). Over-budget responses and failed post-capture reads reject atomically. Case/execution/lifecycle authoring is currently headless; dedicated shared verification UI and complete acceptance proof remain pending. All recorded results can still be inspected through the native evidence/history interfaces.
+If the source is an authenticated controlled execution, passing reinterpretation also requires matching requirement/method/mapping semantics and complete original passing criterion coverage. Failed, blocked, unexecuted and uncovered scope needs a performed replacement. Passing criteria can be explicitly regrouped; whitespace gaps do not create missing obligations. Nested controlled sources retain original dependencies and refuse beyond 25 inspected receipts. Raw report interpretation remains explicit and does not parse an outcome string into authority. For target cases, case analysis reports selected-candidate applicability; the generic execution-detail comparison continues to show live-head input drift. Target execution detail also includes `targetSupport` with the exact target, governing basis digest and complete projected support source chain. Each layer exposes its recorded/selected inputs, next-source identity and context fingerprint. This uses the same support projection as case analysis, without treating later live inputs as selected state. Inspection is read-only; fingerprints confer no review authority. Core, typed HTTP/client and `verification execution JSON` return the same information, bounded by the existing 256 KiB execution-view limit with explicit refusal rather than partial chains. Qualified target reviews are available headlessly as described below; workspace authoring remains under development. Current-head reviews do not override unknown or changed target support.
+
+Require features `verification-cases` / `verification-executions` when depending on these operations. Use the normal uncertain-save inspection flow; no retry is automatic. Scope/registry, command/response and supporting-material bounds are documented in [the owning contract](architecture.md#controlled-verification-opening-and-execution-capture). Over-budget responses and failed post-capture reads reject atomically. The shared verification workspace supports current-head cases; new configuration-target authoring remains headless while its workspace is built. Complete configuration-change acceptance remains pending. All recorded results can still be inspected through the native evidence/history interfaces.
+
+## Associate an evaluated input with a contextual reference
+
+Use an ordinary direct input for a resource dependency. When its meaning depends on a specific reference's role, selector and selected state, add `referenceId` and explicitly capture that relationship in `relationshipInputs`:
+
+```ts
+const support = {
+  inputs: [
+    {
+      entityId: documentId,
+      facet: "content",
+      referenceId: referenceBId,
+      observationId: observationBId,
+    },
+    {
+      entityId: documentId,
+      facet: "content",
+      referenceId: referenceCId,
+      observationId: observationCId,
+    },
+  ],
+  relationshipInputs: [
+    { id: referenceBId, revision: referenceBVersion },
+    { id: referenceCId, revision: referenceCVersion },
+  ],
+};
+```
+
+Discover `reference-evaluation-inputs` before depending on this extension in receipt, atomic evaluation-command or verification-execution authoring. The reference must target the same resource and be explicitly declared in that receipt. Its source can be the requirement or other engineering object that uses the material; it need not be the newly created execution. This is an input association with an existing relationship, not an attachment record or inferred path. Use an explicit `facet: "native"` for native resource content, with optional `revision` and `fields` selecting the used state. A native input cannot stand in for observed external content. Input paths and current-version guards are separate declarations.
+
+A pinned reference selects its exact native revision or observation, independently of the resource default. Conflicting explicit revision/observation guards reject. A current reference may record the explicitly declared historical state actually used; later applicability remains a separate comparison. With `configurationId`, selection is controlled by that configuration's exact topology/default and reference pins. Unknown/undeclared defaults do not erase independently pinned material, and no live head or observer is substituted. Repeated uses remain distinct by reference identity, including identical bytes with different selectors.
+
+When selected material no longer has an active native identity, an explicit `facet: "content"`, native `revision` and `observationId` can retain both its historical identity/annotation snapshot and the bytes actually observed. Discover `historical-content-inputs` before depending on this direct capture extension. The native revision is not an external content version; the observation remains required, field selectors are invalid for content and current availability is still independently unknown. Selected-target verification uses these exact declarations when composing result-selection/conclusion evidence with live application-control facts. It does not add the activity to product membership or replace deleted material with a live default. An older explicit reference pin can also retain its known endpoint identity; a current reference without an explicitly used state cannot infer a default from a deleted identity.
+
+To use contextual correspondence in a verification case, discover `contextual-input-correspondence` and explicitly set `targetPolicy: "target-reference-uses-v2"` alongside `targetConfigurationId` at opening, or on guarded basis revision. Omission at opening retains V1; omission on revision retains the case's current policy. A policy requires a selected configuration. Changing policy clears selection/conclusion and retains prior history/reviews; old judgments do not gain authority in the new context.
+
+V2 resolves the explicitly associated reference, or an older receipt's explicitly declared terminal qualified-reference path, against the selected target. Inspect each comparison's `referenceUse` beside its `current` used state. `referenceUse.resourceDefault` retains the separate resource selection; missing selected references remain unknown even if they exist live. `passage: "unknown"` means a selector has not been resolved or assessed, even when whole bytes match. The existing raw current-head and `selected-dependencies-v1` comparisons still describe their original resource/default dependencies; they do not become contextual-use assessments. Existing current-head cases retain that meaning. New target/reference authoring in the shared workspace remains pending.
+
+## Review support for a captured verification target
+
+Discover `qualified-target-reviews`, inspect `verification.execution(selection, executionId).targetSupport` and deliberately prepare a fresh `verification.analyze(selection)`. Each support layer has a receipt identity, recorded/selected inputs, qualification, token and applicable/previous review. Read the complete source chain; an interpretation layer does not replace its original dependencies.
+
+Call `verification.reviewSupport(input, provenance)`, POST `/api/verifications/review-support` or CLI `verification review-support JSON`. Supply the normal lifecycle guards and selection (`commandId`, `caseId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedCaseVersion`, `expectedAnalysisDigest`), plus:
+
+- `executionId`: the controlled execution being assessed.
+- `receiptId`: the specific inspected support layer, including an original source when relevant.
+- `expectedComparison`: that layer's exact target-bound `token`.
+- `decision`: `accepted`, `acknowledged` or `needs_reevaluation`.
+- `reason`: the engineering rationale for this judgment.
+
+Use the analysis proposal/context guards and inspected token from deliberate preparation. A conflict requires inspection and explicit adoption of new state, not automatic refresh/retry. The Review, receipt and durable command outcome commit atomically without a native case edit. For an uncertain response, inspect `evaluation outcome COMMAND_ID`; exact original-intent replay can recover the original success, but clients never retry automatically.
+
+Only an open target-bound case with a writable pinned model can author this judgment. Unknown support cannot be accepted. Acceptance counts for changed support only when the pinned model permits it; recorded failures, unexecuted work, governing criteria, prior-source coverage, supersession and accounting retain independent authority. Review each changed source layer. Re-read analysis and explicitly select results again if the judgment retired the previous selection's evidence digest.
+
+Qualification isolates the case opening, chosen execution, target and governing semantic basis. A current-head judgment or another execution/case/target's judgment cannot substitute. Selection/conclusion writes alone preserve the review's context. New target or semantic basis revisions retain older reviews historically while requiring judgments in the new context. Source labels, copied payloads and status strings cannot create authenticated review authority. The generic `/api/reviews` operation retains its original unqualified current-head meaning.
 
 ## Select verification results and record a conclusion
 

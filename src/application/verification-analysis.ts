@@ -21,6 +21,9 @@ import {
 } from "./verification-governing.ts";
 import { verificationSupport, verificationWorkBudget } from "./verification-support.ts";
 import { factDigest } from "./fact-digest.ts";
+import { boundedEngineeringState } from "./engineering-state.ts";
+import type { EngineeringStateReader } from "./engineering-state.ts";
+import { verificationEngineeringState } from "./verification-target.ts";
 import { verificationBytes } from "../core/verification-case-validation.ts";
 import type { Transaction } from "./ports/repository.ts";
 
@@ -29,12 +32,27 @@ async function execution(
   view: VerificationCaseView,
   registration: VerificationExecutionRegistration,
   work: ReturnType<typeof verificationWorkBudget>,
+  state: EngineeringStateReader,
+  basisDigest: string,
 ) {
   const raw = await verificationExecutionContext(tx, view, registration);
   work(raw.receipt);
   if (raw.source) work(raw.source);
-  const record = await verificationSupport(tx, view, raw.receipt, false, !!raw.source),
-    source = raw.source ? await verificationSupport(tx, view, raw.source, true, true) : null;
+  const supportContext = { executionId: registration.executionId, basisDigest };
+  const record = await verificationSupport(
+      tx,
+      view,
+      raw.receipt,
+      false,
+      !!raw.source,
+      state,
+      work,
+      [],
+      supportContext,
+    ),
+    source = raw.source
+      ? await verificationSupport(tx, view, raw.source, true, true, state, work, [], supportContext)
+      : null;
   const basis = await verificationExecutionBasis(tx, view, raw.data),
     supports = [record, ...(source ? [source] : [])];
   const summary: VerificationExecutionSummary = {
@@ -49,6 +67,9 @@ async function execution(
     }),
     current: !!raw.current && !!raw.membership && raw.membership.version === 1,
     eligibleCriterionIds: basis.eligible,
+    ...(raw.data.source.kind === "prior_receipt"
+      ? { priorSourceSupported: basis.priorSourceSupported }
+      : {}),
     results: basis.results.map(({ criterionId, currentCriterionId, outcome }) => ({
       criterionId,
       currentCriterionId,
@@ -68,7 +89,7 @@ async function execution(
     inputs: supports.flatMap((x) => x.inputs),
     relationships: supports.flatMap((x) => x.relationships),
     absences: supports.flatMap((x) => x.absences),
-    reviewIds: supports.flatMap((x) => (x.reviewId ? [x.reviewId] : [])),
+    reviewIds: supports.flatMap((x) => x.reviewIds),
   };
 }
 export async function verificationSelectionDigest(
@@ -137,6 +158,19 @@ export function validateVerificationAccounting(
     );
   }
 }
+function executionApplicability(
+  selected: VerificationExecutionSummary,
+  criterionId: string,
+  basis: VerificationAnalysis["basis"],
+): VerificationObligation["applicability"] {
+  if (!selected.current) return "unavailable";
+  if (!selected.eligibleCriterionIds.includes(criterionId)) return "wrong_basis";
+  if (basis.state === "unknown" || selected.support.unknown) return "unknown";
+  if (basis.state !== "current" || selected.support.changed || selected.support.reviewRequired)
+    return "changed";
+  if (selected.support.superseded) return "superseded";
+  return selected.support.assessed ? "assessed" : "current";
+}
 function obligation(
   criterionId: string,
   methodId: string,
@@ -162,16 +196,13 @@ function obligation(
     result.reasons.push("Choose an explicit execution for this obligation");
     return result;
   }
-  if (!selected.current) result.applicability = "unavailable";
-  else if (!selected.eligibleCriterionIds.includes(criterionId))
-    result.applicability = "wrong_basis";
-  else if (basis.state === "unknown" || selected.support.unknown) result.applicability = "unknown";
-  else if (basis.state !== "current" || selected.support.changed || selected.support.reviewRequired)
-    result.applicability = "changed";
-  else if (selected.support.superseded) result.applicability = "superseded";
-  else result.applicability = selected.support.assessed ? "assessed" : "current";
+  result.applicability = executionApplicability(selected, criterionId, basis);
   if (!["current", "assessed"].includes(result.applicability))
     result.reasons.push("Selected execution applicability: " + result.applicability);
+  if (selected.priorSourceSupported === false)
+    result.reasons.push(
+      "Controlled prior source has no complete passing coverage for this interpretation; record a performed replacement",
+    );
   if (outcome !== "passed") result.reasons.push("Recorded outcome remains " + outcome);
   return result;
 }
@@ -203,11 +234,16 @@ export async function analyzeVerification(
 ) {
   const context = await verificationContext(tx, selection, expectedVersion),
     { view, selected, certificate } = context;
-  const governing = await verificationGoverningBasis(tx, view),
+  const state = boundedEngineeringState(
+    await verificationEngineeringState(tx, view.scope),
+    16777216,
+    "Verification analysis exceeds its 16 MiB resolved-state read budget",
+  );
+  const governing = await verificationGoverningBasis(tx, view, state),
     entries = [];
   const work = verificationWorkBudget();
   for (const registration of view.executions)
-    entries.push(await execution(tx, view, registration, work));
+    entries.push(await execution(tx, view, registration, work, state, governing.digest));
   const executions = entries.map((x) => x.summary),
     basis = { state: governing.state, digest: governing.digest, reasons: governing.reasons };
   const obligations = view.scope.basis.methods.flatMap((method) =>

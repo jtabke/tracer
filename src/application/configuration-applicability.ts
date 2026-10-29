@@ -4,29 +4,9 @@ import type {
   ConfigurationReceiptComparison,
 } from "../core/configuration-applicability.ts";
 import type { Transaction } from "./ports/repository.ts";
-import { configurationEngineeringState } from "./engineering-state.ts";
-import type { EngineeringStateReader } from "./engineering-state.ts";
+import { configurationEngineeringState, boundedEngineeringState } from "./engineering-state.ts";
 import { compareCapturedInputs, comparisonToken } from "./receipt-comparison.ts";
 import { factDigest } from "./fact-digest.ts";
-
-function boundedSelectedReads(state: EngineeringStateReader): EngineeringStateReader {
-  let bytes = 0;
-  const account = <T>(value: T): T => {
-    bytes += new TextEncoder().encode(JSON.stringify(value ?? null)).length;
-    ensure(
-      bytes <= 4194304,
-      "validation",
-      "Configuration receipt comparison exceeds its 4 MiB selected-read budget; narrow the declared input population",
-    );
-    return value;
-  };
-  return {
-    ...state,
-    getEntity: async (id) => account(await state.getEntity(id)),
-    getRelationship: async (id) => account(await state.getRelationship(id)),
-    getObservation: async (id) => account(await state.getObservation(id)),
-  };
-}
 
 export function validateConfigurationReceiptQuery(input: ConfigurationReceiptQuery) {
   ensure(record(input) && json(input), "validation", "Choose a configuration and receipt");
@@ -57,7 +37,15 @@ export async function compareConfigurationReceipt(
     configurationDigest: selected.digest,
     receiptDigest: await factDigest(receipt),
   };
-  const comparison = await compareCapturedInputs(tx, receipt, boundedSelectedReads(selected));
+  const comparison = await compareCapturedInputs(
+    tx,
+    receipt,
+    boundedEngineeringState(
+      selected,
+      4194304,
+      "Configuration receipt comparison exceeds its 4 MiB selected-read budget; narrow the declared input population",
+    ),
+  );
   const result: ConfigurationReceiptComparison = {
     contract: "configuration_receipt_comparison",
     version: 1,

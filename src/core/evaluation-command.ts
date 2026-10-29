@@ -13,7 +13,8 @@ export type ApplicationOperation =
   | "verification.select"
   | "verification.conclude"
   | "verification.reopen"
-  | "verification.revise";
+  | "verification.revise"
+  | "verification.review_support";
 
 /** Exact successful application result; operational recovery data, not a new engineering record. */
 export type EvaluationResult = {

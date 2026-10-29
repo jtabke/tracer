@@ -26,6 +26,8 @@ export type Observation = ObservedState &
     at: string;
   };
 export type InputDeclaration = {
+  /** Explicit qualifying use, captured in this receipt's direct relationship inputs. */
+  referenceId?: string;
   facet?: "native" | "content";
   role?: string;
   entityId: string;
@@ -87,6 +89,7 @@ export type Receipt = Provenance & {
   configuration?: Pick<Configuration, "id" | "name" | "subject">;
 };
 export type InputComparison = {
+  referenceUse?: InputReferenceUse;
   entityId: string;
   dependencyPath: string[];
   state: "current" | "changed" | "unknown";
@@ -99,6 +102,13 @@ export type InputComparison = {
     observation: Observation | null;
     links: (Relationship | null)[];
   };
+};
+export type InputReferenceUse = {
+  relationshipId: string;
+  selection: "resource-default" | "pinned-observation" | "pinned-revision" | "unavailable";
+  resourceDefault: { entity: Entity | null; observation: Observation | null };
+  passage: "unknown" | "whole-resource";
+  reason?: string;
 };
 export type ComparedState = {
   relationshipInputs?: RelationshipComparison[];
@@ -114,7 +124,15 @@ export type ReviewInput = {
   rationale: string;
   expectedComparison: string;
 };
+/** Application-owned interpretation context; absence retains original current-head meaning. */
+export type ReviewQualification = {
+  ownerId: string;
+  contract: string;
+  version: number;
+  basisDigest: string;
+};
 export type Review = Provenance & {
+  qualification?: ReviewQualification;
   id: string;
   at: string;
   receiptId: string;

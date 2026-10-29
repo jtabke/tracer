@@ -4,7 +4,7 @@ import type {
   RecordVerificationExecution,
   VerificationSelection,
 } from "../core/verification-case.ts";
-import { verificationCaseLimits } from "../core/verification-case.ts";
+import { verificationCaseLimits, verificationTargetPolicies } from "../core/verification-case.ts";
 import {
   verificationObject,
   verificationBytes,
@@ -50,11 +50,20 @@ export function prepareVerificationOpening(input: OpenVerificationCase) {
     "purpose",
     "basis",
     "additionalFields",
+    "targetConfigurationId",
+    "targetPolicy",
   ]);
   verificationBytes(input, verificationCaseLimits.commandBytes);
   guards(input);
   for (const key of ["caseId", "membershipId", "title"] as const) verificationText(input[key], 200);
   verificationText(input.purpose);
+  if (input.targetConfigurationId !== undefined) verificationText(input.targetConfigurationId, 200);
+  if (input.targetPolicy !== undefined)
+    ensure(
+      verificationTargetPolicies.includes(input.targetPolicy),
+      "validation",
+      "Unsupported target input policy",
+    );
   verificationObject(input.additionalFields, Object.keys(input.additionalFields ?? {}));
   input.basis = prepareVerificationBasis(input.basis);
   return input;
@@ -125,6 +134,7 @@ import type {
   VerificationMutation,
   SelectVerificationResults,
   ReviseVerificationBasis,
+  ReviewVerificationSupport,
 } from "../core/verification-lifecycle.ts";
 import {
   verificationDigest,
@@ -160,8 +170,37 @@ export function prepareVerificationResults(input: SelectVerificationResults) {
   verificationAccounting(input.accounting);
   return input;
 }
+export function prepareVerificationSupportReview(input: ReviewVerificationSupport) {
+  input = prepareVerificationMutation(input, [
+    "executionId",
+    "receiptId",
+    "decision",
+    "expectedComparison",
+  ]);
+  verificationText(input.executionId, 200);
+  verificationText(input.receiptId, 200);
+  verificationDigest(input.expectedComparison);
+  ensure(
+    ["accepted", "acknowledged", "needs_reevaluation"].includes(input.decision),
+    "validation",
+    "Invalid review decision",
+  );
+  return input;
+}
 export function prepareVerificationRevision(input: ReviseVerificationBasis) {
-  input = prepareVerificationMutation(input, ["basis", "mapping"]);
+  input = prepareVerificationMutation(input, [
+    "basis",
+    "mapping",
+    "targetConfigurationId",
+    "targetPolicy",
+  ]);
+  if (input.targetConfigurationId !== undefined) verificationText(input.targetConfigurationId, 200);
+  if (input.targetPolicy !== undefined)
+    ensure(
+      verificationTargetPolicies.includes(input.targetPolicy),
+      "validation",
+      "Unsupported target input policy",
+    );
   input.basis = prepareVerificationBasis(input.basis);
   ensure(
     Array.isArray(input.mapping) && input.mapping.length <= 25,

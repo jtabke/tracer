@@ -1,9 +1,16 @@
 import { ensure, record, knownProperties } from "../core/model.ts";
 import type { Entity, SchemaObject } from "../core/model.ts";
-import type { InputDeclaration, Observation, RelationshipDeclaration } from "../core/evidence.ts";
+import type {
+  InputDeclaration,
+  Observation,
+  RelationshipDeclaration,
+  CapturedRelationship,
+} from "../core/evidence.ts";
+import { resolveReceiptReference } from "./receipt-reference.ts";
 import type { Configuration, PinnedEntity } from "../core/configuration.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { pinEntity } from "./native-pins.ts";
+import { evidenceText } from "./evidence-validation.ts";
 
 type ResolvedReceiptInput = {
   value: Entity;
@@ -45,6 +52,7 @@ function validateReceiptDeclaration(declaration: InputDeclaration) {
       Object.keys(declaration).every((key) =>
         [
           "entityId",
+          "referenceId",
           "facet",
           "role",
           "expectedVersion",
@@ -75,7 +83,9 @@ function validatePinnedSelector(
   declaration: InputDeclaration,
   configuration: Configuration | undefined,
 ) {
-  const configuredContent = !!configuration?.capture && declaration.facet === "content";
+  const configuredContent =
+    declaration.facet === "content" &&
+    (!!configuration?.capture || (!configuration && declaration.revision !== undefined));
   ensure(
     declaration.expectedVersion === undefined &&
       (!configuration || declaration.revision === undefined) &&
@@ -120,8 +130,11 @@ export async function resolveReceiptInput(
   declaration: InputDeclaration,
   schema: SchemaObject,
   configuration?: Configuration,
+  relationships: CapturedRelationship[] = [],
 ): Promise<ResolvedReceiptInput> {
   validateReceiptDeclaration(declaration);
+  if (declaration.referenceId !== undefined)
+    return resolveReceiptReference(tx, declaration, schema, configuration, relationships);
   if (configuration || declaration.revision !== undefined) {
     validatePinnedSelector(declaration, configuration);
     const pin = configuration
@@ -130,12 +143,14 @@ export async function resolveReceiptInput(
           tx,
           declaration.entityId,
           declaration.revision!,
-          declaration.facet === "native",
+          declaration.facet === "native" || declaration.facet === "content",
         );
     ensure(pin, "validation", "Input is not a member of the selected configuration");
     const observation = configuration
       ? configurationObservation(configuration, declaration)
-      : undefined;
+      : declaration.facet === "content"
+        ? await historicalContentObservation(tx, declaration, pin.entity)
+        : undefined;
     return { value: pin.entity, schema: pin.schema, pin, ...(observation ? { observation } : {}) };
   }
   ensure(
@@ -151,4 +166,20 @@ export async function resolveReceiptInput(
     "Input changed before receipt capture: " + value.id,
   );
   return { value, schema };
+}
+
+async function historicalContentObservation(
+  tx: Transaction,
+  input: InputDeclaration,
+  resource: Entity,
+) {
+  evidenceText(input.observationId, "Historical content observation ID");
+  const external = (await tx.getEvidence("external", resource.id)) ?? resource.resource?.source;
+  const observation = await tx.getEvidence("observation", input.observationId);
+  ensure(
+    external && observation?.entityId === resource.id && input.fields === undefined,
+    "validation",
+    "Historical content inputs require an observation of this external resource without annotation fields",
+  );
+  return observation;
 }

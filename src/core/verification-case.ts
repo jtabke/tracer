@@ -2,7 +2,13 @@ import type { Fields } from "./model.ts";
 import type { Json } from "./model.ts";
 import type { PrepareVerificationBasis, VerificationBasis } from "./verification-basis.ts";
 import type { ResolvedVerificationModel } from "./verification-model.ts";
-import type { InputDeclaration, RelationshipDeclaration } from "./evidence.ts";
+import type {
+  ComparedState,
+  Comparison,
+  ReviewQualification,
+  InputDeclaration,
+  RelationshipDeclaration,
+} from "./evidence.ts";
 
 export const verificationCaseLimits = {
   priorReceiptBytes: 1048576,
@@ -15,6 +21,16 @@ export const verificationCaseLimits = {
   supportInputs: 20,
 } as const;
 export type VerificationSelection = { caseId: string; openingCommandId: string };
+export const verificationTargetPolicies = [
+  "target-input-correspondence-v1",
+  "target-reference-uses-v2",
+] as const;
+export type VerificationTargetPolicy = (typeof verificationTargetPolicies)[number];
+export type VerificationConfigurationTarget = {
+  configurationId: string;
+  digest: string;
+  policy: VerificationTargetPolicy;
+};
 export type VerificationGuards = {
   commandId: string;
   expectedSchemaVersion: number;
@@ -22,6 +38,8 @@ export type VerificationGuards = {
   expectedEvidenceRevision: number;
 };
 export type OpenVerificationCase = VerificationGuards & {
+  targetConfigurationId?: string;
+  targetPolicy?: VerificationTargetPolicy;
   caseId: string;
   membershipId: string;
   title: string;
@@ -30,6 +48,7 @@ export type OpenVerificationCase = VerificationGuards & {
   additionalFields: Fields;
 };
 export type VerificationCaseScope = {
+  target?: VerificationConfigurationTarget;
   contract: "verification_case_scope";
   version: 1;
   purpose: string;
@@ -108,6 +127,19 @@ export type VerificationExecutionView = {
   membership: { id: string; currentVersion: number | null; current: boolean };
   data: VerificationExecutionData;
   comparison: { record: VerificationInputState; source: VerificationInputState | null };
+  targetSupport?: VerificationTargetSupport;
+};
+export type VerificationTargetSupport = {
+  target: VerificationConfigurationTarget;
+  basisDigest: string;
+  layers: {
+    receiptId: string;
+    nextSourceReceiptId: string | null;
+    comparison: ComparedState;
+    token: string;
+    qualification: ReviewQualification;
+    review: Comparison["review"];
+  }[];
 };
 export type VerificationInputState = {
   receiptId: string;

@@ -73,6 +73,11 @@ async function basisLineage(
       "conflict",
       "Verification basis changed without a revision",
     );
+    ensure(
+      canonical(scope.target ?? null) === canonical(original.target ?? null),
+      "conflict",
+      "Verification target changed without a controlled basis revision",
+    );
     return;
   }
   const command = await verificationCommand(tx, revision.commandId, selection);
@@ -87,6 +92,7 @@ async function basisLineage(
   );
   ensure(
     canonical(recorded.basis) === canonical(scope.basis) &&
+      canonical(recorded.target ?? null) === canonical(scope.target ?? null) &&
       canonical(recorded.revisions) === canonical(scope.revisions),
     "conflict",
     "Verification basis does not match its controlling revision",

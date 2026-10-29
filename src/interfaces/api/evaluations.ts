@@ -41,6 +41,13 @@ export const evaluationWrites = {
       receipt: strictObject(receiptCommandInput),
     },
     evaluation,
-    { features: [...feature, "evidence-revision-guards"] },
+    {
+      features: [
+        ...feature,
+        "evidence-revision-guards",
+        "reference-evaluation-inputs",
+        "historical-content-inputs",
+      ],
+    },
   )(({ tracer, provenance }, input) => tracer.evaluations.commit(input, provenance)),
 };

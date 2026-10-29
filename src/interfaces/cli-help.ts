@@ -6,12 +6,13 @@ Commands:
   application-model resolve JSON
   verification resolve-model JSON    exact native verification model; no lifecycle conclusion
   verification prepare-basis JSON    validate selected criteria/methods without writing a case
-  verification open JSON             guarded case genesis with owned requirement membership
+  verification open JSON             guarded case genesis; optional targetConfigurationId fixes engineering context
   verification analyze JSON          derived obligations, accounting and current applicability
   verification select JSON           explicitly select results and account for every execution
   verification conclude JSON         close only with complete applicable passing obligations
   verification reopen JSON           retain the original conclusion and reopen current work
   verification revise-basis JSON     explicitly map criteria and retain execution history
+  verification review-support JSON   guarded judgment for exact target/execution/source context
   verification get JSON              caseId + openingCommandId; controlled basis and registry
   verification locate ID             find the controlled opening from a case identity
   verification execution JSON        selection + executionId; original results and separate input states

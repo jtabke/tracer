@@ -2,11 +2,13 @@ import type {
   VerificationMutation,
   SelectVerificationResults,
   ReviseVerificationBasis,
+  ReviewVerificationSupport,
 } from "../core/verification-lifecycle.ts";
 import {
   prepareVerificationMutation,
   prepareVerificationResults,
   prepareVerificationRevision,
+  prepareVerificationSupportReview,
 } from "./verification-inputs.ts";
 import { analyzeVerification } from "./verification-analysis.ts";
 import {
@@ -39,6 +41,8 @@ import { verificationContext } from "./verification-context.ts";
 import { readVerificationExecution } from "./verification-execution-read.ts";
 import { ensure } from "../core/model.ts";
 import { verificationText } from "../core/verification-criteria.ts";
+import { validateProvenance } from "../core/model.ts";
+import { reviewVerificationSupport } from "./verification-review-support.ts";
 
 /** Shared verification meaning. Native storage, evidence and transport retain their own contracts. */
 export class Verification {
@@ -85,6 +89,16 @@ export class Verification {
   async reviseBasis(input: ReviseVerificationBasis, actor: Provenance) {
     input = prepareVerificationRevision(input);
     return this.executor.execute(input, actor, reviseVerificationBasis, "verification.revise");
+  }
+  async reviewSupport(input: ReviewVerificationSupport, actor: Provenance) {
+    input = prepareVerificationSupportReview(input);
+    const origin = validateProvenance(actor);
+    return this.executor.execute(
+      input,
+      origin,
+      (tx, request) => reviewVerificationSupport(tx, request, origin),
+      "verification.review_support",
+    );
   }
   async get(input: VerificationSelection) {
     input = prepareVerificationSelection(input);

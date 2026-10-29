@@ -9,6 +9,7 @@ import type { Transaction } from "./ports/repository.ts";
 import { verificationBytes } from "../core/verification-case-validation.ts";
 import { verificationCaseLimits } from "../core/verification-case.ts";
 import { nativeState } from "./receipt-comparison.ts";
+import { validateTypedPriorResults } from "./verification-prior-results.ts";
 
 function matches(
   inputs: CapturedInput[],
@@ -58,5 +59,6 @@ export async function priorVerificationSource(
     "validation",
     "Prior receipt must explicitly capture the selected requirement and method semantic basis",
   );
+  await validateTypedPriorResults(tx, receipt, view, input);
   return receipt;
 }

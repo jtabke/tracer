@@ -156,6 +156,7 @@ export const relationshipDeclaration = strictObject({
   role: optional(text),
 });
 const declaration = strictObject({
+  referenceId: optional(text),
   facet: optional(literal("native", "content")),
   role: optional(text),
   entityId: text,

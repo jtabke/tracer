@@ -135,6 +135,57 @@ async function setup(t: TestContext, open: () => Promise<RepositoryFixture>) {
 
 /** Registered by repositoryContract for every provider; contains no adapter SQL or filesystem assumptions. */
 export function repositoryEvidenceContract(name: string, open: () => Promise<RepositoryFixture>) {
+  test(`${name}: review namespaces isolate owner, contract, version and basis while preserving unqualified reads`, async (t) => {
+    const f = await setup(t, open);
+    const qualification = {
+      ownerId: "case-a",
+      contract: "support",
+      version: 1,
+      basisDigest: "basis-a",
+    };
+    const alternatives = [
+      qualification,
+      { ...qualification, ownerId: "case-b" },
+      { ...qualification, contract: "other" },
+      { ...qualification, version: 2 },
+      { ...qualification, basisDigest: "basis-b" },
+    ];
+    const rows = alternatives.map((qualification) => ({
+      ...f.review,
+      id: crypto.randomUUID(),
+      qualification,
+    }));
+    await f.repository.transaction(async (tx) => {
+      for (const row of rows) await tx.appendEvidence("review", f.receipt.id, row);
+      assert.deepEqual(await tx.latestReview(f.receipt.id), f.review);
+      for (const row of rows)
+        assert.deepEqual(await tx.latestReview(f.receipt.id, row.qualification), row);
+      assert.equal(await tx.latestReview("unrelated", qualification), undefined);
+      const returned = await tx.latestReview(f.receipt.id, qualification);
+      returned!.qualification!.ownerId = "caller-mutated";
+      assert.deepEqual(await tx.latestReview(f.receipt.id, qualification), rows[0]);
+    });
+    const later = { ...f.review, id: crypto.randomUUID() };
+    await f.repository.transaction((tx) => tx.appendEvidence("review", f.receipt.id, later));
+    await f.reopen();
+    await f.repository.transaction(async (tx) => {
+      assert.deepEqual(await tx.latestReview(f.receipt.id), later);
+      assert.deepEqual(await tx.latestReview(f.receipt.id, qualification), rows[0]);
+    });
+    const before = await f.tracer.exportProject();
+    await assert.rejects(
+      f.repository.transaction(async (tx) => {
+        await tx.appendEvidence("review", f.receipt.id, {
+          ...rows[0],
+          id: crypto.randomUUID(),
+          decision: "needs_reevaluation",
+        });
+        throw Error("Abort qualified decision");
+      }),
+      { code: "storage" },
+    );
+    assert.deepEqual(await f.tracer.exportProject(), before);
+  });
   test(`${name}: evidence kind/subject reads own immutable payloads and duplicate captures never replace`, async (t) => {
     const f = await setup(t, open),
       before = await f.tracer.exportProject();

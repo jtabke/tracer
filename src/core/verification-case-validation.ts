@@ -1,6 +1,6 @@
 import { ensure, json, knownProperties, record } from "./model.ts";
 import { verificationText, validateVerificationCriteria } from "./verification-criteria.ts";
-import { verificationCaseLimits } from "./verification-case.ts";
+import { verificationCaseLimits, verificationTargetPolicies } from "./verification-case.ts";
 import type {
   VerificationCaseScope,
   VerificationExecutionData,
@@ -195,6 +195,17 @@ function basisShape(value: unknown) {
       "Invalid verification basis context",
     );
 }
+function targetShape(value: unknown) {
+  const target = verificationObject(value, ["configurationId", "digest", "policy"]);
+  verificationText(target.configurationId, 200);
+  ensure(
+    typeof target.digest === "string" &&
+      /^sha256:[a-f0-9]{64}$/.test(target.digest) &&
+      verificationTargetPolicies.some((policy) => policy === target.policy),
+    "validation",
+    "Unsupported verification configuration target",
+  );
+}
 export function parseVerificationScope(value: unknown): VerificationCaseScope {
   const scope = verificationObject(value, [
     "contract",
@@ -205,6 +216,7 @@ export function parseVerificationScope(value: unknown): VerificationCaseScope {
     "control",
     "revisions",
     "reopened",
+    "target",
   ]);
   ensure(
     scope.contract === "verification_case_scope" && scope.version === 1,
@@ -212,6 +224,9 @@ export function parseVerificationScope(value: unknown): VerificationCaseScope {
     "Unsupported verification case scope",
   );
   verificationText(scope.purpose);
+  if (scope.target !== undefined) {
+    targetShape(scope.target);
+  }
   verificationText(scope.membershipId, 200);
   const control = verificationObject(scope.control, ["commandId", "openingCommandId"]);
   verificationText(control.commandId, 200);

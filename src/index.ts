@@ -75,6 +75,7 @@ export type {
   VerificationMutation,
   SelectVerificationResults,
   ReviseVerificationBasis,
+  ReviewVerificationSupport,
   VerificationResultSelection,
   VerificationConclusion,
   VerificationObligation,

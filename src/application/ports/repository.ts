@@ -15,6 +15,8 @@ import type {
   EvidenceKind,
   EvidenceQuery,
   EvidenceAppend,
+  ReviewQualification,
+  Review,
 } from "../../core/evidence.ts";
 import type { SavedView } from "../../core/presentation.ts";
 import type { Configuration } from "../../core/configuration.ts";
@@ -100,6 +102,8 @@ export interface Transaction {
     kind: K,
     subject: string,
   ): Promise<EvidenceByKind[K] | undefined>;
+  /** Latest Review in exactly this namespace. Omission selects unqualified legacy reviews only. */
+  latestReview(receiptId: string, qualification?: ReviewQualification): Promise<Review | undefined>;
   impactSupersession(receiptId: string): Promise<{ count: number; ids: string[] }>;
   supersedingReceiptIds(receiptId: string): Promise<string[]>;
   coveragePage(query: CoverageNativeQuery): Promise<Page<CoverageNativeRow>>;

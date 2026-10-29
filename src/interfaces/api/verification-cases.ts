@@ -1,6 +1,7 @@
 import type { Verification } from "../../application/verification.ts";
+import { verificationTargetPolicies } from "../../core/verification-case.ts";
 import { json } from "../../core/model.ts";
-import { array, fields, integer, literal, text, union } from "../decode.ts";
+import { array, fields, integer, literal, optional, text, union } from "../decode.ts";
 import { read, write } from "./definition.ts";
 import { strictObject, receiptCommandInput, relationshipDeclaration } from "./input.ts";
 import * as q from "./query.ts";
@@ -94,11 +95,21 @@ export const verificationWrites = {
       membershipId: text,
       title: text,
       purpose: text,
+      targetConfigurationId: optional(text),
+      targetPolicy: optional(literal(...verificationTargetPolicies)),
       basis: verificationBasisInput,
       additionalFields: fields,
     },
     openedVerificationResponse,
-    { features: ["verification-cases", "atomic-evaluation-commands", "evidence-revision-guards"] },
+    {
+      features: [
+        "verification-cases",
+        "atomic-evaluation-commands",
+        "evidence-revision-guards",
+        "configuration-bound-verification",
+        "contextual-input-correspondence",
+      ],
+    },
   )(({ tracer, provenance }, input) => {
     const verification: Verification = tracer.verification;
     return verification.open(input, provenance);
@@ -134,6 +145,8 @@ export const verificationWrites = {
     {
       features: [
         "verification-executions",
+        "reference-evaluation-inputs",
+        "historical-content-inputs",
         "atomic-evaluation-commands",
         "evidence-revision-guards",
       ],

@@ -1,0 +1,283 @@
+{
+  "status": "partial_backend_milestone_not_full_REQ035_acceptance",
+  "requirement": "REQ-035",
+  "work": "WORK-027",
+  "sourceCommit": "8e632e735b2cc16a712283150e92eadcafab2271",
+  "candidateFiles": [
+    {
+      "path": "src/application/configuration-applicability.ts",
+      "sha256": "67c1a4a35f937f2c6ef396f9501a7ba2578801c757f24d0ca6a6e1c890ec9d24"
+    },
+    {
+      "path": "src/application/engineering-state.ts",
+      "sha256": "a48bee34e260fad1f37fe02b0b1f18bd08aa3a5f3f025efaa559a9e5f39faaa3"
+    },
+    {
+      "path": "src/application/evidence.ts",
+      "sha256": "ad670b15eb00cb2b1ee2f7ba40bb5d22e5be94bd3875674121e9235e04c47828"
+    },
+    {
+      "path": "src/application/ports/repository.ts",
+      "sha256": "95c8565354904057fde5420ec08f9d360524ce1f7a27c9ec1ab1f97a269a1a1a"
+    },
+    {
+      "path": "src/application/receipt-comparison.ts",
+      "sha256": "60fa40b223bb1bd00d428f3b73df07526f5059980f8fa80ae171dd6c12a63805"
+    },
+    {
+      "path": "src/application/review-capture.ts",
+      "sha256": "556dc8ba0ccd80876e88c812d91e61d37ec0cd76a987e49a4c902e3a2f71965b"
+    },
+    {
+      "path": "src/application/verification-analysis.ts",
+      "sha256": "dcc519cb76c7a914113cd0a869bf5eaec7dfe790abe45e6a252da6622f29b7e9"
+    },
+    {
+      "path": "src/application/verification-context.ts",
+      "sha256": "0f83e1ddd6eda1eecd92948509748fdb0a80cda4fca5d9882c7fa230ddc7c342"
+    },
+    {
+      "path": "src/application/verification-execution-read.ts",
+      "sha256": "269bc8847c2fb0855cf83b44a3a2974cab5fb7c21a2cacd1e567b25b1ae5b2f3"
+    },
+    {
+      "path": "src/application/verification-governing.ts",
+      "sha256": "142869809318d6c0a3eb1f3e547339aac598efdc7ee9adb7f707316a067e6db2"
+    },
+    {
+      "path": "src/application/verification-inputs.ts",
+      "sha256": "3bddb1f41b75cf68cb7efc70bccdc917b6e774a81cd013631ad2a8d48c8e41a0"
+    },
+    {
+      "path": "src/application/verification-open.ts",
+      "sha256": "acfc576d0dc45534b1ee339b3328d074f53ae9fa2a739920cd8f98976e0a396d"
+    },
+    {
+      "path": "src/application/verification-prior-results.ts",
+      "sha256": "35bb654903d936b8080feeffb518c779e02239a33cf227b2ff81f222fdc0aeaa"
+    },
+    {
+      "path": "src/application/verification-receipt-origin.ts",
+      "sha256": "13cd92f670d8456b1f6c1e517ec1646de84117755002b16aa48764354dd95df9"
+    },
+    {
+      "path": "src/application/verification-review-support.ts",
+      "sha256": "b36e280bba09cf6fb249dcc1ebab87d067c2b3d52caf24282ec2ea308df0cea9"
+    },
+    {
+      "path": "src/application/verification-revise.ts",
+      "sha256": "c0af4cf36b59a38b2b0fcd1452f72fe6c4565f8c0210ed84d75df57403f87c77"
+    },
+    {
+      "path": "src/application/verification-source.ts",
+      "sha256": "9627857b28aede8c24d48145ec60c8560d947328cb9444dd75775990bc96ea07"
+    },
+    {
+      "path": "src/application/verification-support-inspection.ts",
+      "sha256": "1fb0a45d0237adbb97d24b1a17dae73c9af0b4d920cd9c39d9e8503252b7d070"
+    },
+    {
+      "path": "src/application/verification-support.ts",
+      "sha256": "19787b7f87a90fd42e25dd60f436b2a7ed099795aedfe08167eaaec02f8defb6"
+    },
+    {
+      "path": "src/application/verification-target-review.ts",
+      "sha256": "477163a714206558c466466f0dba055a09fb808304b48fb67f616cefac146869"
+    },
+    {
+      "path": "src/application/verification-target.ts",
+      "sha256": "ddbddc6c4bc28e35804b68ded44334682a30ebe60adeab93b3c99f833b45e5fa"
+    },
+    {
+      "path": "src/application/verification.ts",
+      "sha256": "42565e86384db9dde604f29e6768ea380453bb4dd4a98bea80156a336c835b05"
+    },
+    {
+      "path": "src/core/evaluation-command.ts",
+      "sha256": "8ffda167af3ff515a5ebeb01a8bee55bb12171280201d9531b861a20d0b112a8"
+    },
+    {
+      "path": "src/core/evidence.ts",
+      "sha256": "68bc4a5f9fc9ce424913b0f453b2a4c5d503bb026539111f8f1625fdb6b38c75"
+    },
+    {
+      "path": "src/core/verification-case-validation.ts",
+      "sha256": "3b120a8dec109720546815264ee5194889cd14a3582e4a4d8a0518841775773d"
+    },
+    {
+      "path": "src/core/verification-case.ts",
+      "sha256": "de6f866138b3e5ede4effacf7a2307249171f4fc4c47b3b5ce7cfe2e0a42260a"
+    },
+    {
+      "path": "src/core/verification-lifecycle.ts",
+      "sha256": "4345ffca8e48bb6ed924c18ba8165d7a4b9fc58bd6167c7c6cbff63437fd39af"
+    },
+    {
+      "path": "src/index.ts",
+      "sha256": "fbe8e0871973728aceaa431204fa32625a6d3662419c3fff2758670dd7746df2"
+    },
+    {
+      "path": "src/interfaces/api-models.ts",
+      "sha256": "b6a7277bee43509bba8b4fb264362106f892a5c28e7c1db0898de289c26b0866"
+    },
+    {
+      "path": "src/interfaces/api/verification-case-responses.ts",
+      "sha256": "bdab2a783032a8b65b67c1ba9573f969f35e0d38d31ec25403c8a5b8e704fffc"
+    },
+    {
+      "path": "src/interfaces/api/verification-cases.ts",
+      "sha256": "d02504816a3674891d4a7b608b412aa3295616dec36400ac1656d156dc50f48f"
+    },
+    {
+      "path": "src/interfaces/api/verification-lifecycle-responses.ts",
+      "sha256": "40a3060cfec424e978a41a419b97511b37c380c0c0562209a6c5b2f7ce86e901"
+    },
+    {
+      "path": "src/interfaces/api/verification-lifecycle.ts",
+      "sha256": "2818c97996d7b2f5c62d9b95b05bb5073da14a88a6ee8decff72bcec4e261fac"
+    },
+    {
+      "path": "src/interfaces/api/verification-review-response.ts",
+      "sha256": "2638ef596c994b79a2d23e3cbb2096d45ac0da3d66b9b6cc806cf43f95607677"
+    },
+    {
+      "path": "src/interfaces/api/verification-support-response.ts",
+      "sha256": "6e247893029301b64ec533e7330c361c4e1bad7f7fab65f7d0d8196137010e77"
+    },
+    {
+      "path": "src/interfaces/cli-data.ts",
+      "sha256": "705433ee243ad45b176b8452b88a9f954c5a0fd4322755fe120554c93adc2d02"
+    },
+    {
+      "path": "src/interfaces/cli-help.ts",
+      "sha256": "9d2190e89152701fa842b23054b79e06f0cc23142a25bbe3d8d5658cd53db1e3"
+    },
+    {
+      "path": "src/persistence/impact.ts",
+      "sha256": "6eb491f2293f0d699e36d82a93836813a035f826d186e0454cb15b0db1336890"
+    },
+    {
+      "path": "test/api-capabilities.test.ts",
+      "sha256": "34f972206c4658a76a099e64fe6c7c1f0fb21a517ee8f12bd59610275e941da3"
+    },
+    {
+      "path": "test/fixtures/verification-unsafe-prior.json",
+      "sha256": "dd8568e6f5ccaa3ad3c5f704ac3c568e444a1afc6b4cfc4d97ffb384879d4730"
+    },
+    {
+      "path": "test/fixtures/verification-unsafe-prior.sqlite.gz",
+      "sha256": "146f915c08b1d12cdd5142db358df76c4a4b2a2601dfd84091f77eb6e80d2836"
+    },
+    {
+      "path": "test/repository-evidence-contract.ts",
+      "sha256": "16d3b9f10d4743631aca80befb080d83fa58c3b857df8223b3987236da122715"
+    },
+    {
+      "path": "test/review-capture.test.ts",
+      "sha256": "e1c7e61ad3737fe94c9629d37b288a602ed1797be8b53a9e3e332839c3660b8c"
+    },
+    {
+      "path": "test/verification-prior-history.test.ts",
+      "sha256": "dd6eb452d3d26f5d4a232fd33636775b36b3436be44354a60f7318744efbd4c9"
+    },
+    {
+      "path": "test/verification-prior-results.test.ts",
+      "sha256": "00c708c5b7a1a7739f9c3b1c83114b0bad12bd0f8c9eed50bdd9865df7c8d4a7"
+    },
+    {
+      "path": "test/verification-target-review.test.ts",
+      "sha256": "23b23ca99f88db4d9571dd4309a5bc68012b3b83f13f5aad3ebe5be0c368c28f"
+    },
+    {
+      "path": "test/verification-target.test.ts",
+      "sha256": "77e250c296114e801705cb079fbe2126e73ec4c63e4c0d97d2cf10c4acf7b5fc"
+    },
+    {
+      "path": "ui/reconcile-mutation.ts",
+      "sha256": "a8b869287c341a8a73e556e63e8cecff7663098842b6c95d99e58d311ab15eaf"
+    }
+  ],
+  "implemented": [
+    "Optional generic Review qualification and exact namespace lookup using existing immutable evidence storage; no physical format migration or new engineering record type.",
+    "Atomic authenticated verification.review_support operation, core/typed HTTP-client/CLI authoring and shared uncertain-save reconciliation.",
+    "Target support inspection includes exact context qualification and applicable/previous judgments; legacy unqualified token bytes and current-head review meaning remain intact.",
+    "Selected-case analysis authenticates durable review origin, isolates every source layer and enforces pinned policy without promoting failure/not_run/unknown/unsupported criteria or incomplete accounting.",
+    "Review and command payloads count against the existing aggregate work budget."
+  ],
+  "verification": {
+    "allUnitAtIntegratedStage": 669,
+    "finalSourceFocusedTests": 51,
+    "qualification": "The complete unit stage passed before the final response-decoder extraction; the exact final decoder and later-head-source case passed 51 focused interface/lifecycle/adapter checks. Full browser/workbench/merged-quality acceptance of this continuing milestone remains pending. Earlier 659-unit/209-browser full acceptance belongs to the separately frozen target-foundation report.",
+    "types": "passed",
+    "dependencyAndDuplicationGates": "passed unchanged",
+    "targetedComplexity": "Shared support, authenticated origin, command composition, SQLite lookup and final decoder pass unchanged thresholds with measured unit/focused coverage. This is targeted evidence, not the final merged UI quality gate."
+  },
+  "cases": [
+    "Exact owner/contract/version/basis namespace isolation, immutable reads, restart and rollback.",
+    "Engineering/research allowed assessments survive selection/conclusion and later source bytes; unrelated head reviews remain separate.",
+    "Pinned model disallowing assessed change remains authoritative.",
+    "Unknown acceptance, stale guards, stale comparison and unrelated receipt refusal leave no successful command or partial review.",
+    "Failed/not_run outcomes remain nonpassing after support acceptance.",
+    "Every original/interpretation layer needs its own context-bound judgment; new target revisions preserve old judgments without inheriting them.",
+    "Untrusted stored qualification without durable command origin refuses.",
+    "Lost committed HTTP response performs one POST; exact original-intent recovery and conflict rejection work after restart through core/HTTP/CLI."
+  ],
+  "qualityRefinements": [
+    "Separated support comparison/review resolution from aggregation/traversal after targeted complexity reported 27/22.",
+    "Separated qualified-review validation from source-chain validation after decoder complexity reported 21/21. No threshold/exclusion changes."
+  ],
+  "logs": [
+    {
+      "path": "output/configuration-change/qualified-review-final-unit.log",
+      "sha256": "5cd1d580a6f6f77722fec98dd66e77c9f9c8d86cfd09a12275626adbb3323f33"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-final-contracts.log",
+      "sha256": "fd3e040a47f1b0f6dc9d0385c167c1869add6856772f83a64831ccf748f67871"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-final-types.log",
+      "sha256": "5e600a6c437263e35717d543f878a429e3b92d338d2cbee585a8a9574d6656d3"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-final-boundaries.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-final-duplication.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-decoder-health.log",
+      "sha256": "6529ed1441e1a43aaeb373dbdfaefe42b9161f7c6aa8c5b16c4bbf30ab978a06"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-support-health-final.log",
+      "sha256": "29ab10143bc83db7e7c48271a7db68cd3533ef092ac6443333f9c12886c78c02"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-origin-health-final.log",
+      "sha256": "081cded97f772303c5734b2f104b1eeb54a60ad6b36f321ece927586962fecac"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-command-health-final.log",
+      "sha256": "a3ac9477f10ec60e620cbe86c54074fc4e831172337d404cc62b611298cd3f5d"
+    },
+    {
+      "path": "output/configuration-change/qualified-review-storage-health-final.log",
+      "sha256": "0efc339a1e3a6b5b77c26afa2e2a447b48cc49b6206a057ae04e152da7469d81"
+    }
+  ],
+  "originalSourceObservations": [
+    "output/configuration-change/target-review-original-observations.json",
+    "output/configuration-change/target-review-index-original-observation.json",
+    "output/configuration-change/target-review-reconcile-original-observation.json"
+  ],
+  "remaining": [
+    "Explicit contextual reference-use policy; preserve existing selected-dependencies-v1/current-head meanings.",
+    "Pair-bound impact/discovery and controlled assessment composition.",
+    "Shared configuration-change workspace, real Tracer reassessment, materially different task and fresh-agent walkthrough.",
+    "Final original AC-1\u201312 acceptance, full regression/merged quality, preservation and publication."
+  ],
+  "claims": "REQ-035 remains in progress/not verified/not validated; original criteria unchanged. No representative-human, regulatory, hosted-team/backend or arbitrary-scale claim."
+}

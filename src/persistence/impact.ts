@@ -1,5 +1,5 @@
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
-import type { EvidenceByKind, Receipt } from "../core/evidence.ts";
+import type { EvidenceByKind, Receipt, Review } from "../core/evidence.ts";
 import type { ImpactIncidentQuery, ImpactReceiptQuery } from "../core/impact.ts";
 import type { Relationship } from "../core/model.ts";
 import type { Transaction } from "../application/ports/repository.ts";
@@ -96,6 +96,7 @@ export function impactTransaction(
   | "impactReceipts"
   | "impactEvidenceRevision"
   | "latestEvidence"
+  | "latestReview"
   | "impactSupersession"
   | "supersedingReceiptIds"
 > {
@@ -122,6 +123,26 @@ export function impactTransaction(
         )
         .get(kind, subject);
       return row ? (JSON.parse(String(row.payload_json)) as EvidenceByKind[K]) : undefined;
+    },
+    latestReview: async (receiptId, qualification) => {
+      check();
+      const where = qualification
+        ? "json_extract(payload_json,'$.qualification.ownerId')=? AND json_extract(payload_json,'$.qualification.contract')=? AND json_extract(payload_json,'$.qualification.version')=? AND json_extract(payload_json,'$.qualification.basisDigest')=?"
+        : "json_type(payload_json,'$.qualification') IS NULL";
+      const values = qualification
+        ? [
+            qualification.ownerId,
+            qualification.contract,
+            qualification.version,
+            qualification.basisDigest,
+          ]
+        : [];
+      const row = db
+        .prepare(
+          `SELECT payload_json FROM evidence WHERE kind='review' AND subject_id=? AND ${where} ORDER BY sequence DESC LIMIT 1`,
+        )
+        .get(receiptId, ...values);
+      return row ? (JSON.parse(String(row.payload_json)) as Review) : undefined;
     },
     impactSupersession: async (receiptId) => {
       check();

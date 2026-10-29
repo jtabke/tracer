@@ -10,18 +10,14 @@ import type {
   ReceiptInput,
   Receipt,
   ReviewInput,
-  Review,
   Comparison,
   EvidenceKind,
   EvidenceQuery,
 } from "../core/evidence.ts";
 import type { Repository, Transaction } from "./ports/repository.ts";
-import {
-  compareCapturedInputs,
-  comparisonToken,
-  compareReceiptState,
-} from "./receipt-comparison.ts";
+import { compareCapturedInputs, compareReceiptState } from "./receipt-comparison.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
+import { prepareReview, captureReview } from "./review-capture.ts";
 
 export type Observer = (locator: Locator) => Promise<ObservedState>;
 const unavailable: Observer = async () => ({
@@ -216,44 +212,12 @@ export class EvidenceService {
   }
   review(input: ReviewInput, origin: Provenance) {
     const actor = provenance(origin);
-    input = snapshotInput(input);
-    ensure(
-      record(input) &&
-        json(input) &&
-        ["accepted", "acknowledged", "needs_reevaluation"].includes(input.decision),
-      "validation",
-      "Invalid review decision",
-    );
-    text(input.receiptId, "Receipt ID");
-    text(input.rationale, "Review rationale");
-    text(input.expectedComparison, "Expected comparison");
+    input = prepareReview(input);
     return this.repository.transaction(async (tx) => {
       const receipt = await tx.getEvidence("receipt", input.receiptId);
       ensure(receipt, "not_found", "Receipt not found");
-      const comparison = await compareCapturedInputs(tx, receipt),
-        token = comparisonToken(comparison);
-      ensure(
-        token === input.expectedComparison,
-        "conflict",
-        "Inputs changed since comparison; compare again before reviewing",
-      );
-      ensure(
-        input.decision !== "accepted" || !comparison.hasUnknown,
-        "validation",
-        "Cannot accept unresolved unknown inputs; acknowledge or request reevaluation",
-      );
-      const value: Review = {
-        ...actor,
-        id: this.newId(),
-        at: new Date().toISOString(),
-        receiptId: receipt.id,
-        decision: input.decision,
-        rationale: input.rationale,
-        comparison,
-        token,
-      };
-      await tx.appendEvidence("review", receipt.id, value);
-      return value;
+      const comparison = await compareCapturedInputs(tx, receipt);
+      return captureReview(tx, input, comparison, actor, this.newId);
     });
   }
   getReceipt(id: string): Promise<Receipt> {

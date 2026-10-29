@@ -11,6 +11,7 @@ import { resolveVerificationBasis } from "./verification-basis.ts";
 import { verificationGoverningBasis } from "./verification-governing.ts";
 import { analyzeVerification } from "./verification-analysis.ts";
 import type { Transaction } from "./ports/repository.ts";
+import { bindVerificationTarget } from "./verification-target.ts";
 
 export async function reviseVerificationBasis(tx: Transaction, request: ReviseVerificationBasis) {
   const result = await verificationMutationContext(tx, request),
@@ -22,6 +23,12 @@ export async function reviseVerificationBasis(tx: Transaction, request: ReviseVe
     "Basis revision must retain the same requirement identity and pinned interpretation model",
   );
   const basis = await resolveVerificationBasis(tx, request.basis);
+  const target = await bindVerificationTarget(
+    tx,
+    request.targetConfigurationId ?? view.scope.target?.configurationId,
+    basis,
+    request.targetPolicy ?? view.scope.target?.policy,
+  );
   ensure(
     request.mapping.length === view.scope.basis.criteria.length &&
       request.mapping.every(
@@ -34,6 +41,7 @@ export async function reviseVerificationBasis(tx: Transaction, request: ReviseVe
   );
   const scope = {
     ...view.scope,
+    ...(target ? { target } : {}),
     basis,
     revisions: [
       ...(view.scope.revisions ?? []),

@@ -51,6 +51,13 @@ export const dataCommands: Record<string, CliCommand> = {
       origin,
     );
   },
+  "verification review-support": ({ tracer, args, origin }) => {
+    const verification: Verification = tracer.verification;
+    return verification.reviewSupport(
+      requiredInput<import("../core/verification-lifecycle.ts").ReviewVerificationSupport>(args),
+      origin,
+    );
+  },
   "verification open": ({ tracer, args, origin }) => {
     const verification: Verification = tracer.verification;
     return verification.open(

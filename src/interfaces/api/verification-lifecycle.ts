@@ -1,4 +1,5 @@
 import type { Verification } from "../../application/verification.ts";
+import { verificationTargetPolicies } from "../../core/verification-case.ts";
 import { array, integer, literal, nullable, optional, text } from "../decode.ts";
 import { strictObject } from "./input.ts";
 import { read, write } from "./definition.ts";
@@ -11,6 +12,7 @@ import {
   verificationReopenedResponse,
   verificationRevisedResponse,
 } from "./verification-lifecycle-responses.ts";
+import { verificationSupportReviewedResponse } from "./verification-review-response.ts";
 
 const mutation = {
   ...verificationGuards,
@@ -42,6 +44,23 @@ export const verificationLifecycleReads = {
   }),
 };
 export const verificationLifecycleWrites = {
+  "/api/verifications/review-support": write(
+    {
+      ...mutation,
+      executionId: text,
+      receiptId: text,
+      decision: literal("accepted", "acknowledged", "needs_reevaluation"),
+      expectedComparison: text,
+    },
+    verificationSupportReviewedResponse,
+    {
+      features: [
+        "qualified-target-reviews",
+        "atomic-evaluation-commands",
+        "evidence-revision-guards",
+      ],
+    },
+  )(({ tracer, provenance }, input) => tracer.verification.reviewSupport(input, provenance)),
   "/api/verifications/select": write(
     { ...mutation, selections: array(choice), accounting: array(accounting) },
     verificationSelectedResponse,
@@ -71,9 +90,11 @@ export const verificationLifecycleWrites = {
       ...mutation,
       basis: verificationBasisInput,
       mapping: array(strictObject({ fromId: text, toId: nullable(text) })),
+      targetConfigurationId: optional(text),
+      targetPolicy: optional(literal(...verificationTargetPolicies)),
     },
     verificationRevisedResponse,
-    features,
+    { features: [...features.features, "contextual-input-correspondence"] },
   )(({ tracer, provenance }, input) => {
     const verification: Verification = tracer.verification;
     return verification.reviseBasis(input, provenance);

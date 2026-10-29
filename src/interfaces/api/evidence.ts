@@ -48,7 +48,11 @@ export const evidenceWrites = {
     observation,
   )(({ tracer, provenance }, input) => tracer.evidence.observe(input, provenance)),
   "/api/receipts": write(receiptCommandInput, receipt, {
-    features: ["relationship-evaluation-inputs"],
+    features: [
+      "relationship-evaluation-inputs",
+      "reference-evaluation-inputs",
+      "historical-content-inputs",
+    ],
   })(({ tracer, provenance }, input) => tracer.evidence.recordReceipt(input, provenance)),
   "/api/reviews": write(
     {

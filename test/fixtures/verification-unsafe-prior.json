@@ -1,0 +1,74 @@
+{
+  "qualification": "Synthetic legacy defect created through archived genuine public application commands; no forged ledger/native data and no real product failure claim.",
+  "sourceCommit": "8e632e7",
+  "sourceProcedure": "output/configuration-change/legacy-prior-runtime/forensic.mjs: archived source public commands create failed/not_run execution, a passing prior-receipt interpretation, explicit result selection and controlled conclusion; SQLite online backup retains every original row.",
+  "databaseSha256": "26ae69e3e448e5ed3553c7a8f259043e62a9c5fe73ea466cb8bdd36d192e30e0",
+  "exportSha256": "75fcddd342ec18af6d6a5e37464314b38d963f79946e463c24dff1760dd67640",
+  "selection": {
+    "caseId": "19e2353c-88f5-4a77-83b8-582fb2329bf2",
+    "openingCommandId": "4ad49205-e510-426e-b392-f70bf0e49f92"
+  },
+  "originalCaseVersion": 5,
+  "originalConclusion": {
+    "contract": "verification_conclusion",
+    "version": 1,
+    "commandId": "afb7578a-d3e2-4465-b9b8-1644dc8f37ff",
+    "openingCommandId": "4ad49205-e510-426e-b392-f70bf0e49f92",
+    "rationale": "Explicit fixture engineering judgment; no representative-human or physical-product validation",
+    "at": {
+      "projectRevision": 9,
+      "evidenceRevision": 4
+    },
+    "evidenceDigest": "sha256:a5307ba6fb96b1ac6edcebbb55778e4ace002c076354f37c1bbc0b0499c2a9e9",
+    "basisDigest": "sha256:be42c22a31fb9daf9f613e4dd17e1b8c30f26cddcdc107c03c8cf78f2f1c50dd",
+    "obligations": [
+      {
+        "criterionId": "AC-1",
+        "methodId": "b269a1e1-a12e-434b-91fd-b1b78fcb1f1a",
+        "executionId": "d9d51ff4-a73f-4303-9d15-21f71dc5d743"
+      },
+      {
+        "criterionId": "AC-2",
+        "methodId": "b269a1e1-a12e-434b-91fd-b1b78fcb1f1a",
+        "executionId": "d9d51ff4-a73f-4303-9d15-21f71dc5d743"
+      }
+    ]
+  },
+  "originalCompletion": {
+    "state": "verified",
+    "commandId": "afb7578a-d3e2-4465-b9b8-1644dc8f37ff",
+    "receiptId": "b7661a2a-8ab5-47db-9a5d-e3584607a1aa"
+  },
+  "originalOutcomes": [
+    {
+      "id": "f6507581-4c85-491a-805f-ea79dc195abc",
+      "results": [
+        {
+          "criterionId": "AC-1",
+          "currentCriterionId": "AC-1",
+          "outcome": "failed"
+        },
+        {
+          "criterionId": "AC-2",
+          "currentCriterionId": "AC-2",
+          "outcome": "not_run"
+        }
+      ]
+    },
+    {
+      "id": "d9d51ff4-a73f-4303-9d15-21f71dc5d743",
+      "results": [
+        {
+          "criterionId": "AC-1",
+          "currentCriterionId": "AC-1",
+          "outcome": "passed"
+        },
+        {
+          "criterionId": "AC-2",
+          "currentCriterionId": "AC-2",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import { boolean, integer, literal, nullable, object, text } from "../decode.ts"
 import { verificationModelResponse } from "./verification-models.ts";
 import { evaluation } from "./evaluations.ts";
 import type { EvaluationResult } from "../../core/evaluation-command.ts";
+import { verificationTargetSupportResponse } from "./verification-support-response.ts";
 
 export function same(actual: unknown, expected: unknown, message: string) {
   if (canonical(actual) !== canonical(expected)) throw Error(message);
@@ -124,6 +125,13 @@ export function verificationExecutionResponse(
   const original =
     result.data.source.kind === "prior_receipt" ? result.data.source.receiptId : null;
   same(result.comparison.source?.receiptId ?? null, original, "Original execution source");
+  if (record(value) && value.targetSupport !== undefined)
+    verificationTargetSupportResponse(
+      value.targetSupport,
+      result.receiptId,
+      original,
+      input.caseId,
+    );
   if (result.membership.current && result.membership.currentVersion !== 1)
     throw Error("Invalid current execution membership");
   for (const comparison of [
@@ -200,6 +208,18 @@ export function openedVerificationResponse(value: unknown, input?: OpenVerificat
   );
   if (input) {
     matches(output, { id: input.caseId }, "Verification requested case");
+    same(
+      scope.target?.configurationId,
+      input.targetConfigurationId,
+      "Verification requested target configuration",
+    );
+    same(
+      scope.target?.policy,
+      input.targetConfigurationId
+        ? (input.targetPolicy ?? "target-input-correspondence-v1")
+        : undefined,
+      "Verification requested target policy",
+    );
     matches(
       scope,
       { membershipId: input.membershipId, purpose: input.purpose },

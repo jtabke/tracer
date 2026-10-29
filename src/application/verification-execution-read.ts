@@ -16,6 +16,7 @@ import { verificationCaseLimits } from "../core/verification-case.ts";
 import { verificationContext, verificationCommand } from "./verification-context.ts";
 import { compareCapturedInputs } from "./receipt-comparison.ts";
 import type { Transaction } from "./ports/repository.ts";
+import { inspectVerificationTargetSupport } from "./verification-support-inspection.ts";
 
 async function state(tx: Transaction, receipt: Receipt): Promise<VerificationInputState> {
   const comparison = await compareCapturedInputs(tx, receipt),
@@ -38,6 +39,13 @@ export async function readVerificationExecution(
   ensure(registration, "not_found", "Execution is outside this controlled case registry");
   const { receipt, fields, current, data, membership, recorded, source } =
     await verificationExecutionContext(tx, view, registration);
+  const targetSupport = await inspectVerificationTargetSupport(
+    tx,
+    view,
+    executionId,
+    receipt,
+    source ?? null,
+  );
   const result: VerificationExecutionView = {
     caseId: selection.caseId,
     openingCommandId: selection.openingCommandId,
@@ -59,6 +67,7 @@ export async function readVerificationExecution(
       record: await state(tx, receipt),
       source: source ? await state(tx, source) : null,
     },
+    ...(targetSupport ? { targetSupport } : {}),
   };
   verificationBytes(result, verificationCaseLimits.viewBytes);
   return result;

@@ -2,7 +2,13 @@ import { validateConfigurationCapture } from "../core/configuration-capture-vali
 import { captureRelationships } from "./relationship-inputs.ts";
 import { ensure, json, record } from "../core/model.ts";
 import type { Entity, Relationship, SchemaObject, Provenance } from "../core/model.ts";
-import type { Observation, ReceiptInput, Receipt, CapturedInput } from "../core/evidence.ts";
+import type {
+  Observation,
+  ReceiptInput,
+  Receipt,
+  CapturedInput,
+  CapturedRelationship,
+} from "../core/evidence.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { resolveReceiptInput, configurationRelationshipDeclarations } from "./receipt-inputs.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
@@ -14,8 +20,9 @@ async function captureDeclaredInput(
   output: Entity,
   schema: SchemaObject,
   configuration?: import("../core/configuration.ts").Configuration,
+  relationships: CapturedRelationship[] = [],
 ): Promise<CapturedInput> {
-  const resolved = await resolveReceiptInput(tx, declaration, schema, configuration);
+  const resolved = await resolveReceiptInput(tx, declaration, schema, configuration, relationships);
   const value = resolved.value;
   const observation =
     resolved.observation ??
@@ -24,6 +31,7 @@ async function captureDeclaredInput(
   const { path, links } = await captureDependencyPath(tx, declaration, output, value);
   return {
     entityId: value.id,
+    ...(declaration.referenceId === undefined ? {} : { referenceId: declaration.referenceId }),
     contentRetention: observation ? "external-content-not-retained" : "native-history",
     ...(declaration.facet === undefined ? {} : { facet: declaration.facet }),
     ...(declaration.role === undefined ? {} : { role: declaration.role }),
@@ -203,6 +211,21 @@ export function prepareReceipt(input: ReceiptInput): ReceiptInput {
   return input;
 }
 
+function inputIdentity(input: CapturedInput): string {
+  return input.facet === undefined && input.role === undefined
+    ? input.entityId
+    : input.entityId +
+        ":" +
+        (input.facet ?? "default") +
+        ":" +
+        (input.role ?? "") +
+        ":" +
+        (input.observationId ?? input.revision ?? "current") +
+        ":" +
+        JSON.stringify(input.fields ?? []) +
+        (input.referenceId === undefined ? "" : ":reference:" + input.referenceId);
+}
+
 /** Internal application composition boundary. No nested transaction or external IO. */
 export async function captureReceipt(
   tx: Transaction,
@@ -218,30 +241,26 @@ export async function captureReceipt(
   );
   const schema = (await tx.get("schema", "project")) as SchemaObject;
   const configuration = await receiptConfiguration(tx, input.configurationId);
-  const captured: CapturedInput[] = [];
-  const seen = new Set<string>();
-  for (const declaration of input.inputs) {
-    const recorded = await captureDeclaredInput(tx, declaration, output, schema, configuration);
-    const identity =
-      recorded.facet === undefined && recorded.role === undefined
-        ? recorded.entityId
-        : recorded.entityId +
-          ":" +
-          (recorded.facet ?? "default") +
-          ":" +
-          (recorded.role ?? "") +
-          ":" +
-          (recorded.observationId ?? recorded.revision ?? "current") +
-          ":" +
-          JSON.stringify(recorded.fields ?? []);
-    ensure(!seen.has(identity), "validation", "Declare each input once");
-    seen.add(identity);
-    captured.push(recorded);
-  }
   const relationshipInputs = await captureRelationships(
     tx,
     configurationRelationshipDeclarations(configuration, input.relationshipInputs),
   );
+  const captured: CapturedInput[] = [];
+  const seen = new Set<string>();
+  for (const declaration of input.inputs) {
+    const recorded = await captureDeclaredInput(
+      tx,
+      declaration,
+      output,
+      schema,
+      configuration,
+      relationshipInputs,
+    );
+    const identity = inputIdentity(recorded);
+    ensure(!seen.has(identity), "validation", "Declare each input once");
+    seen.add(identity);
+    captured.push(recorded);
+  }
   ensure(
     captured.length + relationshipInputs.length > 0 &&
       captured.length + relationshipInputs.length <= 100,

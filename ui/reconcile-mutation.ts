@@ -79,6 +79,7 @@ const reads: { [K in WritePath]: (input: WriteInput<K>) => Promise<Reconciliatio
   "/api/verifications/conclude": evaluationRecords,
   "/api/verifications/reopen": evaluationRecords,
   "/api/verifications/revise": evaluationRecords,
+  "/api/verifications/review-support": evaluationRecords,
 
   "/api/change-assessments/open": evaluationRecords,
   "/api/change-assessments/refresh": evaluationRecords,

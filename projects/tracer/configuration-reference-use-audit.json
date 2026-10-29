@@ -1,0 +1,115 @@
+{
+  "status": "demonstrated_gap_not_an_implementation_pass",
+  "scope": "Disposable engineering fixture; no production project edits or verification claim",
+  "sourceCommit": "8e632e735b2cc16a712283150e92eadcafab2271",
+  "candidateFiles": [
+    {
+      "path": "src/application/engineering-state.ts",
+      "sha256": "a48bee34e260fad1f37fe02b0b1f18bd08aa3a5f3f025efaa559a9e5f39faaa3"
+    },
+    {
+      "path": "src/application/receipt-comparison.ts",
+      "sha256": "563de9b108c985cc08c9410c393fd1676ea9a72a577c599793a6c3864f5ff0b7"
+    },
+    {
+      "path": "src/application/verification-support.ts",
+      "sha256": "85f1427f40edcfa076d79180c58b626ef6aa38860f84e23c5be4ce8c097cb9de"
+    }
+  ],
+  "procedure": [
+    "Observe B then C for one reusable resource identity.",
+    "Create two contextual references with separate selectors and explicit observation pins B and C.",
+    "Record one content dependency using B through the B reference path.",
+    "Capture the resource default C and both independently pinned relationships.",
+    "Compare the original receipt against the exact configuration; confirm no project writes."
+  ],
+  "expectedExistingContract": "selected-dependencies-v1 compares an explicit content dependency against the selected resource content default; it preserves relationship qualifiers without interpreting them as per-use content resolution.",
+  "actual": {
+    "rawComparison": "changed",
+    "recordedContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "selectedResourceDefaultHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "referencePinsRecordedB": true,
+    "bothReferenceIdentitiesAndSelectorsRetained": true,
+    "comparisonReadOnly": true
+  },
+  "finding": "selected-dependencies-v1 compares an explicitly declared content dependency against the selected resource default C, while preserving the unchanged contextual reference pinned to B. It does not independently resolve contextual reference state as the applicable content use. Do not claim passage/reference-use applicability from this raw comparison or silently change the existing policy.",
+  "requiredFollowThrough": "Define explicit contextual-use resolution for target support, preserving repeated uses, pinned states, default resource content and existing current-head/raw v1 comparison semantics. Prove separate B and C uses before accepting target reference applicability.",
+  "compatibility": "Do not silently change selected-dependencies-v1 or current-head receipt meanings. New contextual-use semantics must explicitly distinguish resource defaults, each declared reference use, pinned native versus observed states, unknown inputs and passage uncertainty.",
+  "initialFixtureCorrection": "The first fixture omitted resource-target and reference permissions; endpoint validation correctly rejected it. The disposable schema then declared those permissions. Production guards were not changed.",
+  "rawReproduction": "output/configuration-change/audit-qualified-reference-state.mjs",
+  "rawEvidence": "output/configuration-change/qualified-reference-state-audit.json",
+  "retainedCase": {
+    "resourceId": "80f0420e-1c34-4a3b-a410-c021f4da8717",
+    "recordedObservation": {
+      "availability": "available",
+      "hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "actor": "verification contract fixture",
+      "reason": "Synthetic engineering/research data; production application contract checks",
+      "id": "15b3910d-a19b-4991-ac06-7cf49a15d09d",
+      "entityId": "80f0420e-1c34-4a3b-a410-c021f4da8717",
+      "locator": {
+        "system": "file",
+        "path": "/synthetic/B-and-C"
+      },
+      "at": "2026-10-29T00:50:28.853Z"
+    },
+    "selectedDefaultObservation": {
+      "availability": "available",
+      "hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "actor": "verification contract fixture",
+      "reason": "Synthetic engineering/research data; production application contract checks",
+      "id": "9b2cb72e-c416-4617-8178-28320fc5a2c1",
+      "entityId": "80f0420e-1c34-4a3b-a410-c021f4da8717",
+      "locator": {
+        "system": "file",
+        "path": "/synthetic/B-and-C"
+      },
+      "at": "2026-10-29T00:50:28.853Z"
+    },
+    "receiptId": "dfd98066-1494-4124-b465-0db134fca3da",
+    "configurationId": "6e56a00e-770f-4ebe-b990-2139cfaf3a38",
+    "declaredPath": ["e5ef68ea-1a6c-4781-9c52-fc2548b20737"],
+    "selectedContextualUses": [
+      {
+        "id": "e5ef68ea-1a6c-4781-9c52-fc2548b20737",
+        "version": 1,
+        "type": "contextual_reference",
+        "source": "3da789c3-e4b8-4793-877d-26bf9cab7c52",
+        "target": "80f0420e-1c34-4a3b-a410-c021f4da8717",
+        "fields": {},
+        "reference": {
+          "role": "definition source",
+          "explanation": "Synthetic independently selected source state",
+          "selector": {
+            "kind": "fragment",
+            "value": "4.2"
+          },
+          "state": {
+            "mode": "pinned",
+            "observationId": "15b3910d-a19b-4991-ac06-7cf49a15d09d"
+          }
+        }
+      },
+      {
+        "id": "9050637a-48d4-476e-b182-48b7f6a89b3d",
+        "version": 1,
+        "type": "contextual_reference",
+        "source": "69984fad-8f65-4cfa-8b95-fdc076652150",
+        "target": "80f0420e-1c34-4a3b-a410-c021f4da8717",
+        "fields": {},
+        "reference": {
+          "role": "definition source",
+          "explanation": "Synthetic independently selected source state",
+          "selector": {
+            "kind": "fragment",
+            "value": "6.1"
+          },
+          "state": {
+            "mode": "pinned",
+            "observationId": "9b2cb72e-c416-4617-8178-28320fc5a2c1"
+          }
+        }
+      }
+    ]
+  }
+}

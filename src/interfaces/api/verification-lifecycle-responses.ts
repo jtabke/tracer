@@ -14,7 +14,7 @@ import {
   parseVerificationResultSelection,
   parseVerificationConclusion,
 } from "../../core/verification-lifecycle-validation.ts";
-import { array, boolean, literal, nullable, object, text } from "../decode.ts";
+import { optional, array, boolean, literal, nullable, object, text } from "../decode.ts";
 import {
   verificationCaseResponse,
   resultModel,
@@ -34,6 +34,7 @@ const executionSummary = object({
   stateDigest: text,
   current: boolean,
   eligibleCriterionIds: array(text),
+  priorSourceSupported: optional(boolean),
   results: array(object({ criterionId: text, currentCriterionId: nullable(text), outcome })),
   support: object({
     changed: boolean,
@@ -245,6 +246,14 @@ export function verificationRevisedResponse(value: unknown, input?: ReviseVerifi
   );
   if (!scope.revisions?.length) throw Error("Missing basis revision lineage");
   if (input) {
+    if (input.targetConfigurationId !== undefined)
+      same(
+        scope.target?.configurationId,
+        input.targetConfigurationId,
+        "Requested revised verification target",
+      );
+    if (input.targetPolicy !== undefined)
+      same(scope.target?.policy, input.targetPolicy, "Requested revised input policy");
     matches(
       scope.revisions.at(-1) ?? {},
       {

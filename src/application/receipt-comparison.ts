@@ -39,6 +39,18 @@ export function comparisonToken(value: ComparedState) {
           })),
         }),
     inputs: value.inputs.map((input) => ({
+      ...(input.recorded.referenceId === undefined
+        ? {}
+        : { referenceId: input.recorded.referenceId }),
+      ...(input.referenceUse
+        ? {
+            referenceUse: {
+              relationshipId: input.referenceUse.relationshipId,
+              selection: input.referenceUse.selection,
+              passage: input.referenceUse.passage,
+            },
+          }
+        : {}),
       entityId: input.entityId,
       exists: input.current.entity !== null,
       state: input.state,
@@ -158,11 +170,18 @@ async function compareInput(
   resolution: EngineeringStateReader,
   recorded: CapturedInput,
   outputId: string,
+  reference?: Relationship,
 ): Promise<InputComparison> {
-  const currentEntity = await resolution.getEntity(recorded.entityId);
-  const observation = recorded.observation
-    ? await resolution.getObservation(recorded.entityId)
-    : null;
+  const selected = resolution.resolveInput
+    ? await resolution.resolveInput(recorded, reference)
+    : {
+        entity: await resolution.getEntity(recorded.entityId),
+        observation: recorded.observation
+          ? await resolution.getObservation(recorded.entityId)
+          : null,
+      };
+  const currentEntity = selected.entity,
+    observation = selected.observation;
   const links: (Relationship | null)[] = [];
   const reasons: string[] = [];
   let changed = false,
@@ -170,9 +189,10 @@ async function compareInput(
   if (!currentEntity) {
     unknown = true;
     reasons.push(
-      resolution.kind === "configuration"
-        ? "Input is not selected in the target configuration; no live deletion inferred"
-        : "Input entity is deleted or unavailable",
+      selected.referenceUse?.reason ??
+        (resolution.kind === "configuration"
+          ? "Input is not selected in the target configuration; no live deletion inferred"
+          : "Input entity is deleted or unavailable"),
     );
   }
   const content = compareContent(recorded, currentEntity, observation, reasons, resolution.kind);
@@ -183,6 +203,7 @@ async function compareInput(
   changed ||= dependency.changed;
   unknown ||= resolution.kind === "configuration" && dependency.links.some((link) => link === null);
   return {
+    ...(selected.referenceUse ? { referenceUse: selected.referenceUse } : {}),
     entityId: recorded.entityId,
     dependencyPath: [outputId, ...recorded.links.map((link) => link.id), recorded.entityId],
     state: comparedState(unknown, changed),
@@ -221,7 +242,12 @@ export async function compareCapturedInputs(
 ): Promise<ComparedState> {
   const inputs: InputComparison[] = [];
   for (const recorded of receipt.inputs) {
-    inputs.push(await compareInput(state, recorded, receipt.output.id));
+    const reference =
+      recorded.referenceId === undefined
+        ? recorded.links.at(-1)
+        : receipt.relationshipInputs?.find((x) => x.relationship.id === recorded.referenceId)
+            ?.relationship;
+    inputs.push(await compareInput(state, recorded, receipt.output.id, reference));
   }
   const relationshipInputs = await compareRelationships(tx, receipt.relationshipInputs, state);
   return summarizeComparedInputs(
@@ -237,10 +263,10 @@ export async function compareReceiptState(
 ): Promise<Omit<Comparison, "supersededBy">> {
   const comparison = await compareCapturedInputs(tx, receipt),
     token = comparisonToken(comparison);
-  const latest = await tx.latestEvidence("review", receipt.id);
+  const latest = await tx.latestReview(receipt.id);
   return { ...comparison, token, review: reviewState(latest, token) };
 }
-function reviewState(latest: Review | undefined, token: string): Comparison["review"] {
+export function reviewState(latest: Review | undefined, token: string): Comparison["review"] {
   const matching = latest?.token === token ? latest : undefined;
   return {
     state: matching?.decision ?? "unreviewed",

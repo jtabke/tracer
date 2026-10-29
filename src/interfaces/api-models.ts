@@ -150,6 +150,7 @@ export const configuration: Decoder<Configuration> = (value) => {
   return decoded;
 };
 const capturedInput: Decoder<CapturedInput> = object({
+  referenceId: optional(text),
   contentRetention: optional(literal("native-history", "external-content-not-retained")),
   entityId: text,
   facet: optional(literal("native", "content")),
@@ -201,6 +202,20 @@ const compared = {
   hasUnknown: boolean,
   inputs: array(
     object({
+      referenceUse: optional(
+        object({
+          relationshipId: text,
+          selection: literal(
+            "resource-default",
+            "pinned-observation",
+            "pinned-revision",
+            "unavailable",
+          ),
+          resourceDefault: object({ entity: nullable(entity), observation: nullable(observation) }),
+          passage: literal("unknown", "whole-resource"),
+          reason: optional(text),
+        }),
+      ),
       entityId: text,
       dependencyPath: array(text),
       state: literal("current", "changed", "unknown"),
@@ -217,7 +232,14 @@ const compared = {
   ),
 };
 export const comparedState: Decoder<ComparedState> = object(compared);
+export const reviewQualification = object({
+  ownerId: text,
+  contract: text,
+  version: integer(1),
+  basisDigest: text,
+});
 export const review: Decoder<Review> = object({
+  qualification: optional(reviewQualification),
   ...provenance,
   receiptId: text,
   decision: literal("accepted", "acknowledged", "needs_reevaluation"),
@@ -225,7 +247,7 @@ export const review: Decoder<Review> = object({
   comparison: comparedState,
   token: text,
 });
-const reviewState = object({
+export const reviewState = object({
   state: literal("unreviewed", "accepted", "acknowledged", "needs_reevaluation"),
   decision: optional(review),
   previous: optional(review),

@@ -3,9 +3,11 @@ import type {
   VerificationGuards,
   VerificationOutcome,
   VerificationCaseView,
+  VerificationTargetPolicy,
 } from "./verification-case.ts";
 import type { PrepareVerificationBasis } from "./verification-basis.ts";
 import type { Json } from "./model.ts";
+import type { ReviewInput } from "./evidence.ts";
 
 export type VerificationChoice = { criterionId: string; methodId: string; executionId: string };
 export type VerificationAccounting = {
@@ -24,7 +26,15 @@ export type SelectVerificationResults = VerificationMutation & {
   selections: VerificationChoice[];
   accounting: VerificationAccounting[];
 };
+export type ReviewVerificationSupport = VerificationMutation & {
+  executionId: string;
+  receiptId: string;
+  decision: ReviewInput["decision"];
+  expectedComparison: string;
+};
 export type ReviseVerificationBasis = VerificationMutation & {
+  targetConfigurationId?: string;
+  targetPolicy?: VerificationTargetPolicy;
   basis: PrepareVerificationBasis;
   mapping: { fromId: string; toId: string | null }[];
 };
@@ -72,6 +82,7 @@ export type VerificationExecutionSummary = {
   stateDigest: string;
   current: boolean;
   eligibleCriterionIds: string[];
+  priorSourceSupported?: boolean;
   results: {
     criterionId: string;
     currentCriterionId: string | null;
