@@ -1,5 +1,60 @@
 # Tracer implementation status
 
+## Concurrent local reliability and measured workloads — verified declared local scope
+
+2026-10-29: completed every unchanged REQ-036 AC-1–9 and all eight paragraphs of
+the selected goal for runtime candidate `3c6be46`. The
+[performed verification](../projects/tracer/concurrent-local-verification-execution.json)
+and [final full-goal audit](../projects/tracer/concurrent-local-final-goal-audit.json)
+retain exact criteria, procedures, candidate fingerprints, budget checks and
+limits. REQ-036 is implemented/verified/not_validated, VER-036 passed and WORK-028
+completed at native191/schema7. Immutable publication receipt
+`3b0556d6-d14e-4f94-bb5f-0e8f7f13a2f5` captures the unchanged acceptance/method
+and exact performed report. REQ-025 remains unchanged; WORK-006 retains the
+separate candidate authenticated-team/backend obligation.
+
+Application reads now declare enforced read-only snapshots. The original
+independent-process read/read `busy` rejection is resolved for already-open
+adapters; guarded write locking and explicit contention remain. Process tests
+prove snapshot retention during another commit, read availability under a writer,
+atomic rejection/recovery, immutable command outcomes and termination before/after
+native-plus-receipt commit. Six native race scenarios include relinking versus
+cascading deletion. Engineering/research process tasks cover activity capture,
+result selection, disposition/action updates, changed-basis rejection and blocked
+unsupported closure. Actual-project and retained research reopens preserve prior
+judgments. Two independent HTTP servers, a restarted server and CLI inspect one
+exact lost-response outcome without replay; changed evidence rejects an old
+continuation and leaves fixed candidate interpretation intact.
+
+Declared actual and connected-synthetic (10,000 records / 100,000 links / 5,000
+unrelated receipts) profiles use two/four reader processes plus one writer,
+100/200 bounded reads and 25 acknowledged writes per profile. All declared
+budgets pass. Full real dependency scope streams all 56 receipts/pages in about
+0.93 s, without silently narrowing engineering scope; the existing 8 MiB page25
+rejection remains explicit. Driver SQL-call/returned-row measurements expose
+current work, rather than claiming scan complexity or arbitrary-scale bounds.
+Startup migration/index checks still acquire a writer reservation. RSS is sampled,
+not a continuous allocation peak; synthetic attestations are not scientific,
+physical or representative-human validation.
+
+Final-source checks passed **720 unit tests, 219 browser scenarios, workbench/18
+original screenshots**, format/types/lint/build and unchanged dependency,
+dead-code, duplication and complexity gates. An initially complex test worker was
+split into focused functions, then the complete unit/browser/workbench/quality
+checks were rerun; no gate changed. Driver-only proposal/endpoint/pagination and
+optional-key mistakes were corrected on disposable copies or read-only audits,
+with original successful mutations inspected instead of blindly replayed.
+
+The [final preservation audit](../projects/tracer/concurrent-local-final-preservation.json)
+compares all 17 restored database tables, including both command ledgers, with the
+live project. All original native/evidence history and 804 runtime/test/config
+fingerprints are retained. The original fixed-pair comparison, twelve-obligation
+verified requirement and thirteen-obligation completed/current assessment still
+hold. Canonical export matches the live/restored state. Complete online backup:
+`projects/tracer/backups/register-2026-10-28-concurrent-local-complete.sqlite`.
+Physical format remains 11. No authentication, hosting, second adapter, external
+byte retention or arbitrary-scale/human-readiness claim is introduced.
+
 ## Concurrent local reliability — selected, first implementation slice
 
 2026-10-28: registered REQ-036 / VER-036 / WORK-028 at native190/schema7 after an

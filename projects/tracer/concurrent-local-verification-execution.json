@@ -1,0 +1,264 @@
+{
+  "date": "2026-10-28",
+  "status": "Performed bounded local verification on committed runtime; final publication audited separately before goal completion",
+  "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+  "requirement": "REQ-036",
+  "plan": "VER-036",
+  "specification": {
+    "path": "projects/tracer/concurrent-local-specification.json",
+    "sha256": "7fdb6123f2c87214c3aefff67f5659636b2b2bddecf814ab81543838441479e5"
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "expected": "Independent repository handles and OS processes preserve unique identities, stale object/schema/project/endpoint guards, atomic rollback, ordered immutable history and usable recovery across concurrent native/schema/link/resource operations. Every acknowledged update survives; contention may reject explicitly without silent replay.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "Six native process scenarios cover version/schema/identity/endpoints and cascading relink order; portable rollback/history contracts and process held-lock checks pass.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-native-races-expanded.json",
+          "sha256": "1dd607fbb1643cea002c506b38cdf843b98c2c0921618a21b175bd9121fe40de"
+        },
+        {
+          "path": "test/sqlite-repository-contract.test.ts",
+          "sha256": "d82a283c2383a9179daf3b47a0321f327031838188abc617798ab1bf1131aff4"
+        },
+        {
+          "path": "test/repository-contract.ts",
+          "sha256": "b87ed8c28a904491167a88c707ee46a600724e14a794807ccec7d1ec21f38b79"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "expected": "Identical and conflicting command IDs under genuine process overlap produce at most one durable success per family/identity with exact original intent/outcome inspection after reopen; native plus receipt changes never publish partially.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "Held uncommitted native-plus-receipt commands reject identical and differing concurrent intents busy, then retain exact original success, reject conflicting committed intent and repeat known success without writes. Native/evaluation and HTTP identity races preserve one outcome.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-active-backup-overlap.json",
+          "sha256": "0beff1f4efc372ee6c224dda5ceb58c793d978cceff4b7cef8fff777d1f774ee"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-http-recovery-and-cursors.json",
+          "sha256": "146583eb8d20806ac61af289dd8e3e5e7a4399a939471735d5b9fa0e591cb610"
+        },
+        {
+          "path": "test/sqlite-concurrency.test.ts",
+          "sha256": "78e79d25c164ea67852fa6cd7bb9a14688a8dae37d84cfb14f715004bfc16197"
+        }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "expected": "Declared read-only operations observe one committed native/evidence snapshot without reserving the writer slot. Readers coexist with readers and an active writer under WAL; writes through a read-only transaction reject atomically. Separate requests retain their existing pagination guarantees, without an invented shared snapshot; guarded continuations reject changes as already promised.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "Independent reader snapshot remains at revision1 while another process commits revision2; readers run under held writer; attempted read-only writes reject and next write succeeds. New evidence rejects old HTTP continuation; separate requests do not share snapshots.",
+      "evidence": [
+        {
+          "path": "test/sqlite-concurrency.test.ts",
+          "sha256": "78e79d25c164ea67852fa6cd7bb9a14688a8dae37d84cfb14f715004bfc16197"
+        },
+        {
+          "path": "test/repository-contract.ts",
+          "sha256": "b87ed8c28a904491167a88c707ee46a600724e14a794807ccec7d1ec21f38b79"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-http-recovery-and-cursors.json",
+          "sha256": "146583eb8d20806ac61af289dd8e3e5e7a4399a939471735d5b9fa0e591cb610"
+        }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "expected": "Genuinely concurrent assessment and verification work preserves pinned models, selected configuration comparison and candidate applicability. Unrelated head changes never silently change fixed pair meaning; conflicting basis, actions or conclusions reject or require deliberate reassessment.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "Independent engineering/research activity-capture, result-selection, disposition/action and changed-basis tasks retain one guarded result and reject stale inputs/unsupported completion. Actual-project and research reopen races retain original evidence and exact configuration pair meaning.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-controlled-races.json",
+          "sha256": "1e3b897fa5a0050a2416373f1545833c25ab889855d610cd0a66ea4be152546f"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-application-races.json",
+          "sha256": "37e7a66b30762f512b4f0090df7a684641085aeb09d27cf78609daf6b73d8bdc"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-research-races.json",
+          "sha256": "2b3542976cdc334b49ee4c6a16f3949198481ae82514012b3b72ba6bc9ac3af7"
+        }
+      ]
+    },
+    {
+      "id": "AC-5",
+      "expected": "Process termination before commit leaves no partial native/evidence/outcome writes; termination after commit and response loss recovers exact original success by inspection after restart. No automatic uncertain-write replay.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "Worker termination before commit restores complete prior export; after commit retains native/receipt/outcome for inspection. Two server processes, restarted server and CLI inspect a deliberately dropped committed response after exactly one POST.",
+      "evidence": [
+        {
+          "path": "test/sqlite-concurrency.test.ts",
+          "sha256": "78e79d25c164ea67852fa6cd7bb9a14688a8dae37d84cfb14f715004bfc16197"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-http-recovery-and-cursors.json",
+          "sha256": "146583eb8d20806ac61af289dd8e3e5e7a4399a939471735d5b9fa0e591cb610"
+        }
+      ]
+    },
+    {
+      "id": "AC-6",
+      "expected": "SQLite-aware online backup during active work restores a complete committed state with native/evidence history and outcome identities intact; current engineering application capabilities remain usable after restore.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "SQLite online backup during held actual-project writes restores exact preceding committed export and controlled application reads. Original and complete restored outcome ledgers are separately compared before final publication.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-active-backup-overlap.json",
+          "sha256": "0beff1f4efc372ee6c224dda5ceb58c793d978cceff4b7cef8fff777d1f774ee"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-preservation-before-publication.json",
+          "sha256": "e4de72c590471722cf82a650ab89403df409b5249386b2b324e4a11297968629"
+        }
+      ]
+    },
+    {
+      "id": "AC-7",
+      "expected": "Reproducible real-project and connected synthetic workloads report exact candidate, environment, counts, latency distributions, RSS/heap, payload/work bounds and contention. Explicit engineering budgets are fixed after initial baseline and before optimization; overflow is explained, never silently truncated.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "Pre-change synthetic baseline; explicitly disclosed post-correctness-fix real baseline, fixed budgets before subsequent workload work and no query optimization. Actual and connected-synthetic 2/4 readers plus writer meet budgets; all56 dependency pages streamed, response cap rejected explicitly, query calls/payload/rows measured with stated limitations.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-initial-synthetic-baseline.json",
+          "sha256": "57667f2af3845bf707e85b75e4e4e1288006dc3faba7fffa1a0acb0294040fd9"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-real-workload-baseline.json",
+          "sha256": "12c1dd247a6f792246e752c1fd7bfb82a3b5d8d2875f6661feb1d200c633973a"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-real-streamed-scope.json",
+          "sha256": "ecfdebea6dfdbbfcf10f32fd8aae26cac2e97b7fe3e912f848a92ae498dc0ca7"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-real-contention-expanded.json",
+          "sha256": "12afc3e4159f98336f7b3ad4de9bb6599e7b2a4dc9785f0761eca7646d192a95"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-synthetic-contention.json",
+          "sha256": "a61088b1ded6ebfba6f935f8eb76694aa708640401951e765b8b4dcc9e0d28a4"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-query-metrics.json",
+          "sha256": "f439fce202a3f9b06b36c805bc5065936789053b7f19069740f37d22d0284efd"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-budgets.json",
+          "sha256": "0ef2750b224760e99712b3513920cdf4c85549b223b9df5b4b109eb5c0343f21"
+        }
+      ]
+    },
+    {
+      "id": "AC-8",
+      "expected": "Core, typed HTTP/client, CLI and relevant existing shared-workspace task checks cover success, rejection and uncertain recovery under declared workloads. Portable contracts distinguish adapter obligations from SQLite implementation proof; future authentication/backend parity stays unproven.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "New independent HTTP/client and CLI proof plus unchanged full shared workspace, interface and recovery regressions. Different schema bindings retain same meaning. Full browser/workbench run passes on final source.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-http-recovery-and-cursors.json",
+          "sha256": "146583eb8d20806ac61af289dd8e3e5e7a4399a939471735d5b9fa0e591cb610"
+        },
+        {
+          "path": "test/verification-lifecycle-interfaces.test.ts",
+          "sha256": "7816a5606e9a2634aa0ba1d771817bd2154fcfc89e336ba614e72bf6339952ba"
+        },
+        {
+          "path": "test/assessment-ui-browser.spec.ts",
+          "sha256": "f19207688c453184282a851ffda56b0663c14cfa29213fd3b476d8ad02c2503c"
+        },
+        {
+          "path": "test/mutation-recovery-browser.spec.ts",
+          "sha256": "afdae3ae17e6e05f703db82a4089cb0bfa0c5b5f312c838d5a0c2916466b00d8"
+        }
+      ]
+    },
+    {
+      "id": "AC-9",
+      "expected": "Appropriate unchanged regression, browser, architecture and quality checks pass. Owning docs, checkpoint, guarded register, deterministic export and restored online backup retain exact evidence, limits and independent delivery/verification/human-validation status. Audit all criteria and the complete goal before completion.",
+      "verification": "passed_for_declared_local_scope",
+      "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+      "performed": "All final-source checks underlying npm run check pass unchanged, including720 unit/219 browser/18 original workbench screenshots and dependency/dead-code/duplication/complexity gates. Prepublication live/export/online-restored backup/ledger proof passes. Final native promotion and its preservation are separately audited before goal completion.",
+      "evidence": [
+        {
+          "path": "projects/tracer/concurrent-local-preservation-before-publication.json",
+          "sha256": "e4de72c590471722cf82a650ab89403df409b5249386b2b324e4a11297968629"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-final-procedures.json",
+          "sha256": "aa9083a57ff7bc2e8aade83d239c3440bf5499fafa63d6940b1f75cb4bcc6ee3"
+        },
+        {
+          "path": "projects/tracer/concurrent-local-acceptance-procedures.json",
+          "sha256": "580021f5eb1c1d18b2676b57edd1d30e74192a7f07b66b3f39dbfdf14306c282"
+        }
+      ]
+    }
+  ],
+  "gates": {
+    "unit": 720,
+    "browser": 219,
+    "workbenchOriginalScreenshots": 18,
+    "finalUnitCommand": "npm test",
+    "finalFollowOnCommand": "npm run test:ui && npm run workbench:check && npm run quality",
+    "finalFollowOnExit": 0,
+    "formatTypesLint": "passed",
+    "unchangedQualityThresholds": true,
+    "qualityWorkerRefactor": "Initial combined run passed all behavioral checks but failed the new monolithic worker complexity. Split worker;720 units and complete219 browser/workbench/quality rerun pass. Production source unchanged by the worker-only refactor.",
+    "logs": [
+      {
+        "path": "output/concurrent-local/refactored-unit-tests.log",
+        "sha256": "18cb5e16f21f9750e18131e8c0815497a4c79e15cc762978982a0867d0d5ce64"
+      },
+      {
+        "path": "output/concurrent-local/read-mode-full-check-validated-reports.log",
+        "sha256": "569dcbf73bdb6695d894e1194c768cea79e879fe62002480e8d96892a4e4c3f4"
+      },
+      {
+        "path": "output/concurrent-local/refactored-quality.log",
+        "sha256": "14d3b8b26fc396b4c13381f62750741b67e539c37e57b3b08752bd75d782f7f8"
+      },
+      {
+        "path": "output/concurrent-local/acceptance-format-check.log",
+        "sha256": "674ce790236c966e2ee611552bd8f3348c8b99eb4201bcf432fcd0593556050b"
+      }
+    ]
+  },
+  "preservationAtExecution": {
+    "originalEntitiesExceptExplicitWork006ProgressUnchanged": true,
+    "originalHistoryAndEvidenceExact": true,
+    "originalCommandLedgerRowsExact": true,
+    "restoredFullLedgersExact": true,
+    "physicalFormat": 11,
+    "unchangedReq025": true,
+    "fixedPairComparisonExact": true,
+    "existingVerification": "verified",
+    "verificationObligations": 12,
+    "existingAssessment": "completed",
+    "assessmentObligations": 13
+  },
+  "limits": [
+    "Local trusted-process SQLite proof only; REQ-025 future authentication/backend obligation unchanged.",
+    "Declared actual and connected synthetic populations, one run per adversarial scenario and sampled RSS; not arbitrary scale, continuous memory peak or hardware-independent SLA.",
+    "Synthetic domain attestations are lifecycle-contract proof, not representative-human/scientific/physical validation.",
+    "Existing cap rejects page25; all56 page1 receipts still exhausted. Query counts are driver-call/returned-row observations, not scan complexity bounds.",
+    "Already-open read transactions avoid writer reservation; startup migration/index checks can still contend and return busy. No migrations or additional adapters introduced."
+  ],
+  "finalPublication": "A separate final audit must confirm guarded status publication, complete backup, restored command ledgers/export and exact code fingerprints before goal completion."
+}

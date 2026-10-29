@@ -1126,7 +1126,11 @@ coexistence, stable held snapshots, competing command identities and termination
 before/after native-plus-receipt commit. These are bounded local proofs. The
 selected [concurrent-local specification](../projects/tracer/concurrent-local-specification.json)
 also requires broader application races and workload evidence; they are not
-established merely by the process tests. Future authenticated team/backend
+established merely by the process tests. The [completed local acceptance audit](../projects/tracer/concurrent-local-final-goal-audit.json)
+records the performed engineering/research races, actual and connected-synthetic
+workloads, HTTP/CLI recovery, SQL-call measurements and restored preservation.
+Its budgets and workload populations are explicit local engineering proof, not
+a universal scale or team-readiness guarantee. Future authenticated team/backend
 parity remains the separate REQ-025 obligation. Opening a new SQLite repository
 still runs physical migration/index checks under a writer reservation; the
 read-only mode concerns transactions on an already-open adapter.

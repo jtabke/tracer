@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-28",
+  "candidate": "3c6be460e7025d4111f18fe65584c10f29ba99e7",
+  "nativeRevision": 191,
+  "schemaVersion": 7,
+  "publication": {
+    "commandId": "concurrent-local-complete-publication-2026-10-28",
+    "receiptId": "3b0556d6-d14e-4f94-bb5f-0e8f7f13a2f5",
+    "restoredOutcomeExact": true
+  },
+  "backup": {
+    "path": "projects/tracer/backups/register-2026-10-28-concurrent-local-complete.sqlite",
+    "sha256": "22a841ffded4007d994cc6da405dc11e14f5a50804645278b43ae9b99ab0708d",
+    "method": "SQLite-aware online backup, then closed completed backup copied to a fresh temporary restore path; source backup never modified",
+    "exactCanonicalExportSha256": "677aefa2d5a6b6085c3de35cbb8520720fb8adc4ba9a082ffcdff4670c2ef720",
+    "allRestoredTablesExact": true,
+    "tables": [
+      {
+        "name": "baselines",
+        "count": 1,
+        "sha256": "55fd369fb7cb823753653bee41d2667db2b0e4546ecd5ac231b7aca4a395ce5a"
+      },
+      {
+        "name": "changeset_commands",
+        "count": 65,
+        "sha256": "195e7eae7305de86ae849289585b1b7456d4b12c490dc7ef32c68f2e5c575900"
+      },
+      {
+        "name": "changesets",
+        "count": 191,
+        "sha256": "84e7c861cb2efacc4f368def3b222b7eee6232df9e95af72cda987c2343cf2de"
+      },
+      {
+        "name": "configurations",
+        "count": 9,
+        "sha256": "325da14f9e960258277d16646dc15e77baa58093747e51b99dad57ae7b8f1ab1"
+      },
+      {
+        "name": "entities",
+        "count": 654,
+        "sha256": "29fbc130189936a112442ac66dd5b83395a6ec90c2fa4a4653e9ebb001f74567"
+      },
+      {
+        "name": "evaluation_commands",
+        "count": 98,
+        "sha256": "7068e665d4de297b0a100f8ed9fd117e0105a6b105040e6759bdd1724cb931ac"
+      },
+      {
+        "name": "evidence",
+        "count": 1097,
+        "sha256": "1a7faacc870fab5b302797b89042cf9929a997519735ba2f4c75fa5511c67a21"
+      },
+      {
+        "name": "identities",
+        "count": 1457,
+        "sha256": "3cb4f1e66ea104ea3c681586350f12c40803560d1a3440b024f94f346bdaef94"
+      },
+      {
+        "name": "object_revisions",
+        "count": 1780,
+        "sha256": "10edfd53cf1261845a1b65f8b244e56effe9d4c95e1431f29e2321432e3f3ac5"
+      },
+      {
+        "name": "project_counter",
+        "count": 1,
+        "sha256": "d31f9749cb5b63e1b327b2f36c133de1e502b6832b5a2e3826dddf74dbec66a3"
+      },
+      {
+        "name": "receipt_dependencies",
+        "count": 1906,
+        "sha256": "c686a0bbdb614d420a32161d8eb0be12ec1d999798835593fe36c716e8431df0"
+      },
+      {
+        "name": "relationships",
+        "count": 802,
+        "sha256": "18c9141810da26f7794286d0f016161acf469a55a517f30b9dbe0df1069d95bd"
+      },
+      {
+        "name": "resource_identities",
+        "count": 344,
+        "sha256": "fbe269e938fc9fbd74867f0e69dae840c5a9d8d0b9ee27895ed32faa1d892f1f"
+      },
+      {
+        "name": "schemas",
+        "count": 1,
+        "sha256": "6c13ad2834d1cda85292c731d895c276ed683103c574ca70c930d57ff7c220a4"
+      },
+      {
+        "name": "sqlite_sequence",
+        "count": 3,
+        "sha256": "5640477438d69bb037111caebe683871a3f547ba168ecd04bbc2fee8996237c4"
+      },
+      {
+        "name": "storage_version",
+        "count": 1,
+        "sha256": "752886abd041a053e748e01760765815156d88c3160655ccca17c5e57e0f499b"
+      },
+      {
+        "name": "workspace_views",
+        "count": 4,
+        "sha256": "c5253c334520966a3e51767e2be9ee05aef09ffd6af83241ce5d0d595ce614b1"
+      }
+    ]
+  },
+  "preservation": {
+    "allOriginalNativeEntitiesExceptExplicitWork006ProgressExact": true,
+    "allOriginalNativeHistoryEvidenceCapturesAndCommandLedgersRetained": true,
+    "physicalFormatUnchanged": 11,
+    "requirement025Unchanged": true,
+    "currentRequirement036": "implemented/verified/not_validated",
+    "work028": "completed",
+    "plan036": "passed",
+    "configurationComparisonExact": true,
+    "existingVerification": "verified",
+    "verificationObligations": 12,
+    "existingAssessment": "completed/current",
+    "assessmentObligations": 13,
+    "all804SourceFingerprintsExact": true
+  },
+  "limits": "Closed completed SQLite backup is restorable; review export alone is not a restore format. External source bytes are references only. Team/authentication/backend/arbitrary-scale/human-validation obligations remain separate."
+}
