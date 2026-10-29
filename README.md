@@ -51,6 +51,8 @@ Both paths use the same **Graph / Matrix / History** workspace. **Project tools*
 
 **Project tools → Verification** records exact criterion/method scope, actual activity results, explicit result selection and a controlled scoped conclusion. It preserves failures and explains reassessment after changes. See the [verification guide](docs/workspace-guide.md#requirement-verification) for model setup, authoring and recovery.
 
+**Project tools → Configurations** compares exact before/after engineering states and carries the selected pair into assessment and verification. The [configuration-change guide](docs/workspace-guide.md#configuration-changes) explains captured scope, uncertainty and follow-through. The **Project task** selector switches directly between tasks while preserving in-session drafts; the left rail opens documentation directly.
+
 **Next work** keeps statement gaps, unallocated requirements, missing verification plans, changed evidence inputs and unresolved reviews in separate actionable queues. See the [next-work guide](docs/next-work.md).
 
 ## Core contracts and current UI limits

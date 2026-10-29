@@ -2,7 +2,8 @@
 .native-task.model-page:not([hidden]) {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  /* Above retained map tools and trace-walker overlays. */
+  z-index: 70;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -51,9 +52,8 @@
   overflow: auto;
 }
 .model-page .schema-editor > .toolbar {
-  position: absolute;
-  right: 24px;
-  top: 66px;
+  position: static;
+  align-self: flex-end;
   margin: 0;
 }
 .model-page .schema-editor > .toolbar h2 {
@@ -65,7 +65,7 @@
 }
 .model-page .schema-editor > p {
   min-height: 30px;
-  padding-right: 210px;
+  padding-right: 0;
 }
 .model-page .schema-editing-notes {
   margin: 2px 0;

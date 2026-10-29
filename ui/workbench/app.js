@@ -410,6 +410,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
         '<circle cx="5" cy="5" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="10" cy="19" r="2"/><path d="m7 5 10 2M6 7l3 10m3 0 6-8"/>',
       matrix:
         '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 10h18M10 3v18M3 16h18M16 3v18"/>',
+      documentation: '<path d="M4 4h7l1 2 1-2h7v16h-7l-1 1-1-1H4ZM12 6v15"/>',
       history: '<path d="M3 10a9 9 0 1 1 1 8M3 4v6h6m3-4v6l4 3"/>',
       entity: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6m-6 4h6m-6 4h4"/>',
       subsystem_requirement: '<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5m-18 5 9 5 9-5"/>',
@@ -817,7 +818,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       count = visibleKeys().length,
       atHead = state.revision === workspace.head;
     const workspaceTabs = `<nav class="view-switch workspace-perspectives" aria-label="Workspace perspective">${["graph", "matrix", "history"].map((view) => `<button data-view="${view}" aria-pressed="${state.perspective === view}">${icon(view)}${view[0].toUpperCase() + view.slice(1)}</button>`).join("")}</nav>`;
-    app.innerHTML = `<div class="shell"><aside class="rail" aria-label="Project navigation"><div class="brand">${brand}</div><nav class="railnav"><button class="active" data-action="graph" title="Development map">${icon("graph")}</button>${modelNavigation()}</nav></aside>
+    app.innerHTML = `<div class="shell"><aside class="rail" aria-label="Project navigation"><div class="brand">${brand}</div><nav class="railnav"><button class="active" data-action="graph" title="Workspace" aria-label="Workspace">${icon("graph")}</button>${modelNavigation()}</nav></aside>
   <main class="workspace"><header class="topbar"><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}${nextWorkButton()}<button data-action="project-tools">Project tools</button><button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
   <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderAssessmentAction()}${renderSelectionActions()}</div></section>
   ${renderRevisionBanner()}
@@ -845,7 +846,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   }
   function modelNavigation() {
     return native
-      ? `<button data-action="model" title="Model" aria-label="Model">${icon("subsystem_requirement")}</button>`
+      ? `<button data-action="model" title="Model" aria-label="Model">${icon("subsystem_requirement")}</button><button data-action="documentation" title="Documentation" aria-label="Documentation">${icon("documentation")}</button>`
       : "";
   }
 
@@ -1595,6 +1596,10 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     }
     if (name === "save-matrix-recipe") {
       matrixRecipes.save();
+      return;
+    }
+    if (name === "documentation") {
+      projectTools?.open("docs");
       return;
     }
     if (name === "model") {

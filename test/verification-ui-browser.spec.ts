@@ -140,7 +140,7 @@ for (const [domain, width] of [
       await panel
         .getByLabel("Activity title", { exact: true })
         .fill("Retain this draft across map return");
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await task(page);
       await expect(panel.getByLabel("Activity title", { exact: true })).toHaveValue(
         "Retain this draft across map return",
@@ -525,7 +525,7 @@ test("verification reuses exact input review, retains its draft and obeys assess
     await expect(
       panel.getByRole("button", { name: "Record activity", exact: true }),
     ).toBeDisabled();
-    await page.getByRole("button", { name: "Return to map", exact: true }).click();
+    await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
     await task(page);
     await panel
       .getByRole("button", { name: "Return to activity input review", exact: true })

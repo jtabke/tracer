@@ -18,6 +18,7 @@ import "./style.css";
 import "./model-page.css";
 import { NativeTypeOptions } from "./type-options.tsx";
 import { WorkItem } from "./work-item.tsx";
+import { ProjectTaskNavigation } from "./project-task-navigation.tsx";
 
 export type NativeTask =
   | "references"
@@ -110,7 +111,7 @@ export function NativeTasks({
           }}
           onChoose={setFocused}
           onTable={onClose}
-          returnLabel="Return to development map"
+          returnLabel="Close item details"
         />
       ) : null,
     create: () =>
@@ -174,6 +175,9 @@ export function NativeTasks({
         error={editing.error}
         render={panels.schema}
         onClose={onClose}
+        navigation={
+          onTask && <ProjectTaskNavigation task="schema" hasEntity={!!entity} onTask={onTask} />
+        }
       />
       <dialog
         ref={dialog}
@@ -189,11 +193,14 @@ export function NativeTasks({
       >
         <header className="native-task-header">
           <strong>{taskHeading(task)}</strong>
-          <button onClick={onClose}>Return to map</button>
+          {task && onTask && (
+            <ProjectTaskNavigation task={task} hasEntity={!!entity} onTask={onTask} />
+          )}
+          <button onClick={onClose}>Return to workspace</button>
         </header>
         {editing.error && <p role="alert">{editing.error}</p>}
         <p className="task-draft-note">
-          Returning to the map retains this task and its in-session drafts.
+          Switching tasks or returning to the workspace retains in-session drafts until reload.
         </p>
         {visited
           .filter((name) => name !== "schema")
@@ -212,12 +219,14 @@ function ModelPage({
   error,
   render,
   onClose,
+  navigation,
 }: {
   active: boolean;
   visited: boolean;
   error?: string;
   render(): React.ReactNode;
   onClose(): void;
+  navigation?: React.ReactNode;
 }) {
   return (
     <section className="native-task model-page" hidden={!active} aria-label="Project model page">
@@ -226,6 +235,7 @@ function ModelPage({
           <strong>Model</strong>
           <span>Project types and relationships</span>
         </div>
+        {navigation}
         <button onClick={onClose}>Return to workspace</button>
       </header>
       {error && <p role="alert">{error}</p>}

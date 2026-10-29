@@ -1,3 +1,4 @@
+import { projectTaskGroups, selectedRecordTask } from "../project-task-navigation.tsx";
 import type { InitialView } from "../../src/core/presentation.ts";
 import { createRoot } from "react-dom/client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -137,7 +138,8 @@ function ProjectTools({
   }
   return (
     <div
-      onInputCapture={() => {
+      onInputCapture={(event) => {
+        if ((event.target as HTMLElement).closest(".project-task-navigation")) return;
         if (
           task &&
           ![
@@ -159,44 +161,34 @@ function ProjectTools({
         <ProjectMenu onClose={() => setMenu(false)}>
           <h2>Project tools</h2>
           <p>
-            Drafts stay in this tab until reload or close. Saved records persist. Reload recovers
-            the workspace scope, not unsaved drafts. Verification manages requirement criteria,
-            actual results and scoped conclusions. Change assessments judge the applicability of
-            recorded evidence after inputs change.
+            Choose a task. In-session drafts stay available when you switch tasks or return to the
+            workspace; reload does not retain unsaved drafts.
           </p>
-          {(
-            [
-              ["next-work", "Next work"],
-              ["assessments", "Change assessments"],
-              ["verification", "Verification"],
-              ["item", "Edit item and connections"],
-              ["references", "References for selected record"],
-              ["create", "New item"],
-              ["import", "Import CSV"],
-              ["export", "Export project"],
-              ["schema", "Configure model"],
-              ["evaluations", "Evaluations"],
-              ["configurations", "Configurations"],
-              ["docs", "Documentation"],
-            ] as const
-          ).map(([name, title]) => (
-            <button
-              key={name}
-              disabled={
-                ["item", "references"].includes(name) &&
-                !native.projectSnapshot.entities.some(
-                  (entity) => (entity.key ?? entity.id) === options.selected(),
-                )
-              }
-              onClick={() => {
-                setMenu(false);
-                setActivated(true);
-                selectTask(name);
-              }}
-            >
-              {title}
-            </button>
-          ))}
+          <div className="project-tool-groups">
+            {projectTaskGroups.map((group) => (
+              <section className="project-tool-group" key={group.title}>
+                <h3>{group.title}</h3>
+                {group.tasks.map(({ task: name, title }) => (
+                  <button
+                    key={name}
+                    disabled={
+                      selectedRecordTask(name) &&
+                      !native.projectSnapshot.entities.some(
+                        (entity) => (entity.key ?? entity.id) === options.selected(),
+                      )
+                    }
+                    onClick={() => {
+                      setMenu(false);
+                      setActivated(true);
+                      selectTask(name);
+                    }}
+                  >
+                    {title}
+                  </button>
+                ))}
+              </section>
+            ))}
+          </div>
           <button
             disabled={["saving", "unknown"].includes(mutation.status)}
             onClick={() => {

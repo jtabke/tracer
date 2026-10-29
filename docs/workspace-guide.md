@@ -82,6 +82,46 @@ A **configuration** captures explicitly selected native member and relationship 
 
 For implementation contracts, see [primitive contracts for extension](architecture.md#primitive-contracts-for-extension). For exact source/state selectors, receipt inputs and commands, use the [developer reference](developer-reference.md#local-resources-and-contextual-references).
 
+## Workspace navigation
+
+The left rail returns to the **Workspace**, opens **Model**, and opens
+**Documentation** directly. Graph, Matrix and History remain perspectives on the
+same selected record and revision.
+
+**Project tools** groups the available tasks into **Engineering work**, **Records
+and evidence**, **Project setup and exchange**, and **Help**. Use **Project task**
+in an open task or model-page header to switch directly to another task. The
+selected task is shown in the selector. **Return to workspace** returns to the
+perspective, selection and revision you left.
+
+Switching tasks keeps their in-session drafts. It does not save them, adopt a new
+basis or acknowledge an uncertain mutation. Unsaved drafts still do not survive
+reload or closing the tab. Tasks that require a selected record are disabled when
+no record is selected. The task selector supports normal keyboard selection;
+Escape closes a task dialog and returns to the workspace.
+
+## Configuration changes
+
+Open **Project tools → Configurations** to work with a named engineering change.
+
+1. Use **Capture configuration** to prepare explicit native members,
+   relationships and observed resource content. Inspect scope and omitted/unknown
+   states before capturing; a capture does not establish complete project coverage.
+2. Use **Compare configurations** to select the exact before/after pair. Apply
+   that pair deliberately; refreshing live evidence does not replace its states.
+3. Inspect record, relationship/reference and observed-content differences.
+   Whole-document change does not establish that a referenced passage changed.
+4. Use **Assess displayed pair** for a reasoned scope and follow-up actions.
+   Verification can target the selected after configuration; only an actual
+   controlled conclusion can account for required re-verification.
+
+The same **Project task** selector moves between Configurations, Change
+assessments and Verification while their drafts remain mounted. Existing guarded
+handoff controls carry the exact selected pair/target; manually switching tasks
+alone does not invent a handoff or change an already selected candidate. See the
+[configuration workspace reference](developer-reference.md#use-the-configuration-workspace)
+for detailed authoring and service bounds.
+
 ## Requirement verification
 
 Open **Project tools → Verification** to manage an explicit requirement-to-verification case. **Change assessments** and **Assess evidence** judge evidence applicability; Verification records the criterion outcomes and controlled conclusion. Neither a plan link nor an accepted evidence review establishes a passing result.
@@ -125,7 +165,7 @@ The normal launch opens **Graph**. Search for an artifact, use **Matrix** for ti
 
 For a project without seeded evidence, open **Project tools → Evaluations → Record native-input receipt**. Choose the output, write the actual outcome and declare the exact input items and field scope. Historical native versions and configuration pins are available when needed. Record the receipt before changing an input, then return to that input and choose **Assess evidence**. Compare the captured and current values, select **Review receipt**, choose a decision and record its rationale. The receipt, freshness comparison and review remain separate facts.
 
-**Project tools** also opens **Configure model**, **New item**, complete **Edit item and connections**, **Configurations**, and **Documentation**. Returning from a task retains its in-session draft. These tools use the selected database and existing version guards.
+**Project tools** also opens **Configure model**, **New item**, complete **Edit item and connections**, **Configurations**, and **Documentation**. The **Project task** selector switches directly between these tasks; **Return to workspace** retains the in-session draft and original perspective. These tools use the selected database and existing version guards.
 
 Reload recovers selection, graph positions, Matrix settings, revision and investigation scope in the same browser and origin. Use **Save Matrix configuration** for a named database-backed row-type/path/search recipe; loading one applies it across the project. Unsaved edits and review rationales are not recovered after reload or close: the browser warns, and reopening explains that policy. An unconfirmed save requires inspection and acknowledgment before new writes; it is never automatically resubmitted.
 

@@ -1,0 +1,43 @@
+.project-task-navigation {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.native-task .project-task-navigation label {
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: #a7b3b9;
+  font-size: 12px;
+}
+.project-task-navigation select {
+  min-width: 0;
+  max-width: 240px;
+}
+.native-task-header {
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.native-task-header > button {
+  margin-left: auto;
+}
+@media (max-width: 760px) {
+  .native-task-header > strong {
+    flex-basis: 100%;
+  }
+  .project-task-navigation select {
+    max-width: 180px;
+  }
+  .model-page-header {
+    flex-wrap: wrap;
+  }
+  .model-page-header > div {
+    flex-basis: 100%;
+  }
+}

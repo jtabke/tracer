@@ -51,7 +51,7 @@ for (const [domain, width] of [
       await panel
         .getByLabel("Judgment rationale", { exact: true })
         .fill("This specific known candidate requires no revision under the declared scope.");
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await openTask(page);
       await expect(panel.getByLabel("Judgment rationale", { exact: true })).toHaveValue(
         "This specific known candidate requires no revision under the declared scope.",

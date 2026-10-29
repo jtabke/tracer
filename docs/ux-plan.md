@@ -10,6 +10,8 @@ The selected direction is the medical-device map experience shared across all ex
 
 The workbench combines the Atlas layout and inspector, organized Precision dependency paths and compact temporal navigation. Its shell is dark, restrained and information-led. Light/Dark/System appearance preferences remain future work.
 
+**Selected navigation maintenance, 2026-10-29:** group Project tools by engineering work, records/evidence, project setup/exchange and help. A shared Project task selector connects retained task/model surfaces; Return to workspace preserves the original perspective/selection/revision. The main rail identifies Workspace separately from the retained Development map and offers direct Documentation. The [bounded readiness plan](navigation-readiness-plan.md) owns the acceptance and verification scope.
+
 Graph, Matrix and History are perspectives on the same engineering state. Workspace navigation identifies the perspective; local controls configure that view; selection actions stay beside the selected object or in its inspector.
 
 ## Design principles

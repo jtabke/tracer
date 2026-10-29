@@ -22,7 +22,10 @@ for (const width of [1440, 680])
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(server.origin);
       await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Documentation", exact: true }).click();
+      await page
+        .getByRole("dialog", { name: "Project tools", exact: true })
+        .getByRole("button", { name: "Documentation", exact: true })
+        .click();
       const article = page.getByRole("article", { name: "Getting started", exact: true });
       await expect(article.getByRole("heading", { level: 1 })).toBeInViewport();
       await expect(

@@ -10,6 +10,7 @@ In the application, **Project tools → Documentation** opens these guides witho
 ## After getting started
 
 - [Primitives and how to use them](workspace-guide.md#primitives-what-to-create-and-when): choose records, resources, references, captured states, evaluations and reviews; follow a worked power-verification example.
+- [Workspace navigation](workspace-guide.md#workspace-navigation) and [configuration changes](workspace-guide.md#configuration-changes): move between tasks and follow an exact engineering change.
 - [Workspace reference](workspace-guide.md): editing, evidence, configurations, multiple projects and the retained Development map.
 - [CSV import](csv-import.md): map columns, resolve links by exact keys, preview errors and commit one atomic batch.
 - [Next work](next-work.md): separate statement/allocation/plan gaps, changed evidence and unresolved reviews with direct editing/review actions.

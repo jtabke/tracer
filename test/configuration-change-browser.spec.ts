@@ -123,7 +123,7 @@ for (const [domain, width] of [
           exact: true,
         })
         .click();
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await openConfigurations(page);
       await expect(task.getByLabel("Configuration name", { exact: true })).toHaveValue(name);
       await task.getByRole("button", { name: "Prepare capture", exact: true }).click();
@@ -163,7 +163,7 @@ for (const [domain, width] of [
         "displayed comparison still belongs to its recorded pair",
       );
       await expect(diff.getByRole("heading", { level: 3 })).toContainText(name);
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await page.getByRole("button", { name: "Project tools", exact: true }).click();
       await page.getByRole("button", { name: "Evaluations", exact: true }).click();
       await page.getByRole("button", { name: "Record native-input receipt", exact: true }).click();

@@ -1,5 +1,34 @@
 # Tracer implementation status
 
+## Documentation and shared task navigation — bounded maintenance
+
+2026-10-29: implemented the [selected navigation cleanup](navigation-readiness-plan.md).
+One catalog groups all twelve project tasks; a shared task selector connects their
+retained surfaces and the model page. Direct Documentation access, a correct
+Workspace rail label, viewport-scrolling menus and Return to workspace improve
+orientation. Model controls now use normal flow and sit above retained-map tools.
+The user guide explains navigation and exact configuration-change handoffs; stale
+reference-authoring prose is corrected without changing historical anchors.
+
+[Performed verification](../projects/tracer/navigation-readiness-verification.json)
+records 722 passing unit tests, all 222 browser cases (220 in the full run plus
+two corrected-selector rechecks), eighteen workbench checks and unchanged quality
+gates. Five targeted cases checked desktop/narrow task navigation and retained-map
+returns. The local documentation audit found no broken paths/anchors among 252
+links in eleven maintained entry points/references. Screenshots and exact logs
+remain under `output/navigation-readiness/`; automated checks and visual inspection
+are not representative-human validation.
+
+WORK-029 completed through a guarded update at native193/schema7. The
+[preservation audit](../projects/tracer/navigation-readiness-preservation.json)
+verified the exported register, all seventeen restored SQLite tables, original
+native records/history/evidence/captures and 128 unchanged original project files.
+The review export and navigation index were deliberately updated. The completed
+online backup is
+`projects/tracer/backups/register-2026-10-29-navigation-readiness-complete.sqlite`.
+No existing requirement status or core primitive changed. Changes were prepared
+for a local commit; remote publication remains separate.
+
 ## Repository housekeeping — data and evidence preserved
 
 2026-10-29: added `npm run clean` and its `--dry-run` preview. Cleanup is anchored

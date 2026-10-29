@@ -103,7 +103,7 @@ for (const width of [1440, 390])
       expect(saved.evidence.receipts).toHaveLength(1);
       expect(saved.evidence.receipts[0].relationshipInputs).toHaveLength(1);
       expect(saved.evidence.receipts[0].output.id).toBe(subject.id);
-      await page.getByRole("button", { name: "Return to map", exact: true }).click();
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await page.getByRole("button", { name: "Assess evidence", exact: true }).click();
       await expect(
         page.getByText(/Simulated assessment: source passage supports this need/).first(),
