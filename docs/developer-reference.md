@@ -535,6 +535,14 @@ The selected requirement-verification capability currently exposes model resolut
 
 Preparation returns the selected historical source text, exact method/link states, current native/schema/evidence read clocks, declared/source completeness and unassigned criterion IDs. A complete source selection with unassigned criteria is still unplanned work; a deliberate partial declaration remains partial even when all text happens to be covered. Selection/output must each fit 64 KiB. No source observation, capture, native revision or engineering approval is created. Preparation can inspect historical basis even after current source or schema changes; current applicability uses the lifecycle contract below. There is no JSON-in-URL HTTP basis authoring route; controlled opening uses a bounded mutation body.
 
+## Compare receipt inputs with a captured candidate
+
+Call `tracer.configurations.compareReceipt({configurationId, receiptId})`, GET `/api/configuration-receipt-comparison?configurationId=...&receiptId=...`, or `configuration compare-receipt CONFIG RECEIPT`. Feature discovery advertises `configuration-input-comparison`. Select a controlled capture; legacy capture omissions cannot supply a known target state.
+
+Inspect `basis`, `scope`, `comparison` and `completeness` together. The existing comparison shape's `current` values refer to the explicitly identified target configuration. Native field scopes, observed content, paths and direct relationship declarations use their captured dependencies. Missing target selections stay unknown even when the objects exist live. A later live observation cannot update this target; explicitly capture/select another configuration. A `current` comparison means its declared inputs match, while the original outcome and engineering applicability remain separate. This read does not create a target-bound verification case or apply a current-head review.
+
+The read covers all declared dependencies or refuses: 100 total declarations, 1,000 path-link uses, 1 MiB per complete configuration/receipt digest, 4 MiB aggregate selected reads and 4 MiB output. Partial configuration scope and absent legacy direct-input metadata remain visible. The typed client correlates the exact requested context and rejects an incomplete returned dependency population. Existing `evidence.compareReceipt(id)` continues to compare with current-head state.
+
 ## Compare two fixed configurations
 
 Call `tracer.configurations.compare({beforeId, afterId})`, GET `/api/configuration-comparison?beforeId=...&afterId=...`, or `configuration compare BEFORE AFTER`. Discover `configuration-comparison` before using the endpoint. Both IDs select immutable local captures; the read creates no receipt and never adopts newer native revisions or observations.

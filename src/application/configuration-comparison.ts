@@ -1,5 +1,5 @@
 import { ensure, json, knownProperties, record } from "../core/model.ts";
-import { validateConfigurationCapture } from "../core/configuration-capture-validation.ts";
+import { readConfiguration } from "./configuration-read.ts";
 import type {
   ConfigurationComparison,
   ConfigurationPair,
@@ -19,9 +19,7 @@ export function validateConfigurationPair(input: ConfigurationPair) {
     );
 }
 async function required(tx: Transaction, id: string) {
-  const value = await tx.getConfiguration(id);
-  ensure(value, "not_found", "Selected configuration is unavailable");
-  validateConfigurationCapture(value);
+  const value = await readConfiguration(tx, id);
   ensure(
     value.members.length <= 100 && (value.relationships?.length ?? 0) <= 200,
     "validation",

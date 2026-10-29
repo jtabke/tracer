@@ -15,6 +15,12 @@ import {
   validateConfigurationCapture,
 } from "../core/configuration-capture-validation.ts";
 import { captureRelationships } from "./configuration-relationships.ts";
+import { readConfiguration } from "./configuration-read.ts";
+import type { ConfigurationReceiptQuery } from "../core/configuration-applicability.ts";
+import {
+  compareConfigurationReceipt,
+  validateConfigurationReceiptQuery,
+} from "./configuration-applicability.ts";
 import type { ConfigurationPair } from "../core/configuration-comparison.ts";
 import { compareConfigurations, validateConfigurationPair } from "./configuration-comparison.ts";
 
@@ -91,6 +97,11 @@ export class Configurations {
     validateConfigurationPair(input);
     return this.repository.transaction((tx) => compareConfigurations(tx, input));
   }
+  async compareReceipt(input: ConfigurationReceiptQuery) {
+    input = snapshotInput(input);
+    validateConfigurationReceiptQuery(input);
+    return this.repository.transaction((tx) => compareConfigurationReceipt(tx, input));
+  }
   async captureExact(input: ExactConfigurationInput, origin: Provenance): Promise<Configuration> {
     const actor = validateProvenance(origin);
     input = snapshotInput(input);
@@ -129,12 +140,7 @@ export class Configurations {
   }
   async get(id: string): Promise<Configuration> {
     ensure(typeof id === "string" && id.length > 0, "validation", "Configuration ID is required");
-    return this.repository.transaction(async (tx) => {
-      const value = await tx.getConfiguration(id);
-      ensure(value, "not_found", "Configuration not found");
-      validateConfigurationCapture(value);
-      return value;
-    });
+    return this.repository.transaction((tx) => readConfiguration(tx, id));
   }
   async list(query: EvidenceQuery = {}) {
     query = snapshotInput(query);

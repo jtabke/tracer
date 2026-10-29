@@ -1,0 +1,198 @@
+{
+  "date": "2026-10-28",
+  "scope": "Partial REQ-035 implementation: shared selected engineering-state resolution and complete receipt-input comparison versus an immutable target through core, typed HTTP/client and CLI. Pair-bound assessment and controlled target verification are pending.",
+  "status": "passed_for_declared_selected_input_phase_only",
+  "fullRequirementVerified": false,
+  "candidate": {
+    "baseCommit": "807a78b6e92e9b8ac81a1cfdb2eb7579e1402fef",
+    "files": [
+      {
+        "path": "src/core/configuration-applicability.ts",
+        "sha256": "62a6692dceb66f83c54819bd822ad72e0c237534bd34894d5577cb774ae7ab81"
+      },
+      {
+        "path": "src/application/configuration-applicability.ts",
+        "sha256": "af5af15e400343ad6a012b5559621c6270aa70b12d4e544bc6861f21e8910994"
+      },
+      {
+        "path": "src/application/configuration-read.ts",
+        "sha256": "7890334dbac569922271918a9b39a988ba4eca373413571ec18808b0c438d567"
+      },
+      {
+        "path": "src/application/engineering-state.ts",
+        "sha256": "2139cc8db29196e3b4578bd9c4d172171efee224a68f5dfa8d6a29101150194d"
+      },
+      {
+        "path": "src/application/configurations.ts",
+        "sha256": "a504de230b173bad516010e63a308c24fa52f1c9908fbd0e490ef517e15cfff8"
+      },
+      {
+        "path": "src/application/configuration-comparison.ts",
+        "sha256": "d291777b02e4a0ce8fd2e5761e6c9c94324640cbce574ad267aac752364b1761"
+      },
+      {
+        "path": "src/application/receipt-comparison.ts",
+        "sha256": "563de9b108c985cc08c9410c393fd1676ea9a72a577c599793a6c3864f5ff0b7"
+      },
+      {
+        "path": "src/application/relationship-inputs.ts",
+        "sha256": "d2d84da09fa67bea7165bf53fa9f4b35dc9fd50324e51a66f89cf8390d23ab5c"
+      },
+      {
+        "path": "src/interfaces/api/configuration-applicability.ts",
+        "sha256": "6ab0a1c07b020dff584516194fe00e8dfac75f5b2761e03fb02b0295f14b4919"
+      },
+      {
+        "path": "src/interfaces/api/native.ts",
+        "sha256": "04389ab190406d246bdea5fa9e498c592f0b2db825b797d941d158f7bbd35efb"
+      },
+      {
+        "path": "src/interfaces/cli-evidence.ts",
+        "sha256": "877fec36f0005d222d1c706464f43134e1f23e4c33503044cc42ef33423511f1"
+      },
+      {
+        "path": "src/interfaces/cli-help.ts",
+        "sha256": "51ceb57fc29a0483b509cfa77e5047f06789518ee1752bd8c772aa81cf6499b9"
+      },
+      {
+        "path": "src/index.ts",
+        "sha256": "55ccfece1d2f6394c1fdc28225f3cfe2685c5b9c54785e88713fbe347bd65434"
+      },
+      {
+        "path": "test/configuration-applicability.test.ts",
+        "sha256": "1c6a663577b866a3b0b5743e6ea48b2c5d7a0098eed00eec33995cea3f8bfda8"
+      },
+      {
+        "path": "test/api-client.test.ts",
+        "sha256": "8b2a8d91cfd46c1fb9dd07560907026b924b398ef6c5e545ca179371cb98ca49"
+      },
+      {
+        "path": "test/api-capabilities.test.ts",
+        "sha256": "397531b68d953b69fbee282860a66913c3c5e2fb522caa20cd64b6eec1db7e07"
+      }
+    ]
+  },
+  "documentation": [
+    {
+      "path": "docs/architecture.md",
+      "sha256": "d8f14ba7c62e031a13d70685277f415747d2bc2beb8c0a31987782f2217a705b"
+    },
+    {
+      "path": "docs/developer-reference.md",
+      "sha256": "d97ae125f8c77dc311d301649aa079bd9aade9d81aa5414ba6947104b90ab4b8"
+    },
+    {
+      "path": "docs/api-reference.md",
+      "sha256": "670d05b62df50729f63d15b8435490f5841cd77371a32bbc425275013e95c08f"
+    }
+  ],
+  "specification": {
+    "path": "projects/tracer/configuration-change-specification.json",
+    "sha256": "e2d40ba5f5ab399361f9b341bd88d869f0653126c375d98bb7b99b4fe552b781"
+  },
+  "originalCase": {
+    "path": "projects/tracer/configuration-change-original-case.json",
+    "sha256": "72bf64f0cb4238c20ec39ed30bf0f4a9a2e3ab30788241b96029c80b827fea8f"
+  },
+  "verification": {
+    "command": "npm run check",
+    "unitTests": 639,
+    "browserTests": 209,
+    "workbenchOriginalScreenshots": 18,
+    "log": {
+      "path": "output/configuration-change/applicability-full-check.log",
+      "sha256": "5f2b58ee16fe63b904488a0038b98ac4924eaa4b629abb49e42c5f8c8bd0a7c1"
+    },
+    "thresholdsAndExclusionsUnchanged": true
+  },
+  "implemented": [
+    "Explicit engineering-state reader resolves captured native/content/topology states without impersonating a repository; current-head paths preserve existing semantics.",
+    "Shared native field/content/path/direct-link comparison refuses unknown selected states without live fallback; scoped projections retain missing selected-path uncertainty.",
+    "Complete immutable receipt and target/policy digests bind the comparison; replacing an identical-valued target still changes its token.",
+    "Original failed/not_run outcome strings remain unchanged; matching inputs establish neither engineering impact nor controlled verification.",
+    "Later receipt output identity may remain outside immutable membership while its declared product inputs match the target.",
+    "Shared core/HTTP/client/CLI and response context/population validation; no observer IO, native/evidence writes or physical migration."
+  ],
+  "bounds": {
+    "totalDeclarations": 100,
+    "pathLinkUses": 1000,
+    "configurationCanonicalBytes": 1048576,
+    "receiptCanonicalBytes": 1048576,
+    "selectedReadBytes": 4194304,
+    "resultBytes": 4194304,
+    "executed": "Full declaration/path populations pass; next path use, oversized receipt and repeated large selected snapshots refuse without writes."
+  },
+  "compositionProbe": {
+    "procedure": {
+      "path": "output/configuration-change/probe-composition.mjs",
+      "sha256": "68c207e3ef753d76570d60f27da6ddf07f22208e5b3cdde8a7726c4b2aea4906"
+    },
+    "report": {
+      "path": "output/configuration-change/composition-probe.json",
+      "sha256": "df3173eae1e9d9ad076dbb95729c86af9ce013cf4498813d22f2ae9285cce673"
+    },
+    "checks": [
+      {
+        "domain": "engineering",
+        "targetId": "a7ca56c5-f7af-4bc9-b3c3-cc5bebb0f587",
+        "targetCapturedBeforeExecution": true,
+        "executionOutsideImmutableTargetMembership": true,
+        "originalCurrentHeadConclusion": "verified",
+        "laterLiveBasis": "changed",
+        "laterCurrentHeadCompletion": "needs_reassessment",
+        "selectedTargetNativeFactsStillExact": true,
+        "configurationComparisonUnchanged": true,
+        "originalOutcomeRetained": ["passed", "passed"],
+        "qualification": "Executed existing current-head verification and fixed comparison. A target-bound verification lifecycle is not implemented by this probe. No repository head substitution."
+      },
+      {
+        "domain": "research",
+        "targetId": "7e99800b-bb87-478a-8f29-941ea9a5330d",
+        "targetCapturedBeforeExecution": true,
+        "executionOutsideImmutableTargetMembership": true,
+        "originalCurrentHeadConclusion": "verified",
+        "laterLiveBasis": "changed",
+        "laterCurrentHeadCompletion": "needs_reassessment",
+        "selectedTargetNativeFactsStillExact": true,
+        "configurationComparisonUnchanged": true,
+        "originalOutcomeRetained": ["passed", "passed"],
+        "qualification": "Executed existing current-head verification and fixed comparison. A target-bound verification lifecycle is not implemented by this probe. No repository head substitution."
+      }
+    ],
+    "decisionsToImplement": [
+      "Introduce an explicit engineering-state reader for product entity/relationship/content selection; default reads retain current-head semantics. Do not impersonate a repository transaction or replace application-control state.",
+      "Bind a selected-state verification context durably at controlled case genesis; a query-only target override must not reinterpret an existing current-head conclusion. Validate exact criterion/method/model/support correspondence to the target.",
+      "Execution identities, case membership, result population, supersession, durable commands and later follow-through work remain live application-control/evidence state outside immutable candidate membership.",
+      "Add a qualified configuration-pair assessment source through existing assessment services rather than fabricating a baseline identity or duplicating disposition/closure rules.",
+      "Pair comparison stays fixed; discovery of later evidence is separately bounded, clock-guarded and explicitly refreshed. Scope completeness, target applicability and policy compatibility remain separate."
+    ]
+  },
+  "originalSourcePreservation": {
+    "report": {
+      "path": "output/configuration-change/composition-original-observations.json",
+      "sha256": "5d74e9ef53a1cd4b9caa8f86efaa624d6970f25a5b11669de582530b26500010"
+    },
+    "preEditSources": 11,
+    "expandedOriginalConfigurationId": "c37b8600-af52-41b6-9053-dcb028c4d4e1",
+    "members": 26,
+    "contentSelections": 21,
+    "qualification": "All earlier captures remain immutable. This phase implements shared selected-state input comparison; assessment and target lifecycle composition remain pending."
+  },
+  "remaining": [
+    "Explicit product-state resolution shared with captured dependency comparisons, leaving application-control state live.",
+    "Pair-bound impact/disposition/closure and target-bound verification lifecycle with exact input correspondence.",
+    "Shared workspace, full real/second-domain/fresh-agent tasks and complete unchanged AC-1\u201312 audit.",
+    "Final complete-goal quality/preservation/status publication."
+  ],
+  "nextProtocolAudit": {
+    "path": "output/configuration-change/typed-prior-source-audit.json",
+    "finding": "A disposable controlled failed/not_run execution can currently be reinterpreted as passing without performed replacement; authenticated prior-source coverage needs a guard.",
+    "status": "reproduced_before_correction"
+  },
+  "additionalOriginals": {
+    "path": "output/configuration-change/target-original-observations.json",
+    "preEditSources": 10,
+    "nativeRevision": 119,
+    "qualification": "Additional target-protocol source observations before their edits, matching original goal Git bytes; not silently added to earlier configuration membership."
+  }
+}

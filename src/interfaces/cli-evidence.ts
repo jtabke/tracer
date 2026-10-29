@@ -15,6 +15,10 @@ type BindInput = {
   ownership: "external";
 };
 export const evidenceCommands: Record<string, CliCommand> = {
+  "configuration compare-receipt": ({ tracer, args }) => {
+    arity(args, 2);
+    return tracer.configurations.compareReceipt({ configurationId: args[0], receiptId: args[1] });
+  },
   "configuration compare": ({ tracer, args }) => {
     arity(args, 2);
     return tracer.configurations.compare({ beforeId: args[0], afterId: args[1] });

@@ -8,6 +8,23 @@ import { canonical } from "../core/evidence.ts";
 import { pinRelationship } from "./native-pins.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { expectVersion } from "./version-guard.ts";
+import { currentEngineeringState } from "./engineering-state.ts";
+import type { EngineeringStateReader } from "./engineering-state.ts";
+import type { Relationship } from "../core/model.ts";
+
+function comparisonReason(
+  current: Relationship | undefined,
+  changed: boolean,
+  source: EngineeringStateReader["kind"],
+) {
+  if (current)
+    return changed
+      ? "Declared relationship changed; captured state is unchanged"
+      : "Declared relationship matches";
+  return source === "configuration"
+    ? "Captured relationship is not selected in the target configuration; no live deletion inferred"
+    : "Captured relationship is removed; original snapshot retained";
+}
 
 export async function captureRelationships(
   tx: Transaction,
@@ -67,10 +84,11 @@ export async function captureRelationships(
 export async function compareRelationships(
   tx: Transaction,
   captured: CapturedRelationship[] = [],
+  state: EngineeringStateReader = currentEngineeringState(tx),
 ): Promise<RelationshipComparison[]> {
   const results: RelationshipComparison[] = [];
   for (const recorded of captured) {
-    const current = await tx.get("relationship", recorded.relationship.id);
+    const current = await state.getRelationship(recorded.relationship.id);
     const hasChanged = canonical(current ?? null) !== canonical(recorded.relationship),
       hasUnknown = !current;
     results.push({
@@ -80,13 +98,7 @@ export async function compareRelationships(
       hasChanged,
       hasUnknown,
       state: hasUnknown ? "unknown" : hasChanged ? "changed" : "current",
-      reasons: [
-        !current
-          ? "Captured relationship is removed; original snapshot retained"
-          : hasChanged
-            ? "Declared relationship changed; captured state is unchanged"
-            : "Declared relationship matches",
-      ],
+      reasons: [comparisonReason(current, hasChanged, state.kind)],
     });
   }
   return results;

@@ -11,6 +11,8 @@ import type {
   Comparison,
 } from "../core/evidence.ts";
 import type { Transaction } from "./ports/repository.ts";
+import { currentEngineeringState } from "./engineering-state.ts";
+import type { EngineeringStateReader } from "./engineering-state.ts";
 
 export function nativeState(value: Entity, fields?: string[]) {
   return fields
@@ -62,6 +64,7 @@ function compareContent(
   currentEntity: Entity | undefined,
   observation: Observation | null,
   reasons: string[],
+  source: EngineeringStateReader["kind"] = "current",
 ) {
   const result = { unknown: false, changed: false };
   if (recorded.observation) {
@@ -72,7 +75,9 @@ function compareContent(
     ) {
       result.unknown = true;
       reasons.push(
-        "Recorded or last observed source state is unknown; observe the scoped input explicitly",
+        source === "configuration"
+          ? "Recorded or selected source state is unknown; changing the target requires an explicit new configuration capture"
+          : "Recorded or last observed source state is unknown; observe the scoped input explicitly",
       );
     } else if (recorded.observation.hash !== observation.hash) {
       result.changed = true;
@@ -99,6 +104,7 @@ export function scopedInputState(
   input: InputComparison,
   includeContent: boolean,
   relationshipIds: Set<string>,
+  source: EngineeringStateReader["kind"] = "current",
 ): { hasChanged: boolean; hasUnknown: boolean } {
   const content = includeContent
     ? compareContent(
@@ -113,26 +119,35 @@ export function scopedInputState(
       relationshipIds.has(recorded.id) &&
       canonical(recorded) !== canonical(input.current.links[index] ?? null),
   );
+  const selectedUnknown =
+    source === "configuration" &&
+    input.recorded.links.some(
+      (recorded, index) => relationshipIds.has(recorded.id) && input.current.links[index] === null,
+    );
   return {
     hasChanged: content.changed || linksChanged,
-    hasUnknown: includeContent && (!input.current.entity || content.unknown),
+    hasUnknown: selectedUnknown || (includeContent && (!input.current.entity || content.unknown)),
   };
 }
 
 async function compareDependencyLinks(
-  tx: Transaction,
+  state: EngineeringStateReader,
   baselines: Relationship[],
   reasons: string[],
 ) {
   const links: (Relationship | null)[] = [];
   let changed = false;
   for (const baseline of baselines) {
-    const link = await tx.get("relationship", baseline.id);
+    const link = await state.getRelationship(baseline.id);
     links.push(link ?? null);
     if (!link || canonical(baseline) !== canonical(link)) {
       changed = true;
+      const absent =
+        state.kind === "configuration"
+          ? "not selected in target; no live deletion inferred"
+          : "removed";
       reasons.push(
-        `Declared dependency link ${baseline.id}: v${baseline.version} → ${link ? "v" + link.version : "removed"}`,
+        `Declared dependency link ${baseline.id}: v${baseline.version} → ${link ? "v" + link.version : absent}`,
       );
     }
   }
@@ -140,13 +155,13 @@ async function compareDependencyLinks(
 }
 
 async function compareInput(
-  tx: Transaction,
+  resolution: EngineeringStateReader,
   recorded: CapturedInput,
   outputId: string,
 ): Promise<InputComparison> {
-  const currentEntity = await tx.get("entity", recorded.entityId);
+  const currentEntity = await resolution.getEntity(recorded.entityId);
   const observation = recorded.observation
-    ? ((await tx.latestEvidence("observation", recorded.entityId)) ?? null)
+    ? await resolution.getObservation(recorded.entityId)
     : null;
   const links: (Relationship | null)[] = [];
   const reasons: string[] = [];
@@ -154,14 +169,19 @@ async function compareInput(
     unknown = false;
   if (!currentEntity) {
     unknown = true;
-    reasons.push("Input entity is deleted or unavailable");
+    reasons.push(
+      resolution.kind === "configuration"
+        ? "Input is not selected in the target configuration; no live deletion inferred"
+        : "Input entity is deleted or unavailable",
+    );
   }
-  const content = compareContent(recorded, currentEntity, observation, reasons);
+  const content = compareContent(recorded, currentEntity, observation, reasons, resolution.kind);
   changed = content.changed;
   unknown ||= content.unknown;
-  const dependency = await compareDependencyLinks(tx, recorded.links, reasons);
+  const dependency = await compareDependencyLinks(resolution, recorded.links, reasons);
   links.push(...dependency.links);
   changed ||= dependency.changed;
+  unknown ||= resolution.kind === "configuration" && dependency.links.some((link) => link === null);
   return {
     entityId: recorded.entityId,
     dependencyPath: [outputId, ...recorded.links.map((link) => link.id), recorded.entityId],
@@ -197,12 +217,13 @@ export function summarizeComparedInputs(
 export async function compareCapturedInputs(
   tx: Transaction,
   receipt: Receipt,
+  state: EngineeringStateReader = currentEngineeringState(tx),
 ): Promise<ComparedState> {
   const inputs: InputComparison[] = [];
   for (const recorded of receipt.inputs) {
-    inputs.push(await compareInput(tx, recorded, receipt.output.id));
+    inputs.push(await compareInput(state, recorded, receipt.output.id));
   }
-  const relationshipInputs = await compareRelationships(tx, receipt.relationshipInputs);
+  const relationshipInputs = await compareRelationships(tx, receipt.relationshipInputs, state);
   return summarizeComparedInputs(
     receipt.id,
     inputs,

@@ -54,6 +54,7 @@ Commands:
   evidence list KIND [QUERY_JSON]       external|observation|receipt|review; {subject?,after?,limit?}
   configuration context               current schema/native/evidence capture guards; read only
   configuration compare BEFORE AFTER  deterministic comparison of two immutable configuration identities
+  configuration compare-receipt CONFIG RECEIPT  declared receipt inputs versus exact selected configuration state
   configuration capture-exact JSON     guarded native/content capture with caller identity and exact recovery
   configuration capture JSON           {name,subjectId,expectedSubjectVersion,members:[{entityId,version}],relationships?:[{relationshipId,version}]}
   configuration get ID                 exact immutable capture, including archived native schemas
