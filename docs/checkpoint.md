@@ -1,5 +1,26 @@
 # Tracer implementation status
 
+## Project tools menu polish — bounded presentation follow-up
+
+2026-10-29: added consistent line icons and brief task descriptions to the
+shared Project tools catalog. The menu has explicit hover/focus states, a named
+close action, separated utility controls and a scrolling task list that retains
+its header/footer. Menu styling now has one owning stylesheet. Accessible task
+names, disabled record-dependent actions and existing task/draft owners remain.
+
+[Performed checks](../projects/tracer/project-tools-polish-verification.json)
+cover five starter/navigation browser cases plus a final three-width navigation
+recheck, typecheck, build, lint and unchanged quality gates. Desktop and narrow
+screenshots were inspected; 390×480 scrolling reaches the final task. These are
+technical checks, not representative-human validation or a fresh broad-suite run.
+
+WORK-029's explicit owner-selected follow-up completed at native195/schema7.
+The [restored-backup audit](../projects/tracer/project-tools-polish-preservation.json)
+compares all seventeen SQLite tables, preserves previous native history/evidence
+and 130 original project files, and excludes only explicit work progress from
+current-record equality. Original verification reports were retained. The online
+backup is `projects/tracer/backups/register-2026-10-29-project-tools-polish.sqlite`.
+
 ## Documentation and shared task navigation — bounded maintenance
 
 2026-10-29: implemented the [selected navigation cleanup](navigation-readiness-plan.md).

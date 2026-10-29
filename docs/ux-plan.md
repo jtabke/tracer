@@ -12,6 +12,8 @@ The workbench combines the Atlas layout and inspector, organized Precision depen
 
 **Selected navigation maintenance, 2026-10-29:** group Project tools by engineering work, records/evidence, project setup/exchange and help. A shared Project task selector connects retained task/model surfaces; Return to workspace preserves the original perspective/selection/revision. The main rail identifies Workspace separately from the retained Development map and offers direct Documentation. The [bounded readiness plan](navigation-readiness-plan.md) owns the acceptance and verification scope.
 
+**Selected menu polish, 2026-10-29:** use consistent line icons, brief task descriptions and quieter utility actions in Project tools. Keep task labels, the grouped catalog, visible keyboard focus and disabled selection-dependent actions. Scroll the task list within a menu whose header and utilities remain reachable at narrow widths. This is presentation maintenance, with no task ownership or command changes.
+
 Graph, Matrix and History are perspectives on the same engineering state. Workspace navigation identifies the perspective; local controls configure that view; selection actions stay beside the selected object or in its inspector.
 
 ## Design principles

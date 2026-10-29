@@ -1,3 +1,5 @@
+import { ProjectToolIcon } from "./project-tool-icon.tsx";
+import "./project-tool-menu.css";
 import { projectTaskGroups, selectedRecordTask } from "../project-task-navigation.tsx";
 import type { InitialView } from "../../src/core/presentation.ts";
 import { createRoot } from "react-dom/client";
@@ -159,18 +161,24 @@ function ProjectTools({
     >
       {menu && (
         <ProjectMenu onClose={() => setMenu(false)}>
-          <h2>Project tools</h2>
-          <p>
-            Choose a task. In-session drafts stay available when you switch tasks or return to the
-            workspace; reload does not retain unsaved drafts.
-          </p>
+          <header className="project-tool-menu-header">
+            <div>
+              <h2>Project tools</h2>
+              <p>Choose where to work.</p>
+            </div>
+            <button aria-label="Close project tools" onClick={() => setMenu(false)}>
+              <ProjectToolIcon name="close" />
+            </button>
+          </header>
           <div className="project-tool-groups">
             {projectTaskGroups.map((group) => (
               <section className="project-tool-group" key={group.title}>
                 <h3>{group.title}</h3>
-                {group.tasks.map(({ task: name, title }) => (
+                {group.tasks.map(({ task: name, title, description }) => (
                   <button
                     key={name}
+                    aria-label={title}
+                    aria-describedby={`project-tool-${name}-description`}
                     disabled={
                       selectedRecordTask(name) &&
                       !native.projectSnapshot.entities.some(
@@ -183,23 +191,37 @@ function ProjectTools({
                       selectTask(name);
                     }}
                   >
-                    {title}
+                    <span className="project-tool-icon">
+                      <ProjectToolIcon name={name} />
+                    </span>
+                    <span className="project-tool-copy">
+                      <span>{title}</span>
+                      <small id={`project-tool-${name}-description`}>{description}</small>
+                    </span>
                   </button>
                 ))}
               </section>
             ))}
           </div>
-          <button
-            disabled={["saving", "unknown"].includes(mutation.status)}
-            onClick={() => {
-              setMenu(false);
-              void options.changed();
-            }}
-          >
-            Refresh project
-          </button>
-          <button onClick={options.onMap}>Development map</button>
-          <button onClick={() => setMenu(false)}>Close project tools</button>
+          <footer className="project-tool-menu-footer">
+            <div className="project-tool-utilities">
+              <button
+                disabled={["saving", "unknown"].includes(mutation.status)}
+                onClick={() => {
+                  setMenu(false);
+                  void options.changed();
+                }}
+              >
+                <ProjectToolIcon name="refresh" />
+                Refresh project
+              </button>
+              <button onClick={options.onMap}>
+                <ProjectToolIcon name="map" />
+                Development map
+              </button>
+            </div>
+            <p>Unsaved drafts stay in this tab until reload.</p>
+          </footer>
         </ProjectMenu>
       )}
       {activated && (

@@ -3,35 +3,58 @@ import "./project-task-navigation.css";
 
 export const projectTaskGroups: {
   title: string;
-  tasks: { task: NativeTask; title: string }[];
+  tasks: { task: NativeTask; title: string; description: string }[];
 }[] = [
   {
     title: "Engineering work",
     tasks: [
-      { task: "next-work", title: "Next work" },
-      { task: "configurations", title: "Configurations" },
-      { task: "assessments", title: "Change assessments" },
-      { task: "verification", title: "Verification" },
+      { task: "next-work", title: "Next work", description: "Review gaps and follow-up" },
+      {
+        task: "configurations",
+        title: "Configurations",
+        description: "Capture and compare exact states",
+      },
+      {
+        task: "assessments",
+        title: "Change assessments",
+        description: "Review evidence after changes",
+      },
+      {
+        task: "verification",
+        title: "Verification",
+        description: "Criteria, results and conclusions",
+      },
     ],
   },
   {
     title: "Records and evidence",
     tasks: [
-      { task: "create", title: "New item" },
-      { task: "item", title: "Edit item and connections" },
-      { task: "references", title: "References for selected record" },
-      { task: "evaluations", title: "Evaluations" },
+      { task: "create", title: "New item", description: "Add an engineering record" },
+      {
+        task: "item",
+        title: "Edit item and connections",
+        description: "Update the selected record",
+      },
+      {
+        task: "references",
+        title: "References for selected record",
+        description: "Sources for the selected record",
+      },
+      { task: "evaluations", title: "Evaluations", description: "Inspect recorded outcomes" },
     ],
   },
   {
     title: "Project setup and exchange",
     tasks: [
-      { task: "schema", title: "Configure model" },
-      { task: "import", title: "Import CSV" },
-      { task: "export", title: "Export project" },
+      { task: "schema", title: "Configure model", description: "Types, fields and connections" },
+      { task: "import", title: "Import CSV", description: "Bring in records and links" },
+      { task: "export", title: "Export project", description: "Download recorded project JSON" },
     ],
   },
-  { title: "Help", tasks: [{ task: "docs", title: "Documentation" }] },
+  {
+    title: "Help",
+    tasks: [{ task: "docs", title: "Documentation", description: "Guides and reference material" }],
+  },
 ];
 
 export function selectedRecordTask(task: NativeTask) {

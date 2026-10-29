@@ -25,7 +25,7 @@ for (const width of [1440, 680, 390])
     const server = await startLocalServer(tracer, resolve("dist"), 0);
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
-    const screenshots = resolve("output/navigation-readiness");
+    const screenshots = resolve("output/project-tools-polish");
     mkdirSync(screenshots, { recursive: true });
     try {
       await page.setViewportSize({ width, height: 800 });
@@ -65,10 +65,11 @@ for (const width of [1440, 680, 390])
         menu.getByRole("heading", { name: "Engineering work", exact: true }),
       ).toBeVisible();
       await page.screenshot({ path: join(screenshots, `after-menu-${width}.png`) });
+      await menu.screenshot({ path: join(screenshots, `menu-detail-${width}.png`) });
       if (width === 390) {
         await page.setViewportSize({ width, height: 480 });
         await menu
-          .getByRole("button", { name: "Close project tools", exact: true })
+          .getByRole("button", { name: "Documentation", exact: true })
           .scrollIntoViewIfNeeded();
         const bounds = await menu.boundingBox();
         expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(480);
