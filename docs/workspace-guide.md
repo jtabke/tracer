@@ -52,8 +52,8 @@ Keep a stable assessment output if a later receipt will explicitly supersede thi
 1. Open **Model** to inspect the project's types, fields and allowed connections. Create the requirement, article and plan using those definitions. Use **Add relationship** to connect independently managed records.
 2. To cite material, first configure a relationship family that explicitly permits references and resource targets. See the [reference-family example](developer-reference.md#local-resources-and-contextual-references); the Engineering starter does not automatically supply every reference family. Select the subject and open **References and supporting material**. Choose an existing resource or create one, give the use a role and explanation, and identify the section or passage.
 3. For a local file, enter its path and choose **Observe file**. Choose current or deliberately pin an observed state. Location is separate from identity: after a move, keep the resource identity and observe its new location. Similar titles, paths or hashes do not automatically merge resources.
-4. When recording an evaluation, select its output and explicitly declare the actual inputs and their state/field scope. **Project tools → Evaluations → Record native-input receipt** handles native inputs; the reference task and [headless reference/evaluation API](developer-reference.md#local-resources-and-contextual-references) also support captured content and direct relationship inputs. Record a real outcome, or clearly label a simulated one.
-5. After changing a native input or explicitly observing changed external content, open **Assess evidence** on an affected item. Inspect captured/current inputs, then **Review receipt** and record a reasoned decision. Returning to the graph or opening another view does not itself record a judgment.
+4. When recording an evaluation, select its output and explicitly declare the actual inputs and their state/field scope. **Project settings → Advanced → Evaluation records → Record native-input receipt** handles native inputs; the reference task and [headless reference/evaluation API](developer-reference.md#local-resources-and-contextual-references) also support captured content and direct relationship inputs. Record a real outcome, or clearly label a simulated one.
+5. After changing a native input or explicitly observing changed external content, choose **Review changed evidence** on the affected record to open Evidence review. Inspect captured/current inputs, then **Review receipt** and record a reasoned decision. Returning to the graph or opening another view does not itself record a judgment.
 
 Saving creates guarded native changes; rejected/conflicting saves retain proposals for deliberate correction. Finish or discard drafts before reloading. File/Git observations are explicit local operations, not continuous synchronization or a general cloud-document integration. See the [developer reference](developer-reference.md#offline-evaluation-workflow) for exact API/CLI selectors, guards and limits.
 
@@ -84,15 +84,26 @@ For implementation contracts, see [primitive contracts for extension](architectu
 
 ## Workspace navigation
 
-The left rail returns to the **Workspace**, opens **Model**, and opens
-**Documentation** directly. Graph, Matrix and History remain perspectives on the
-same selected record and revision.
+The desktop sidebar opens **Workspace**, **Next work**, **Configurations**,
+**Verification** and **Change assessments** directly. **Model**, **Documentation**
+and **Project settings** sit below. Graph, Matrix and History remain perspectives
+on the same selected record and revision.
 
-**Project tools** groups the available tasks into **Engineering work**, **Records
-and evidence**, **Project setup and exchange**, and **Help**. Use **Project task**
-in an open task or model-page header to switch directly to another task. The
-selected task is shown in the selector. **Return to workspace** returns to the
-perspective, selection and revision you left.
+At 760px and below, **Open navigation** (☰) opens the same destinations in a side
+drawer. Close it with ×, Escape or a backdrop click. Keyboard focus stays in the
+drawer and returns to a usable control after dismissal, including after resize.
+
+**Project settings** is a workspace page with visible **Import & export** and
+**Advanced** sections. Advanced holds evaluation records, the retained Development
+map and manual refresh. Refresh is also prominent when workspace reads fail;
+uncertain saves still require inspection rather than replay.
+
+Use **Create record** in the workspace. The inspector places editing, connections
+and references beside the selected identifier. **Next work**, **Model** and
+**Documentation** keep their direct navigation. Search / ⌘K includes every task,
+with the selected record's identifier on record-specific commands. Use **Project task**
+in an open task or model-page header for the complete catalog. **Return to workspace**
+returns to the perspective, selection and revision you left.
 
 Switching tasks keeps their in-session drafts. It does not save them, adopt a new
 basis or acknowledge an uncertain mutation. Unsaved drafts still do not survive
@@ -100,9 +111,17 @@ reload or closing the tab. Tasks that require a selected record are disabled whe
 no record is selected. The task selector supports normal keyboard selection;
 Escape closes a task dialog and returns to the workspace.
 
+![Desktop sidebar in the shared workspace](images/aster-workbench-navigation-desktop.png)
+
+_Desktop navigation uses the existing Atlas visual language; the graph, selected record and revision remain visible._
+
+![Mobile navigation drawer](images/aster-workbench-navigation-mobile.png)
+
+_The same destinations in a mobile side drawer, over the retained workspace. These are production UI captures from a fictional project, not a different visual theme._
+
 ## Configuration changes
 
-Open **Project tools → Configurations** to work with a named engineering change.
+Open **Configurations** to work with a named engineering change.
 
 1. Use **Capture configuration** to prepare explicit native members,
    relationships and observed resource content. Inspect scope and omitted/unknown
@@ -124,7 +143,7 @@ for detailed authoring and service bounds.
 
 ## Requirement verification
 
-Open **Project tools → Verification** to manage an explicit requirement-to-verification case. **Change assessments** and **Assess evidence** judge evidence applicability; Verification records the criterion outcomes and controlled conclusion. Neither a plan link nor an accepted evidence review establishes a passing result.
+Open **Verification** to manage an explicit requirement-to-verification case. **Change assessments** track scoped judgments and follow-up actions; **Evidence review** judges individual captured results' applicability; Verification records the criterion outcomes and controlled conclusion. Neither a plan link nor an accepted evidence review establishes a passing result.
 
 A project must supply a native `requirement_verification` application-model descriptor and permitted requirement, method, case and activity types. The descriptor binds project field names, relationship roles, state/outcome labels and the policy for assessed design changes. Existing schemas are not upgraded automatically. See the [model installation and headless contracts](developer-reference.md#controlled-verification-cases-and-execution-capture).
 
@@ -145,7 +164,7 @@ For an exact captured change, start in **Configurations → Compare configuratio
 
 Within a pair assessment, **Verify after configuration** offers a case bound to the after capture. Prepare criteria and methods from that target, record actual results, select/account for activities and conclude. Supporting inputs distinguish selected resource defaults from independent contextual reference uses. Inspect target-qualified support judgments separately from live-head drift. Return to the assessment and attach the controlled conclusion under an action's **After-target verification conclusion**. Refresh scope and account for new candidates before completion. A raw passing report, review or link does not establish controlled verification.
 
-Use **Project tools → Change assessments** when a change needs an independently tracked scope, candidate judgments and unfinished actions. This is different from reviewing one captured receipt's applicability. The project must already contain a versioned change-assessment application model; [application-model setup](developer-reference.md#pinned-application-models) explains installation without silently changing existing projects.
+Use **Change assessments** when a change needs an independently tracked scope, candidate judgments and unfinished actions. This is different from reviewing one captured receipt's applicability. The project must already contain a versioned change-assessment application model; [application-model setup](developer-reference.md#pinned-application-models) explains installation without silently changing existing projects.
 
 1. Choose **New assessment**, select the application model/version, and enter a title and purpose. Select the changed record and a named native baseline. Choose direction, relationship kinds and depth deliberately. No relationship kinds means the root record and its declared captured uses. If there are no baselines, name and capture the current native state first.
 2. Choose **Prepare assessment**, then **Open assessment**. Preparation captures the current native/model/evidence context. A competing change rejects the save and retains the proposal; refresh, inspect and explicitly adopt refreshed context. Opening freezes a complete selected traversal within the 25-candidate limit, not every possible engineering consequence. An oversized scope must be narrowed explicitly.
@@ -163,9 +182,9 @@ Assessment names and candidates are discovered from the loaded project snapshot;
 
 The normal launch opens **Graph**. Search for an artifact, use **Matrix** for title-first creation and direct connections, then edit a statement and open **History** to read its saved diff. **Explore potential impact** follows exact recorded paths; connectivity alone does not establish an assessed effect.
 
-For a project without seeded evidence, open **Project tools → Evaluations → Record native-input receipt**. Choose the output, write the actual outcome and declare the exact input items and field scope. Historical native versions and configuration pins are available when needed. Record the receipt before changing an input, then return to that input and choose **Assess evidence**. Compare the captured and current values, select **Review receipt**, choose a decision and record its rationale. The receipt, freshness comparison and review remain separate facts.
+For a project without seeded evidence, open **Project settings → Advanced → Evaluation records → Record native-input receipt**. Choose the output, write the actual outcome and declare the exact input items and field scope. Historical native versions and configuration pins are available when needed. Record the receipt before changing an input, then return to that input and choose **Review changed evidence**. Compare the captured and current values, select **Review receipt**, choose a decision and record its rationale. The receipt, freshness comparison and review remain separate facts.
 
-**Project tools** also opens **Configure model**, **New item**, complete **Edit item and connections**, **Configurations**, and **Documentation**. The **Project task** selector switches directly between these tasks; **Return to workspace** retains the in-session draft and original perspective. These tools use the selected database and existing version guards.
+Use **Create record** in the workspace, and **Edit record and connections** or **References and supporting material** in the inspector beside the selected record's identifier. **Model**, **Documentation** and **Next work** have direct navigation; Search / ⌘K exposes all tasks. The **Project task** selector switches directly between these tasks; **Return to workspace** retains the in-session draft and original perspective. These tools use the selected database and existing version guards.
 
 Reload recovers selection, graph positions, Matrix settings, revision and investigation scope in the same browser and origin. Use **Save Matrix configuration** for a named database-backed row-type/path/search recipe; loading one applies it across the project. Unsaved edits and review rationales are not recovered after reload or close: the browser warns, and reopening explains that policy. An unconfirmed save requires inspection and acknowledgment before new writes; it is never automatically resubmitted.
 
@@ -205,7 +224,7 @@ _These additional captures use a fresh fictional Aster project at r399. The stat
 
 ## Use the retained Development map
 
-The following map walkthrough uses **Project tools → Development map**. It retains the overview, Items table and guided connection controls; **Graph / Matrix / History** returns to the main workspace. Finish or deliberately discard unsaved drafts before changing workspaces.
+The following map walkthrough uses **Project settings → Advanced → Development map**. It retains the overview, Items table and guided connection controls; **Graph / Matrix / History** returns to the main workspace. Finish or deliberately discard unsaved drafts before changing workspaces.
 
 ## Follow a shared design
 
@@ -229,15 +248,15 @@ Use **Configure model** to define item types, typed fields and allowed relations
 
 ## Import existing CSV data
 
-Use **Project tools → Import CSV** after saving a model. Map record fields and key-based links, inspect errors and ignored columns, then commit the entire file together. See the [CSV import guide](csv-import.md) for record/link modes, formats, limits and concurrency behavior.
+Use **Project settings → Import & export → Import CSV** after saving a model. Map record fields and key-based links, inspect errors and ignored columns, then commit the entire file together. See the [CSV import guide](csv-import.md) for record/link modes, formats, limits and concurrency behavior.
 
 ## Export project records and evidence references
 
-Use **Project tools → Export project** to prepare and download one consistent snapshot with exact current/historical versions, original provenance, recorded evidence and captures. The prepared file stays fixed until you prepare again. External content must be preserved separately. See the [export guide](project-export.md) for the format, CLI/API access and bounds.
+Use **Project settings → Import & export → Export project** to prepare and download one consistent snapshot with exact current/historical versions, original provenance, recorded evidence and captures. The prepared file stays fixed until you prepare again. External content must be preserved separately. See the [export guide](project-export.md) for the format, CLI/API access and bounds.
 
 ## Choose the next piece of work
 
-Open **Next work** from the workspace header or Project tools. Statement, allocation, verification-plan, evidence-drift and review queues have separate counts and direct actions. Return from editing/review refreshes the list while retaining in-session drafts. The [next-work guide](next-work.md) explains queue definitions, model choices and why a review decision does not clear input changes.
+Open **Next work** from the sidebar or Search / ⌘K. Statement, allocation, verification-plan, evidence-drift and review queues have separate counts and direct actions. Return from editing/review refreshes the list while retaining in-session drafts. The [next-work guide](next-work.md) explains queue definitions, model choices and why a review decision does not clear input changes.
 
 ## Review evidence and change
 

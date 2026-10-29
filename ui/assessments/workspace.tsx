@@ -64,7 +64,7 @@ export function AssessmentWorkspace({
     <section className="scoped-assessments" aria-label="Scoped change assessments" hidden={!active}>
       <ApplicationTaskHeader
         title="Change assessments"
-        description="Keep the selected scope, candidate judgments and unfinished actions together."
+        description="Controlled change assessments: define scope, record candidate judgments and track follow-up actions. Evidence review compares individual captured results separately."
         createLabel="New assessment"
         refreshLabel="Refresh assessments"
         busy={editing.busy}

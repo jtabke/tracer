@@ -39,19 +39,19 @@ Each launch creates one fresh example. Saved edits stay in its database; use the
 npm start -- --db my-project.sqlite
 ```
 
-Choose **Engineering** in **Project tools → Configure model** for acceptance criteria, verification methods, optional subsystem/build references, coverage policies and three saved Matrix views. The setup and your records persist in the database. Reopen the same file to continue.
+Choose **Engineering** in **Model** for acceptance criteria, verification methods, optional subsystem/build references, coverage policies and three saved Matrix views. The setup and your records persist in the database. Reopen the same file to continue.
 
 Follow the [Engineering starter walkthrough](docs/getting-started.md#start-your-own-project) to create a small CO₂-monitor trace and reopen it in a clean browser.
 
-For existing spreadsheet records, save the model, then use **Project tools → Import CSV** to map columns, preview errors and commit records/links together. See the [CSV import guide](docs/csv-import.md).
+For existing spreadsheet records, save the model, then use **Project settings → Import & export → Import CSV** to map columns, preview errors and commit records/links together. See the [CSV import guide](docs/csv-import.md).
 
-Use **Project tools → Export project** for deterministic JSON with records, links, schemas, exact history and evidence references. The same format is available through the CLI and API; see the [export guide](docs/project-export.md).
+Use **Project settings → Import & export → Export project** for deterministic JSON with records, links, schemas, exact history and evidence references. The same format is available through the CLI and API; see the [export guide](docs/project-export.md).
 
-Both paths use the same **Graph / Matrix / History** workspace. **Project tools** opens complete editing, model configuration, evaluations, configurations and documentation. The [documentation index](docs/README.md) provides reference material after the walkthrough. The [workspace reference](docs/workspace-guide.md) illustrates the current views, search, editing and connection controls.
+Both paths use the same **Graph / Matrix / History** workspace. The desktop sidebar and mobile navigation drawer open engineering work, Model and Documentation directly. **Project settings** owns import/export and Advanced; selected-record editing and references live in the inspector. The [documentation index](docs/README.md) provides reference material after the walkthrough. The [workspace reference](docs/workspace-guide.md) illustrates the current views, search, editing and connection controls.
 
-**Project tools → Verification** records exact criterion/method scope, actual activity results, explicit result selection and a controlled scoped conclusion. It preserves failures and explains reassessment after changes. See the [verification guide](docs/workspace-guide.md#requirement-verification) for model setup, authoring and recovery.
+**Verification** records exact criterion/method scope, actual activity results, explicit result selection and a controlled scoped conclusion. It preserves failures and explains reassessment after changes. See the [verification guide](docs/workspace-guide.md#requirement-verification) for model setup, authoring and recovery.
 
-**Project tools → Configurations** compares exact before/after engineering states and carries the selected pair into assessment and verification. The [configuration-change guide](docs/workspace-guide.md#configuration-changes) explains captured scope, uncertainty and follow-through. The **Project task** selector switches directly between tasks while preserving in-session drafts; the left rail opens documentation directly.
+**Configurations** compares exact before/after engineering states and carries the selected pair into assessment and verification. The [configuration-change guide](docs/workspace-guide.md#configuration-changes) explains captured scope, uncertainty and follow-through. The **Project task** selector switches directly between tasks while preserving in-session drafts; the left rail opens documentation directly.
 
 **Next work** keeps statement gaps, unallocated requirements, missing verification plans, changed evidence inputs and unresolved reviews in separate actionable queues. See the [next-work guide](docs/next-work.md).
 
@@ -68,7 +68,7 @@ Links do not establish satisfaction; changed inputs do not automatically invalid
 
 ## Documentation
 
-Start with the [two-path walkthrough](docs/getting-started.md). The [documentation index](docs/README.md) links to workspace reference, customization, additional examples, industry context and developer guides. In the application, open **Project tools → Documentation**.
+Start with the [two-path walkthrough](docs/getting-started.md). The [documentation index](docs/README.md) links to workspace reference, customization, additional examples, industry context and developer guides. In the application, open **Documentation**.
 
 The [product vision](docs/user-needs.md#product-vision) describes the broader direction and stable needs. [UX exploration](docs/ux-plan.md) and the [checkpoint](docs/checkpoint.md) distinguish implemented behavior, proposals and historical checks.
 

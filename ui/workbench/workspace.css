@@ -1,6 +1,6 @@
 /* Cascade order is intentional; keep component fixes in their owning file.
  * Base → layout → navigation → inspection → matrix → controls → trace grid
- * → narrow-screen overrides → search → editing. See docs/architecture.md. */
+ * → narrow-screen overrides → project navigation → search → editing. See docs/architecture.md. */
 @import "./styles/base.css";
 @import "./styles/layout.css";
 @import "./styles/navigation.css";
@@ -9,5 +9,6 @@
 @import "./styles/controls.css";
 @import "./styles/trace-grid.css";
 @import "./styles/responsive.css";
+@import "./styles/project-navigation.css";
 @import "./styles/search.css";
 @import "./styles/editing.css";

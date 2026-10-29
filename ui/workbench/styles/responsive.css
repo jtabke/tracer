@@ -165,26 +165,6 @@
   gap: 8px;
   align-items: center;
 }
-@media (max-width: 760px) {
-  body[data-direction="atlas"] .topbar {
-    grid-template-columns: minmax(0, 1fr) auto auto auto;
-  }
-  .topbar [data-action="next-work"] {
-    grid-column: 2;
-    grid-row: 1;
-    font-size: 11px;
-    padding: 6px;
-  }
-  .topbar [data-action="project-tools"] {
-    grid-column: 3;
-    grid-row: 1;
-    font-size: 11px;
-    padding: 6px;
-  }
-  .topbar .search-button {
-    grid-column: 4;
-  }
-}
 .empty-workspace {
   padding: 28px;
   max-width: 640px;

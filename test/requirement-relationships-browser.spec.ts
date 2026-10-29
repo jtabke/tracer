@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { mkdtempSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -118,7 +119,7 @@ for (const width of [1440, 390])
       await expect(form).toBeHidden();
       await page.reload();
       expect(await t.getRelationship(link.id)).toEqual(link);
-      await page.getByRole("button", { name: "Model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       await model.getByRole("button", { name: "Text", exact: true }).click();
       await model.getByLabel("Advanced JSON", { exact: true }).check();
       const input = model.getByLabel("Project schema JSON", { exact: true });

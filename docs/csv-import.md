@@ -1,6 +1,6 @@
 # Import CSV
 
-Open your project, save its model, then choose **Project tools → Import CSV**. Upload a comma-separated UTF-8 file or open **Paste or edit CSV** and choose **Read columns**. The first nonempty row supplies unique column headers.
+Open your project, save its model, then choose **Project settings → Import & export → Import CSV**. Upload a comma-separated UTF-8 file or open **Paste or edit CSV** and choose **Read columns**. The first nonempty row supplies unique column headers.
 
 ## Map records and links
 

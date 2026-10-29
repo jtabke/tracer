@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { resolve } from "node:path";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
@@ -23,8 +24,7 @@ for (const external of [false, true])
       server = await startLocalServer(f.tracer, resolve("dist"), 0);
       await page.setViewportSize({ width: external ? 390 : 1440, height: 1000 });
       await page.goto(server.origin);
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Verification", exact: true }).click();
+      await openProjectDestination(page, "Verification");
       const panel = page.getByRole("region", { name: "Requirement verification", exact: true });
       await panel.getByLabel("Verification case", { exact: true }).selectOption(opening.caseId);
       await panel.getByRole("button", { name: "Record activity", exact: true }).click();

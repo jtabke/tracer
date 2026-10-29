@@ -42,7 +42,7 @@ function Workbench({ controller, options }: { controller: MutationController; op
       stage.active && (
         <div className="evidence-summary" aria-label="Evaluation freshness summary">
           <button onClick={options.onOpen}>
-            {stage.dirty ? "Resume assessment" : "Assess evidence"}
+            {stage.dirty ? "Resume evidence review" : "Review changed evidence"}
             {stage.catalogue.ready && stage.context ? ` · ${stage.context.receipts.total}` : ""}
           </button>
           {stage.ready ? (
@@ -106,13 +106,13 @@ function Workbench({ controller, options }: { controller: MutationController; op
   return (
     <>
       {renderSummary()}
-      <section className="assessment-content" hidden={!options.open} aria-label="Change assessment">
+      <section className="assessment-content" hidden={!options.open} aria-label="Evidence review">
         <header className="assessment-heading">
           <div>
-            <h2>Assess evidence · {options.subject.key}</h2>
+            <h2>Evidence review · {options.subject.key}</h2>
             <p>
               {options.subject.change === undefined
-                ? "Current artifact"
+                ? "Current record"
                 : `Change r${options.subject.change}`}{" "}
               · Compared with latest recorded inputs · Native workspace r
               {stage.context?.context.projectRevision ?? options.head}

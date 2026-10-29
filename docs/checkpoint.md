@@ -1,5 +1,92 @@
 # Tracer implementation status
 
+## Sidebar navigation and screenshot refresh
+
+2026-10-29: the owner selected the desktop/mobile sidebar concept after explicitly
+rejecting its initial visual restyling, and authorized screenshot updates and a
+remote push. Implemented the navigation in the real shared workbench, preserving
+Atlas colors, typography, line icons, graph cards and inspector styling. The
+Project tools dropdown and its stylesheet are removed. Persistent destinations
+open Workspace, Next work, Configurations, Verification and Change assessments;
+Model, Documentation and Project settings sit below. At 760px and below, a modal
+side drawer exposes the same catalog. Project settings is a workspace page with
+visible exchange and Advanced actions, not nested dropdowns. Selected-record
+Edit, Connect and References controls now sit directly beside the visible identity.
+
+Drawer Tab/Shift-Tab containment, close/Escape/backdrop dismissal, short-height
+scrolling and focus restoration across resize are checked. Layout budgets account
+for the wider desktop rail and the reclaimed mobile width. Settings returns retain
+perspective, selection, revision and tab-local drafts; search can return directly
+to a selected record. Existing task dialogs, application semantics, version guards
+and uncertain-save no-replay behavior remain. Full workspace Verification/Change
+assessment layouts and representative-human validation remain separate follow-up.
+The [UX plan](ux-plan.md#shared-workspace) owns the current direction.
+
+Verification: 722 unit tests passed; all 225 browser scenarios passed in one run.
+After the final mechanical navigation/controller extraction, 17 focused workflow,
+source-authoring, queue, sidebar and retained-context cases passed again, together
+with the complete workbench check and unchanged quality gates. Typecheck, lint,
+production/harness builds and formatting passed. The existing wheel-anchor check
+now uses the browser's actual integer pointer coordinates instead of an unreported
+fractional anchor; the narrow full-editor assertion checks workspace width rather
+than the removed 50px rail. Neither assertion's invariant or tolerance was weakened.
+
+Refreshed all seven selected workbench illustrations and added desktop/mobile
+navigation captures under `docs/images/`, with reproduction instructions and
+captions in its README. Full captures, gallery, logs and candidate source hashes
+remain local under `output/sidebar-navigation/`. Only selected documentation
+illustrations are committed; databases and generated review galleries stay ignored.
+WORK-029 evidence and the review export are updated at native198/schema7 without
+changing requirement or representative-human-validation statuses. The register
+backup is `projects/tracer/backups/register-2026-10-29-sidebar-navigation.sqlite`;
+its restored export and durable changeset outcome match the live register.
+The authorized publication target is `origin/main`; the local base was
+`c7e9c2ff9ef24cb554096049cbca4e6f010dd380`.
+
+## Navigation hierarchy and terminology
+
+2026-10-29: implemented the owner-selected follow-up to WORK-029. Project tools
+now exposes Configurations, Verification and Change assessments, with collapsed
+Import & export and Advanced disclosures. Evaluation records, the retained
+Development map and manual refresh live in Advanced. Model, Documentation and
+Next work retain their direct homes rather than appearing again in the menu.
+Create record is available in the workspace; inspector editing/connections and
+references show the selected identifier. One task catalog supplies menu placement,
+the retained full task selector and Search / ⌘K, whose record-specific commands
+include the identifier and require a selection. Failed workspace reads surface
+Refresh directly; uncertain-save inspection and no-replay guards remain unchanged.
+The contextual screen is Evidence review; controlled Change assessments explicitly
+identify their scoped judgments and follow-up actions. New navigation/creation
+surfaces use record; retained legacy vocabulary is not globally rewritten.
+
+The superseding direction is in [the UX plan](ux-plan.md#shared-workspace), with
+updated maintained usage guides. Task owners, application contracts and core
+semantics are unchanged. Long Verification/Change assessment tasks still use their
+existing retained dialogs. Full workspace pages, further subject-specific handoffs
+and representative-human wrong-turn/discoverability evaluation remain separate.
+
+Verification: 722 unit tests passed. The broad 222-scenario browser execution
+reached scenario 210 before the command deadline: 209 passed, and one recovery
+test found both the newly prominent Refresh and the Advanced copy. That test now
+uses the direct recovery control and passes; the remaining twelve scenarios passed
+separately. Final-source focused checks passed 28 inspector/onboarding/navigation/
+workflow scenarios before the last empty-state rendering extraction, then seven
+main-workflow/navigation/create-with-source cases afterward. The create-with-source
+journey now creates the record through the workspace at 1440px and 390px before
+authoring, observing, pinning and reviewing its source. Controlled assessment and
+verification workflows passed in the broad run; three-width checks cover complete
+command discovery, selected identity, drafts, historical locks and return context.
+Typecheck, lint, formatting, production/harness builds, workbench checks and unchanged
+dead-code/duplication/complexity gates passed. Menu screenshots were inspected.
+These are software checks, not participant validation. Logs, screenshots and source
+hashes are under `output/navigation-hierarchy/`; candidate base is
+`c7e9c2ff9ef24cb554096049cbca4e6f010dd380` plus the uncommitted slice.
+
+WORK-029 evidence was appended with a version-guarded durable changeset at
+native197/schema7, preserving prior evidence and all requirement statuses. The
+review export is updated; the online backup is
+`projects/tracer/backups/register-2026-10-29-navigation-hierarchy.sqlite`.
+
 ## Project tools menu polish — bounded presentation follow-up
 
 2026-10-29 follow-up: corrected the owner-reported References icon clipping.

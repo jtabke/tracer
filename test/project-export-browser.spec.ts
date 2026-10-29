@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { readFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -41,7 +42,7 @@ for (const width of [1440, 680]) {
     try {
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(server.origin);
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
+      await openProjectDestination(page, "Project settings");
       await page.getByRole("button", { name: "Export project", exact: true }).click();
       const dialog = page.getByRole("dialog", { name: "Project task", exact: true });
       await expect(dialog.getByRole("button", { name: "Download JSON", exact: true })).toHaveCount(
@@ -74,7 +75,7 @@ for (const width of [1440, 680]) {
       );
       expect(readFileSync((await download.path())!, "utf8")).toBe(serializeProjectExport(before));
       await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
+      await openProjectDestination(page, "Project settings");
       await page.getByRole("button", { name: "Export project", exact: true }).click();
       await expect(dialog.getByRole("status")).toContainText(
         `Native revision r${before.projectRevision}`,
@@ -132,7 +133,7 @@ test("empty-project export handles a failed response decoder without claiming a 
   const server = await startLocalServer(tracer, resolve("dist"), 0);
   try {
     await page.goto(server.origin);
-    await page.getByRole("button", { name: "Project tools", exact: true }).click();
+    await openProjectDestination(page, "Project settings");
     await page.getByRole("button", { name: "Export project", exact: true }).click();
     const dialog = page.getByRole("dialog", { name: "Project task", exact: true });
     await page.route("**/api/project-export", (route) =>

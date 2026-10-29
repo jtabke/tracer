@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { resolve } from "node:path";
 import { Tracer } from "../src/index.ts";
@@ -53,7 +54,7 @@ test("next-work explains directly captured relationship changes and removal at 6
   try {
     await page.setViewportSize({ width: 680, height: 1000 });
     await page.goto(server.origin);
-    await page.getByRole("button", { name: "Next work", exact: true }).click();
+    await openProjectDestination(page, "Next work");
     const panel = page.getByRole("region", { name: "Next work", exact: true });
     await panel.getByRole("button", { name: "Changed evidence inputs 1", exact: true }).click();
     const queue = panel.getByRole("region", { name: "Changed evidence inputs", exact: true });

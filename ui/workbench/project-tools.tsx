@@ -1,9 +1,11 @@
-import { ProjectToolIcon } from "./project-tool-icon.tsx";
-import "./project-tool-menu.css";
-import { projectTaskGroups, selectedRecordTask } from "../project-task-navigation.tsx";
+import {
+  projectTaskGroups,
+  projectUtilities,
+  selectedRecordTask,
+} from "../project-task-navigation.tsx";
 import type { InitialView } from "../../src/core/presentation.ts";
 import { createRoot } from "react-dom/client";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { MutationControllerContext } from "../use-mutation.ts";
 import { NativeTasks, type NativeTask } from "../native-task.tsx";
 import type * as Native from "./native-client.ts";
@@ -16,21 +18,68 @@ type Options = {
   selected(): string;
   settled(): void;
   onMap(): void;
+  onSettings(): void;
 };
 export function createProjectTools(native: typeof Native, options: Options) {
   const host = document.createElement("div");
   document.body.append(host);
   const root = createRoot(host);
   const dirty = new Set<string>();
-  let open: ((task?: NativeTask) => void) | undefined;
+  let open: ((task: NativeTask) => void) | undefined;
+  let opener: HTMLElement | null = null;
+  let returnAction: string | null = null;
+  const show = (task: NativeTask) => {
+    opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    returnAction = opener?.dataset.action ?? null;
+    open?.(task);
+  };
+  const restoreFocus = () => {
+    const replacement = returnAction
+      ? document.querySelector<HTMLElement>(`[data-action="${CSS.escape(returnAction)}"]`)
+      : null;
+    const target = opener?.isConnected ? opener : replacement;
+    if (target?.getClientRects().length) target.focus();
+    else
+      document.querySelector<HTMLElement>('[data-action="open-navigation"]')?.getClientRects()
+        .length
+        ? document.querySelector<HTMLElement>('[data-action="open-navigation"]')?.focus()
+        : document.querySelector<HTMLElement>('[data-action="search"]')?.focus();
+  };
+  const utilities = projectUtilities.map((utility) => ({
+    ...utility,
+    available: () =>
+      utility.action !== "refresh-project" ||
+      !["saving", "unknown"].includes(native.mutations.snapshot().status),
+    run: () => (utility.action === "development-map" ? options.onMap() : void options.changed()),
+  }));
   return {
-    open: (task?: NativeTask) => open?.(task),
+    commands: (): [string, () => void][] => [
+      ["Project settings", options.onSettings],
+      ...projectTaskGroups
+        .flatMap((group) => group.tasks)
+        .filter(
+          ({ task }) =>
+            !selectedRecordTask(task) ||
+            native.projectSnapshot.entities.some(
+              (entity) => (entity.key ?? entity.id) === options.selected(),
+            ),
+        )
+        .map(({ task, title }): [string, () => void] => [
+          selectedRecordTask(task) ? `${title} · ${options.selected()}` : title,
+          () => show(task),
+        ]),
+      ...utilities
+        .filter((utility) => utility.available())
+        .map((utility): [string, () => void] => [utility.title, utility.run]),
+    ],
+    open: show,
     hasDrafts: () => dirty.size > 0,
     update: (epoch: number) =>
       root.render(
         <ProjectTools
           native={native}
           options={options}
+          restoreFocus={restoreFocus}
           epoch={epoch}
           onDirty={(task, value) => {
             if (value) dirty.add(task);
@@ -47,13 +96,15 @@ function ProjectTools({
   native,
   options,
   epoch,
+  restoreFocus,
   register,
   onDirty,
 }: {
   native: typeof Native;
   options: Options;
   epoch: number;
-  register(show: (task?: NativeTask) => void): void;
+  restoreFocus(): void;
+  register(show: (task: NativeTask) => void): void;
   onDirty(task: string, value: boolean): void;
 }) {
   const [activated, setActivated] = useState(window.location.hash === "#model");
@@ -90,14 +141,11 @@ function ProjectTools({
       document.body.style.overflow = overflow;
     };
   }, [task]);
-  const [menu, setMenu] = useState(false);
   const [error, setError] = useState("");
   const mutation = useSyncExternalStore(native.mutations.subscribe, native.mutations.snapshot);
   register((next) => {
-    if (next) {
-      setActivated(true);
-      selectTask(next);
-    } else setMenu(true);
+    setActivated(true);
+    selectTask(next);
   });
   const busy = !options.current() || ["saving", "unknown"].includes(mutation.status);
   const editing: Editing = {
@@ -159,71 +207,6 @@ function ProjectTools({
           onDirty(task, true);
       }}
     >
-      {menu && (
-        <ProjectMenu onClose={() => setMenu(false)}>
-          <header className="project-tool-menu-header">
-            <div>
-              <h2>Project tools</h2>
-              <p>Choose where to work.</p>
-            </div>
-            <button aria-label="Close project tools" onClick={() => setMenu(false)}>
-              <ProjectToolIcon name="close" />
-            </button>
-          </header>
-          <div className="project-tool-groups">
-            {projectTaskGroups.map((group) => (
-              <section className="project-tool-group" key={group.title}>
-                <h3>{group.title}</h3>
-                {group.tasks.map(({ task: name, title, description }) => (
-                  <button
-                    key={name}
-                    aria-label={title}
-                    aria-describedby={`project-tool-${name}-description`}
-                    disabled={
-                      selectedRecordTask(name) &&
-                      !native.projectSnapshot.entities.some(
-                        (entity) => (entity.key ?? entity.id) === options.selected(),
-                      )
-                    }
-                    onClick={() => {
-                      setMenu(false);
-                      setActivated(true);
-                      selectTask(name);
-                    }}
-                  >
-                    <span className="project-tool-icon">
-                      <ProjectToolIcon name={name} />
-                    </span>
-                    <span className="project-tool-copy">
-                      <span>{title}</span>
-                      <small id={`project-tool-${name}-description`}>{description}</small>
-                    </span>
-                  </button>
-                ))}
-              </section>
-            ))}
-          </div>
-          <footer className="project-tool-menu-footer">
-            <div className="project-tool-utilities">
-              <button
-                disabled={["saving", "unknown"].includes(mutation.status)}
-                onClick={() => {
-                  setMenu(false);
-                  void options.changed();
-                }}
-              >
-                <ProjectToolIcon name="refresh" />
-                Refresh project
-              </button>
-              <button onClick={options.onMap}>
-                <ProjectToolIcon name="map" />
-                Development map
-              </button>
-            </div>
-            <p>Unsaved drafts stay in this tab until reload.</p>
-          </footer>
-        </ProjectMenu>
-      )}
       {activated && (
         <MutationControllerContext value={native.mutations}>
           <NativeTasks
@@ -237,9 +220,7 @@ function ProjectTools({
             onClose={() => {
               selectTask(null);
               options.settled();
-              requestAnimationFrame(() =>
-                document.querySelector<HTMLButtonElement>('[data-action="project-tools"]')?.focus(),
-              );
+              requestAnimationFrame(restoreFocus);
             }}
             changed={() => {
               void options.changed();
@@ -251,22 +232,5 @@ function ProjectTools({
         </MutationControllerContext>
       )}
     </div>
-  );
-}
-
-function ProjectMenu({ children, onClose }: { children: React.ReactNode; onClose(): void }) {
-  const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    dialog.current?.showModal();
-  }, []);
-  return (
-    <dialog
-      ref={dialog}
-      className="project-tool-menu"
-      aria-label="Project tools"
-      onCancel={onClose}
-    >
-      {children}
-    </dialog>
   );
 }

@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { resolve } from "node:path";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
@@ -8,7 +9,7 @@ import type { Page, Locator } from "@playwright/test";
 
 const origin = { actor: "next-work browser engineer" };
 async function openNextWork(page: Page) {
-  await page.getByRole("button", { name: "Next work", exact: true }).click();
+  await openProjectDestination(page, "Next work");
   const panel = page.getByRole("region", { name: "Next work", exact: true });
   await expect(panel.getByRole("navigation", { name: "Work queues" })).toBeVisible();
   return panel;

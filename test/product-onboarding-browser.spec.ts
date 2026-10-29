@@ -44,14 +44,14 @@ test("worked product guide creates a native model, items and links from an empty
         { type: "component", key: "COMP-001", title: "LED controller" },
       ];
       for (const item of items) {
-        await task.getByLabel("New item type", { exact: true }).selectOption(item.type);
-        await task.getByLabel("New item key", { exact: true }).fill(item.key);
-        await task.getByLabel("New item title", { exact: true }).fill(item.title);
+        await task.getByLabel("New record type", { exact: true }).selectOption(item.type);
+        await task.getByLabel("New record key", { exact: true }).fill(item.key);
+        await task.getByLabel("New record title", { exact: true }).fill(item.title);
         if (item.statement)
-          await task.getByLabel("New item statement", { exact: true }).fill(item.statement);
-        await task.getByRole("button", { name: "Create item", exact: true }).click();
-        await expect(task.getByRole("status")).toContainText("Item saved.");
-        await expect(task.getByLabel("New item key", { exact: true })).toHaveValue("");
+          await task.getByLabel("New record statement", { exact: true }).fill(item.statement);
+        await task.getByRole("button", { name: "Create record", exact: true }).click();
+        await expect(task.getByRole("status")).toContainText("Record saved.");
+        await expect(task.getByLabel("New record key", { exact: true })).toHaveValue("");
       }
       for (const link of [
         { source: "PROD-001", type: "has_requirement", target: "REQ-001" },

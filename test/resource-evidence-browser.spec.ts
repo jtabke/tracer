@@ -126,7 +126,7 @@ for (const width of [1440, 390])
       await page.keyboard.press("/");
       await page.getByRole("combobox", { name: "Search artifacts and commands" }).fill("NEED-1");
       await page.keyboard.press("Enter");
-      await page.getByRole("button", { name: "Assess evidence", exact: true }).click();
+      await page.getByRole("button", { name: "Review changed evidence", exact: true }).click();
       const selected = page.getByRole("region", { name: "Selected input comparison", exact: true });
       await expect(
         selected.getByRole("heading", { name: /Customer power specification/ }),

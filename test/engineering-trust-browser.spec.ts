@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -20,8 +21,7 @@ for (const width of [1440, 680]) {
     try {
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(server.origin);
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Configure model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       const editor = page.getByLabel("Configure project model", { exact: true });
       await editor.getByLabel("Starter structure").selectOption("engineering");
       // Explicit custom model keeps the unsupported-field regression even as the starter evolves.
@@ -47,7 +47,7 @@ for (const width of [1440, 680]) {
         1,
         actor,
       );
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
+      await openProjectDestination(page, "Project settings");
       await page.getByRole("button", { name: "Refresh project", exact: true }).click();
       await expect(page.locator(".context")).toContainText("CO2-REQ");
       await page.keyboard.press("/");
@@ -67,8 +67,7 @@ for (const width of [1440, 680]) {
       await expect(page.locator(".workspace-notice")).toContainText("No changes to save");
       expect((await tracer.getProjectSnapshot()).projectRevision).toBe(before);
 
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Configure model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       await editor.getByRole("button", { name: "Text", exact: true }).click();
       await editor.getByLabel("Advanced JSON", { exact: true }).check();
       const input = editor.getByLabel("Project schema JSON", { exact: true });

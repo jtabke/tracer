@@ -256,7 +256,7 @@ test("native creation retains a stale-schema proposal, adopts explicitly, and sa
     await page.goto(server.origin + "/?workspace=map");
     await page.getByRole("button", { name: "New item", exact: true }).click();
     const dialog = page.getByRole("dialog");
-    await dialog.getByLabel("New item title", { exact: true }).fill("New native item");
+    await dialog.getByLabel("New record title", { exact: true }).fill("New native item");
     await core.setSchema(
       {
         ...schema,
@@ -267,9 +267,9 @@ test("native creation retains a stale-schema proposal, adopts explicitly, and sa
       1,
       { actor: "test" },
     );
-    await dialog.getByRole("button", { name: "Create item", exact: true }).click();
+    await dialog.getByRole("button", { name: "Create record", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText(/schema|model/i);
-    await expect(dialog.getByLabel("New item title", { exact: true })).toHaveValue(
+    await expect(dialog.getByLabel("New record title", { exact: true })).toHaveValue(
       "New native item",
     );
     expect((await core.getProjectSnapshot()).entities).toHaveLength(0);
@@ -277,10 +277,10 @@ test("native creation retains a stale-schema proposal, adopts explicitly, and sa
     await page.getByRole("button", { name: "Refresh project", exact: true }).click();
     await page.getByRole("button", { name: "New item", exact: true }).click();
     await dialog.getByRole("button", { name: "Use current model", exact: true }).click();
-    await expect(dialog.getByLabel("New item title", { exact: true })).toHaveValue(
+    await expect(dialog.getByLabel("New record title", { exact: true })).toHaveValue(
       "New native item",
     );
-    await dialog.getByRole("button", { name: "Create item", exact: true }).click();
+    await dialog.getByRole("button", { name: "Create record", exact: true }).click();
     await expect.poll(async () => (await core.getProjectSnapshot()).entities.length).toBe(1);
     expect((await core.getProjectSnapshot()).entities[0].fields.title).toBe("New native item");
   } finally {

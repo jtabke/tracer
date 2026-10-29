@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { resolve } from "node:path";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
@@ -57,8 +58,7 @@ for (const [domain, width] of [
       server = await startLocalServer(f.tracer, resolve("dist"), 0);
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(server.origin);
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Configurations", exact: true }).click();
+      await openProjectDestination(page, "Configurations");
       const configs = page.getByRole("region", { name: "Project configurations", exact: true });
       await configs.getByRole("button", { name: "Compare configurations", exact: true }).click();
       const comparison = configs.getByRole("region", {

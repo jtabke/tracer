@@ -580,8 +580,8 @@ test("a confirmed save with a failed reload retains its proposal and blocks writ
   expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision + 1);
   expect((await app.tracer.getEntity(app.entities["PRS-01"].id)).fields.statement).toBe(proposal);
   await page.unroute("**/api/project-snapshot");
-  await page.getByRole("button", { name: "Project tools", exact: true }).click();
-  await page.getByRole("button", { name: "Refresh project", exact: true }).click();
+  await expect(page.locator('[data-action="refresh-project"]')).toBeVisible();
+  await page.locator('[data-action="refresh-project"]').click();
   await expect(page.locator('[data-apply-field="statement"]')).toBeEnabled();
   await expect(page.locator("#inline-value")).toHaveValue(proposal);
   await page.locator("#inline-value").press("Escape");

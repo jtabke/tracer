@@ -82,7 +82,7 @@ for (const [label, port, width, height] of [
     await page.goto(origin + "/?native=1&presentation=1&view=matrix");
     await page.locator('[role="grid"]').waitFor();
     await choose();
-    await page.getByRole("button", { name: /^Assess evidence/ }).click();
+    await page.getByRole("button", { name: /^Review changed evidence/ }).click();
     await page
       .locator(`[data-receipt="${receipt.id}"][aria-pressed="true"]`)
       .waitFor({ state: "attached" });
@@ -128,7 +128,7 @@ for (const [label, port, width, height] of [
       "investigate-dependencies",
       "The recorded dependency graph retains the r400 investigation. The evaluation summary derives drift from declared receipt inputs, independently of graph proximity.",
     );
-    await page.getByRole("button", { name: /^Assess evidence/ }).click();
+    await page.getByRole("button", { name: /^Review changed evidence/ }).click();
     await stage.getByText("Freshness: changed · Review: unreviewed", { exact: true }).waitFor();
     const selectedInput = stage.getByLabel("Selected input comparison", { exact: true });
     await selectedInput.getByText("Captured v2 → Current v3", { exact: true }).waitFor();
@@ -151,7 +151,7 @@ for (const [label, port, width, height] of [
     );
     await page.locator('[data-view="matrix"]').click();
     assert.equal(await page.locator("#revision-range").inputValue(), "400");
-    await page.getByRole("button", { name: /^Resume assessment/ }).click();
+    await page.getByRole("button", { name: /^Resume evidence review/ }).click();
     assert.equal(
       await stage.getByLabel("Review rationale", { exact: true }).inputValue(),
       rationale,
@@ -192,7 +192,7 @@ for (const [label, port, width, height] of [
     await page.reload();
     await page.locator('[role="grid"]').waitFor();
     await choose();
-    await page.getByRole("button", { name: /^Assess evidence/ }).click();
+    await page.getByRole("button", { name: /^Review changed evidence/ }).click();
     await page.getByLabel("Recorded decision", { exact: true }).waitFor();
     assert.equal(
       await page.getByLabel("Recorded decision", { exact: true }).getAttribute("data-review-id"),

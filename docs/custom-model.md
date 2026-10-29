@@ -2,7 +2,7 @@
 
 Use this advanced guide when you want to define your own vocabulary from scratch. For a first project, follow [Start your own project](getting-started.md#start-your-own-project) with the Engineering starter.
 
-The connection walkthrough uses **Project tools → Development map** and its complete item editor. **Return to map**, then **Graph / Matrix / History**, returns to the main workspace.
+The connection walkthrough uses **Project settings → Advanced → Development map** and its complete item editor. **Return to map**, then **Graph / Matrix / History**, returns to the main workspace.
 
 This example builds a fictional desk light with one requirement and one component. It uses the shared UI and your own SQLite file, with no seeded records.
 
@@ -102,7 +102,7 @@ Model updates validate existing saved data. Adding a required field or removing 
 
 ## 3. Create the three items
 
-Choose **New item**. Select the type before entering its fields, enter the optional key and the values below, then choose **Create item**. Wait for the saved confirmation. The form clears after each successful creation, so repeat it for the next row.
+Choose **New item**. Select the type before entering its fields, enter the optional key and the values below, then choose **Create record**. Wait for the saved confirmation. The form clears after each successful creation, so repeat it for the next row.
 
 | Item type     | Key        | title                 | statement                       |
 | ------------- | ---------- | --------------------- | ------------------------------- |

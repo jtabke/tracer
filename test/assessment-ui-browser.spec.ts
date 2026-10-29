@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import type { Page } from "@playwright/test";
 import { resolve } from "node:path";
@@ -6,8 +7,7 @@ import { applicationModelFixture, assessmentOpenRequest } from "./application-mo
 import { evaluationActor as actor } from "./evaluation-fixture.ts";
 
 async function openTask(page: Page) {
-  await page.getByRole("button", { name: "Project tools", exact: true }).click();
-  await page.getByRole("button", { name: "Change assessments", exact: true }).click();
+  await openProjectDestination(page, "Change assessments");
   return page.getByRole("region", { name: "Scoped change assessments", exact: true });
 }
 for (const [domain, width] of [

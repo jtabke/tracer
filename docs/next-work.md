@@ -1,6 +1,6 @@
 # Next work
 
-Choose **Next work** in the workspace header, or **Project tools → Next work**. Five queues retain separate counts. An item can appear in several queues because writing its statement, allocating it, planning verification and reviewing evidence are different tasks.
+Choose **Next work** in the sidebar, or find **Next work** in Search / ⌘K. Five queues retain separate counts. An item can appear in several queues because writing its statement, allocating it, planning verification and reviewing evidence are different tasks.
 
 | Queue                           | What belongs here                                                                                                      | Action                                                                               |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |

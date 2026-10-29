@@ -1,6 +1,6 @@
 import type { NativeTask } from "../native-task.tsx";
 
-const paths: Record<NativeTask | "refresh" | "map" | "close", string> = {
+const paths: Record<NativeTask | "refresh" | "map" | "settings", string> = {
   "next-work": "m4 6 2 2 3-4M12 6h8M4 13h4m4 0h8M4 20h4m4 0h8",
   configurations: "m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5",
   assessments: "M9 3h6l1 3h3v15H5V6h3l1-3ZM9 12h6m-6 4h4",
@@ -16,22 +16,9 @@ const paths: Record<NativeTask | "refresh" | "map" | "close", string> = {
   docs: "M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15",
   refresh: "M20 9a8 8 0 0 0-14-4L3 8m0-5v5h5m-4 7a8 8 0 0 0 14 4l3-3m0 5v-5h-5",
   map: "M8 3 2 6v15l6-3 8 3 6-3V3l-6 3-8-3Zm0 0v15m8-12v15",
-  close: "m6 6 12 12M6 18 18 6",
+  settings: "M4 6h16M4 12h16M4 18h16M9 3v6m7 0v6m-8 0v6",
 };
 
-export function ProjectToolIcon({ name }: { name: keyof typeof paths }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={paths[name]} />
-    </svg>
-  );
+export function projectToolIcon(name: keyof typeof paths) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="${paths[name]}" /></svg>`;
 }

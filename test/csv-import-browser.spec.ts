@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -10,7 +11,7 @@ import { projectTemplates } from "../src/core/project-templates.ts";
 
 const actor = { actor: "csv-browser-test" };
 async function openImport(page: Page) {
-  await page.getByRole("button", { name: "Project tools", exact: true }).click();
+  await openProjectDestination(page, "Project settings");
   await page.getByRole("button", { name: "Import CSV", exact: true }).click();
   return page.getByRole("dialog", { name: "Project task", exact: true });
 }

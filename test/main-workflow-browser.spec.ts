@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -7,11 +8,9 @@ import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 
 async function projectTask(page: Page, name: string) {
-  await page.getByRole("button", { name: "Project tools", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "Project tools", exact: true })
-    .getByRole("button", { name, exact: true })
-    .click();
+  await page.locator('[data-action="search"]').click();
+  await page.locator("#search").fill(name);
+  await page.getByRole("option", { name, exact: true }).click();
   return page.locator(".native-task:visible");
 }
 
@@ -30,7 +29,7 @@ for (const width of [1440, 680])
       await page.goto(server.origin);
       await expect(page.getByRole("heading", { name: "Define your project model" })).toBeVisible();
       await page.setViewportSize({ width, height: 1000 });
-      const task = await projectTask(page, "Configure model");
+      const task = await projectTask(page, "Model");
       await task.getByRole("button", { name: "Text", exact: true }).click();
       await task.getByLabel("Advanced JSON", { exact: true }).check();
       await task.getByLabel("Project schema JSON", { exact: true }).fill(
@@ -55,16 +54,16 @@ for (const width of [1440, 680])
       await task.getByRole("button", { name: "Save model", exact: true }).click();
       await expect.poll(async () => (await tracer.getSchema())?.version).toBe(1);
       await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
-      await projectTask(page, "New item");
+      await projectTask(page, "Create record");
       for (const [key, title, statement] of [
         ["REQ", "Response criterion", "Response within 10 ms"],
         ["RUN", "Response evaluation", "Bench evaluation"],
       ]) {
-        await task.getByLabel("New item key", { exact: true }).fill(key);
-        await task.getByLabel("New item title", { exact: true }).fill(title);
-        await task.getByLabel("New item statement", { exact: true }).fill(statement);
-        await task.getByRole("button", { name: "Create item", exact: true }).click();
-        await expect(task.getByLabel("New item key", { exact: true })).toHaveValue("");
+        await task.getByLabel("New record key", { exact: true }).fill(key);
+        await task.getByLabel("New record title", { exact: true }).fill(title);
+        await task.getByLabel("New record statement", { exact: true }).fill(statement);
+        await task.getByRole("button", { name: "Create record", exact: true }).click();
+        await expect(task.getByLabel("New record key", { exact: true })).toHaveValue("");
       }
       await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Search", exact: false }).first().click();
@@ -80,7 +79,7 @@ for (const width of [1440, 680])
       await expect.poll(async () => (await tracer.queryRelationships({})).items.length).toBe(1);
       const input = (await tracer.queryEntities({ key: "REQ" })).items[0];
       const output = (await tracer.queryEntities({ key: "RUN" })).items[0];
-      await projectTask(page, "Evaluations");
+      await projectTask(page, "Evaluation records");
       await task.getByRole("button", { name: "Record native-input receipt", exact: true }).click();
       await task.getByLabel("Output or conclusion", { exact: true }).selectOption(output.id);
       await task
@@ -106,7 +105,7 @@ for (const width of [1440, 680])
       await page.locator('[data-view="history"]').click();
       await page.locator('[data-action="inspect-revision"]').click();
       await expect(page.locator(".shared-investigation-context")).toContainText("1 links");
-      await page.getByRole("button", { name: /Assess evidence/ }).click();
+      await page.getByRole("button", { name: /Review changed evidence/ }).click();
       const stage = page.getByLabel("Captured result review", { exact: true });
       await expect(
         stage.getByText("Freshness: changed · Review: unreviewed", { exact: true }),
@@ -158,7 +157,7 @@ for (const width of [1440, 680])
             ),
         )
         .toEqual(positions);
-      await page.getByRole("button", { name: /Assess evidence/ }).click();
+      await page.getByRole("button", { name: /Review changed evidence/ }).click();
       await expect(page.getByLabel("Recorded decision", { exact: true })).toHaveAttribute(
         "data-review-id",
         reviewId!,
@@ -206,10 +205,10 @@ for (const width of [1440, 680])
         ).toBeEnabled();
         expect(attempts).toBe(1);
         await page.unroute("**/api/reviews");
-        await page.getByRole("button", { name: "Project tools", exact: true }).click();
+        await openProjectDestination(page, "Project settings");
         await page
-          .getByRole("dialog", { name: "Project tools", exact: true })
-          .getByRole("button", { name: "Development map", exact: true })
+          .getByRole("region", { name: "Project settings", exact: true })
+          .getByRole("button", { name: /Development map/ })
           .click();
         await page.getByRole("button", { name: "Graph / Matrix / History", exact: true }).click();
         await expect(page.getByLabel("Recorded decision", { exact: true })).toContainText(
@@ -220,7 +219,7 @@ for (const width of [1440, 680])
         await page.keyboard.press("/");
         await page
           .getByLabel("Search artifacts and commands", { exact: true })
-          .fill("Add existing artifact");
+          .fill("Add existing record");
         await page.locator("[data-command]").click();
         await page.locator("#create-new").click();
         const creation = page.locator("#create-form");

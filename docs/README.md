@@ -5,7 +5,7 @@ Choose one of the two [getting-started paths](getting-started.md):
 - [Explore an example](getting-started.md#explore-an-example): inspect and edit the populated Orbit project.
 - [Start your own project](getting-started.md#start-your-own-project): use the editable Engineering starter and reopen saved work.
 
-In the application, **Project tools → Documentation** opens these guides without replacing an in-session draft. Internal links and named Return preserve reading context; citations open separately.
+In the application, **Documentation** in the main navigation opens these guides without replacing an in-session draft. Internal links and named Return preserve reading context; citations open separately.
 
 ## After getting started
 

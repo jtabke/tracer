@@ -1,6 +1,6 @@
 # Tracer engineering workbench review launcher
 
-The normal application now opens the Graph / Matrix / History workbench from `ui/workbench/`. This directory retains its isolated review launcher, static-export fallback and regression scripts; runtime modules re-export production owners. The earlier `ui/map/` experience remains available through Project tools → Development map. Both use the native API, changesets, evidence comparison, immutable reviews and mutation recovery. Scripted verification is not representative-user acceptance or scale validation.
+The normal application now opens the Graph / Matrix / History workbench from `ui/workbench/`. This directory retains its isolated review launcher, static-export fallback and regression scripts; runtime modules re-export production owners. The earlier `ui/map/` experience remains available through Project settings → Advanced → Development map. Both use the native API, changesets, evidence comparison, immutable reviews and mutation recovery. Scripted verification is not representative-user acceptance or scale validation.
 
 ## Run
 
@@ -66,6 +66,6 @@ The root strict configuration covers production TypeScript; the review harness a
 
 ## Limits
 
-Graph drawing is bounded to 50 artifacts; traceability projection to 500 rows and 100 terminal links per grouped cell, with omissions disclosed. No virtualization, bulk mutation, spreadsheet paste, portable workspace context or arbitrary two-revision comparison is claimed. Assessment discovery is focus-only, not every reachable dependency or baseline impact analysis. Review drafts survive view switches but not reload; saved decisions persist. Project tools supports ordinary receipt authoring without fixtures. `prepare-assessment.mjs` remains optional simulated capture setup for review screenshots. Named Matrix configurations persist in SQLite; graph positions, view settings and investigations recover in the same browser/origin. Larger-project and representative-user validation remain separate work.
+Graph drawing is bounded to 50 artifacts; traceability projection to 500 rows and 100 terminal links per grouped cell, with omissions disclosed. No virtualization, bulk mutation, spreadsheet paste, portable workspace context or arbitrary two-revision comparison is claimed. Assessment discovery is focus-only, not every reachable dependency or baseline impact analysis. Review drafts survive view switches but not reload; saved decisions persist. Project settings → Advanced supports ordinary receipt authoring without fixtures. `prepare-assessment.mjs` remains optional simulated capture setup for review screenshots. Named Matrix configurations persist in SQLite; graph positions, view settings and investigations recover in the same browser/origin. Larger-project and representative-user validation remain separate work.
 
 The current behavior supersedes the earlier three-direction studies, Trace/Explore switch, Mouse/Trackpad preference and collapsed relationship groups. Old review galleries remain local under `output/`; they are not alternate product implementations.

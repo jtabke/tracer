@@ -111,7 +111,7 @@ export function NativeTasks({
           }}
           onChoose={setFocused}
           onTable={onClose}
-          returnLabel="Close item details"
+          returnLabel="Close record details"
         />
       ) : null,
     create: () =>
@@ -272,13 +272,14 @@ function chooseFocusedEntity(
 }
 function discardAllowed(dirty: boolean) {
   return (
-    !dirty || window.confirm("Discard the focused item's unsaved draft to inspect another item?")
+    !dirty ||
+    window.confirm("Discard the focused record's unsaved draft to inspect another record?")
   );
 }
 const taskTitles = {
   references: "References and evaluations",
-  item: "Item details and editing",
-  create: "New item",
+  item: "Record details and editing",
+  create: "Create record",
   schema: "Project model",
   evaluations: "Evaluations",
   configurations: "Configurations",
@@ -315,17 +316,17 @@ function CreateItem({
   const definitions = creationFields(captured, type);
   return (
     <form
-      aria-label="Create project item"
+      aria-label="Create project record"
       onSubmit={(event) => {
         event.preventDefault();
         void save();
       }}
     >
-      <h2>New item</h2>
+      <h2>Create record</h2>
       <label>
-        Item type
+        Record type
         <select
-          aria-label="New item type"
+          aria-label="New record type"
           value={type}
           disabled={editing.busy || Object.keys(values).length > 0}
           onChange={(event) => setType(event.target.value)}
@@ -336,7 +337,7 @@ function CreateItem({
       <label>
         Key (optional)
         <input
-          aria-label="New item key"
+          aria-label="New record key"
           disabled={editing.busy}
           value={key}
           onChange={(event) => setKey(event.target.value)}
@@ -356,13 +357,14 @@ function CreateItem({
         }}
       />
       <button type="submit" disabled={!canCreate(editing.busy, stale, type)}>
-        Create item
+        Create record
       </button>
       <button
         type="button"
         disabled={editing.busy}
         onClick={() => {
-          if (!window.confirm("Discard this unsaved creation draft and start a new item?")) return;
+          if (!window.confirm("Discard this unsaved creation draft and start a new record?"))
+            return;
           setValues({});
           setKey("");
           setId(crypto.randomUUID());
@@ -385,7 +387,7 @@ function CreateItem({
           captured.version,
         )
       ) {
-        setNotice("Item saved. Return to the map to inspect it.");
+        setNotice("Record saved. Return to the workspace to inspect it.");
         setValues({});
         setKey("");
         setId(crypto.randomUUID());
@@ -436,7 +438,7 @@ function NewItemFields({
           <FieldControl
             field={field}
             value={values[name] ?? ""}
-            name={`New item ${name}`}
+            name={`New record ${name}`}
             multiline={name === "statement" || field.type === "json"}
             disabled={editing.busy}
             onChange={(value) => setValues((current) => ({ ...current, [name]: value }))}

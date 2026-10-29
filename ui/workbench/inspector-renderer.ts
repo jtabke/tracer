@@ -167,12 +167,13 @@ export function renderInspector(context: InspectorRenderContext): string {
     const ownHistory = renderOwnHistory(record);
     const header = renderHeader(record);
     const fields = renderFields(record);
-    const relationships = renderRelationships() + referenceAction(native, historical);
+    const relationships = renderRelationships();
     const reachable = context.reachableTrace(record.key);
     const reachableSection = renderReachableSection();
     const recent = `<section class="artifact-history"><div class="inspector-section-heading"><h3>Recent history</h3><button data-action="artifact-history" aria-label="View artifact history">↗</button></div>${ownHistory.map((entry) => `<button data-artifact-event="${entry.projectRevision}">${mono(`r${entry.projectRevision}`)}<span>${entry.version === 1 ? "Created" : `Updated to v${entry.version}`}</span></button>`).join("")}</section>`;
     return shell(
       header +
+        referenceAction(native, historical, record.key, e) +
         fields +
         retainedArtifactDraft(record) +
         (!state.editing
@@ -213,8 +214,13 @@ export function renderEdgeDetail(context: InspectorRenderContext): string {
   return edgeDetail();
 }
 
-function referenceAction(native: boolean, historical: boolean) {
+function referenceAction(
+  native: boolean,
+  historical: boolean,
+  key: string,
+  escape: (value: unknown) => string,
+) {
   return native
-    ? `<button data-action="references" ${historical ? "disabled" : ""}>References and supporting material</button>`
+    ? `<section class="selected-record-actions" aria-label="Actions for ${escape(key)}"><h3 class="sr-only">Record · ${escape(key)}</h3><button data-action="edit-record" aria-label="Edit record and connections" ${historical ? "disabled" : ""}>Edit</button><button data-action="connect" aria-label="Connect record" ${historical ? "disabled" : ""}>Connect</button><button data-action="references" aria-label="References and supporting material" ${historical ? "disabled" : ""}>References</button></section>`
     : "";
 }

@@ -8,7 +8,7 @@ Commands run from the repository root. Start with the [README](../README.md) and
 npm start -- --db project.sqlite
 ```
 
-Open the printed loopback URL (default `http://127.0.0.1:4317`; override with `--port NUMBER`). The default **Graph / Matrix / History** workbench shares one selected project across perspectives. **Project tools** opens full editing, model configuration, evaluations, configurations, documentation and the retained **Development map**. See the [walkthrough](getting-started.md) for navigation.
+Open the printed loopback URL (default `http://127.0.0.1:4317`; override with `--port NUMBER`). The default **Graph / Matrix / History** workbench shares one selected project across perspectives. The desktop sidebar and mobile navigation drawer open the shared tasks; **Project settings** holds exchange, evaluation records and the retained **Development map**. See the [walkthrough](getting-started.md) for navigation.
 
 The complete native snapshot rejects beyond 10,000 records / 100,000 links; rendering bounds are separate. Named Matrix recipes persist in SQLite. Spatial/investigation recovery is browser/origin-local; unsaved drafts remain tab-local. Development-map organization/unnamed recipes are session-only. Project switching confirms draft disposal and reloads against an explicitly configured database. The local server has no organizational authentication.
 
@@ -579,7 +579,7 @@ The operation accepts at most 100 members, 200 links, 100 content selections and
 
 ## Use the configuration workspace
 
-Open **Project tools → Configurations → Capture configuration**. Choose a subject, exact native member versions, a purpose and complete/partial scope rationale. Record selection searches show up to 50 matching records from the bounded project snapshot. For external members, choose an existing observation or explain an unknown content state; native annotations do not stand in for bytes. Include relationships explicitly after selecting both endpoints, and use their recorded-revision chooser when needed. No graph expansion automatically adds membership.
+Open **Configurations → Capture configuration**. Choose a subject, exact native member versions, a purpose and complete/partial scope rationale. Record selection searches show up to 50 matching records from the bounded project snapshot. For external members, choose an existing observation or explain an unknown content state; native annotations do not stand in for bytes. Include relationships explicitly after selecting both endpoints, and use their recorded-revision chooser when needed. No graph expansion automatically adds membership.
 
 **Prepare capture** retains the exact proposal and guards. Refresh keeps the draft; changed context or selections require explicit preparation again. **Capture configuration** uses one stable identity. Returning to the map retains the in-session draft. After an unknown outcome, use shared saved-record inspection against the original identity before acknowledging; no retry occurs automatically. **Start new capture** deliberately creates another identity and confirms disposal of a pending draft.
 
@@ -767,7 +767,7 @@ After a conflict, obtain a new view and deliberately re-prepare. After an uncert
 
 `tracer.changeAssessments.locate(assessmentId)`, GET `/api/assessment-locate?assessmentId=...` and CLI `assessment locate ID` return the controlled view without requiring the caller to remember its opening command. The service reads the first receipt for that output, resolves its successful command through the existing receipt-identity index, and runs the same original-command/genesis/model/current-control checks as `get`. Ordinary records, raw evaluation commands or authored scope metadata cannot establish an opening. Older openings without `scope.control` still resolve; no history scan, migration or write is needed. The returned opening selection can then be used for analysis and guarded mutations.
 
-The shared UI exposes these services through **Project tools → Change assessments**. [The workspace guide](workspace-guide.md#scoped-change-assessments) owns authoring and recovery instructions. Catalogue hints identify records to inspect; `locate`, model resolution and analysis remain authoritative.
+The shared UI exposes these services through **Change assessments**. [The workspace guide](workspace-guide.md#scoped-change-assessments) owns authoring and recovery instructions. Catalogue hints identify records to inspect; `locate`, model resolution and analysis remain authoritative.
 
 ## Judge candidates and manage completion
 

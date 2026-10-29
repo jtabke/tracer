@@ -183,14 +183,19 @@ try {
   assert.equal(await page.locator("[data-mode]").count(), 0);
   // Wheel zoom preserves the world point under the cursor and does not scroll the page.
   const canvasBox = await page.locator(".canvas").boundingBox();
-  const zoomPoint = { x: canvasBox.width * 0.4, y: canvasBox.height * 0.4 };
+  // Chromium reports integer mouse coordinates; use the actual pointer anchor after layout changes.
+  const pointer = {
+    x: Math.round(canvasBox.x + canvasBox.width * 0.4),
+    y: Math.round(canvasBox.y + canvasBox.height * 0.4),
+  };
+  const zoomPoint = { x: pointer.x - canvasBox.x, y: pointer.y - canvasBox.y };
   const camera = () =>
     page.locator(".scene").evaluate((el) => {
       const m = new DOMMatrix(getComputedStyle(el).transform);
       return { zoom: m.a, x: m.e, y: m.f, scroll: window.scrollY };
     });
   const beforeZoom = await camera();
-  await page.mouse.move(canvasBox.x + zoomPoint.x, canvasBox.y + zoomPoint.y);
+  await page.mouse.move(pointer.x, pointer.y);
   await page.mouse.wheel(0, -120);
   await page.waitForFunction(
     () => parseFloat(document.querySelector(".canvas").style.getPropertyValue("--camera-zoom")) > 1,
@@ -613,7 +618,7 @@ try {
   await page.locator('[aria-label="Open artifact editor"]').click();
   assert.equal(
     Math.round((await page.locator(".inspector.full-artifact").boundingBox()).width),
-    630,
+    Math.round(area.width),
   );
   await capture("workflow-narrow-editor");
   await page.locator('[data-action="back-workspace"]').click();

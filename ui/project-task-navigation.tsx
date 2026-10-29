@@ -3,10 +3,13 @@ import "./project-task-navigation.css";
 
 export const projectTaskGroups: {
   title: string;
+  navigation?: "work" | "project";
+  settings?: boolean;
   tasks: { task: NativeTask; title: string; description: string }[];
 }[] = [
   {
     title: "Engineering work",
+    navigation: "work",
     tasks: [
       { task: "next-work", title: "Next work", description: "Review gaps and follow-up" },
       {
@@ -15,24 +18,24 @@ export const projectTaskGroups: {
         description: "Capture and compare exact states",
       },
       {
-        task: "assessments",
-        title: "Change assessments",
-        description: "Review evidence after changes",
-      },
-      {
         task: "verification",
         title: "Verification",
         description: "Criteria, results and conclusions",
+      },
+      {
+        task: "assessments",
+        title: "Change assessments",
+        description: "Controlled scope, dispositions and follow-up actions",
       },
     ],
   },
   {
     title: "Records and evidence",
     tasks: [
-      { task: "create", title: "New item", description: "Add an engineering record" },
+      { task: "create", title: "Create record", description: "Add an engineering record" },
       {
         task: "item",
-        title: "Edit item and connections",
+        title: "Edit record and connections",
         description: "Update the selected record",
       },
       {
@@ -40,22 +43,51 @@ export const projectTaskGroups: {
         title: "References for selected record",
         description: "Sources for the selected record",
       },
-      { task: "evaluations", title: "Evaluations", description: "Inspect recorded outcomes" },
     ],
   },
   {
-    title: "Project setup and exchange",
+    title: "Import & export",
+    settings: true,
     tasks: [
-      { task: "schema", title: "Configure model", description: "Types, fields and connections" },
       { task: "import", title: "Import CSV", description: "Bring in records and links" },
       { task: "export", title: "Export project", description: "Download recorded project JSON" },
     ],
   },
   {
-    title: "Help",
-    tasks: [{ task: "docs", title: "Documentation", description: "Guides and reference material" }],
+    title: "Advanced",
+    settings: true,
+    tasks: [
+      {
+        task: "evaluations",
+        title: "Evaluation records",
+        description: "Inspect recorded outcomes",
+      },
+    ],
+  },
+  {
+    title: "Project",
+    navigation: "project",
+    tasks: [
+      { task: "schema", title: "Model", description: "Types, fields and connections" },
+      { task: "docs", title: "Documentation", description: "Guides and reference material" },
+    ],
   },
 ];
+
+export const projectUtilities = [
+  {
+    action: "refresh-project",
+    icon: "refresh",
+    title: "Refresh project",
+    description: "Reload the latest recorded project state",
+  },
+  {
+    action: "development-map",
+    icon: "map",
+    title: "Development map",
+    description: "Open the retained map experience",
+  },
+] as const;
 
 export function selectedRecordTask(task: NativeTask) {
   return task === "item" || task === "references";

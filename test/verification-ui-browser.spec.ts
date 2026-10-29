@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { Tracer } from "../src/index.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import type { Page, Locator } from "@playwright/test";
@@ -9,8 +10,7 @@ import {
   verificationActor as actor,
 } from "./verification-fixture.ts";
 async function task(page: Page) {
-  await page.getByRole("button", { name: "Project tools", exact: true }).click();
-  await page.getByRole("button", { name: "Verification", exact: true }).click();
+  await openProjectDestination(page, "Verification");
   return page.getByRole("region", { name: "Requirement verification", exact: true });
 }
 async function record(

@@ -1,0 +1,229 @@
+/* The shared Atlas visual language, with persistent destinations and a mobile drawer. */
+body[data-direction="atlas"] .sidebar-shell {
+  grid-template-columns: 176px minmax(0, 1fr);
+}
+.sidebar-shell > .project-sidebar,
+.navigation-dialog .project-sidebar {
+  display: flex;
+  padding: 26px 12px 18px;
+  min-height: 0;
+  overflow-y: auto;
+}
+.project-sidebar .brand {
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0 6px;
+  font-size: 24px;
+}
+body[data-direction="atlas"] .project-sidebar .brand span {
+  display: inline;
+}
+.sidebar-project {
+  display: grid;
+  gap: 6px;
+  margin: 28px 8px 20px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.sidebar-project strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.sidebar-project > span {
+  font-size: 10px;
+  color: var(--muted);
+}
+body[data-direction="atlas"] .project-sidebar .railnav {
+  margin-top: 0;
+  gap: 5px;
+}
+body[data-direction="atlas"] .project-sidebar .railnav button {
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 8px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+body[data-direction="atlas"] .project-sidebar .railnav button span {
+  display: inline;
+}
+body[data-direction="atlas"] .project-sidebar .railnav svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+body[data-direction="atlas"] .project-sidebar .railnav .active {
+  font-weight: 550;
+}
+body[data-direction="atlas"] .project-sidebar .project-sidebar-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.project-sidebar .railnav + .railnav {
+  margin-top: 30px;
+}
+.selected-record-actions {
+  display: flex;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.selected-record-actions button {
+  flex: 1;
+  padding: 8px;
+  font-size: 11px;
+}
+.selected-record-actions button + button {
+  border-left: 1px solid var(--line);
+}
+.navigation-toggle {
+  display: none;
+}
+.navigation-dialog {
+  inset: 0 auto 0 0;
+  margin: 0;
+  width: min(300px, calc(100vw - 40px));
+  max-width: none;
+  height: 100dvh;
+  max-height: 100dvh;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0;
+  background: var(--rail);
+  overflow: hidden;
+}
+.navigation-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.navigation-dialog .dialog-head {
+  position: absolute;
+  top: 25px;
+  right: 16px;
+  z-index: 1;
+  margin: 0;
+}
+.navigation-dialog .dialog-head h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.navigation-dialog .dialog-head button {
+  font-size: 24px;
+  padding: 0 8px;
+}
+.navigation-dialog .project-sidebar {
+  flex: 1;
+  border: 0;
+  padding-inline: 16px;
+}
+body[data-direction="atlas"] .navigation-dialog .railnav button {
+  min-height: 44px;
+  font-size: 13px;
+}
+.project-settings-page {
+  padding: 4px 26px 28px;
+  max-width: 760px;
+}
+.project-settings-page > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.project-settings-page > section {
+  margin-top: 28px;
+}
+.project-settings-page h2 {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.project-settings-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.project-settings-action > svg {
+  height: 18px;
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.project-settings-action > span:first-of-type {
+  display: grid;
+  flex: 1;
+  gap: 5px;
+}
+.project-settings-action strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.project-settings-action small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.project-settings-action > span:last-child {
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  body[data-direction="atlas"] .sidebar-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sidebar-shell > .project-sidebar {
+    display: none;
+  }
+  .navigation-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    min-width: 36px;
+    color: var(--muted);
+    font-size: 18px;
+  }
+  body[data-direction="atlas"] .sidebar-shell .topbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    height: auto;
+    gap: 6px 8px;
+    padding: 10px 16px 0;
+  }
+  .sidebar-shell .topbar .crumb {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .sidebar-shell .topbar .crumb > span,
+  .sidebar-shell .topbar .crumb > button {
+    display: none;
+  }
+  .sidebar-shell .topbar .search-button {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 11px;
+  }
+  .sidebar-shell .search-button kbd {
+    display: none;
+  }
+  .sidebar-shell .topbar .workspace-perspectives {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: center;
+    margin: 0;
+    height: 38px;
+  }
+  .project-settings-page {
+    padding-inline: 16px;
+  }
+}

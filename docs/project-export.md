@@ -1,6 +1,6 @@
 # Export a project
 
-Use **Project tools → Export project → Prepare current export**, inspect the captured revision and counts, then choose **Download JSON**. Preparing and downloading do not change records, history, evidence or saved views. The prepared file stays fixed when later edits occur; prepare again to include them. A failed preparation clears the previous download and displays the error.
+Use **Project settings → Import & export → Export project → Prepare current export**, inspect the captured revision and counts, then choose **Download JSON**. Preparing and downloading do not change records, history, evidence or saved views. The prepared file stays fixed when later edits occur; prepare again to include them. A failed preparation clears the previous download and displays the error.
 
 ## What the file contains
 

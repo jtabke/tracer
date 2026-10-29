@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import type { Page, Locator } from "@playwright/test";
 import { resolve } from "node:path";
@@ -8,8 +9,7 @@ import { verificationActor as actor, verificationTargetInput } from "./verificat
 import { receiptInputEditor } from "./browser-navigation.ts";
 
 async function openConfigurations(page: Page) {
-  await page.getByRole("button", { name: "Project tools", exact: true }).click();
-  await page.getByRole("button", { name: "Configurations", exact: true }).click();
+  await openProjectDestination(page, "Configurations");
   return page.getByRole("region", { name: "Project configurations", exact: true });
 }
 async function captureFields(panel: Locator, subjectId: string, memberId: string, name: string) {
@@ -164,8 +164,8 @@ for (const [domain, width] of [
       );
       await expect(diff.getByRole("heading", { level: 3 })).toContainText(name);
       await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Evaluations", exact: true }).click();
+      await openProjectDestination(page, "Project settings");
+      await page.getByRole("button", { name: "Evaluation records", exact: true }).click();
       await page.getByRole("button", { name: "Record native-input receipt", exact: true }).click();
       await page
         .getByLabel("Configuration basis (optional)", { exact: true })
@@ -378,8 +378,8 @@ test("the retained native-only receipt capture path preserves legacy scope and c
     const before = await f.tracer.exportProject();
     server = await startLocalServer(f.tracer, resolve("dist"), 0);
     await page.goto(server.origin);
-    await page.getByRole("button", { name: "Project tools", exact: true }).click();
-    await page.getByRole("button", { name: "Evaluations", exact: true }).click();
+    await openProjectDestination(page, "Project settings");
+    await page.getByRole("button", { name: "Evaluation records", exact: true }).click();
     const capture = page.locator("details.configuration-capture");
     await capture.getByText("Capture a revision-pinned configuration", { exact: true }).click();
     await capture

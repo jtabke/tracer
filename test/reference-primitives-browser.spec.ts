@@ -7,7 +7,7 @@ import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { observeLocal } from "../src/interfaces/local-observer.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 for (const width of [1440, 390])
-  test(`native references author, reuse, pin and capture an evaluation at ${width}px`, async ({
+  test(`create a record with a source, reuse, pin and capture an evaluation at ${width}px`, async ({
     page,
   }) => {
     const directory = mkdtempSync(join(tmpdir(), "tracer-reference-ui-")),
@@ -30,11 +30,6 @@ for (const width of [1440, 390])
       0,
       origin,
     );
-    const subject = await t.createEntity(
-      { type: "need", key: "NEED-1", fields: { title: "Understand source context" } },
-      1,
-      origin,
-    );
     const file = join(directory, "needs.md");
     writeFileSync(file, "PN-01: source context\nPN-07: evidence context\n");
     const server = await startLocalServer(t, resolve("dist"), 0),
@@ -46,6 +41,16 @@ for (const width of [1440, 390])
     try {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(server.origin);
+      await page.locator('[data-action="create-record"]').first().click();
+      const creation = page.locator(".native-task:visible");
+      await creation.getByLabel("New record key", { exact: true }).fill("NEED-1");
+      await creation
+        .getByLabel("New record title", { exact: true })
+        .fill("Understand source context");
+      await creation.getByRole("button", { name: "Create record", exact: true }).click();
+      await expect(creation.getByRole("status")).toContainText("Record saved.");
+      const subject = (await t.queryEntities({ key: "NEED-1" })).items[0];
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await expect(page.locator(".node").first()).toBeVisible();
       await page.keyboard.press("/");
       await page.getByRole("combobox", { name: "Search artifacts and commands" }).fill("NEED-1");
@@ -104,7 +109,7 @@ for (const width of [1440, 390])
       expect(saved.evidence.receipts[0].relationshipInputs).toHaveLength(1);
       expect(saved.evidence.receipts[0].output.id).toBe(subject.id);
       await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
-      await page.getByRole("button", { name: "Assess evidence", exact: true }).click();
+      await page.getByRole("button", { name: "Review changed evidence", exact: true }).click();
       await expect(
         page.getByText(/Simulated assessment: source passage supports this need/).first(),
       ).toBeVisible();
@@ -115,10 +120,9 @@ for (const width of [1440, 390])
         .getByRole("button", { name: /^Back to (graph|matrix|history|investigation)/ })
         .first()
         .click();
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page
-        .getByRole("button", { name: "References for selected record", exact: true })
-        .click();
+      await page.locator('[data-action="search"]').click();
+      await page.locator("#search").fill("References for selected record");
+      await page.getByRole("option", { name: /References for selected record/ }).click();
       await view.getByLabel("Resource", { exact: true }).selectOption(resource.id);
       await view.getByLabel("Section or passage label").fill("Retained conflict proposal");
       await t.updateEntity(
@@ -135,10 +139,9 @@ for (const width of [1440, 390])
       );
       expect((await t.getProjectSnapshot()).relationships).toHaveLength(2);
       await page.reload();
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page
-        .getByRole("button", { name: "References for selected record", exact: true })
-        .click();
+      await page.locator('[data-action="search"]').click();
+      await page.locator("#search").fill("References for selected record");
+      await page.getByRole("option", { name: /References for selected record/ }).click();
       await expect(
         page.getByRole("heading", { name: "User needs document", exact: true }),
       ).toHaveCount(2);

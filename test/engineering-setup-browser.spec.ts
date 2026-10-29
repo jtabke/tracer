@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -21,11 +22,7 @@ for (const width of [1440, 680])
     try {
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(server.origin);
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page
-        .getByRole("dialog", { name: "Project tools", exact: true })
-        .getByRole("button", { name: "Documentation", exact: true })
-        .click();
+      await openProjectDestination(page, "Documentation");
       const article = page.getByRole("article", { name: "Getting started", exact: true });
       await expect(article.getByRole("heading", { level: 1 })).toBeInViewport();
       await expect(
@@ -39,14 +36,12 @@ for (const width of [1440, 680])
           page.getByRole("navigation", { name: "Documentation topics", exact: true }),
         ).not.toBeVisible();
       await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Configure model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       const editor = page.getByLabel("Configure project model", { exact: true });
       await editor.getByLabel("Starter structure").selectOption("engineering");
       page.once("dialog", (dialog) => dialog.accept());
       await editor.getByRole("button", { name: "Cancel", exact: true }).click();
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "Configure model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       await expect(editor.getByLabel("Starter structure")).toHaveValue("empty");
       expect(await tracer.getSchema()).toBeUndefined();
       await editor.getByLabel("Starter structure").selectOption("engineering");
@@ -79,23 +74,22 @@ for (const width of [1440, 680])
       await expect(
         page.locator(".workspace-notice").filter({ hasText: "unsaved drafts" }),
       ).toHaveCount(0);
-      await page.getByRole("button", { name: "Project tools", exact: true }).click();
-      await page.getByRole("button", { name: "New item", exact: true }).click();
+      await page.locator('[data-action="create-record"]').click();
       const task = page.locator(".native-task:visible");
-      await task.getByLabel("New item type", { exact: true }).selectOption("test");
-      await task.getByLabel("New item key", { exact: true }).fill("CO2-PLAN");
+      await task.getByLabel("New record type", { exact: true }).selectOption("test");
+      await task.getByLabel("New record key", { exact: true }).fill("CO2-PLAN");
       await task
-        .getByLabel("New item title", { exact: true })
+        .getByLabel("New record title", { exact: true })
         .fill("Simulated CO₂ range verification plan");
       await task
-        .getByLabel("New item method", { exact: true })
+        .getByLabel("New record method", { exact: true })
         .fill("Simulated reference inputs; no hardware execution.");
       await task
-        .getByLabel("New item expected_result", { exact: true })
+        .getByLabel("New record expected_result", { exact: true })
         .fill("Within ±50 ppm across the selected range.");
-      await task.getByLabel("New item build", { exact: true }).fill("Prototype A");
-      await task.getByRole("button", { name: "Create item", exact: true }).click();
-      await expect(task.getByLabel("New item key", { exact: true })).toHaveValue("");
+      await task.getByLabel("New record build", { exact: true }).fill("Prototype A");
+      await task.getByRole("button", { name: "Create record", exact: true }).click();
+      await expect(task.getByLabel("New record key", { exact: true })).toHaveValue("");
       const plan = (await tracer.queryEntities({ key: "CO2-PLAN" })).items[0];
       expect(plan.fields).toMatchObject({
         method: "Simulated reference inputs; no hardware execution.",

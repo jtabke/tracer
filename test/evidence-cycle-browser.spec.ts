@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { mkdirSync, unlinkSync } from "node:fs";
 import { resolve } from "node:path";
 import { test, expect, closeTestPage } from "./browser-test.ts";
@@ -33,7 +34,7 @@ for (const width of [1440, 390])
       await page.keyboard.press("/");
       await page.getByRole("combobox", { name: "Search artifacts and commands" }).fill("REQ-POWER");
       await page.keyboard.press("Enter");
-      await page.getByRole("button", { name: "Assess evidence", exact: true }).click();
+      await page.getByRole("button", { name: "Review changed evidence", exact: true }).click();
       await expect(page.getByText(f.receipt.outcome, { exact: true }).first()).toBeVisible();
       const stage = page.getByLabel("Captured result review", { exact: true });
       await expect(
@@ -120,7 +121,7 @@ for (const width of [1440, 390])
       await expect(
         page.getByRole("button", { name: "Add relationship", exact: true }),
       ).toBeDisabled();
-      await page.getByRole("button", { name: "Model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       const model = page.locator(".model-page");
       await expect(model.getByRole("button", { name: "Save model", exact: true })).toBeDisabled();
       expect(await t.exportProject()).toEqual(beforeHistory);

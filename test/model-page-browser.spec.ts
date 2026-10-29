@@ -1,3 +1,4 @@
+import { openProjectDestination } from "./project-navigation.ts";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -64,7 +65,7 @@ for (const width of [1440, 680, 390]) {
     try {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(server.origin);
-      await page.getByRole("button", { name: "Model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       const model = page.locator(".model-page");
       await expect(model).toBeVisible();
       await expect(page).toHaveURL(/#model$/);
@@ -97,7 +98,7 @@ for (const width of [1440, 680, 390]) {
       await model.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await expect(model).toBeHidden();
       expect(await page.locator("#app").evaluate((e) => (e as HTMLElement).inert)).toBe(false);
-      await page.getByRole("button", { name: "Model", exact: true }).click();
+      await openProjectDestination(page, "Model");
       await expect(input).toHaveValue("{ invalid draft");
       await page.goBack();
       await expect(model).toBeHidden();
