@@ -45,6 +45,7 @@ Contributions to Tracer's original source and documentation use the [MIT license
 | `examples/`          | Fictional seeds, fixtures and benchmarks                                                            |
 | `test/`              | Root application unit, integration and browser checks                                               |
 | `config/`            | Versioned tooling policies; `.fallow/` is disposable cache                                          |
+| `scripts/`           | Repository maintenance commands                                                                     |
 | `docs/`              | User guides, architecture, product decisions and progress                                           |
 | `docs/ux-artifacts/` | Isolated design studies and historical research; see the [study index](docs/ux-artifacts/README.md) |
 | `.github/workflows/` | Checks run by GitHub Actions                                                                        |
@@ -54,6 +55,32 @@ Contributions to Tracer's original source and documentation use the [MIT license
 Keep source beside the layer that owns its behavior. The root package builds the only product UI, with the default `ui/workbench/` and retained `ui/map/`. All example commands use it over native databases. The former map-first package only delegates to root commands; projection tests live in `test/map/`. The older editor/query components live in `test/legacy-ui/components/` and mount through a test-only harness under `.fallow/legacy-ui`; production imports from this fixture are forbidden. Avoid moving modules solely to make directories smaller: preserve import boundaries and group by behavior when a concrete change warrants it.
 
 Generated builds, dependency installs, caches, local databases, environment files and `output/` review captures stay out of Git. Preserve useful review images locally; copy only intentionally selected documentation illustrations into `docs/images/` or a documented study.
+
+## Clean generated files
+
+Stop development/test servers that serve generated assets, then preview or remove
+reproducible output:
+
+```sh
+npm run clean -- --dry-run
+npm run clean
+```
+
+The command removes `dist/`, coverage and browser test results/reports, generated
+legacy/workbench test builds, Fallow analysis caches and the root `.DS_Store`.
+It resolves paths from its own repository, so invoking it from another working
+directory cannot select a different cleanup target. It refuses a symlinked
+`.fallow/` parent rather than following it into another directory.
+
+Project databases/backups, retained reports, `output/`, historical baseline/source
+snapshots, environment files and installed dependencies are preserved. The command
+does not purge the entire `.fallow/` directory or guess which historical files are
+obsolete. Use the [development evidence index](projects/tracer/evidence-index.md)
+to find retained proof and its preservation rules.
+
+After cleaning, `npm run build` regenerates product assets. Use `npm run check`
+to collect fresh unit/browser coverage and run the quality gates again;
+`npm run quality` alone requires those measurements.
 
 ## Maintaining the shared UI
 

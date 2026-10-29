@@ -25,6 +25,7 @@ The [industry guides](industry-workflows/README.md) compare medical devices, sof
 ## Build and contribute
 
 - [Tracer development register](../projects/tracer/README.md): persistent headless needs, requirements, delivery status and work selection for developing Tracer itself.
+- [Development evidence index](../projects/tracer/evidence-index.md): specifications, complete-scope audits and preservation reports, with historical phase evidence kept intact.
 - [Contributing](../CONTRIBUTING.md): setup, checks and change expectations.
 - [Architecture](architecture.md): core contracts, adapters, query boundaries and temporal behavior.
 - [Development flow](development-flow.md): implementation and design principles.

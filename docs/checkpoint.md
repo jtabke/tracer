@@ -1,5 +1,31 @@
 # Tracer implementation status
 
+## Repository housekeeping — data and evidence preserved
+
+2026-10-29: added `npm run clean` and its `--dry-run` preview. Cleanup is anchored
+to the script's repository and uses an explicit allowlist of generated builds,
+coverage, browser results, analysis caches and root OS metadata. It refuses a
+symlinked cache parent. Two disposable-filesystem regressions cover preview,
+invalid arguments, invocation from another working directory, repeat cleanup,
+symlink behavior and retained data/evidence. Three architecture regressions also
+pass. The new maintenance directory belongs to the existing tooling boundary;
+quality thresholds and exclusions are unchanged.
+
+The [development evidence index](../projects/tracer/evidence-index.md) adds
+navigation and role guidance while retaining all captured report paths and bytes.
+Formatting, types, lint, build and quality gates passed before cleanup; application
+runtime behavior was not changed. Cleanup removed approximately **2.40 GiB** of
+reproducible output. Before/after hashes match for **4,647 protected files**
+(2,926,632,653 bytes), including project databases/backups, retained reports,
+local output evidence and historical source/baseline snapshots. No tracked file
+was deleted, and native register revision191 remains unchanged. Exact cleanup
+logs and hash manifests are under `output/repository-cleanup/`.
+
+Coverage/build outputs are intentionally absent after cleanup. `npm run check`
+rebuilds and recollects coverage for the next quality run. Historical baselines,
+local evidence, installed dependencies and real project data were preserved;
+no product requirement, delivery or validation status was promoted.
+
 ## Concurrent local reliability and measured workloads — verified declared local scope
 
 2026-10-29: completed every unchanged REQ-036 AC-1–9 and all eight paragraphs of

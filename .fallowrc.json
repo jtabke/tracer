@@ -100,7 +100,7 @@
       },
       {
         "name": "tooling",
-        "patterns": ["eslint.config.js", "vite.config.ts", "playwright.config.ts"]
+        "patterns": ["eslint.config.js", "vite.config.ts", "playwright.config.ts", "scripts/**"]
       }
     ],
     "rules": [

@@ -89,6 +89,7 @@ npx playwright install chromium
 npm run check       # formatting, types, hooks, unit/browser tests and quality
 npm test            # focused unit/service/projection checks
 npm run build
+npm run clean -- --dry-run  # preview reproducible build/cache cleanup
 ```
 
 Linux runners may need additional Chromium system dependencies; see [contributing](CONTRIBUTING.md).

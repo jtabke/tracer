@@ -16,6 +16,10 @@ The persistent database is `projects/tracer/tracer.sqlite`. Paths in this helper
 
 Use this register before selecting feature work and update the affected records after completing a slice. An explicit current owner request takes precedence over the recorded recommendations. This is an initial curated inventory, not an exhaustive requirements audit.
 
+The [evidence index](evidence-index.md) distinguishes specifications, phase reports,
+complete-scope checks, procedure archives and preservation evidence without moving
+their captured paths or duplicating live delivery status.
+
 The [2026-10-21 audit](../../docs/development-model-plan.md) identified mixed granularity and unclear evidence semantics. The owner selected the [current development model](../../docs/development-model.md) on 2026-10-23. The live project now has bounded REQ requirements, an explicit system/component hierarchy and VER verification plans. Existing TR summaries retain their identities and prior claims with `lifecycle=superseded`; follow their replacement keys. `status` shows active requirements and component ownership. Internal and discovery work can now target its actual subject.
 
 ## What belongs here
