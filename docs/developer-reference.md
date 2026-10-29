@@ -1012,3 +1012,25 @@ Continue with exact `evaluations.nextAfter` and the same baseline/root/direction
 The service is `tracer.getChangeImpact(query)`. Typed local HTTP is GET `/api/impact?baselineId=...&rootId=...&direction=incoming&relationshipTypes=%5B%22depends_on%22%5D&depth=2&limit=10`; encode relationship types as a JSON string array using `URLSearchParams`, and include opaque `after` unchanged when continuing. Unknown/duplicate parameters reject; malformed/bounds/type errors 400, stale contexts 409 and missing baseline/root 404. A dedicated UI for this baseline-scoped impact query remains unimplemented.
 
 The disposable benchmark also measures five bounded impact reads before and after 5,000 unrelated receipts, using public commands and asserting that only the relevant receipt is returned. It reports individual samples, median and maximum on the running host. This measures a local synthetic workload, not concurrency, a service target or arbitrary-scale readiness.
+
+### Concurrent local reads and writes
+
+Application read entry points use the repository's declared read-only transaction
+mode. Each callback gets one committed native/evidence snapshot; SQLite readers
+can coexist with an independent active writer. Writes attempted through that mode
+reject without modifying state. Read-only is an adapter contract, not an
+organizational permission or authentication mechanism.
+
+Write transactions retain their existing schema/object/project/evidence guards.
+Independent writers may return `busy`; no callback is automatically replayed.
+A missing outcome means no success was visible in that read snapshot and does
+not prove an in-flight command failed. Inspect the original command identity
+following an uncertain response, and preserve the original intent. A subsequent
+request reads a new snapshot: ordinary pagination does not acquire a session-wide
+snapshot. Existing captured configuration and guarded continuation contracts
+remain authoritative.
+
+The [local concurrency specification](../projects/tracer/concurrent-local-specification.json)
+and [workload budgets](../projects/tracer/concurrent-local-budgets.json) state the
+selected proof and its limits. Read availability assumes an already-open SQLite
+repository; startup migration/index checks still need a writer reservation.

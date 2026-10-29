@@ -59,11 +59,14 @@ export class SavedViews {
     this.newId = newId;
   }
   list() {
-    return this.repository.transaction(async (tx) => {
-      const views = await tx.listViews();
-      ensure(views.length <= 50, "validation", "Project exceeds 50 saved views");
-      return views;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const views = await tx.listViews();
+        ensure(views.length <= 50, "validation", "Project exceeds 50 saved views");
+        return views;
+      },
+      { readOnly: true },
+    );
   }
   async save(input: ViewSave): Promise<SavedView> {
     input = snapshotInput(input);

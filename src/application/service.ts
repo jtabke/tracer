@@ -136,14 +136,17 @@ export class Tracer {
   }
   /** Annotation reads never assert external-content capture; default native input semantics are unchanged. */
   getNativePin(id: string, version: number, facet: "native" | "annotations" = "native") {
-    return this.repository.transaction((tx) => {
-      ensure(
-        facet === "native" || facet === "annotations",
-        "validation",
-        "Invalid native pin facet",
-      );
-      return pinEntity(tx, id, version, facet === "annotations");
-    });
+    return this.repository.transaction(
+      (tx) => {
+        ensure(
+          facet === "native" || facet === "annotations",
+          "validation",
+          "Invalid native pin facet",
+        );
+        return pinEntity(tx, id, version, facet === "annotations");
+      },
+      { readOnly: true },
+    );
   }
   /** Export current native state and all recorded provenance/evidence in one read snapshot. */
   exportProject() {
@@ -243,6 +246,7 @@ export class Tracer {
     changesetCommandId(commandId);
     return this.repository.transaction(
       async (tx) => (await tx.getChangesetCommand(commandId))?.result ?? null,
+      { readOnly: true },
     );
   }
   private async nativeBatch(
@@ -648,10 +652,10 @@ export class Tracer {
     return previewSchema(this.repository, input);
   }
   getSchema() {
-    return this.repository.transaction((tx) => tx.get("schema", "project"));
+    return this.repository.transaction((tx) => tx.get("schema", "project"), { readOnly: true });
   }
   timeline(before?: number) {
-    return this.repository.transaction((tx) => nativeTimeline(tx, before));
+    return this.repository.transaction((tx) => nativeTimeline(tx, before), { readOnly: true });
   }
   getGraph(query: GraphQuery): Promise<Graph> {
     return this.queries.getGraph(query);
@@ -684,21 +688,21 @@ export class Tracer {
     return this.queries.getConnections(query);
   }
   getProjectSnapshot() {
-    return this.repository.transaction(projectSnapshot);
+    return this.repository.transaction(projectSnapshot, { readOnly: true });
   }
   async queryEntities(query: EntityQuery = {}) {
     query = snapshotInput(query);
     validateObjectQuery(query, "entity");
-    return this.repository.transaction((tx) => tx.query("entity", query)) as Promise<
-      import("../core/model.ts").Page<Entity>
-    >;
+    return this.repository.transaction((tx) => tx.query("entity", query), {
+      readOnly: true,
+    }) as Promise<import("../core/model.ts").Page<Entity>>;
   }
   async queryRelationships(query: RelationshipQuery = {}) {
     query = snapshotInput(query);
     validateObjectQuery(query, "relationship");
-    return this.repository.transaction((tx) => tx.query("relationship", query)) as Promise<
-      import("../core/model.ts").Page<Relationship>
-    >;
+    return this.repository.transaction((tx) => tx.query("relationship", query), {
+      readOnly: true,
+    }) as Promise<import("../core/model.ts").Page<Relationship>>;
   }
   async history(query: HistoryQuery = {}) {
     query = snapshotInput(query);
@@ -722,7 +726,7 @@ export class Tracer {
       "validation",
       "Invalid history cursor",
     );
-    return this.repository.transaction((tx) => tx.history(query));
+    return this.repository.transaction((tx) => tx.history(query), { readOnly: true });
   }
   async changesets(afterRevision = 0, limit = 100) {
     validatePageLimit(limit);
@@ -731,7 +735,9 @@ export class Tracer {
       "validation",
       "Invalid project revision",
     );
-    return this.repository.transaction((tx) => tx.changesets(afterRevision, limit));
+    return this.repository.transaction((tx) => tx.changesets(afterRevision, limit), {
+      readOnly: true,
+    });
   }
   async traverse(
     id: string,
@@ -744,42 +750,45 @@ export class Tracer {
   ) {
     options = snapshotInput(options);
     const { direction, maxDepth, maxNodes } = traversalOptions(id, options);
-    return this.repository.transaction(async (tx) => {
-      ensure(await tx.get("entity", id), "not_found", "Entity not found");
-      const visited = new Set([id]),
-        queue = [{ id, depth: 0 }];
-      function visit(next: string, depth: number) {
-        if (!visited.has(next)) {
-          ensure(
-            queue.length - 1 < maxNodes,
-            "validation",
-            "Traversal node limit exceeded; narrow the query",
-          );
-          visited.add(next);
-          const item = { id: next, depth: depth + 1 };
-          queue.push(item);
+    return this.repository.transaction(
+      async (tx) => {
+        ensure(await tx.get("entity", id), "not_found", "Entity not found");
+        const visited = new Set([id]),
+          queue = [{ id, depth: 0 }];
+        function visit(next: string, depth: number) {
+          if (!visited.has(next)) {
+            ensure(
+              queue.length - 1 < maxNodes,
+              "validation",
+              "Traversal node limit exceeded; narrow the query",
+            );
+            visited.add(next);
+            const item = { id: next, depth: depth + 1 };
+            queue.push(item);
+          }
         }
-      }
-      for (let index = 0; index < queue.length; index++) {
-        const current = queue[index];
-        if (current.depth >= maxDepth) continue;
-        const endpoint =
-          direction === "forward"
-            ? { source: current.id }
-            : direction === "reverse"
-              ? { target: current.id }
-              : { incident: current.id };
-        for (const link of (await nativeObjects(tx, "relationship", {
-          ...endpoint,
-          type: options.type,
-        })) as Relationship[]) {
-          const next =
-            link.source === current.id && direction !== "reverse" ? link.target : link.source;
-          visit(next, current.depth);
+        for (let index = 0; index < queue.length; index++) {
+          const current = queue[index];
+          if (current.depth >= maxDepth) continue;
+          const endpoint =
+            direction === "forward"
+              ? { source: current.id }
+              : direction === "reverse"
+                ? { target: current.id }
+                : { incident: current.id };
+          for (const link of (await nativeObjects(tx, "relationship", {
+            ...endpoint,
+            type: options.type,
+          })) as Relationship[]) {
+            const next =
+              link.source === current.id && direction !== "reverse" ? link.target : link.source;
+            visit(next, current.depth);
+          }
         }
-      }
-      return queue.slice(1);
-    });
+        return queue.slice(1);
+      },
+      { readOnly: true },
+    );
   }
 }
 

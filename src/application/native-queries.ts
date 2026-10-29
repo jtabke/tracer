@@ -46,16 +46,19 @@ export class NativeQueries {
     } catch (error) {
       return Promise.reject(error);
     }
-    return this.repository.transaction(async (tx) => {
-      if (query.atRevision !== undefined) return temporalGraph(tx, query);
-      const schema = await projectSchema(tx);
-      const neighborhood = await graphNeighborhood(tx, query);
-      const evidence = await this.evidence.graphEvidence(
-        tx,
-        neighborhood.nodes.map((node) => node.id),
-      );
-      return { schema, ...neighborhood, ...evidence };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        if (query.atRevision !== undefined) return temporalGraph(tx, query);
+        const schema = await projectSchema(tx);
+        const neighborhood = await graphNeighborhood(tx, query);
+        const evidence = await this.evidence.graphEvidence(
+          tx,
+          neighborhood.nodes.map((node) => node.id),
+        );
+        return { schema, ...neighborhood, ...evidence };
+      },
+      { readOnly: true },
+    );
   }
   async getTable(query: TableQuery) {
     query = snapshotInput(query);
@@ -63,17 +66,20 @@ export class NativeQueries {
     const { focusId, ...filters } = query;
     validateObjectQuery(filters, "entity");
     ensure(typeof query.type === "string", "validation", "Table needs an entity type");
-    return this.repository.transaction(async (tx) => {
-      const schema = await projectSchema(tx);
-      ensure(Object.hasOwn(schema.entityTypes, query.type), "validation", "Unknown entity type");
-      return {
-        schema,
-        entities: (await tx.query("entity", {
-          ...filters,
-          after: await focusedAfter(tx, query.type, focusId, query.after),
-        })) as import("../core/model.ts").Page<Entity>,
-      };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const schema = await projectSchema(tx);
+        ensure(Object.hasOwn(schema.entityTypes, query.type), "validation", "Unknown entity type");
+        return {
+          schema,
+          entities: (await tx.query("entity", {
+            ...filters,
+            after: await focusedAfter(tx, query.type, focusId, query.after),
+          })) as import("../core/model.ts").Page<Entity>,
+        };
+      },
+      { readOnly: true },
+    );
   }
   async getMatrix(query: MatrixQuery) {
     query = snapshotInput(query);
@@ -103,40 +109,43 @@ export class NativeQueries {
       "validation",
       "Matrix filters must be text",
     );
-    return this.repository.transaction(async (tx) => {
-      const schema = await projectSchema(tx);
-      ensure(
-        Object.hasOwn(schema.entityTypes, query.sourceType) &&
-          Object.hasOwn(schema.entityTypes, query.targetType) &&
-          Object.hasOwn(schema.relationshipTypes, query.relationshipType),
-        "validation",
-        "Unknown matrix type",
-      );
-      const definition = schema.relationshipTypes[query.relationshipType];
-      ensure(
-        (!definition.source || definition.source.includes(query.sourceType)) &&
-          (!definition.target || definition.target.includes(query.targetType)),
-        "validation",
-        "Matrix types violate endpoint constraints",
-      );
-      const sources = (await tx.query("entity", {
-        type: query.sourceType,
-        after: await focusedAfter(tx, query.sourceType, query.sourceFocus, query.sourceAfter),
-        limit,
-      })) as import("../core/model.ts").Page<Entity>;
-      const targets = (await tx.query("entity", {
-        type: query.targetType,
-        after: await focusedAfter(tx, query.targetType, query.targetFocus, query.targetAfter),
-        limit,
-      })) as import("../core/model.ts").Page<Entity>;
-      const projection = await tx.traceability(
-        sources.items.map((item) => item.id),
-        targets.items.map((item) => item.id),
-        query.targetType,
-        query.relationshipType,
-      );
-      return { schema, sources, targets, ...projection };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const schema = await projectSchema(tx);
+        ensure(
+          Object.hasOwn(schema.entityTypes, query.sourceType) &&
+            Object.hasOwn(schema.entityTypes, query.targetType) &&
+            Object.hasOwn(schema.relationshipTypes, query.relationshipType),
+          "validation",
+          "Unknown matrix type",
+        );
+        const definition = schema.relationshipTypes[query.relationshipType];
+        ensure(
+          (!definition.source || definition.source.includes(query.sourceType)) &&
+            (!definition.target || definition.target.includes(query.targetType)),
+          "validation",
+          "Matrix types violate endpoint constraints",
+        );
+        const sources = (await tx.query("entity", {
+          type: query.sourceType,
+          after: await focusedAfter(tx, query.sourceType, query.sourceFocus, query.sourceAfter),
+          limit,
+        })) as import("../core/model.ts").Page<Entity>;
+        const targets = (await tx.query("entity", {
+          type: query.targetType,
+          after: await focusedAfter(tx, query.targetType, query.targetFocus, query.targetAfter),
+          limit,
+        })) as import("../core/model.ts").Page<Entity>;
+        const projection = await tx.traceability(
+          sources.items.map((item) => item.id),
+          targets.items.map((item) => item.id),
+          query.targetType,
+          query.relationshipType,
+        );
+        return { schema, sources, targets, ...projection };
+      },
+      { readOnly: true },
+    );
   }
   getChain(query: ChainQuery) {
     query = snapshotInput(query);
@@ -147,8 +156,9 @@ export class NativeQueries {
       "entity",
     );
     ensure((query.limit ?? 20) <= 20, "validation", "Show at most 20 chain roots per page");
-    return this.repository.transaction(async (tx) =>
-      chainTable(tx, await projectSchema(tx), query),
+    return this.repository.transaction(
+      async (tx) => chainTable(tx, await projectSchema(tx), query),
+      { readOnly: true },
     );
   }
   getWorkingSet(query: ObjectQuery = {}) {
@@ -169,12 +179,15 @@ export class NativeQueries {
       "validation",
       "Choose a field/value pair or relationship/target pair",
     );
-    return this.repository.transaction(async (tx) => {
-      const schema = await projectSchema(tx);
-      this.validateWorkingFields(schema, query);
-      this.validateWorkingCoverage(schema, query);
-      return { schema, ...(await tx.workingSet(query)) };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const schema = await projectSchema(tx);
+        this.validateWorkingFields(schema, query);
+        this.validateWorkingCoverage(schema, query);
+        return { schema, ...(await tx.workingSet(query)) };
+      },
+      { readOnly: true },
+    );
   }
   private validateWorkingFields(schema: SchemaObject, query: ObjectQuery) {
     ensure(
@@ -217,20 +230,24 @@ export class NativeQueries {
     );
     validateObjectQuery(query, "relationship");
     ensure((query.limit ?? 25) <= 25, "validation", "Show at most 25 recorded connections");
-    return this.repository.transaction(async (tx) => {
-      const schema = await projectSchema(tx);
-      ensure(
-        Object.hasOwn(schema.relationshipTypes, query.type),
-        "validation",
-        "Unknown relationship type",
-      );
-      return recordedConnections(tx, schema, query);
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const schema = await projectSchema(tx);
+        ensure(
+          Object.hasOwn(schema.relationshipTypes, query.type),
+          "validation",
+          "Unknown relationship type",
+        );
+        return recordedConnections(tx, schema, query);
+      },
+      { readOnly: true },
+    );
   }
   async getFamily(query: FamilyQuery) {
     query = snapshotInput(query);
-    return this.repository.transaction(async (tx) =>
-      familyWorkspace(tx, await projectSchema(tx), query),
+    return this.repository.transaction(
+      async (tx) => familyWorkspace(tx, await projectSchema(tx), query),
+      { readOnly: true },
     );
   }
   getConnections(query: ConnectionsQuery) {
@@ -242,34 +259,37 @@ export class NativeQueries {
       "relationship",
     );
     ensure((query.limit ?? 25) <= 50, "validation", "Show at most 50 connections at a time");
-    return this.repository.transaction(async (tx) => {
-      const schema = await projectSchema(tx);
-      ensure(
-        query.type === undefined || Object.hasOwn(schema.relationshipTypes, query.type),
-        "validation",
-        "Unknown relationship type",
-      );
-      const entity = await tx.get("entity", query.id);
-      ensure(entity, "not_found", "Item no longer exists");
-      const page = await tx.query("relationship", {
-        type: query.type,
-        after: query.after,
-        incident: query.id,
-        limit: query.limit ?? 25,
-      });
-      const items = [];
-      for (const relationship of page.items as Relationship[]) {
-        const source = (await tx.get("entity", relationship.source)) as Entity;
-        const target = (await tx.get("entity", relationship.target)) as Entity;
-        items.push({ relationship, source, target });
-      }
-      return {
-        schema,
-        entity,
-        items,
-        nextAfter: page.nextAfter,
-        total: await tx.connectionCount(query.id, query.type),
-      };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const schema = await projectSchema(tx);
+        ensure(
+          query.type === undefined || Object.hasOwn(schema.relationshipTypes, query.type),
+          "validation",
+          "Unknown relationship type",
+        );
+        const entity = await tx.get("entity", query.id);
+        ensure(entity, "not_found", "Item no longer exists");
+        const page = await tx.query("relationship", {
+          type: query.type,
+          after: query.after,
+          incident: query.id,
+          limit: query.limit ?? 25,
+        });
+        const items = [];
+        for (const relationship of page.items as Relationship[]) {
+          const source = (await tx.get("entity", relationship.source)) as Entity;
+          const target = (await tx.get("entity", relationship.target)) as Entity;
+          items.push({ relationship, source, target });
+        }
+        return {
+          schema,
+          entity,
+          items,
+          nextAfter: page.nextAfter,
+          total: await tx.connectionCount(query.id, query.type),
+        };
+      },
+      { readOnly: true },
+    );
   }
 }

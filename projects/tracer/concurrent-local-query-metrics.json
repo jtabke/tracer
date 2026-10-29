@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-28",
+  "candidateHashes": [
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "b1946b0df4fe99c7ea8c4b539fe79c91b23bce3a71e3fe4d7d326aa5c29eb66a"
+    },
+    {
+      "path": "src/application/ports/repository.ts",
+      "sha256": "8a0abedf28f4a133a9294b9c2e7b833c3b3e44160ef7851033470643b45070a9"
+    }
+  ],
+  "scope": "Actual native190/schema7 project read-only core tasks. Driver wraps native SQLite prepare/exec and statement all/get/run only for this process, restoring original prototypes in finally. Public Tracer commands unchanged.",
+  "method": "Count driver prepare calls, exec calls and returned all/get rows per whole public callback, including repeated historical-pin/model reads. Exec counts include query_only/BEGIN/COMMIT. A returned JSON row can contain many captured inputs; returnedRows is not SQL scan work, allocation or query-plan complexity.",
+  "results": [
+    {
+      "name": "entities100",
+      "prepareCalls": 1,
+      "execCalls": 4,
+      "allCalls": 1,
+      "getCalls": 0,
+      "runCalls": 0,
+      "returnedRows": 101,
+      "durationMs": 6.843833000000004,
+      "payloadBytes": 115897
+    },
+    {
+      "name": "history100",
+      "prepareCalls": 1,
+      "execCalls": 4,
+      "allCalls": 1,
+      "getCalls": 0,
+      "runCalls": 0,
+      "returnedRows": 101,
+      "durationMs": 1.508874999999989,
+      "payloadBytes": 127212
+    },
+    {
+      "name": "exactPair",
+      "prepareCalls": 2,
+      "execCalls": 4,
+      "allCalls": 0,
+      "getCalls": 2,
+      "runCalls": 0,
+      "returnedRows": 2,
+      "durationMs": 13.08675000000001,
+      "payloadBytes": 301017
+    },
+    {
+      "name": "dependencies1",
+      "prepareCalls": 8,
+      "execCalls": 4,
+      "allCalls": 2,
+      "getCalls": 6,
+      "runCalls": 0,
+      "returnedRows": 8,
+      "durationMs": 23.945625000000007,
+      "payloadBytes": 718987
+    },
+    {
+      "name": "verification",
+      "prepareCalls": 21,
+      "execCalls": 4,
+      "allCalls": 1,
+      "getCalls": 20,
+      "runCalls": 0,
+      "returnedRows": 19,
+      "durationMs": 15.69191699999999,
+      "payloadBytes": 34436
+    },
+    {
+      "name": "assessment",
+      "prepareCalls": 253,
+      "execCalls": 4,
+      "allCalls": 52,
+      "getCalls": 201,
+      "runCalls": 0,
+      "returnedRows": 249,
+      "durationMs": 96.4445,
+      "payloadBytes": 35229
+    }
+  ],
+  "bounds": "Existing page100/page1, exact capture/scope, 8 MiB impact response and 256 KiB assessment view limits remain unchanged. Complete 56-page scope is separately streamed and measured; query observations do not prove hardware-independent or arbitrary-scale upper bounds. No query optimization followed this measurement.",
+  "noWrites": true
+}

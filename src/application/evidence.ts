@@ -126,16 +126,19 @@ export class EvidenceService {
     ensure(record(input), "validation", "Observation input is required");
     const location = locator(input.locator);
     // Resolve locally outside the database lock. Observation is a point-in-time fact, not a source mutation.
-    await this.repository.transaction(async (tx) => {
-      const resource = await entity(tx, input.entityId);
-      const external =
-        (await tx.getEvidence("external", input.entityId)) ?? resource.resource?.source;
-      ensure(
-        external && external.system === location.system,
-        "validation",
-        "Bind the matching external identity first",
-      );
-    });
+    await this.repository.transaction(
+      async (tx) => {
+        const resource = await entity(tx, input.entityId);
+        const external =
+          (await tx.getEvidence("external", input.entityId)) ?? resource.resource?.source;
+        ensure(
+          external && external.system === location.system,
+          "validation",
+          "Bind the matching external identity first",
+        );
+      },
+      { readOnly: true },
+    );
     const state = snapshotInput(await this.observeSource(snapshotInput(location)));
     ensure(
       json(state) &&
@@ -169,11 +172,14 @@ export class EvidenceService {
   }
   compareReceipt(id: string): Promise<Comparison> {
     text(id, "Receipt ID");
-    return this.repository.transaction(async (tx) => {
-      const receipt = await tx.getEvidence("receipt", id);
-      ensure(receipt, "not_found", "Receipt not found");
-      return this.comparison(tx, receipt);
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const receipt = await tx.getEvidence("receipt", id);
+        ensure(receipt, "not_found", "Receipt not found");
+        return this.comparison(tx, receipt);
+      },
+      { readOnly: true },
+    );
   }
   private async comparison(tx: Transaction, receipt: Receipt): Promise<Comparison> {
     const id = receipt.id;
@@ -222,11 +228,14 @@ export class EvidenceService {
   }
   getReceipt(id: string): Promise<Receipt> {
     text(id, "Receipt ID");
-    return this.repository.transaction(async (tx) => {
-      const value = await tx.getEvidence("receipt", id);
-      ensure(value, "not_found", "Receipt not found: " + id);
-      return value;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const value = await tx.getEvidence("receipt", id);
+        ensure(value, "not_found", "Receipt not found: " + id);
+        return value;
+      },
+      { readOnly: true },
+    );
   }
   list<K extends EvidenceKind>(kind: K, query: EvidenceQuery = {}) {
     query = snapshotInput(query);
@@ -238,6 +247,6 @@ export class EvidenceService {
       "Invalid evidence query",
     );
     validateEvidenceCursor(query);
-    return this.repository.transaction((tx) => tx.evidence(kind, query));
+    return this.repository.transaction((tx) => tx.evidence(kind, query), { readOnly: true });
   }
 }

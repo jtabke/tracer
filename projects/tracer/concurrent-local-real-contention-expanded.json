@@ -1,0 +1,5658 @@
+{
+  "date": "2026-10-28",
+  "scope": "Faithful online copy of actual Tracer native190/schema7; 2 then 4 independent reader processes and one writer per profile; public entity/history pages100 and 25 explicitly synthetic resource creations per profile. Native/evidence contents retained; no live writes.",
+  "environment": {
+    "node": "v26.12.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "concurrentActivity": "Full regression/browser check active"
+  },
+  "candidateHashes": [
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "b1946b0df4fe99c7ea8c4b539fe79c91b23bce3a71e3fe4d7d326aa5c29eb66a"
+    },
+    {
+      "path": "src/application/ports/repository.ts",
+      "sha256": "8a0abedf28f4a133a9294b9c2e7b833c3b3e44160ef7851033470643b45070a9"
+    },
+    {
+      "path": "output/concurrent-local/workload-worker.mjs",
+      "sha256": "5d3e8770b2378cb6583569306a18a53373af20725400ce64b0d705fa994d5916"
+    }
+  ],
+  "original": { "projectRevision": 190, "entities": 653, "relationships": 801 },
+  "profiles": [
+    {
+      "readClients": 2,
+      "writeClients": 1,
+      "readRequests": 100,
+      "acknowledgedWrites": 25,
+      "elapsedMs": 62.81008299999996,
+      "p95RoundTripMs": 1.2545000000000073,
+      "maxRoundTripMs": 3.2729160000000093,
+      "maxSampledRssBytes": 72700488,
+      "startingReaderMemory": [
+        {
+          "rss": 63819160,
+          "heapTotal": 17563648,
+          "heapUsed": 14050600,
+          "external": 6092992,
+          "arrayBuffers": 334743
+        },
+        {
+          "rss": 62033256,
+          "heapTotal": 17563648,
+          "heapUsed": 14050936,
+          "external": 6092992,
+          "arrayBuffers": 334743
+        }
+      ],
+      "reads": [
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 1.4137920000000008,
+          "roundTripMs": 2.5882500000000164,
+          "payloadBytes": 115897,
+          "memory": {
+            "rss": 63213000,
+            "heapTotal": 17825792,
+            "heapUsed": 11486184,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 1.428750000000008,
+          "roundTripMs": 3.2729160000000093,
+          "payloadBytes": 115897,
+          "memory": {
+            "rss": 64966136,
+            "heapTotal": 17825792,
+            "heapUsed": 11477760,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.8413329999999917,
+          "roundTripMs": 1.4980830000000083,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64065064,
+            "heapTotal": 18317312,
+            "heapUsed": 12413864,
+            "external": 5961901,
+            "arrayBuffers": 203558
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.6817499999999939,
+          "roundTripMs": 1.4851249999999823,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 65752664,
+            "heapTotal": 18317312,
+            "heapUsed": 12405448,
+            "external": 5961901,
+            "arrayBuffers": 203558
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4136670000000038,
+          "roundTripMs": 0.976916000000017,
+          "payloadBytes": 115897,
+          "memory": {
+            "rss": 64654984,
+            "heapTotal": 18841600,
+            "heapUsed": 13338224,
+            "external": 5961958,
+            "arrayBuffers": 203615
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4730000000000132,
+          "roundTripMs": 0.9913329999999974,
+          "payloadBytes": 115897,
+          "memory": {
+            "rss": 66358968,
+            "heapTotal": 18841600,
+            "heapUsed": 13335944,
+            "external": 5961958,
+            "arrayBuffers": 203615
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.45812499999999545,
+          "roundTripMs": 1.0415830000000028,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 65228520,
+            "heapTotal": 19333120,
+            "heapUsed": 14231688,
+            "external": 5962009,
+            "arrayBuffers": 203666
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.49729099999998994,
+          "roundTripMs": 1.1245420000000195,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66932480,
+            "heapTotal": 19333120,
+            "heapUsed": 14228848,
+            "external": 5962009,
+            "arrayBuffers": 203666
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.7412080000000003,
+          "roundTripMs": 1.2699999999999818,
+          "payloadBytes": 114286,
+          "memory": {
+            "rss": 66047840,
+            "heapTotal": 20119552,
+            "heapUsed": 15185904,
+            "external": 5962066,
+            "arrayBuffers": 203723
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.6319159999999897,
+          "roundTripMs": 1.134208000000001,
+          "payloadBytes": 114286,
+          "memory": {
+            "rss": 67719056,
+            "heapTotal": 20119552,
+            "heapUsed": 15185936,
+            "external": 5962066,
+            "arrayBuffers": 203723
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.5308330000000012,
+          "roundTripMs": 1.0589160000000106,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67080200,
+            "heapTotal": 21102592,
+            "heapUsed": 16084064,
+            "external": 5962117,
+            "arrayBuffers": 203774
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.46837499999998045,
+          "roundTripMs": 1.1875410000000102,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68767824,
+            "heapTotal": 21102592,
+            "heapUsed": 16084096,
+            "external": 5962117,
+            "arrayBuffers": 203774
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5203329999999937,
+          "roundTripMs": 1.0446249999999964,
+          "payloadBytes": 113760,
+          "memory": {
+            "rss": 68128896,
+            "heapTotal": 21889024,
+            "heapUsed": 17019256,
+            "external": 5962174,
+            "arrayBuffers": 203831
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.5137079999999798,
+          "roundTripMs": 1.067416000000037,
+          "payloadBytes": 113760,
+          "memory": {
+            "rss": 69816544,
+            "heapTotal": 21889024,
+            "heapUsed": 17019288,
+            "external": 5962174,
+            "arrayBuffers": 203831
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4622919999999908,
+          "roundTripMs": 1.1192499999999654,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69177664,
+            "heapTotal": 22872064,
+            "heapUsed": 17905648,
+            "external": 5962225,
+            "arrayBuffers": 203882
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.6050829999999792,
+          "roundTripMs": 1.2545000000000073,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70848928,
+            "heapTotal": 22872064,
+            "heapUsed": 17905680,
+            "external": 5962225,
+            "arrayBuffers": 203882
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5724170000000015,
+          "roundTripMs": 1.0428340000000276,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 69833120,
+            "heapTotal": 19398656,
+            "heapUsed": 12155336,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4482089999999914,
+          "roundTripMs": 0.8500419999999735,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 71455232,
+            "heapTotal": 19398656,
+            "heapUsed": 11846168,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.43679199999999696,
+          "roundTripMs": 0.9033339999999725,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69849504,
+            "heapTotal": 19857408,
+            "heapUsed": 12751736,
+            "external": 5961902,
+            "arrayBuffers": 203559
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3947499999999877,
+          "roundTripMs": 0.8588340000000017,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71488000,
+            "heapTotal": 19857408,
+            "heapUsed": 12751768,
+            "external": 5961902,
+            "arrayBuffers": 203559
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.46183399999998187,
+          "roundTripMs": 0.9248749999999859,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 69849504,
+            "heapTotal": 20381696,
+            "heapUsed": 13683856,
+            "external": 5961960,
+            "arrayBuffers": 203617
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4873749999999859,
+          "roundTripMs": 0.9294579999999542,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 71488000,
+            "heapTotal": 20381696,
+            "heapUsed": 13683176,
+            "external": 5961960,
+            "arrayBuffers": 203617
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.37120799999999576,
+          "roundTripMs": 0.8547500000000241,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69849504,
+            "heapTotal": 20840448,
+            "heapUsed": 14565976,
+            "external": 5962012,
+            "arrayBuffers": 203669
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.39983399999999847,
+          "roundTripMs": 0.8274159999999711,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71504384,
+            "heapTotal": 20840448,
+            "heapUsed": 14565072,
+            "external": 5962012,
+            "arrayBuffers": 203669
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.47195899999999824,
+          "roundTripMs": 0.8931250000000546,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 69849504,
+            "heapTotal": 21364736,
+            "heapUsed": 15511000,
+            "external": 5962070,
+            "arrayBuffers": 203727
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4766659999999945,
+          "roundTripMs": 0.9323340000000258,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 71504384,
+            "heapTotal": 21364736,
+            "heapUsed": 15511024,
+            "external": 5962070,
+            "arrayBuffers": 203727
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.42345799999998235,
+          "roundTripMs": 0.8682919999999967,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69865888,
+            "heapTotal": 21856256,
+            "heapUsed": 16388000,
+            "external": 5962122,
+            "arrayBuffers": 203779
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.37862500000002797,
+          "roundTripMs": 0.8015420000000404,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71504384,
+            "heapTotal": 21856256,
+            "heapUsed": 16388056,
+            "external": 5962122,
+            "arrayBuffers": 203779
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.47999999999998977,
+          "roundTripMs": 0.8852919999999926,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 70144464,
+            "heapTotal": 22642688,
+            "heapUsed": 17302672,
+            "external": 5962180,
+            "arrayBuffers": 203837
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.3945840000000089,
+          "roundTripMs": 1.0159999999999627,
+          "payloadBytes": 112199,
+          "memory": {
+            "rss": 71766552,
+            "heapTotal": 22642688,
+            "heapUsed": 17302728,
+            "external": 5962180,
+            "arrayBuffers": 203837
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4568749999999966,
+          "roundTripMs": 1.015625,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70603264,
+            "heapTotal": 23396352,
+            "heapUsed": 18178672,
+            "external": 5962232,
+            "arrayBuffers": 203889
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4160840000000121,
+          "roundTripMs": 1.0841249999999718,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72225352,
+            "heapTotal": 23396352,
+            "heapUsed": 18178696,
+            "external": 5962232,
+            "arrayBuffers": 203889
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5022500000000036,
+          "roundTripMs": 0.9793750000000045,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 70619648,
+            "heapTotal": 19922944,
+            "heapUsed": 11946760,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.5122499999999945,
+          "roundTripMs": 1.0286669999999845,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 72258120,
+            "heapTotal": 19922944,
+            "heapUsed": 11978720,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.5810000000000173,
+          "roundTripMs": 1.1157910000000015,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70636032,
+            "heapTotal": 20381696,
+            "heapUsed": 13089752,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.46691699999999514,
+          "roundTripMs": 0.9481670000000122,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72274504,
+            "heapTotal": 20381696,
+            "heapUsed": 13130584,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4884169999999983,
+          "roundTripMs": 0.9099160000000097,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 70668800,
+            "heapTotal": 20905984,
+            "heapUsed": 13751104,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.45404199999998696,
+          "roundTripMs": 0.946124999999995,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 72274504,
+            "heapTotal": 20905984,
+            "heapUsed": 13789512,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.5041660000000263,
+          "roundTripMs": 0.9615830000000187,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70668800,
+            "heapTotal": 21364736,
+            "heapUsed": 14631184,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.45924999999999727,
+          "roundTripMs": 0.9176249999999868,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72290888,
+            "heapTotal": 21364736,
+            "heapUsed": 14665416,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.453125,
+          "roundTripMs": 0.8870830000000183,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 70685184,
+            "heapTotal": 21889024,
+            "heapUsed": 15541936,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.43762499999999704,
+          "roundTripMs": 0.9066249999999627,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 72290888,
+            "heapTotal": 21889024,
+            "heapUsed": 15633912,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4490830000000017,
+          "roundTripMs": 0.945541999999989,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70685184,
+            "heapTotal": 22380544,
+            "heapUsed": 16415464,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4095839999999953,
+          "roundTripMs": 0.9432080000000269,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72307272,
+            "heapTotal": 22380544,
+            "heapUsed": 16507256,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5309169999999881,
+          "roundTripMs": 0.9685000000000059,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 70701568,
+            "heapTotal": 22904832,
+            "heapUsed": 17326176,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.49841700000001765,
+          "roundTripMs": 1.0760409999999752,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 72307272,
+            "heapTotal": 22904832,
+            "heapUsed": 17418008,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.6212500000000034,
+          "roundTripMs": 1.1987920000000258,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70783488,
+            "heapTotal": 23396352,
+            "heapUsed": 18199352,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4330410000000029,
+          "roundTripMs": 1.1488330000000246,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72503880,
+            "heapTotal": 23396352,
+            "heapUsed": 18292096,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.470292000000029,
+          "roundTripMs": 0.9201249999999845,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 70832640,
+            "heapTotal": 19922944,
+            "heapUsed": 12031696,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.44266600000000267,
+          "roundTripMs": 0.9768329999999992,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 72503880,
+            "heapTotal": 19922944,
+            "heapUsed": 12031760,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.39291699999995444,
+          "roundTripMs": 0.8687090000000239,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70832640,
+            "heapTotal": 20381696,
+            "heapUsed": 12905472,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3592090000000212,
+          "roundTripMs": 0.9139170000000263,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72520264,
+            "heapTotal": 20381696,
+            "heapUsed": 12905568,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.48295799999999645,
+          "roundTripMs": 0.9045839999999998,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 70832640,
+            "heapTotal": 20905984,
+            "heapUsed": 13816256,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4360419999999863,
+          "roundTripMs": 0.9102499999999623,
+          "payloadBytes": 111503,
+          "memory": {
+            "rss": 72520264,
+            "heapTotal": 20905984,
+            "heapUsed": 13816344,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.43308300000001054,
+          "roundTripMs": 0.895541000000037,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70849024,
+            "heapTotal": 21364736,
+            "heapUsed": 14696696,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.40925000000004275,
+          "roundTripMs": 0.911042000000009,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72536648,
+            "heapTotal": 21364736,
+            "heapUsed": 14696816,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4478330000000028,
+          "roundTripMs": 0.8543329999999969,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70849024,
+            "heapTotal": 21889024,
+            "heapUsed": 15606096,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.43158399999998664,
+          "roundTripMs": 0.8452080000000137,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72553032,
+            "heapTotal": 21889024,
+            "heapUsed": 15606216,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.36779200000000856,
+          "roundTripMs": 0.8129169999999704,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70865408,
+            "heapTotal": 22380544,
+            "heapUsed": 16480264,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3502500000000168,
+          "roundTripMs": 0.9305840000000103,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72553032,
+            "heapTotal": 22380544,
+            "heapUsed": 16480360,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3170420000000149,
+          "roundTripMs": 0.755833999999993,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70865408,
+            "heapTotal": 22904832,
+            "heapUsed": 17390000,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.34550000000001546,
+          "roundTripMs": 0.7339159999999652,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72569416,
+            "heapTotal": 22904832,
+            "heapUsed": 17390088,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.343291000000022,
+          "roundTripMs": 0.8223330000000146,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70881792,
+            "heapTotal": 23396352,
+            "heapUsed": 18263120,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3239590000000021,
+          "roundTripMs": 0.8132499999999823,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72569416,
+            "heapTotal": 23396352,
+            "heapUsed": 18263216,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.2984159999999747,
+          "roundTripMs": 0.7379589999999894,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70881792,
+            "heapTotal": 19922944,
+            "heapUsed": 12055848,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.295791999999949,
+          "roundTripMs": 0.6618330000000014,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72569416,
+            "heapTotal": 19922944,
+            "heapUsed": 12121352,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3407909999999674,
+          "roundTripMs": 0.8104169999999726,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70898176,
+            "heapTotal": 20381696,
+            "heapUsed": 12928984,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3210830000000442,
+          "roundTripMs": 0.7581250000000068,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72585800,
+            "heapTotal": 20381696,
+            "heapUsed": 13000240,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3445830000000001,
+          "roundTripMs": 0.705833000000041,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70898176,
+            "heapTotal": 20905984,
+            "heapUsed": 13838328,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.3222499999999968,
+          "roundTripMs": 0.7379169999999817,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72585800,
+            "heapTotal": 20905984,
+            "heapUsed": 13909584,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3063330000000519,
+          "roundTripMs": 0.7232920000000149,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70898176,
+            "heapTotal": 21364736,
+            "heapUsed": 14714688,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.33095800000000963,
+          "roundTripMs": 0.750583000000006,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72602184,
+            "heapTotal": 21364736,
+            "heapUsed": 14783768,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3477090000000089,
+          "roundTripMs": 0.7144170000000258,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70914560,
+            "heapTotal": 21889024,
+            "heapUsed": 15625464,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.352958000000001,
+          "roundTripMs": 0.7460829999999987,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72602184,
+            "heapTotal": 21889024,
+            "heapUsed": 15693504,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.31562500000001137,
+          "roundTripMs": 0.7803750000000491,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70914560,
+            "heapTotal": 22380544,
+            "heapUsed": 16500336,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3372499999999832,
+          "roundTripMs": 0.8849590000000376,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72618568,
+            "heapTotal": 22380544,
+            "heapUsed": 16566624,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.32974999999999,
+          "roundTripMs": 0.734875000000045,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70930944,
+            "heapTotal": 22904832,
+            "heapUsed": 17409736,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.3304589999999621,
+          "roundTripMs": 0.7028329999999983,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72618568,
+            "heapTotal": 22904832,
+            "heapUsed": 17510888,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3601669999999899,
+          "roundTripMs": 0.8409169999999904,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70930944,
+            "heapTotal": 23396352,
+            "heapUsed": 18286080,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3380830000000401,
+          "roundTripMs": 0.7837910000000079,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72634952,
+            "heapTotal": 23396352,
+            "heapUsed": 18383968,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.33404200000001083,
+          "roundTripMs": 0.7062500000000114,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70947328,
+            "heapTotal": 19922944,
+            "heapUsed": 12114912,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.2918749999999477,
+          "roundTripMs": 0.6562079999999924,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72634952,
+            "heapTotal": 19922944,
+            "heapUsed": 12115928,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.30545799999998735,
+          "roundTripMs": 0.7170830000000024,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70947328,
+            "heapTotal": 20381696,
+            "heapUsed": 12988184,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3347909999999956,
+          "roundTripMs": 0.7493329999999787,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72651336,
+            "heapTotal": 20381696,
+            "heapUsed": 12990224,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.29683399999998983,
+          "roundTripMs": 0.6562920000000076,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70947328,
+            "heapTotal": 20905984,
+            "heapUsed": 13897672,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.2871250000000032,
+          "roundTripMs": 0.6381670000000099,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72651336,
+            "heapTotal": 20905984,
+            "heapUsed": 13899568,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3191669999999931,
+          "roundTripMs": 0.7185410000000161,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70947328,
+            "heapTotal": 21364736,
+            "heapUsed": 14774600,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.30658299999998917,
+          "roundTripMs": 0.7144170000000258,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72651336,
+            "heapTotal": 21364736,
+            "heapUsed": 14774672,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.29520800000000236,
+          "roundTripMs": 0.6485839999999712,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70963712,
+            "heapTotal": 21889024,
+            "heapUsed": 15685376,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.3052500000000009,
+          "roundTripMs": 0.6629590000000007,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72667720,
+            "heapTotal": 21889024,
+            "heapUsed": 15685456,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.29970800000000963,
+          "roundTripMs": 0.7317089999999666,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70963712,
+            "heapTotal": 22380544,
+            "heapUsed": 16560288,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.5247919999999908,
+          "roundTripMs": 0.9407909999999902,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72667720,
+            "heapTotal": 22380544,
+            "heapUsed": 16560360,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.29837499999996453,
+          "roundTripMs": 0.7929169999999885,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70980096,
+            "heapTotal": 22904832,
+            "heapUsed": 17469688,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.335125000000005,
+          "roundTripMs": 0.7889999999999873,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72684104,
+            "heapTotal": 22904832,
+            "heapUsed": 17469752,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3193750000000364,
+          "roundTripMs": 0.8592080000000237,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70980096,
+            "heapTotal": 23396352,
+            "heapUsed": 18346040,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3199999999999932,
+          "roundTripMs": 0.8231250000000045,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72684104,
+            "heapTotal": 23396352,
+            "heapUsed": 18346128,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3043749999999932,
+          "roundTripMs": 0.7954579999999964,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 70996480,
+            "heapTotal": 19922944,
+            "heapUsed": 12146808,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.32083299999999326,
+          "roundTripMs": 0.7305000000000064,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 72700488,
+            "heapTotal": 19922944,
+            "heapUsed": 12207776,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3905000000000314,
+          "roundTripMs": 0.8909589999999525,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70996480,
+            "heapTotal": 20381696,
+            "heapUsed": 13020248,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.33916599999997743,
+          "roundTripMs": 0.7945829999999887,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 72700488,
+            "heapTotal": 20381696,
+            "heapUsed": 13084120,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        }
+      ],
+      "writes": [
+        {
+          "commandId": "profile-2-writer-0",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "7b02aadf-c21e-44b0-9859-06a6110f1be1",
+              "schemaVersion": 7,
+              "projectRevision": 191,
+              "at": "2026-10-29T06:38:56.715Z"
+            },
+            "results": [
+              {
+                "id": "0ef89de1-fb97-411d-937d-9cc6b3966ac6",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/0",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-0" }
+                }
+              }
+            ]
+          },
+          "durationMs": 5.160541999999992,
+          "roundTripMs": 6.025540999999976
+        },
+        {
+          "commandId": "profile-2-writer-1",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "d3586dcb-7110-44d6-b4d9-70ddbe329b14",
+              "schemaVersion": 7,
+              "projectRevision": 192,
+              "at": "2026-10-29T06:38:56.718Z"
+            },
+            "results": [
+              {
+                "id": "393fec88-cd45-4f5c-9570-01ae3a9f92b4",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/1",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-1" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9467919999999879,
+          "roundTripMs": 1.459083000000021
+        },
+        {
+          "commandId": "profile-2-writer-2",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "aa6521bf-b3ec-47b1-abd7-c2753c65e284",
+              "schemaVersion": 7,
+              "projectRevision": 193,
+              "at": "2026-10-29T06:38:56.719Z"
+            },
+            "results": [
+              {
+                "id": "1de79a31-eaa1-4fe6-bdfb-907d67fc318b",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/2",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-2" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7357499999999959,
+          "roundTripMs": 1.0037919999999758
+        },
+        {
+          "commandId": "profile-2-writer-3",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "6ee9879b-2822-459a-b66f-8f4d37f21e58",
+              "schemaVersion": 7,
+              "projectRevision": 194,
+              "at": "2026-10-29T06:38:56.720Z"
+            },
+            "results": [
+              {
+                "id": "4a59cd9b-2ce6-4044-99fe-6293e3027b65",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/3",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-3" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7563750000000056,
+          "roundTripMs": 1.310541999999998
+        },
+        {
+          "commandId": "profile-2-writer-4",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "910a5dd9-e768-484b-82ec-3ac40f23dee7",
+              "schemaVersion": 7,
+              "projectRevision": 195,
+              "at": "2026-10-29T06:38:56.721Z"
+            },
+            "results": [
+              {
+                "id": "04014558-54f8-48f0-928d-93e50c0ea32d",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/4",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-4" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7562080000000009,
+          "roundTripMs": 1.4214589999999703
+        },
+        {
+          "commandId": "profile-2-writer-5",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "5f00a291-b0b5-4d0d-a364-335c6814f0aa",
+              "schemaVersion": 7,
+              "projectRevision": 196,
+              "at": "2026-10-29T06:38:56.723Z"
+            },
+            "results": [
+              {
+                "id": "c700c5f8-cec0-45a3-b243-74c3cf53dd55",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/5",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-5" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8740829999999988,
+          "roundTripMs": 1.168875000000014
+        },
+        {
+          "commandId": "profile-2-writer-6",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "50a9ddeb-dcc6-4e49-90d6-e3d77d51a002",
+              "schemaVersion": 7,
+              "projectRevision": 197,
+              "at": "2026-10-29T06:38:56.724Z"
+            },
+            "results": [
+              {
+                "id": "46963fb6-eef4-4d8a-a643-d1e1113538b7",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/6",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-6" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7129589999999979,
+          "roundTripMs": 0.913833000000011
+        },
+        {
+          "commandId": "profile-2-writer-7",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "01fb66b0-aba8-4dd8-8965-2fb42ceae5a0",
+              "schemaVersion": 7,
+              "projectRevision": 198,
+              "at": "2026-10-29T06:38:56.725Z"
+            },
+            "results": [
+              {
+                "id": "904aa128-a28e-464e-9f20-ce5e0f92b551",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/7",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-7" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.6485000000000127,
+          "roundTripMs": 0.9664589999999862
+        },
+        {
+          "commandId": "profile-2-writer-8",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "cbc779ab-b200-407b-9725-25880caaf8cb",
+              "schemaVersion": 7,
+              "projectRevision": 199,
+              "at": "2026-10-29T06:38:56.726Z"
+            },
+            "results": [
+              {
+                "id": "5256b8b1-a3c1-48a2-93f0-bfb8114b6f9f",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/8",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-8" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7465839999999986,
+          "roundTripMs": 1.029457999999977
+        },
+        {
+          "commandId": "profile-2-writer-9",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "d84bcbf5-620d-4dbf-bdd1-92c82c4e750c",
+              "schemaVersion": 7,
+              "projectRevision": 200,
+              "at": "2026-10-29T06:38:56.727Z"
+            },
+            "results": [
+              {
+                "id": "a59f63c2-4da8-4dbe-af33-f7a91acdd616",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/9",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-9" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.6756249999999966,
+          "roundTripMs": 0.8947500000000446
+        },
+        {
+          "commandId": "profile-2-writer-10",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "630fd5b1-36ea-4900-9502-f0e655c413e9",
+              "schemaVersion": 7,
+              "projectRevision": 201,
+              "at": "2026-10-29T06:38:56.728Z"
+            },
+            "results": [
+              {
+                "id": "68a1743c-3155-4c7e-9610-87f6c2d07633",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/10",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-10" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8867079999999987,
+          "roundTripMs": 1.0376249999999914
+        },
+        {
+          "commandId": "profile-2-writer-11",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "a1f603c9-10fe-4af7-9b17-54a1b2205100",
+              "schemaVersion": 7,
+              "projectRevision": 202,
+              "at": "2026-10-29T06:38:56.729Z"
+            },
+            "results": [
+              {
+                "id": "2a30e5ab-9e9d-4acb-920d-4f31933b73e7",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/11",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-11" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.6254169999999988,
+          "roundTripMs": 0.8736250000000041
+        },
+        {
+          "commandId": "profile-2-writer-12",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "6a29df44-6652-469a-9697-b51aba6bdb5b",
+              "schemaVersion": 7,
+              "projectRevision": 203,
+              "at": "2026-10-29T06:38:56.730Z"
+            },
+            "results": [
+              {
+                "id": "07eb8b53-18cf-4d1f-807e-d608a76dad9a",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/12",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-12" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.622374999999991,
+          "roundTripMs": 1.0912910000000124
+        },
+        {
+          "commandId": "profile-2-writer-13",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "6c43eb72-1062-44e0-81f8-75a0d5b2a494",
+              "schemaVersion": 7,
+              "projectRevision": 204,
+              "at": "2026-10-29T06:38:56.731Z"
+            },
+            "results": [
+              {
+                "id": "f91b04a8-1a13-403c-8c14-454ed0144f59",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/13",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-13" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8674170000000032,
+          "roundTripMs": 1.2307500000000005
+        },
+        {
+          "commandId": "profile-2-writer-14",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "f45f49c1-5c0b-4ec4-8fd0-c7fb85f253d3",
+              "schemaVersion": 7,
+              "projectRevision": 205,
+              "at": "2026-10-29T06:38:56.732Z"
+            },
+            "results": [
+              {
+                "id": "fc2af3ee-3a6a-42df-ae12-5d4c96093b1e",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/14",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-14" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9066669999999988,
+          "roundTripMs": 1.1073329999999828
+        },
+        {
+          "commandId": "profile-2-writer-15",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "9f3271c7-f4f5-491c-92b3-7c49d909bb31",
+              "schemaVersion": 7,
+              "projectRevision": 206,
+              "at": "2026-10-29T06:38:56.733Z"
+            },
+            "results": [
+              {
+                "id": "e7fed5fd-29cc-452c-a445-e62e30a07284",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/15",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-15" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8460000000000036,
+          "roundTripMs": 1.0623750000000314
+        },
+        {
+          "commandId": "profile-2-writer-16",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "ee343b2f-612b-44a0-9270-1c2f0c29a75d",
+              "schemaVersion": 7,
+              "projectRevision": 207,
+              "at": "2026-10-29T06:38:56.734Z"
+            },
+            "results": [
+              {
+                "id": "f1d0b345-9ce1-43c9-a289-60dd8bb69731",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/16",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-16" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7302919999999915,
+          "roundTripMs": 1.0124170000000277
+        },
+        {
+          "commandId": "profile-2-writer-17",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "042ae49a-6d6b-4cee-9f56-5104cea1e17b",
+              "schemaVersion": 7,
+              "projectRevision": 208,
+              "at": "2026-10-29T06:38:56.735Z"
+            },
+            "results": [
+              {
+                "id": "abb68481-e6cd-4a8a-a5d1-83b355dad39e",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/17",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-17" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8515419999999949,
+          "roundTripMs": 1.0038749999999936
+        },
+        {
+          "commandId": "profile-2-writer-18",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "2c967ac3-2ca1-46be-afce-81af45174720",
+              "schemaVersion": 7,
+              "projectRevision": 209,
+              "at": "2026-10-29T06:38:56.736Z"
+            },
+            "results": [
+              {
+                "id": "ab70603e-49f3-4478-a36d-193d804139fd",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/18",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-18" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.6908749999999912,
+          "roundTripMs": 0.9888329999999996
+        },
+        {
+          "commandId": "profile-2-writer-19",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "7cae646b-2787-40fd-914b-263423a780cf",
+              "schemaVersion": 7,
+              "projectRevision": 210,
+              "at": "2026-10-29T06:38:56.737Z"
+            },
+            "results": [
+              {
+                "id": "fe85c3f0-619a-4f57-8a54-8652f7f034e8",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/19",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-19" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7176249999999982,
+          "roundTripMs": 1.0291670000000295
+        },
+        {
+          "commandId": "profile-2-writer-20",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "fc1b9674-e84d-4b8d-b265-bc00e414b8b1",
+              "schemaVersion": 7,
+              "projectRevision": 211,
+              "at": "2026-10-29T06:38:56.738Z"
+            },
+            "results": [
+              {
+                "id": "8341a9ec-e642-4f80-a777-971405c38616",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/20",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-20" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9014589999999885,
+          "roundTripMs": 1.1961670000000026
+        },
+        {
+          "commandId": "profile-2-writer-21",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "debd0d62-f654-4c2c-b1d8-196a3ee29491",
+              "schemaVersion": 7,
+              "projectRevision": 212,
+              "at": "2026-10-29T06:38:56.740Z"
+            },
+            "results": [
+              {
+                "id": "e60b4a67-09b6-4d63-a1f0-a440f5fba924",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/21",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-21" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7725829999999974,
+          "roundTripMs": 1.2409999999999854
+        },
+        {
+          "commandId": "profile-2-writer-22",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "03e3e332-76d1-442d-9919-5c3d77847a24",
+              "schemaVersion": 7,
+              "projectRevision": 213,
+              "at": "2026-10-29T06:38:56.741Z"
+            },
+            "results": [
+              {
+                "id": "7f561816-7007-44e9-85b4-2260060ee342",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/22",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-22" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7502920000000017,
+          "roundTripMs": 1.063250000000039
+        },
+        {
+          "commandId": "profile-2-writer-23",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "6f58ef51-9669-4461-9ddf-39059f1be400",
+              "schemaVersion": 7,
+              "projectRevision": 214,
+              "at": "2026-10-29T06:38:56.742Z"
+            },
+            "results": [
+              {
+                "id": "645ab686-4279-4beb-a420-f61a57aa640f",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/23",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-23" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7462919999999968,
+          "roundTripMs": 1.0253749999999968
+        },
+        {
+          "commandId": "profile-2-writer-24",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "866ac218-7f5a-450a-a7d7-1d504e84d19c",
+              "schemaVersion": 7,
+              "projectRevision": 215,
+              "at": "2026-10-29T06:38:56.743Z"
+            },
+            "results": [
+              {
+                "id": "18c436ff-d8af-4d97-826e-5cb38e7005f5",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 2/24",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-2-24" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.754833000000005,
+          "roundTripMs": 0.987666000000047
+        }
+      ]
+    },
+    {
+      "readClients": 4,
+      "writeClients": 1,
+      "readRequests": 200,
+      "acknowledgedWrites": 25,
+      "elapsedMs": 86.90770799999996,
+      "p95RoundTripMs": 1.913458999999989,
+      "maxRoundTripMs": 3.999500000000012,
+      "maxSampledRssBytes": 71373432,
+      "startingReaderMemory": [
+        {
+          "rss": 62557664,
+          "heapTotal": 17563648,
+          "heapUsed": 14022472,
+          "external": 6092992,
+          "arrayBuffers": 334743
+        },
+        {
+          "rss": 59198872,
+          "heapTotal": 17563648,
+          "heapUsed": 13987024,
+          "external": 6092992,
+          "arrayBuffers": 334743
+        },
+        {
+          "rss": 57314664,
+          "heapTotal": 17301504,
+          "heapUsed": 13929752,
+          "external": 6027392,
+          "arrayBuffers": 269143
+        },
+        {
+          "rss": 61640112,
+          "heapTotal": 17039360,
+          "heapUsed": 13914752,
+          "external": 6027392,
+          "arrayBuffers": 269143
+        }
+      ],
+      "reads": [
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 1.4741249999999866,
+          "roundTripMs": 2.7500420000000076,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 63770272,
+            "heapTotal": 18087936,
+            "heapUsed": 11465808,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 1.474000000000018,
+          "roundTripMs": 3.14874999999995,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 58396104,
+            "heapTotal": 17563648,
+            "heapUsed": 11468248,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 1.4377919999999733,
+          "roundTripMs": 3.5592499999999063,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 62803472,
+            "heapTotal": 17563648,
+            "heapUsed": 11469672,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 1.5489589999999964,
+          "roundTripMs": 3.999500000000012,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 60313080,
+            "heapTotal": 18087936,
+            "heapUsed": 11466624,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.6630419999999901,
+          "roundTripMs": 1.601583000000005,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64540416,
+            "heapTotal": 18546688,
+            "heapUsed": 12375944,
+            "external": 5961901,
+            "arrayBuffers": 203558
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.593874999999997,
+          "roundTripMs": 1.6692500000000337,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 59182632,
+            "heapTotal": 18022400,
+            "heapUsed": 12382936,
+            "external": 5961901,
+            "arrayBuffers": 203558
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.7053750000000036,
+          "roundTripMs": 1.72524999999996,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 63557208,
+            "heapTotal": 18022400,
+            "heapUsed": 12383200,
+            "external": 5961901,
+            "arrayBuffers": 203558
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.6329580000000021,
+          "roundTripMs": 1.7727919999999813,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 61132376,
+            "heapTotal": 18546688,
+            "heapUsed": 12382816,
+            "external": 5961901,
+            "arrayBuffers": 203558
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.47495899999998414,
+          "roundTripMs": 1.8080420000000004,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 65146720,
+            "heapTotal": 19070976,
+            "heapUsed": 13307600,
+            "external": 5961958,
+            "arrayBuffers": 203615
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.46462499999998386,
+          "roundTripMs": 1.739500000000021,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 59788912,
+            "heapTotal": 18546688,
+            "heapUsed": 13308208,
+            "external": 5961958,
+            "arrayBuffers": 203615
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.4936249999999802,
+          "roundTripMs": 1.8650420000000167,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 64179896,
+            "heapTotal": 18546688,
+            "heapUsed": 13308472,
+            "external": 5961958,
+            "arrayBuffers": 203615
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.41745800000001054,
+          "roundTripMs": 1.7280829999999696,
+          "payloadBytes": 111500,
+          "memory": {
+            "rss": 61722296,
+            "heapTotal": 19070976,
+            "heapUsed": 13308088,
+            "external": 5961958,
+            "arrayBuffers": 203615
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4782079999999951,
+          "roundTripMs": 1.6839159999999538,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 65736640,
+            "heapTotal": 19529728,
+            "heapUsed": 14184672,
+            "external": 5962009,
+            "arrayBuffers": 203666
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.5678330000000074,
+          "roundTripMs": 1.72625000000005,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 60346064,
+            "heapTotal": 19005440,
+            "heapUsed": 14185280,
+            "external": 5962009,
+            "arrayBuffers": 203666
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.5174999999999841,
+          "roundTripMs": 1.5416250000000673,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64753432,
+            "heapTotal": 19005440,
+            "heapUsed": 14185544,
+            "external": 5962009,
+            "arrayBuffers": 203666
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.5420410000000118,
+          "roundTripMs": 1.5834160000000566,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 62328600,
+            "heapTotal": 19529728,
+            "heapUsed": 14185160,
+            "external": 5962009,
+            "arrayBuffers": 203666
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.5360830000000192,
+          "roundTripMs": 1.4682080000000042,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 66424864,
+            "heapTotal": 20316160,
+            "heapUsed": 15124016,
+            "external": 5962066,
+            "arrayBuffers": 203723
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.5594999999999857,
+          "roundTripMs": 1.3877499999999827,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 61165408,
+            "heapTotal": 19791872,
+            "heapUsed": 15124624,
+            "external": 5962066,
+            "arrayBuffers": 203723
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.5474159999999983,
+          "roundTripMs": 1.2932910000000675,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 65540008,
+            "heapTotal": 19791872,
+            "heapUsed": 15124888,
+            "external": 5962066,
+            "arrayBuffers": 203723
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5034580000000233,
+          "roundTripMs": 1.2493329999999787,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 63115176,
+            "heapTotal": 20316160,
+            "heapUsed": 15124504,
+            "external": 5962066,
+            "arrayBuffers": 203723
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4888340000000255,
+          "roundTripMs": 1.259166999999934,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67375232,
+            "heapTotal": 21037056,
+            "heapUsed": 16005912,
+            "external": 5962117,
+            "arrayBuffers": 203774
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4906660000000045,
+          "roundTripMs": 1.291249999999991,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 62197744,
+            "heapTotal": 20512768,
+            "heapUsed": 16006520,
+            "external": 5962117,
+            "arrayBuffers": 203774
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.7167499999999905,
+          "roundTripMs": 1.3226250000000164,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66588728,
+            "heapTotal": 20512768,
+            "heapUsed": 16006784,
+            "external": 5962117,
+            "arrayBuffers": 203774
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.6540829999999858,
+          "roundTripMs": 1.3713330000000497,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64147488,
+            "heapTotal": 21037056,
+            "heapUsed": 16006400,
+            "external": 5962117,
+            "arrayBuffers": 203774
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.5491250000000036,
+          "roundTripMs": 1.395667000000003,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 68456744,
+            "heapTotal": 22085632,
+            "heapUsed": 16935424,
+            "external": 5962174,
+            "arrayBuffers": 203831
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.553750000000008,
+          "roundTripMs": 1.7276250000001028,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 63279280,
+            "heapTotal": 21561344,
+            "heapUsed": 16936032,
+            "external": 5962174,
+            "arrayBuffers": 203831
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.6102080000000001,
+          "roundTripMs": 1.778709000000049,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 67686648,
+            "heapTotal": 21561344,
+            "heapUsed": 16936296,
+            "external": 5962174,
+            "arrayBuffers": 203831
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5621249999999804,
+          "roundTripMs": 1.6864579999999023,
+          "payloadBytes": 110807,
+          "memory": {
+            "rss": 65229024,
+            "heapTotal": 22085632,
+            "heapUsed": 16935912,
+            "external": 5962174,
+            "arrayBuffers": 203831
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.499541000000022,
+          "roundTripMs": 1.7749169999999594,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69456336,
+            "heapTotal": 23068672,
+            "heapUsed": 17808408,
+            "external": 5962225,
+            "arrayBuffers": 203882
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.6406670000000076,
+          "roundTripMs": 1.5036660000000666,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64328024,
+            "heapTotal": 22544384,
+            "heapUsed": 17809008,
+            "external": 5962225,
+            "arrayBuffers": 203882
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.5048330000000192,
+          "roundTripMs": 1.5103750000000673,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68751776,
+            "heapTotal": 22544384,
+            "heapUsed": 17809280,
+            "external": 5962225,
+            "arrayBuffers": 203882
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.612083000000041,
+          "roundTripMs": 1.5353750000000446,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66294152,
+            "heapTotal": 23068672,
+            "heapUsed": 17808896,
+            "external": 5962225,
+            "arrayBuffers": 203882
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.5292090000000371,
+          "roundTripMs": 1.5364169999999149,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 70079024,
+            "heapTotal": 19660800,
+            "heapUsed": 11824528,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.7268329999999992,
+          "roundTripMs": 1.483333000000016,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 64950712,
+            "heapTotal": 19136512,
+            "heapUsed": 11824464,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.5467910000000415,
+          "roundTripMs": 1.4594170000000304,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 69374464,
+            "heapTotal": 19136512,
+            "heapUsed": 11844000,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.7158749999999827,
+          "roundTripMs": 1.5285829999999123,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 66949608,
+            "heapTotal": 19660800,
+            "heapUsed": 11912000,
+            "external": 5961850,
+            "arrayBuffers": 203507
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4999169999999822,
+          "roundTripMs": 1.461999999999989,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70128176,
+            "heapTotal": 20119552,
+            "heapUsed": 12701128,
+            "external": 5961902,
+            "arrayBuffers": 203559
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.47783300000003237,
+          "roundTripMs": 1.5154580000000806,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64983480,
+            "heapTotal": 19595264,
+            "heapUsed": 12701064,
+            "external": 5961902,
+            "arrayBuffers": 203559
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.504333000000031,
+          "roundTripMs": 1.4794589999999062,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69390848,
+            "heapTotal": 19595264,
+            "heapUsed": 12720832,
+            "external": 5961902,
+            "arrayBuffers": 203559
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4658330000000319,
+          "roundTripMs": 1.448082999999997,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66965992,
+            "heapTotal": 20119552,
+            "heapUsed": 12716592,
+            "external": 5961902,
+            "arrayBuffers": 203559
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.5492499999999723,
+          "roundTripMs": 1.388541000000032,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 70144560,
+            "heapTotal": 20643840,
+            "heapUsed": 13624984,
+            "external": 5961960,
+            "arrayBuffers": 203617
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.46870799999999235,
+          "roundTripMs": 1.5225000000000364,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 64983480,
+            "heapTotal": 20119552,
+            "heapUsed": 13625280,
+            "external": 5961960,
+            "arrayBuffers": 203617
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.5152499999999804,
+          "roundTripMs": 1.4655830000000378,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 69407232,
+            "heapTotal": 20119552,
+            "heapUsed": 13639048,
+            "external": 5961960,
+            "arrayBuffers": 203617
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.5626670000000331,
+          "roundTripMs": 1.3496249999999463,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 66965992,
+            "heapTotal": 20643840,
+            "heapUsed": 13639288,
+            "external": 5961960,
+            "arrayBuffers": 203617
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.44700000000000273,
+          "roundTripMs": 1.3341249999999718,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70144560,
+            "heapTotal": 21102592,
+            "heapUsed": 14479544,
+            "external": 5962012,
+            "arrayBuffers": 203669
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.44079199999998764,
+          "roundTripMs": 1.197999999999979,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64983480,
+            "heapTotal": 20578304,
+            "heapUsed": 14479544,
+            "external": 5962012,
+            "arrayBuffers": 203669
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.4572079999999801,
+          "roundTripMs": 1.273916999999983,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69407232,
+            "heapTotal": 20578304,
+            "heapUsed": 14499008,
+            "external": 5962012,
+            "arrayBuffers": 203669
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.42158299999999826,
+          "roundTripMs": 1.328125,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66965992,
+            "heapTotal": 21102592,
+            "heapUsed": 14495664,
+            "external": 5962012,
+            "arrayBuffers": 203669
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.43695900000000165,
+          "roundTripMs": 1.2545840000000226,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 70177328,
+            "heapTotal": 21626880,
+            "heapUsed": 15445728,
+            "external": 5962070,
+            "arrayBuffers": 203727
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.49895799999995916,
+          "roundTripMs": 1.2091669999999795,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 64999864,
+            "heapTotal": 21102592,
+            "heapUsed": 15445680,
+            "external": 5962070,
+            "arrayBuffers": 203727
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.43633299999999053,
+          "roundTripMs": 1.1373340000000098,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 69407232,
+            "heapTotal": 21102592,
+            "heapUsed": 15446176,
+            "external": 5962070,
+            "arrayBuffers": 203727
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4296669999999949,
+          "roundTripMs": 1.0843750000000227,
+          "payloadBytes": 105024,
+          "memory": {
+            "rss": 66965992,
+            "heapTotal": 21626880,
+            "heapUsed": 15445800,
+            "external": 5962070,
+            "arrayBuffers": 203727
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4298750000000382,
+          "roundTripMs": 1.1288749999999936,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70177328,
+            "heapTotal": 22085632,
+            "heapUsed": 16294208,
+            "external": 5962122,
+            "arrayBuffers": 203779
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4264580000000251,
+          "roundTripMs": 1.17999999999995,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 64999864,
+            "heapTotal": 21561344,
+            "heapUsed": 16294128,
+            "external": 5962122,
+            "arrayBuffers": 203779
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.4433750000000032,
+          "roundTripMs": 1.2339580000000296,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 69407232,
+            "heapTotal": 21561344,
+            "heapUsed": 16294624,
+            "external": 5962122,
+            "arrayBuffers": 203779
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3896660000000338,
+          "roundTripMs": 1.298791000000051,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66965992,
+            "heapTotal": 22085632,
+            "heapUsed": 16294240,
+            "external": 5962122,
+            "arrayBuffers": 203779
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.44700000000000273,
+          "roundTripMs": 1.2707079999998996,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70472288,
+            "heapTotal": 22872064,
+            "heapUsed": 17193264,
+            "external": 5962180,
+            "arrayBuffers": 203837
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4329579999999851,
+          "roundTripMs": 1.5411249999999654,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 65425944,
+            "heapTotal": 22609920,
+            "heapUsed": 17193184,
+            "external": 5962180,
+            "arrayBuffers": 203837
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.45595800000000963,
+          "roundTripMs": 1.5703750000000127,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 69833312,
+            "heapTotal": 22609920,
+            "heapUsed": 17193680,
+            "external": 5962180,
+            "arrayBuffers": 203837
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4223330000000374,
+          "roundTripMs": 1.5535409999999956,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 67277336,
+            "heapTotal": 22872064,
+            "heapUsed": 17193296,
+            "external": 5962180,
+            "arrayBuffers": 203837
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4539580000000001,
+          "roundTripMs": 1.6091669999999567,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70914680,
+            "heapTotal": 23592960,
+            "heapUsed": 18036768,
+            "external": 5962232,
+            "arrayBuffers": 203889
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4984999999999786,
+          "roundTripMs": 1.3271250000000236,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 65884720,
+            "heapTotal": 23330816,
+            "heapUsed": 18036720,
+            "external": 5962232,
+            "arrayBuffers": 203889
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.5385420000000067,
+          "roundTripMs": 1.3527500000000146,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70292112,
+            "heapTotal": 23330816,
+            "heapUsed": 18037184,
+            "external": 5962232,
+            "arrayBuffers": 203889
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.5497500000000173,
+          "roundTripMs": 1.3850419999999986,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67736136,
+            "heapTotal": 23592960,
+            "heapUsed": 18036800,
+            "external": 5962232,
+            "arrayBuffers": 203889
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.49312500000002046,
+          "roundTripMs": 1.3372910000000502,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70947448,
+            "heapTotal": 20185088,
+            "heapUsed": 11931416,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4264580000000251,
+          "roundTripMs": 1.2537079999999605,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 65999456,
+            "heapTotal": 20185088,
+            "heapUsed": 11963224,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.4067080000000374,
+          "roundTripMs": 1.189083000000096,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70390464,
+            "heapTotal": 20185088,
+            "heapUsed": 11997592,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4480829999999969,
+          "roundTripMs": 1.122541999999953,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 67752520,
+            "heapTotal": 20185088,
+            "heapUsed": 11929936,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4139579999999796,
+          "roundTripMs": 1.1398329999999532,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70947448,
+            "heapTotal": 20643840,
+            "heapUsed": 12949352,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4023329999999987,
+          "roundTripMs": 1.199292000000014,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66015840,
+            "heapTotal": 20643840,
+            "heapUsed": 12817096,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.3840829999999755,
+          "roundTripMs": 1.2275419999999713,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70390464,
+            "heapTotal": 20643840,
+            "heapUsed": 12852232,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.36899999999997135,
+          "roundTripMs": 1.2692910000000666,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67785288,
+            "heapTotal": 20643840,
+            "heapUsed": 12781944,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4030410000000302,
+          "roundTripMs": 1.2461250000000064,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70963832,
+            "heapTotal": 21168128,
+            "heapUsed": 13696296,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4032079999999496,
+          "roundTripMs": 1.3557500000000573,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 66015840,
+            "heapTotal": 21168128,
+            "heapUsed": 13722104,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3831250000000068,
+          "roundTripMs": 1.303541999999993,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70423232,
+            "heapTotal": 21168128,
+            "heapUsed": 13757472,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3908749999999941,
+          "roundTripMs": 1.2469160000000556,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 67785288,
+            "heapTotal": 21168128,
+            "heapUsed": 13688528,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.41712499999999864,
+          "roundTripMs": 1.2743339999999534,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70980216,
+            "heapTotal": 21626880,
+            "heapUsed": 14540216,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4392080000000078,
+          "roundTripMs": 1.1633749999999736,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66032224,
+            "heapTotal": 21626880,
+            "heapUsed": 14570552,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.4296669999999949,
+          "roundTripMs": 1.2161670000000413,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70423232,
+            "heapTotal": 21626880,
+            "heapUsed": 14602888,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4120409999999879,
+          "roundTripMs": 1.2754169999999476,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67801672,
+            "heapTotal": 21626880,
+            "heapUsed": 14535576,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4292920000000322,
+          "roundTripMs": 1.2294170000000122,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70980216,
+            "heapTotal": 22151168,
+            "heapUsed": 15434480,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4281670000000304,
+          "roundTripMs": 1.1727499999999509,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 66032224,
+            "heapTotal": 22151168,
+            "heapUsed": 15467512,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.46179100000000517,
+          "roundTripMs": 1.133792000000085,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70439616,
+            "heapTotal": 22151168,
+            "heapUsed": 15497576,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3977090000000203,
+          "roundTripMs": 1.0690839999999753,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 67801672,
+            "heapTotal": 22151168,
+            "heapUsed": 15429880,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.4455000000000382,
+          "roundTripMs": 1.1072500000000218,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70980216,
+            "heapTotal": 22609920,
+            "heapUsed": 16279632,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.38870900000000574,
+          "roundTripMs": 1.165666999999985,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66048608,
+            "heapTotal": 22609920,
+            "heapUsed": 16314208,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.4031669999999963,
+          "roundTripMs": 1.215249999999969,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70456000,
+            "heapTotal": 22609920,
+            "heapUsed": 16345416,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.38645800000000463,
+          "roundTripMs": 1.2699999999999818,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67801672,
+            "heapTotal": 22609920,
+            "heapUsed": 16275392,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4043750000000159,
+          "roundTripMs": 1.221208000000047,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70996600,
+            "heapTotal": 23134208,
+            "heapUsed": 17173792,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.42754200000001674,
+          "roundTripMs": 1.2326249999999845,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 66048608,
+            "heapTotal": 23134208,
+            "heapUsed": 17208368,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3972909999999956,
+          "roundTripMs": 1.2509999999999764,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 70456000,
+            "heapTotal": 23134208,
+            "heapUsed": 17280248,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3873329999999555,
+          "roundTripMs": 1.2711659999999938,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 67818056,
+            "heapTotal": 23134208,
+            "heapUsed": 17173008,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.44062500000001137,
+          "roundTripMs": 1.4539170000000468,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71062136,
+            "heapTotal": 23592960,
+            "heapUsed": 18022368,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.40904199999999946,
+          "roundTripMs": 1.535082999999986,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66163296,
+            "heapTotal": 23592960,
+            "heapUsed": 18054184,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.39049999999997453,
+          "roundTripMs": 1.887083999999959,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70636224,
+            "heapTotal": 23592960,
+            "heapUsed": 18123448,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4064159999999788,
+          "roundTripMs": 2.3349999999999227,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67883592,
+            "heapTotal": 23592960,
+            "heapUsed": 18022480,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.479582999999991,
+          "roundTripMs": 2.3820420000000695,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 71078520,
+            "heapTotal": 20185088,
+            "heapUsed": 12014664,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.6655840000000239,
+          "roundTripMs": 2.283708000000047,
+          "payloadBytes": 103923,
+          "memory": {
+            "rss": 66179680,
+            "heapTotal": 20185088,
+            "heapUsed": 11981080,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.6554580000000101,
+          "roundTripMs": 1.940917000000013,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70652608,
+            "heapTotal": 20185088,
+            "heapUsed": 12013008,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.49099999999998545,
+          "roundTripMs": 1.5828750000000582,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 67916360,
+            "heapTotal": 20185088,
+            "heapUsed": 12012720,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.50487499999997,
+          "roundTripMs": 1.5235000000000127,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71078520,
+            "heapTotal": 20643840,
+            "heapUsed": 12858096,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.44737499999996544,
+          "roundTripMs": 1.60612500000002,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66196064,
+            "heapTotal": 20643840,
+            "heapUsed": 12828496,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.47987500000004957,
+          "roundTripMs": 1.66700000000003,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70668992,
+            "heapTotal": 20643840,
+            "heapUsed": 12856080,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.5551250000000323,
+          "roundTripMs": 1.7284590000000435,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67916360,
+            "heapTotal": 20643840,
+            "heapUsed": 12855760,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.460207999999966,
+          "roundTripMs": 1.6477919999999813,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71094904,
+            "heapTotal": 21168128,
+            "heapUsed": 13751592,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4422089999999912,
+          "roundTripMs": 1.5640000000000782,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66196064,
+            "heapTotal": 21168128,
+            "heapUsed": 13720752,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.4726670000000013,
+          "roundTripMs": 1.9106249999999818,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70668992,
+            "heapTotal": 21168128,
+            "heapUsed": 13748328,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.452666000000022,
+          "roundTripMs": 1.8447079999999687,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 67932744,
+            "heapTotal": 21168128,
+            "heapUsed": 13748000,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.5835419999999658,
+          "roundTripMs": 1.847750000000019,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71094904,
+            "heapTotal": 21626880,
+            "heapUsed": 14595240,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.44479200000000674,
+          "roundTripMs": 1.8794579999999996,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66212448,
+            "heapTotal": 21626880,
+            "heapUsed": 14564288,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.49866700000001174,
+          "roundTripMs": 1.4140840000000026,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70685376,
+            "heapTotal": 21626880,
+            "heapUsed": 14591216,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.4618330000000128,
+          "roundTripMs": 1.387958000000026,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67932744,
+            "heapTotal": 21626880,
+            "heapUsed": 14590880,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.46808300000003555,
+          "roundTripMs": 1.3280829999999924,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71111288,
+            "heapTotal": 22151168,
+            "heapUsed": 15487328,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4566249999999741,
+          "roundTripMs": 1.2818340000000035,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66212448,
+            "heapTotal": 22151168,
+            "heapUsed": 15457064,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.5331249999999841,
+          "roundTripMs": 1.2734589999998889,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70685376,
+            "heapTotal": 22151168,
+            "heapUsed": 15485640,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.4539169999999899,
+          "roundTripMs": 1.23862500000007,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 67949128,
+            "heapTotal": 22151168,
+            "heapUsed": 15485296,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.45054199999998445,
+          "roundTripMs": 1.2488749999999982,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71225976,
+            "heapTotal": 22609920,
+            "heapUsed": 16331520,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4378749999999627,
+          "roundTripMs": 1.255042000000003,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66228832,
+            "heapTotal": 22609920,
+            "heapUsed": 16305464,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.42095900000003894,
+          "roundTripMs": 1.2900000000000773,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70701760,
+            "heapTotal": 22609920,
+            "heapUsed": 16328888,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.48699999999996635,
+          "roundTripMs": 1.3199580000000424,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67949128,
+            "heapTotal": 22609920,
+            "heapUsed": 16328544,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.41470899999995936,
+          "roundTripMs": 1.2992080000000215,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71225976,
+            "heapTotal": 23134208,
+            "heapUsed": 17227984,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.5644580000000019,
+          "roundTripMs": 1.0584170000000768,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70701760,
+            "heapTotal": 23134208,
+            "heapUsed": 17222584,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.41266600000000153,
+          "roundTripMs": 1.7090420000000677,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66228832,
+            "heapTotal": 23134208,
+            "heapUsed": 17198096,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.42458299999998417,
+          "roundTripMs": 1.3390420000000631,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 67965512,
+            "heapTotal": 23134208,
+            "heapUsed": 17222240,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.44833300000004783,
+          "roundTripMs": 1.4134169999999813,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71242360,
+            "heapTotal": 23592960,
+            "heapUsed": 18070824,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.4816659999999615,
+          "roundTripMs": 1.5542920000000322,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70718144,
+            "heapTotal": 23592960,
+            "heapUsed": 18066976,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.42849999999998545,
+          "roundTripMs": 1.8084170000000768,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66228832,
+            "heapTotal": 23592960,
+            "heapUsed": 18041736,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.483333000000016,
+          "roundTripMs": 1.921291999999994,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67981896,
+            "heapTotal": 23592960,
+            "heapUsed": 18066664,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4232910000000061,
+          "roundTripMs": 1.8624999999999545,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71242360,
+            "heapTotal": 20185088,
+            "heapUsed": 12104264,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3942920000000072,
+          "roundTripMs": 1.6005840000000262,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70718144,
+            "heapTotal": 20185088,
+            "heapUsed": 12039520,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.4021250000000123,
+          "roundTripMs": 1.4258330000000115,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66228832,
+            "heapTotal": 20185088,
+            "heapUsed": 12038984,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.39879200000001447,
+          "roundTripMs": 1.3246669999999767,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 67981896,
+            "heapTotal": 20185088,
+            "heapUsed": 12072144,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3606659999999806,
+          "roundTripMs": 1.3362919999999576,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71258744,
+            "heapTotal": 20643840,
+            "heapUsed": 12948688,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.38983299999995324,
+          "roundTripMs": 1.3859170000000631,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70734528,
+            "heapTotal": 20643840,
+            "heapUsed": 12882560,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.3769580000000019,
+          "roundTripMs": 1.446374999999989,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66245216,
+            "heapTotal": 20643840,
+            "heapUsed": 12882136,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.38425000000000864,
+          "roundTripMs": 1.5307090000000017,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 67998280,
+            "heapTotal": 20643840,
+            "heapUsed": 12915392,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.4012079999999969,
+          "roundTripMs": 1.4564579999999978,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71258744,
+            "heapTotal": 21168128,
+            "heapUsed": 13843424,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3700420000000122,
+          "roundTripMs": 1.3712500000000318,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70734528,
+            "heapTotal": 21168128,
+            "heapUsed": 13776520,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.36104100000000017,
+          "roundTripMs": 1.3078749999999673,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66245216,
+            "heapTotal": 21168128,
+            "heapUsed": 13776088,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.37037499999996726,
+          "roundTripMs": 0.8366250000000264,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70734528,
+            "heapTotal": 21626880,
+            "heapUsed": 14620352,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.35174999999998136,
+          "roundTripMs": 1.8617080000000215,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 67998280,
+            "heapTotal": 21168128,
+            "heapUsed": 13807640,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.39125000000001364,
+          "roundTripMs": 1.8890840000000253,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71275128,
+            "heapTotal": 21626880,
+            "heapUsed": 14688736,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3442499999999882,
+          "roundTripMs": 0.9404580000000351,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70734528,
+            "heapTotal": 22151168,
+            "heapUsed": 15515264,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.3812089999999557,
+          "roundTripMs": 1.9206249999999727,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66261600,
+            "heapTotal": 21626880,
+            "heapUsed": 14619888,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3781669999999622,
+          "roundTripMs": 1.2801670000000058,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68014664,
+            "heapTotal": 21626880,
+            "heapUsed": 14650528,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.38349999999996953,
+          "roundTripMs": 1.221416999999974,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71275128,
+            "heapTotal": 22151168,
+            "heapUsed": 15580776,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.34600000000000364,
+          "roundTripMs": 1.2449169999999867,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70750912,
+            "heapTotal": 22609920,
+            "heapUsed": 16362464,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.3469580000000292,
+          "roundTripMs": 1.1930000000000973,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66261600,
+            "heapTotal": 22151168,
+            "heapUsed": 15514792,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.367334000000028,
+          "roundTripMs": 1.1289160000000038,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68014664,
+            "heapTotal": 22151168,
+            "heapUsed": 15544944,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3937499999999545,
+          "roundTripMs": 1.214125000000081,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71291512,
+            "heapTotal": 22609920,
+            "heapUsed": 16428832,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3590830000000551,
+          "roundTripMs": 1.2434170000000222,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70750912,
+            "heapTotal": 23134208,
+            "heapUsed": 17254464,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.42645799999996825,
+          "roundTripMs": 1.3136669999998958,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66277984,
+            "heapTotal": 22609920,
+            "heapUsed": 16361960,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.39587499999998954,
+          "roundTripMs": 1.4511669999999413,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68031048,
+            "heapTotal": 22609920,
+            "heapUsed": 16388184,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.40391699999997854,
+          "roundTripMs": 1.3497919999999795,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71291512,
+            "heapTotal": 23134208,
+            "heapUsed": 17321240,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.43950000000000955,
+          "roundTripMs": 1.3552079999999478,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70767296,
+            "heapTotal": 23592960,
+            "heapUsed": 18101784,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.37800000000004275,
+          "roundTripMs": 1.2951669999999922,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66277984,
+            "heapTotal": 23134208,
+            "heapUsed": 17253960,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3763749999999959,
+          "roundTripMs": 1.3510420000000067,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68031048,
+            "heapTotal": 23134208,
+            "heapUsed": 17281880,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.37495799999999235,
+          "roundTripMs": 1.4039169999999785,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71324280,
+            "heapTotal": 23592960,
+            "heapUsed": 18165096,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.34987499999999727,
+          "roundTripMs": 1.3757080000000315,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70767296,
+            "heapTotal": 20185088,
+            "heapUsed": 12132352,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.3524580000000128,
+          "roundTripMs": 1.3606250000000273,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66294368,
+            "heapTotal": 23592960,
+            "heapUsed": 18101312,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.359833999999978,
+          "roundTripMs": 1.3736249999999472,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68047432,
+            "heapTotal": 23592960,
+            "heapUsed": 18126272,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.32458299999996143,
+          "roundTripMs": 1.321875000000091,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71324280,
+            "heapTotal": 20185088,
+            "heapUsed": 12131960,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.3345830000000092,
+          "roundTripMs": 1.3753339999999525,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70783680,
+            "heapTotal": 20643840,
+            "heapUsed": 12975568,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.3018329999999878,
+          "roundTripMs": 1.3413329999999632,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66294368,
+            "heapTotal": 20185088,
+            "heapUsed": 12131896,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3081250000000182,
+          "roundTripMs": 1.2600830000000087,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68047432,
+            "heapTotal": 20185088,
+            "heapUsed": 12098752,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3090840000000412,
+          "roundTripMs": 1.3091249999999945,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71324280,
+            "heapTotal": 20643840,
+            "heapUsed": 12975208,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.30429100000003473,
+          "roundTripMs": 1.2795839999999998,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70783680,
+            "heapTotal": 21168128,
+            "heapUsed": 13867808,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.30383299999999736,
+          "roundTripMs": 1.3896250000000236,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66294368,
+            "heapTotal": 20643840,
+            "heapUsed": 12975112,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.30349999999998545,
+          "roundTripMs": 0.831957999999986,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70783680,
+            "heapTotal": 21626880,
+            "heapUsed": 14710664,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3100830000000201,
+          "roundTripMs": 1.913458999999989,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68063816,
+            "heapTotal": 20643840,
+            "heapUsed": 12942224,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.28554200000002083,
+          "roundTripMs": 1.8949579999999742,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71324280,
+            "heapTotal": 21168128,
+            "heapUsed": 13867448,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.2787089999999921,
+          "roundTripMs": 0.9335829999999987,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70800064,
+            "heapTotal": 22151168,
+            "heapUsed": 15605088,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.2811250000000314,
+          "roundTripMs": 1.7267080000000306,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66310752,
+            "heapTotal": 21168128,
+            "heapUsed": 13867360,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.2985830000000078,
+          "roundTripMs": 0.8153330000000096,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70800064,
+            "heapTotal": 22609920,
+            "heapUsed": 16448336,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.285082999999986,
+          "roundTripMs": 1.758874999999989,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68063816,
+            "heapTotal": 21168128,
+            "heapUsed": 13836176,
+            "external": 5961961,
+            "arrayBuffers": 203618
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.3580000000000041,
+          "roundTripMs": 1.7465409999999792,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71340664,
+            "heapTotal": 21626880,
+            "heapUsed": 14710336,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.3466659999999706,
+          "roundTripMs": 0.848041999999964,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70816448,
+            "heapTotal": 23134208,
+            "heapUsed": 17342024,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.366958000000011,
+          "roundTripMs": 1.7008749999999964,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66310752,
+            "heapTotal": 21626880,
+            "heapUsed": 14710216,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.36574999999999136,
+          "roundTripMs": 1.230374999999981,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68063816,
+            "heapTotal": 21626880,
+            "heapUsed": 14679968,
+            "external": 5962013,
+            "arrayBuffers": 203670
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.3522500000000264,
+          "roundTripMs": 1.211416999999983,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71340664,
+            "heapTotal": 22151168,
+            "heapUsed": 15604752,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.34604199999995444,
+          "roundTripMs": 1.2504169999999704,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70816448,
+            "heapTotal": 23592960,
+            "heapUsed": 18186448,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.34916700000002265,
+          "roundTripMs": 1.2107499999999618,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66327136,
+            "heapTotal": 22151168,
+            "heapUsed": 15604632,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.3860829999999851,
+          "roundTripMs": 1.1492920000000595,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68080200,
+            "heapTotal": 22151168,
+            "heapUsed": 15574880,
+            "external": 5962071,
+            "arrayBuffers": 203728
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.35179200000004585,
+          "roundTripMs": 1.1889999999999645,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71357048,
+            "heapTotal": 22609920,
+            "heapUsed": 16447968,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 3,
+          "method": "entities100",
+          "durationMs": 0.4239170000000172,
+          "roundTripMs": 1.1737080000000333,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 70832832,
+            "heapTotal": 20185088,
+            "heapUsed": 12191424,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.36445800000001327,
+          "roundTripMs": 1.221416999999974,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66327136,
+            "heapTotal": 22609920,
+            "heapUsed": 16447848,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3563750000000141,
+          "roundTripMs": 1.2841660000000275,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68080200,
+            "heapTotal": 22609920,
+            "heapUsed": 16422048,
+            "external": 5962123,
+            "arrayBuffers": 203780
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.3563340000000039,
+          "roundTripMs": 1.2160000000000082,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71357048,
+            "heapTotal": 23134208,
+            "heapUsed": 17341664,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 3,
+          "method": "history100",
+          "durationMs": 0.36770899999999074,
+          "roundTripMs": 1.2422079999998914,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 70832832,
+            "heapTotal": 20643840,
+            "heapUsed": 13034672,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.45854200000002265,
+          "roundTripMs": 1.1922909999999547,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66343520,
+            "heapTotal": 23134208,
+            "heapUsed": 17341544,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.35295899999999847,
+          "roundTripMs": 1.1467499999999973,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68096584,
+            "heapTotal": 23134208,
+            "heapUsed": 17314040,
+            "external": 5962181,
+            "arrayBuffers": 203838
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.36366700000002083,
+          "roundTripMs": 1.1870000000000118,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71357048,
+            "heapTotal": 23592960,
+            "heapUsed": 18186056,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.3629169999999817,
+          "roundTripMs": 0.9104580000000624,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66343520,
+            "heapTotal": 23592960,
+            "heapUsed": 18185968,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.378750000000025,
+          "roundTripMs": 0.9845420000000331,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68096584,
+            "heapTotal": 23592960,
+            "heapUsed": 18161392,
+            "external": 5962233,
+            "arrayBuffers": 203890
+          }
+        },
+        {
+          "client": 0,
+          "method": "entities100",
+          "durationMs": 0.38016700000002857,
+          "roundTripMs": 0.9613330000000815,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 71373432,
+            "heapTotal": 20185088,
+            "heapUsed": 12157368,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 2,
+          "method": "entities100",
+          "durationMs": 0.3125,
+          "roundTripMs": 0.9270830000000387,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 66359904,
+            "heapTotal": 20185088,
+            "heapUsed": 12157592,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 1,
+          "method": "entities100",
+          "durationMs": 0.32900000000000773,
+          "roundTripMs": 0.8809999999999718,
+          "payloadBytes": 103926,
+          "memory": {
+            "rss": 68112968,
+            "heapTotal": 20185088,
+            "heapUsed": 12157792,
+            "external": 5961851,
+            "arrayBuffers": 203508
+          }
+        },
+        {
+          "client": 0,
+          "method": "history100",
+          "durationMs": 0.34524999999996453,
+          "roundTripMs": 0.9176250000000437,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 71373432,
+            "heapTotal": 20643840,
+            "heapUsed": 13000312,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 2,
+          "method": "history100",
+          "durationMs": 0.4374169999999822,
+          "roundTripMs": 0.9706250000000409,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 66359904,
+            "heapTotal": 20643840,
+            "heapUsed": 13001048,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        },
+        {
+          "client": 1,
+          "method": "history100",
+          "durationMs": 0.3382499999999595,
+          "roundTripMs": 1.0014580000000706,
+          "payloadBytes": 127212,
+          "memory": {
+            "rss": 68112968,
+            "heapTotal": 20643840,
+            "heapUsed": 13001296,
+            "external": 5961903,
+            "arrayBuffers": 203560
+          }
+        }
+      ],
+      "writes": [
+        {
+          "commandId": "profile-4-writer-0",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "cf5ae6e6-21c4-413a-9efd-9e46cac86a91",
+              "schemaVersion": 7,
+              "projectRevision": 216,
+              "at": "2026-10-29T06:38:57.062Z"
+            },
+            "results": [
+              {
+                "id": "0e692b8f-c1e2-48d2-8d83-ce6244d4f3f5",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/0",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-0" }
+                }
+              }
+            ]
+          },
+          "durationMs": 5.509791000000007,
+          "roundTripMs": 7.131875000000036
+        },
+        {
+          "commandId": "profile-4-writer-1",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "9ca5adb3-9195-4751-8737-2644a866edb4",
+              "schemaVersion": 7,
+              "projectRevision": 217,
+              "at": "2026-10-29T06:38:57.065Z"
+            },
+            "results": [
+              {
+                "id": "3479b80b-3923-47b9-af42-b495eaa6bc0f",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/1",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-1" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9712499999999977,
+          "roundTripMs": 1.5665420000000267
+        },
+        {
+          "commandId": "profile-4-writer-2",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "6259741e-ff6e-40e7-a962-295d0f55b0af",
+              "schemaVersion": 7,
+              "projectRevision": 218,
+              "at": "2026-10-29T06:38:57.067Z"
+            },
+            "results": [
+              {
+                "id": "d23c5602-741b-4d13-addf-e9bc1fa0c42d",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/2",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-2" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.90570799999999,
+          "roundTripMs": 1.453457999999955
+        },
+        {
+          "commandId": "profile-4-writer-3",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "dbcc06ed-a67b-485a-8adb-1e2fbaa3f549",
+              "schemaVersion": 7,
+              "projectRevision": 219,
+              "at": "2026-10-29T06:38:57.068Z"
+            },
+            "results": [
+              {
+                "id": "41dd888c-c106-4faa-a833-b456841eb886",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/3",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-3" }
+                }
+              }
+            ]
+          },
+          "durationMs": 1.1092080000000095,
+          "roundTripMs": 1.3795000000000073
+        },
+        {
+          "commandId": "profile-4-writer-4",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "c7dda912-d59d-4bac-9ae6-bd03399c9268",
+              "schemaVersion": 7,
+              "projectRevision": 220,
+              "at": "2026-10-29T06:38:57.070Z"
+            },
+            "results": [
+              {
+                "id": "cd129bd0-5a45-4f49-b2df-b6040d695519",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/4",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-4" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.870166999999995,
+          "roundTripMs": 1.8507919999999558
+        },
+        {
+          "commandId": "profile-4-writer-5",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "9128de1a-2840-467d-a8c0-40f0ee36903f",
+              "schemaVersion": 7,
+              "projectRevision": 221,
+              "at": "2026-10-29T06:38:57.072Z"
+            },
+            "results": [
+              {
+                "id": "212c7b33-ff6b-4845-b99c-42a8d84b242a",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/5",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-5" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.899957999999998,
+          "roundTripMs": 1.5835420000000795
+        },
+        {
+          "commandId": "profile-4-writer-6",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "adc57515-002d-4b72-b089-d95316c17255",
+              "schemaVersion": 7,
+              "projectRevision": 222,
+              "at": "2026-10-29T06:38:57.073Z"
+            },
+            "results": [
+              {
+                "id": "27971429-c04c-4e39-8e9a-8847001b6d3c",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/6",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-6" }
+                }
+              }
+            ]
+          },
+          "durationMs": 1.0660000000000025,
+          "roundTripMs": 1.9554580000000215
+        },
+        {
+          "commandId": "profile-4-writer-7",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "d4c47487-eccb-4a14-a7d3-cad61e497533",
+              "schemaVersion": 7,
+              "projectRevision": 223,
+              "at": "2026-10-29T06:38:57.075Z"
+            },
+            "results": [
+              {
+                "id": "b518461b-3a43-4387-9dea-f976c7426f3d",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/7",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-7" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9442499999999967,
+          "roundTripMs": 1.5599170000000413
+        },
+        {
+          "commandId": "profile-4-writer-8",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "d7398696-4a7d-44e8-869b-452eb1987991",
+              "schemaVersion": 7,
+              "projectRevision": 224,
+              "at": "2026-10-29T06:38:57.077Z"
+            },
+            "results": [
+              {
+                "id": "62602e16-440b-401c-98c7-1c7e5b64c454",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/8",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-8" }
+                }
+              }
+            ]
+          },
+          "durationMs": 1.2219170000000048,
+          "roundTripMs": 1.7970000000000255
+        },
+        {
+          "commandId": "profile-4-writer-9",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "737cf0bb-f269-48f5-b5a6-a422fc7632a3",
+              "schemaVersion": 7,
+              "projectRevision": 225,
+              "at": "2026-10-29T06:38:57.079Z"
+            },
+            "results": [
+              {
+                "id": "dbe86efa-305b-4d4a-831d-319a0246449f",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/9",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-9" }
+                }
+              }
+            ]
+          },
+          "durationMs": 1.001958000000002,
+          "roundTripMs": 1.69337500000006
+        },
+        {
+          "commandId": "profile-4-writer-10",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "a591b716-6b98-4a34-9ba1-c857aa4cc86d",
+              "schemaVersion": 7,
+              "projectRevision": 226,
+              "at": "2026-10-29T06:38:57.080Z"
+            },
+            "results": [
+              {
+                "id": "12bcbf7c-1aa0-402e-b6a9-2435a667265a",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/10",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-10" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8070409999999981,
+          "roundTripMs": 1.2075829999999996
+        },
+        {
+          "commandId": "profile-4-writer-11",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "2029ee0a-69c3-4ff3-888e-ee09dbf6f729",
+              "schemaVersion": 7,
+              "projectRevision": 227,
+              "at": "2026-10-29T06:38:57.081Z"
+            },
+            "results": [
+              {
+                "id": "9ee7210d-0c67-4eb7-bafa-d8ee0a6b8e1c",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/11",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-11" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7560830000000038,
+          "roundTripMs": 1.594082999999955
+        },
+        {
+          "commandId": "profile-4-writer-12",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "20e5a6a7-eee1-4fb4-918d-92cffb3acf85",
+              "schemaVersion": 7,
+              "projectRevision": 228,
+              "at": "2026-10-29T06:38:57.083Z"
+            },
+            "results": [
+              {
+                "id": "ccff46a4-d420-4dcf-a6de-a0f8cc696af7",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/12",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-12" }
+                }
+              }
+            ]
+          },
+          "durationMs": 1.3274590000000046,
+          "roundTripMs": 1.820333000000005
+        },
+        {
+          "commandId": "profile-4-writer-13",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "d31bf8c4-9e2c-4573-8d98-4ffebb96c61f",
+              "schemaVersion": 7,
+              "projectRevision": 229,
+              "at": "2026-10-29T06:38:57.085Z"
+            },
+            "results": [
+              {
+                "id": "df9f690e-c0b0-4859-bfc7-6e9fb9cb3652",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/13",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-13" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9079580000000078,
+          "roundTripMs": 1.617750000000001
+        },
+        {
+          "commandId": "profile-4-writer-14",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "a9e49bdf-b406-40f7-8483-3a5d258b7724",
+              "schemaVersion": 7,
+              "projectRevision": 230,
+              "at": "2026-10-29T06:38:57.086Z"
+            },
+            "results": [
+              {
+                "id": "5d1e7de8-8daf-47f9-a761-7016f1ddf7e7",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/14",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-14" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.9236659999999972,
+          "roundTripMs": 1.6438340000000835
+        },
+        {
+          "commandId": "profile-4-writer-15",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "056b116a-b2cb-4b69-89a1-ac2bf8fc5618",
+              "schemaVersion": 7,
+              "projectRevision": 231,
+              "at": "2026-10-29T06:38:57.088Z"
+            },
+            "results": [
+              {
+                "id": "a6ed8321-10dc-4e0d-bb44-8d4bb813ea3f",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/15",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-15" }
+                }
+              }
+            ]
+          },
+          "durationMs": 2.5638330000000025,
+          "roundTripMs": 3.2377500000000055
+        },
+        {
+          "commandId": "profile-4-writer-16",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "61e64d63-c73b-4d6d-a1e8-c812423e74b6",
+              "schemaVersion": 7,
+              "projectRevision": 232,
+              "at": "2026-10-29T06:38:57.091Z"
+            },
+            "results": [
+              {
+                "id": "ed9c98fc-e875-4f54-a297-201e0b61d351",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/16",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-16" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8214159999999993,
+          "roundTripMs": 1.2467080000000124
+        },
+        {
+          "commandId": "profile-4-writer-17",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "c50bc153-590d-4b48-877e-96276a19a499",
+              "schemaVersion": 7,
+              "projectRevision": 233,
+              "at": "2026-10-29T06:38:57.093Z"
+            },
+            "results": [
+              {
+                "id": "455851e4-a4b6-4036-8dd1-11d521c10d6d",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/17",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-17" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7443330000000117,
+          "roundTripMs": 1.3227500000000418
+        },
+        {
+          "commandId": "profile-4-writer-18",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "0a26735d-00df-40b2-82cb-e77d04972093",
+              "schemaVersion": 7,
+              "projectRevision": 234,
+              "at": "2026-10-29T06:38:57.094Z"
+            },
+            "results": [
+              {
+                "id": "e01143a0-63b9-4146-90ab-8bf2fcb5cfc6",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/18",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-18" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.6532919999999933,
+          "roundTripMs": 0.7170409999999947
+        },
+        {
+          "commandId": "profile-4-writer-19",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "c01a5fb7-6873-4de9-bcb7-a35a6752c2a1",
+              "schemaVersion": 7,
+              "projectRevision": 235,
+              "at": "2026-10-29T06:38:57.094Z"
+            },
+            "results": [
+              {
+                "id": "ace0a57d-0268-46b3-98e3-ce4d5ce36e95",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/19",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-19" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.554916999999989,
+          "roundTripMs": 1.0333749999999782
+        },
+        {
+          "commandId": "profile-4-writer-20",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "37843fe5-070a-46df-9ab3-99f497e948b1",
+              "schemaVersion": 7,
+              "projectRevision": 236,
+              "at": "2026-10-29T06:38:57.096Z"
+            },
+            "results": [
+              {
+                "id": "1ca5e01e-0821-43b6-8fb3-e7716a707c37",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/20",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-20" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7702499999999759,
+          "roundTripMs": 1.465167000000065
+        },
+        {
+          "commandId": "profile-4-writer-21",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "79e85efc-842d-4f9d-b373-b6b19718d8d3",
+              "schemaVersion": 7,
+              "projectRevision": 237,
+              "at": "2026-10-29T06:38:57.097Z"
+            },
+            "results": [
+              {
+                "id": "39aeaddc-ea37-4c6d-8150-1085dba5cb6f",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/21",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-21" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7412089999999978,
+          "roundTripMs": 0.8556249999999181
+        },
+        {
+          "commandId": "profile-4-writer-22",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "eefb9aa5-3701-4688-9e12-57ee4cd7fe69",
+              "schemaVersion": 7,
+              "projectRevision": 238,
+              "at": "2026-10-29T06:38:57.098Z"
+            },
+            "results": [
+              {
+                "id": "d7dbdf2a-260d-407c-80d0-20bea33351f7",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/22",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-22" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7952499999999816,
+          "roundTripMs": 1.7184579999999414
+        },
+        {
+          "commandId": "profile-4-writer-23",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "d989556f-ad97-4f84-83f2-1b3c768ad8b5",
+              "schemaVersion": 7,
+              "projectRevision": 239,
+              "at": "2026-10-29T06:38:57.100Z"
+            },
+            "results": [
+              {
+                "id": "775fef0c-dc7e-48f9-8aaa-ac67114de59c",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/23",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-23" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.8293330000000196,
+          "roundTripMs": 0.9090830000000096
+        },
+        {
+          "commandId": "profile-4-writer-24",
+          "result": {
+            "changeset": {
+              "actor": "concurrent-workload",
+              "reason": "Explicit synthetic mutations on faithful real-project copy only",
+              "id": "c20461d0-088a-4989-8ad5-51f899fe83d7",
+              "schemaVersion": 7,
+              "projectRevision": 240,
+              "at": "2026-10-29T06:38:57.101Z"
+            },
+            "results": [
+              {
+                "id": "dafd7d62-31aa-409d-8e21-67980b204ad9",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "Synthetic concurrent workload 4/24",
+                  "source": { "system": "file", "externalId": "synthetic-concurrent-4-24" }
+                }
+              }
+            ]
+          },
+          "durationMs": 0.7439160000000129,
+          "roundTripMs": 1.112583000000086
+        }
+      ]
+    }
+  ],
+  "finalNativeRevision": 240,
+  "results": {
+    "noUnexpectedRejection": true,
+    "acknowledgedOutcomesRecoveredExactly": true,
+    "fixedPairComparisonUnchanged": true
+  },
+  "limitations": "Actual-project bounded page mix only. Sampled memory is not a continuous peak. No automatic retries. Not connected 10k/100k contention, conflicting application judgments, HTTP/UI timing or authenticated-team proof."
+}

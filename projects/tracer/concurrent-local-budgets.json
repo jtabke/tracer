@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-28",
+  "status": "explicit local engineering budgets for subsequent workload proof; no human latency validation or production SLA",
+  "basis": [
+    "projects/tracer/concurrent-local-specification.json",
+    "projects/tracer/concurrent-local-real-workload-baseline.json"
+  ],
+  "timing": "Initial connected synthetic baseline before runtime edits; actual-project baseline after read-isolation correctness fix. No query optimization performed. These budgets govern subsequent performance work and will not be relaxed based on results.",
+  "sampling": "Report cold sample separately, 20 measured sequential reads per bounded task and 3 complete page1 dependency scans. Concurrent profiles: 2 then 4 independent clients with 1 writer, at least 100 total requests per profile; count success, busy/conflict, unexpected rejection, acknowledged updates and outcome inspection separately. Do not retry uncertain writes.",
+  "budgets": [
+    {
+      "task": "Bounded entity/history100, incident100, configuration comparison and current verification/assessment reads on declared local profiles",
+      "p95Ms": 1000,
+      "maxMs": 3000
+    },
+    {
+      "task": "Complete actual-project pair dependency discovery",
+      "maxMs": 5000,
+      "scope": "Exhaust all continuation pages at page1, retaining full receipt population; record page count and transferred bytes. Page25 may reject existing 8 MiB cap explicitly."
+    },
+    {
+      "task": "Connected synthetic bounded impact25 with 5000 unrelated receipts",
+      "p95Ms": 250,
+      "maxMs": 1000
+    },
+    {
+      "task": "Reads while another process holds a writer reservation",
+      "expected": "Read succeeds against last committed snapshot within 1000ms; no writer-slot busy error."
+    },
+    {
+      "task": "Competing writes",
+      "expected": "An acknowledged success or explicit busy/conflict within 2000ms for bounded commands; no lost update or partial state. Throughput is measured rather than guaranteed."
+    },
+    {
+      "task": "Measured reader process memory",
+      "maxRssBytes": 536870912,
+      "maxRssGrowthBytes": 268435456,
+      "scope": "Bounded query workloads; complete dependency pages must be streamed rather than accumulated. Report peak sampled RSS, heap and method; sampling is not a precise allocation proof."
+    }
+  ],
+  "existingLimits": "Keep existing endpoint/page/payload/work limits unchanged. Explicit cap rejection is a boundary result, never success for an undeclared smaller engineering scope.",
+  "exclusions": [
+    "Authenticated team readiness",
+    "arbitrary-scale throughput",
+    "hardware-independent SLA",
+    "representative-human validation"
+  ]
+}

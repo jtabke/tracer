@@ -54,11 +54,15 @@ export class Verification {
   }
   async resolveModel(input: ApplicationModelPin) {
     input = prepareModelPin(input);
-    return this.repository.transaction((tx) => resolveVerificationModel(tx, input));
+    return this.repository.transaction((tx) => resolveVerificationModel(tx, input), {
+      readOnly: true,
+    });
   }
   async prepareBasis(input: PrepareVerificationBasis) {
     input = prepareVerificationBasis(input);
-    return this.repository.transaction((tx) => resolveVerificationBasis(tx, input));
+    return this.repository.transaction((tx) => resolveVerificationBasis(tx, input), {
+      readOnly: true,
+    });
   }
   async open(input: OpenVerificationCase, actor: Provenance) {
     input = prepareVerificationOpening(input);
@@ -72,6 +76,7 @@ export class Verification {
     input = prepareVerificationSelection(input);
     return this.repository.transaction(
       async (tx) => (await analyzeVerification(tx, input)).analysis,
+      { readOnly: true },
     );
   }
   async selectResults(input: SelectVerificationResults, actor: Provenance) {
@@ -102,20 +107,27 @@ export class Verification {
   }
   async get(input: VerificationSelection) {
     input = prepareVerificationSelection(input);
-    return this.repository.transaction(async (tx) => (await verificationContext(tx, input)).view);
+    return this.repository.transaction(async (tx) => (await verificationContext(tx, input)).view, {
+      readOnly: true,
+    });
   }
   async locate(caseId: string) {
     verificationText(caseId, 200);
-    return this.repository.transaction(async (tx) => {
-      const first = (await tx.evidence("receipt", { subject: caseId, limit: 1 })).items[0];
-      const commandId = first && (await tx.evaluationCommandForReceipt(first.id));
-      ensure(commandId, "not_found", "No controlled verification opening found");
-      return (await verificationContext(tx, { caseId, openingCommandId: commandId })).view;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const first = (await tx.evidence("receipt", { subject: caseId, limit: 1 })).items[0];
+        const commandId = first && (await tx.evaluationCommandForReceipt(first.id));
+        ensure(commandId, "not_found", "No controlled verification opening found");
+        return (await verificationContext(tx, { caseId, openingCommandId: commandId })).view;
+      },
+      { readOnly: true },
+    );
   }
   async execution(input: VerificationSelection, executionId: string) {
     input = prepareVerificationSelection(input);
     verificationText(executionId, 200);
-    return this.repository.transaction((tx) => readVerificationExecution(tx, input, executionId));
+    return this.repository.transaction((tx) => readVerificationExecution(tx, input, executionId), {
+      readOnly: true,
+    });
   }
 }

@@ -29,25 +29,28 @@ export async function nextWork(
     "validation",
     "Next work choices must be strings of at most 200 characters; use an empty string for an unconfigured queue",
   );
-  return repository.transaction(async (tx) => {
-    const schema = (await tx.get("schema", "project")) ?? null;
-    const selection = selected(schema, query);
-    const value: NextWork = {
-      schema,
-      projectRevision: await tx.headRevision(),
-      evidenceRevision: await tx.impactEvidenceRevision(),
-      schemaVersion: schema?.version ?? 0,
-      selection,
-      queues: {
-        statements: await statementWork(tx, selection),
-        allocation: await coverageWork(tx, schema, selection.allocationExpectationId),
-        verification: await coverageWork(tx, schema, selection.verificationExpectationId),
-        ...(await evidenceWork(tx)),
-      },
-    };
-    workByteBudget()(value);
-    return value;
-  });
+  return repository.transaction(
+    async (tx) => {
+      const schema = (await tx.get("schema", "project")) ?? null;
+      const selection = selected(schema, query);
+      const value: NextWork = {
+        schema,
+        projectRevision: await tx.headRevision(),
+        evidenceRevision: await tx.impactEvidenceRevision(),
+        schemaVersion: schema?.version ?? 0,
+        selection,
+        queues: {
+          statements: await statementWork(tx, selection),
+          allocation: await coverageWork(tx, schema, selection.allocationExpectationId),
+          verification: await coverageWork(tx, schema, selection.verificationExpectationId),
+          ...(await evidenceWork(tx)),
+        },
+      };
+      workByteBudget()(value);
+      return value;
+    },
+    { readOnly: true },
+  );
 }
 function selected(schema: SchemaObject | null, query: NextWorkQuery): NextWorkSelection {
   const defaults = nextWorkDefaults(schema, query.requirementType);

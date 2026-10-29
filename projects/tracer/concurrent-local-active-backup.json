@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-28",
+  "scope": "Faithful online copy of actual Tracer native190/schema7; independent process has written native update, captured receipt and durable outcome inside an uncommitted transaction. Parent reads and SQLite-aware backup run while that transaction is held.",
+  "workerSha256": "f15925f3c542b34b3a36d783a6648839d7f39dcdf5fa57a290f4e09a7dace0d3",
+  "command": {
+    "commandId": "disposable-real-project-active-backup-2026-10-28",
+    "expectedSchemaVersion": 7,
+    "expectedProjectRevision": 190,
+    "expectedEvidenceRevision": 1096,
+    "operations": [
+      {
+        "op": "entity.update",
+        "id": "45c747f6-5548-42f8-953d-c0c08ea82500",
+        "expectedVersion": 1,
+        "input": {
+          "fields": {
+            "title": "Prove concurrent local reliability and measured workloads (disposable backup probe)",
+            "kind": "implementation",
+            "deliveryStatus": "in_progress",
+            "horizon": "now",
+            "selection": "selected",
+            "rationale": "Owner-selected next goal after verified configuration-change capability. Same-instance queues do not prove independent-process operation; measured read/read lock contention warrants an explicit read-only boundary.",
+            "nextAction": "Register workloads/budgets, implement and verify declared read-only transactions, then execute process races, application/recovery and workload acceptance.",
+            "completionEvidence": "Initial audit only; no criterion promoted. projects/tracer/concurrent-local-specification.json",
+            "lifecycle": "active"
+          }
+        }
+      }
+    ],
+    "receipt": {
+      "outputId": "45c747f6-5548-42f8-953d-c0c08ea82500",
+      "expectedOutputVersion": 2,
+      "outcome": "Synthetic backup concurrency proof on faithful disposable real-project copy; not engineering verification of REQ-036.",
+      "inputs": [
+        {
+          "entityId": "082855d7-c28e-4463-8d8f-90dd22294d59",
+          "fields": ["statement"],
+          "role": "declared probe scope"
+        }
+      ]
+    }
+  },
+  "results": {
+    "nativeBefore": 190,
+    "nativeAfter": 191,
+    "backupMs": 46.49341699999991,
+    "beforeCommitReadersSawOnlyCommittedState": true,
+    "restoredExactExportEqualsBefore": true,
+    "restoredOutcomeAbsent": true,
+    "restoredConfigurationAssessmentVerificationEqual": true,
+    "afterCommitOriginalOutcomeExact": true,
+    "fixedPairIndependentOfHeadAndEvidence": true,
+    "candidateVerificationObligationsUnchanged": true
+  },
+  "limitations": "One held bounded update on disposable actual-project copy; not sustained backup throughput or all crash races. Live register untouched."
+}

@@ -492,7 +492,11 @@ test("file persistence, stable busy errors and stale schema checks across connec
       { code: "schema_conflict" },
     );
     await first.transaction(async () => {
-      await assert.rejects(b.queryEntities(), { code: "busy" });
+      assert.equal((await b.queryEntities()).items[0].id, item.id);
+      await assert.rejects(
+        b.updateEntity(item.id, 2, { fields: { title: "contending writer" } }, 2, provenance),
+        { code: "busy" },
+      );
     });
   } finally {
     second?.close();

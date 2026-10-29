@@ -35,7 +35,7 @@ export class ChangeImpactService {
   }
   async get(query: ChangeImpactQuery): Promise<ChangeImpact> {
     query = snapshotInput(query);
-    return this.repository.transaction((tx) => readChangeImpact(tx, query));
+    return this.repository.transaction((tx) => readChangeImpact(tx, query), { readOnly: true });
   }
 }
 

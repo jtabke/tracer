@@ -49,6 +49,6 @@ export class WorkingContextService {
   }
   async get(query: WorkingContextQuery): Promise<WorkingContext> {
     const selected = workingQuery(snapshotInput(query));
-    return this.repository.transaction((tx) => projection(tx, selected));
+    return this.repository.transaction((tx) => projection(tx, selected), { readOnly: true });
   }
 }

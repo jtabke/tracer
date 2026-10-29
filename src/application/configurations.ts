@@ -95,22 +95,28 @@ export class Configurations {
     this.newId = newId;
   }
   captureContext() {
-    return this.repository.transaction((tx) => configurationCaptureContext(tx));
+    return this.repository.transaction((tx) => configurationCaptureContext(tx), { readOnly: true });
   }
   async compare(input: ConfigurationPair) {
     input = snapshotInput(input);
     validateConfigurationPair(input);
-    return this.repository.transaction((tx) => compareConfigurations(tx, input));
+    return this.repository.transaction((tx) => compareConfigurations(tx, input), {
+      readOnly: true,
+    });
   }
   async compareDependencies(input: ConfigurationImpactQuery) {
     input = snapshotInput(input);
     validateConfigurationImpactQuery(input);
-    return this.repository.transaction((tx) => readConfigurationImpact(tx, input));
+    return this.repository.transaction((tx) => readConfigurationImpact(tx, input), {
+      readOnly: true,
+    });
   }
   async compareReceipt(input: ConfigurationReceiptQuery) {
     input = snapshotInput(input);
     validateConfigurationReceiptQuery(input);
-    return this.repository.transaction((tx) => compareConfigurationReceipt(tx, input));
+    return this.repository.transaction((tx) => compareConfigurationReceipt(tx, input), {
+      readOnly: true,
+    });
   }
   async captureExact(input: ExactConfigurationInput, origin: Provenance): Promise<Configuration> {
     const actor = validateProvenance(origin);
@@ -150,15 +156,18 @@ export class Configurations {
   }
   async get(id: string): Promise<Configuration> {
     ensure(typeof id === "string" && id.length > 0, "validation", "Configuration ID is required");
-    return this.repository.transaction((tx) => readConfiguration(tx, id));
+    return this.repository.transaction((tx) => readConfiguration(tx, id), { readOnly: true });
   }
   async list(query: EvidenceQuery = {}) {
     query = snapshotInput(query);
     validateConfigurationQuery(query);
-    return this.repository.transaction(async (tx) => {
-      const page = await tx.configurations(query);
-      page.items.forEach(validateConfigurationCapture);
-      return page;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const page = await tx.configurations(query);
+        page.items.forEach(validateConfigurationCapture);
+        return page;
+      },
+      { readOnly: true },
+    );
   }
 }

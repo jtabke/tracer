@@ -171,13 +171,16 @@ export class Coverage {
   async list(query: CoverageListQuery = {}): Promise<CoverageCatalogue> {
     query = snapshotInput(query);
     queryShape(query, ["baselineId"], "Invalid coverage policy query");
-    return this.repository.transaction(async (tx) => {
-      const selected = await context(tx, query);
-      return {
-        context: selected.context,
-        expectations: selected.schema.coverageExpectations ?? {},
-      };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const selected = await context(tx, query);
+        return {
+          context: selected.context,
+          expectations: selected.schema.coverageExpectations ?? {},
+        };
+      },
+      { readOnly: true },
+    );
   }
   async evaluate(query: CoverageEvaluationQuery): Promise<CoverageEvaluation> {
     query = snapshotInput(query);
@@ -196,50 +199,55 @@ export class Coverage {
     );
     const limit = query.limit === undefined ? 25 : query.limit;
     validatePageLimit(limit, 100, "Coverage page limit must be 1–100");
-    return this.repository.transaction(async (tx) => {
-      const selected = await context(tx, query),
-        after = continuation(query, selected.context);
-      const definitions = selected.schema.coverageExpectations ?? {};
-      ensure(
-        Object.hasOwn(definitions, query.expectationId),
-        "not_found",
-        "Coverage expectation is not defined in the selected schema",
-      );
-      const expectation = definitions[query.expectationId];
-      const page = await tx.coveragePage({
-        expectation,
-        limit,
-        ...(query.baselineId === undefined ? {} : { atRevision: selected.context.projectRevision }),
-        ...(after === undefined ? {} : { after }),
-      });
-      const items = page.items.map((row) => rowResult(row, expectation.minimumDistinctTargets));
-      return {
-        context: selected.context,
-        expectationId: query.expectationId,
-        expectation,
-        rows: {
-          items,
-          ...(page.nextAfter === undefined
+    return this.repository.transaction(
+      async (tx) => {
+        const selected = await context(tx, query),
+          after = continuation(query, selected.context);
+        const definitions = selected.schema.coverageExpectations ?? {};
+        ensure(
+          Object.hasOwn(definitions, query.expectationId),
+          "not_found",
+          "Coverage expectation is not defined in the selected schema",
+        );
+        const expectation = definitions[query.expectationId];
+        const page = await tx.coveragePage({
+          expectation,
+          limit,
+          ...(query.baselineId === undefined
             ? {}
-            : {
-                nextAfter: JSON.stringify([
-                  "coverage-v1",
-                  query.expectationId,
-                  selected.context.projectRevision,
-                  selected.context.schemaVersion,
-                  query.baselineId ?? null,
-                  page.nextAfter,
-                ]),
-              }),
-        },
-        summary: {
-          scope: "page",
-          evaluated: items.length,
-          covered: items.filter((row) => row.state === "covered").length,
-          missing: items.filter((row) => row.state === "missing").length,
-          unknown: items.filter((row) => row.state === "unknown").length,
-        },
-      };
-    });
+            : { atRevision: selected.context.projectRevision }),
+          ...(after === undefined ? {} : { after }),
+        });
+        const items = page.items.map((row) => rowResult(row, expectation.minimumDistinctTargets));
+        return {
+          context: selected.context,
+          expectationId: query.expectationId,
+          expectation,
+          rows: {
+            items,
+            ...(page.nextAfter === undefined
+              ? {}
+              : {
+                  nextAfter: JSON.stringify([
+                    "coverage-v1",
+                    query.expectationId,
+                    selected.context.projectRevision,
+                    selected.context.schemaVersion,
+                    query.baselineId ?? null,
+                    page.nextAfter,
+                  ]),
+                }),
+          },
+          summary: {
+            scope: "page",
+            evaluated: items.length,
+            covered: items.filter((row) => row.state === "covered").length,
+            missing: items.filter((row) => row.state === "missing").length,
+            unknown: items.filter((row) => row.state === "unknown").length,
+          },
+        };
+      },
+      { readOnly: true },
+    );
   }
 }

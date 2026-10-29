@@ -1,0 +1,150 @@
+{
+  "date": "2026-10-28",
+  "status": "owner-selected acceptance; proof and implementation in progress",
+  "requirement": "REQ-036",
+  "plan": "VER-036",
+  "work": "WORK-028",
+  "discovery": "WORK-006",
+  "need": "PN-08",
+  "ownerRequest": "Prove reliability under concurrent independent local clients/processes and realistic workloads after completed configuration-change capability.",
+  "preservedObligation": "REQ-025 remains the separate candidate obligation for future authenticated team clients and supported backend parity; local SQLite evidence does not satisfy it.",
+  "scope": "Existing local Tracer primitives and application contracts, independent processes sharing SQLite, measured declared workloads; no authentication, hosting, second adapter, cloud integration, arbitrary-scale or representative-human readiness claim.",
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "expected": "Independent repository handles and OS processes preserve unique identities, stale object/schema/project/endpoint guards, atomic rollback, ordered immutable history and usable recovery across concurrent native/schema/link/resource operations. Every acknowledged update survives; contention may reject explicitly without silent replay.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-2",
+      "expected": "Identical and conflicting command IDs under genuine process overlap produce at most one durable success per family/identity with exact original intent/outcome inspection after reopen; native plus receipt changes never publish partially.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-3",
+      "expected": "Declared read-only operations observe one committed native/evidence snapshot without reserving the writer slot. Readers coexist with readers and an active writer under WAL; writes through a read-only transaction reject atomically. Separate requests retain their existing pagination guarantees, without an invented shared snapshot; guarded continuations reject changes as already promised.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-4",
+      "expected": "Genuinely concurrent assessment and verification work preserves pinned models, selected configuration comparison and candidate applicability. Unrelated head changes never silently change fixed pair meaning; conflicting basis, actions or conclusions reject or require deliberate reassessment.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-5",
+      "expected": "Process termination before commit leaves no partial native/evidence/outcome writes; termination after commit and response loss recovers exact original success by inspection after restart. No automatic uncertain-write replay.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-6",
+      "expected": "SQLite-aware online backup during active work restores a complete committed state with native/evidence history and outcome identities intact; current engineering application capabilities remain usable after restore.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-7",
+      "expected": "Reproducible real-project and connected synthetic workloads report exact candidate, environment, counts, latency distributions, RSS/heap, payload/work bounds and contention. Explicit engineering budgets are fixed after initial baseline and before optimization; overflow is explained, never silently truncated.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-8",
+      "expected": "Core, typed HTTP/client, CLI and relevant existing shared-workspace task checks cover success, rejection and uncertain recovery under declared workloads. Portable contracts distinguish adapter obligations from SQLite implementation proof; future authentication/backend parity stays unproven.",
+      "verification": "not_run"
+    },
+    {
+      "id": "AC-9",
+      "expected": "Appropriate unchanged regression, browser, architecture and quality checks pass. Owning docs, checkpoint, guarded register, deterministic export and restored online backup retain exact evidence, limits and independent delivery/verification/human-validation status. Audit all criteria and the complete goal before completion.",
+      "verification": "not_run"
+    }
+  ],
+  "workloads": [
+    {
+      "id": "real-project",
+      "basis": "SQLite-aware copy of the actual native189/schema7 Tracer project, including preserved assessments, verification and exact configurations. Record actual populations at execution.",
+      "tasks": [
+        "schema and bounded record/link/history pages",
+        "fixed configuration comparison and applicability",
+        "assessment/verification inspection",
+        "guarded edits on disposable copy"
+      ]
+    },
+    {
+      "id": "connected-engineering",
+      "basis": "Existing public-command benchmark: 10,000 records, 100,000 connected links, relevant receipt plus 5,000 unrelated receipts; synthetic topology, not representative user research.",
+      "tasks": [
+        "page100",
+        "incident100",
+        "depth2 traversal",
+        "bounded impact25",
+        "two/four independent read clients and one writer"
+      ]
+    },
+    {
+      "id": "configured-research",
+      "basis": "Preserved research fixture or explicit recreated controlled numeric requirement/method/data relationships; synthetic content must stay labeled.",
+      "tasks": [
+        "selected candidate verification and evidence reads",
+        "concurrent guarded judgment and stale basis rejection"
+      ]
+    }
+  ],
+  "procedure": {
+    "overlap": "Use child-process ready/start/held/release IPC barriers, bounded timeouts and guaranteed cleanup; distinguish separate handles from separate processes. Record actual held lock/snapshot and outcome, not Promise.all alone.",
+    "budgets": "Collect initial real and synthetic baselines first. Publish explicit local engineering budgets and sampling plan in a separate immutable budget record before performance edits; no arbitrary-scale claims or retroactively relaxed gates.",
+    "recovery": "Terminate disposable workers before/after commit; inspect durable outcomes and full state/history before any deliberate new command. Back up using node:sqlite online API, never main-file copy while active.",
+    "preservation": "Live project is backed up before register changes. All adversarial writes use disposable databases or online copies; evidence reports are frozen once observed."
+  },
+  "initialAudit": {
+    "candidate": "fb0c32323765bce221d5c42e52f8781df3bdcae3",
+    "files": [
+      {
+        "path": "src/application/ports/repository.ts",
+        "sha256": "95c8565354904057fde5420ec08f9d360524ce1f7a27c9ec1ab1f97a269a1a1a"
+      },
+      {
+        "path": "src/persistence/sqlite.ts",
+        "sha256": "3d47723515e2568d0048b656236d132a18a6e4c7f8a4d684b29f4de769a6de87"
+      },
+      {
+        "path": "src/persistence/transaction-queue.ts",
+        "sha256": "dff3b46c59a9c0c1de96bfbd091d3cb60bc10a86fa79bad5a03c93ee37f878c9"
+      },
+      {
+        "path": "test/repository-contract.ts",
+        "sha256": "d2d8798a901246517c430ae3777131eb7d7ed7189941d118b6be3f200628c878"
+      },
+      {
+        "path": "test/repository-evaluation-contract.ts",
+        "sha256": "cc08b26d5c1839cf6dac801b854bf3a1953ad413d4a52e089d93db41899c9404"
+      },
+      {
+        "path": "examples/benchmark.ts",
+        "sha256": "36d9587098b03f68fc7d542e6c5b852d2747266c225cd179fa89c5740b9c7618"
+      },
+      {
+        "path": "examples/benchmark-evidence.ts",
+        "sha256": "5baf157dffeaeffb5a21c1d2eed0834aa03ac5162da3a4d32d23bf74c02dbf6c"
+      }
+    ],
+    "finding": "Existing portable concurrency cases serialize through one repository instance. Independent-process read/read probe rejects busy because every SQLite transaction uses BEGIN IMMEDIATE; no lost update established by this probe.",
+    "probe": {
+      "candidate": "fb0c32323765bce221d5c42e52f8781df3bdcae3",
+      "environment": {
+        "node": "v26.12.1",
+        "platform": "darwin",
+        "arch": "arm64",
+        "cpu": "Apple M4 Pro",
+        "memoryBytes": 51539607552
+      },
+      "procedure": "Independent process holds a repository transaction after a native head read; already-open parent repository attempts a public schema read. No writes occur inside held transaction.",
+      "result": {
+        "outcome": "rejected",
+        "code": "busy",
+        "message": "Database is busy; retry the complete command",
+        "durationMs": 146.09825
+      },
+      "recoveredSchemaVersion": 1,
+      "interpretation": "BEGIN IMMEDIATE reserves the SQLite writer slot for all reads. This probe tests read/read contention, not lost updates or authenticated team behavior."
+    },
+    "benchmarkLogSha256": "c82ac1c02c314b076f51a25f20ea149927797dbf94f21edfd02ae5937d8c9ddb"
+  }
+}

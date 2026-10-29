@@ -74,24 +74,27 @@ export async function previewSchema(
   queryShape(input, ["schema", "expectedVersion", "limit"], "Invalid schema preview input");
   validateSchema(input.schema);
   validatePageLimit(input.limit, 1000);
-  return repository.transaction(async (tx) => {
-    const current = await tx.get("schema", "project");
-    const version = current?.version ?? 0;
-    expectVersion(version, input.expectedVersion, true, { kind: "schema", id: "project" });
-    const result: SchemaPreview = {
-      valid: true,
-      schemaVersion: version,
-      projectRevision: await tx.headRevision(),
-      changes: definitionChanges(current, input.schema),
-      checked: { entities: 0, relationships: 0 },
-      issues: [],
-      totalIssues: 0,
-      truncated: false,
-    };
-    await inspectObjects(tx, input.schema, result, input.limit ?? 100, "entity");
-    await inspectObjects(tx, input.schema, result, input.limit ?? 100, "relationship");
-    result.valid = result.totalIssues === 0;
-    result.truncated = result.totalIssues > result.issues.length;
-    return result;
-  });
+  return repository.transaction(
+    async (tx) => {
+      const current = await tx.get("schema", "project");
+      const version = current?.version ?? 0;
+      expectVersion(version, input.expectedVersion, true, { kind: "schema", id: "project" });
+      const result: SchemaPreview = {
+        valid: true,
+        schemaVersion: version,
+        projectRevision: await tx.headRevision(),
+        changes: definitionChanges(current, input.schema),
+        checked: { entities: 0, relationships: 0 },
+        issues: [],
+        totalIssues: 0,
+        truncated: false,
+      };
+      await inspectObjects(tx, input.schema, result, input.limit ?? 100, "entity");
+      await inspectObjects(tx, input.schema, result, input.limit ?? 100, "relationship");
+      result.valid = result.totalIssues === 0;
+      result.truncated = result.totalIssues > result.issues.length;
+      return result;
+    },
+    { readOnly: true },
+  );
 }

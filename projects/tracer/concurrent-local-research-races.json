@@ -1,0 +1,178 @@
+{
+  "date": "2026-10-28",
+  "scope": "Independent OS processes issue simultaneous controlled reopen requests against exact guarded retained configured-research contexts on three disposable online copies. No live state changed.",
+  "candidateHashes": [
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "b1946b0df4fe99c7ea8c4b539fe79c91b23bce3a71e3fe4d7d326aa5c29eb66a"
+    },
+    {
+      "path": "src/application/verification.ts",
+      "sha256": "0defc1994c88d86617673a745e29778501a727ac8ab376940bee86b8d769a471"
+    },
+    {
+      "path": "src/application/change-assessments.ts",
+      "sha256": "a4d7ecee8baadaa1b41a3ec178bc3edc365a154e42beb7a9737e43be328b4341"
+    },
+    {
+      "path": "output/concurrent-local/workload-worker.mjs",
+      "sha256": "5d3e8770b2378cb6583569306a18a53373af20725400ce64b0d705fa994d5916"
+    }
+  ],
+  "results": [
+    {
+      "operations": ["verification.reopen", "changeAssessments.reopen"],
+      "inputs": [
+        {
+          "caseId": "9bf0678d-b58b-4c37-8ab4-bffc600cf55c",
+          "openingCommandId": "7a664ff8-b146-4495-8b79-4066bfc6a02f",
+          "commandId": "concurrent-verification-assessment-0",
+          "expectedCaseVersion": 9,
+          "expectedSchemaVersion": 3,
+          "expectedProjectRevision": 35,
+          "expectedEvidenceRevision": 22,
+          "expectedAnalysisDigest": "sha256:f6f832aecfedda6da22ed8697bcb5e7b9e571b28aa361aef1a752da97daca979",
+          "reason": "Explicit reopen on disposable configured-research copy only"
+        },
+        {
+          "assessmentId": "fb1cb23b-1de6-4554-b98f-1ee0f48ad25f",
+          "openingCommandId": "e9efcb31-98f9-4dba-8152-ea26b49a7df1",
+          "commandId": "concurrent-verification-assessment-1",
+          "expectedAssessmentVersion": 11,
+          "expectedSchemaVersion": 3,
+          "expectedProjectRevision": 35,
+          "expectedEvidenceRevision": 22,
+          "reason": "Explicit reopen on disposable configured-research copy only"
+        }
+      ],
+      "responses": [
+        {
+          "error": {
+            "code": "conflict",
+            "message": "Project changed since preview (expected r35, current r36). Create a new preview."
+          },
+          "durationMs": null,
+          "commandId": null,
+          "receiptId": null
+        },
+        {
+          "error": null,
+          "durationMs": 9.857124999999996,
+          "commandId": "concurrent-verification-assessment-1",
+          "receiptId": "b0984b3a-8c14-4481-924f-ca64147b6b17"
+        }
+      ],
+      "acknowledged": 1,
+      "rejectedWithoutOutcome": true,
+      "nativeRevisionBefore": 35,
+      "nativeRevisionAfterRace": 36,
+      "receiptDelta": 1,
+      "originalHistoryEvidencePreserved": true,
+      "fixedPairComparisonUnchanged": true,
+      "explicitlyRepreparedDifferentApplication": "concurrent-verification-assessment-0-explicit-adoption"
+    },
+    {
+      "operations": ["verification.reopen", "verification.reopen"],
+      "inputs": [
+        {
+          "caseId": "9bf0678d-b58b-4c37-8ab4-bffc600cf55c",
+          "openingCommandId": "7a664ff8-b146-4495-8b79-4066bfc6a02f",
+          "commandId": "concurrent-verification-verification-0",
+          "expectedCaseVersion": 9,
+          "expectedSchemaVersion": 3,
+          "expectedProjectRevision": 35,
+          "expectedEvidenceRevision": 22,
+          "expectedAnalysisDigest": "sha256:f6f832aecfedda6da22ed8697bcb5e7b9e571b28aa361aef1a752da97daca979",
+          "reason": "Explicit reopen on disposable configured-research copy only"
+        },
+        {
+          "caseId": "9bf0678d-b58b-4c37-8ab4-bffc600cf55c",
+          "openingCommandId": "7a664ff8-b146-4495-8b79-4066bfc6a02f",
+          "commandId": "concurrent-verification-verification-1",
+          "expectedCaseVersion": 9,
+          "expectedSchemaVersion": 3,
+          "expectedProjectRevision": 35,
+          "expectedEvidenceRevision": 22,
+          "expectedAnalysisDigest": "sha256:f6f832aecfedda6da22ed8697bcb5e7b9e571b28aa361aef1a752da97daca979",
+          "reason": "Explicit reopen on disposable configured-research copy only"
+        }
+      ],
+      "responses": [
+        {
+          "error": {
+            "code": "conflict",
+            "message": "Project changed since preview (expected r35, current r36). Create a new preview."
+          },
+          "durationMs": null,
+          "commandId": null,
+          "receiptId": null
+        },
+        {
+          "error": null,
+          "durationMs": 20.023750000000007,
+          "commandId": "concurrent-verification-verification-1",
+          "receiptId": "56fa9b1a-1b45-4626-bcbc-fee249875dd8"
+        }
+      ],
+      "acknowledged": 1,
+      "rejectedWithoutOutcome": true,
+      "nativeRevisionBefore": 35,
+      "nativeRevisionAfterRace": 36,
+      "receiptDelta": 1,
+      "originalHistoryEvidencePreserved": true,
+      "fixedPairComparisonUnchanged": true,
+      "explicitlyRepreparedDifferentApplication": null
+    },
+    {
+      "operations": ["changeAssessments.reopen", "changeAssessments.reopen"],
+      "inputs": [
+        {
+          "assessmentId": "fb1cb23b-1de6-4554-b98f-1ee0f48ad25f",
+          "openingCommandId": "e9efcb31-98f9-4dba-8152-ea26b49a7df1",
+          "commandId": "concurrent-assessment-assessment-0",
+          "expectedAssessmentVersion": 11,
+          "expectedSchemaVersion": 3,
+          "expectedProjectRevision": 35,
+          "expectedEvidenceRevision": 22,
+          "reason": "Explicit reopen on disposable configured-research copy only"
+        },
+        {
+          "assessmentId": "fb1cb23b-1de6-4554-b98f-1ee0f48ad25f",
+          "openingCommandId": "e9efcb31-98f9-4dba-8152-ea26b49a7df1",
+          "commandId": "concurrent-assessment-assessment-1",
+          "expectedAssessmentVersion": 11,
+          "expectedSchemaVersion": 3,
+          "expectedProjectRevision": 35,
+          "expectedEvidenceRevision": 22,
+          "reason": "Explicit reopen on disposable configured-research copy only"
+        }
+      ],
+      "responses": [
+        {
+          "error": null,
+          "durationMs": 9.666375000000002,
+          "commandId": "concurrent-assessment-assessment-0",
+          "receiptId": "92d00b10-eabe-4e74-98de-97db20dbff8a"
+        },
+        {
+          "error": {
+            "code": "conflict",
+            "message": "Project changed since preview (expected r35, current r36). Create a new preview."
+          },
+          "durationMs": null,
+          "commandId": null,
+          "receiptId": null
+        }
+      ],
+      "acknowledged": 1,
+      "rejectedWithoutOutcome": true,
+      "nativeRevisionBefore": 35,
+      "nativeRevisionAfterRace": 36,
+      "receiptDelta": 1,
+      "originalHistoryEvidencePreserved": true,
+      "fixedPairComparisonUnchanged": true,
+      "explicitlyRepreparedDifferentApplication": null
+    }
+  ],
+  "limitations": "Simultaneous independent process requests, not an instrumented held-lock application barrier. Reopen races only; disposition/action/result selection and changed-basis races remain separate acceptance work. Explicit reprepare uses a new identity; no uncertain command was blindly replayed."
+}

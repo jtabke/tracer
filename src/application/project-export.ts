@@ -11,55 +11,58 @@ const limitMessage =
 
 /** Independent of viewport bounds: every collection is exhausted within one transaction. */
 export function projectExport(repository: Repository): Promise<ProjectExport> {
-  return repository.transaction(async (tx) => {
-    const collect = exportCollector();
-    const value: ProjectExport = {
-      format: "tracer-project-export",
-      formatVersion: 1,
-      scope: {
-        nativeHistory: "all-recorded",
-        evidence: "all-recorded",
-        externalContent: "references-only",
-      },
-      projectRevision: await tx.headRevision(),
-      evidenceRevision: await tx.impactEvidenceRevision(),
-      current: {
-        schema: (await tx.get("schema", "project")) ?? null,
-        entities: (await collect((after) =>
-          tx.query("entity", { after, limit: pageSize }),
-        )) as Entity[],
-        relationships: (await collect((after) =>
-          tx.query("relationship", { after, limit: pageSize }),
-        )) as Relationship[],
-      },
-      provenance: {
-        changesets: await collect((after) => changesetPage(tx, after)),
-        revisions: await collect((after) => tx.history({ after, limit: pageSize })),
-      },
-      evidence: {
-        external: await collect((after) => tx.evidence("external", { after, limit: pageSize })),
-        observations: await collect((after) =>
-          tx.evidence("observation", { after, limit: pageSize }),
-        ),
-        receipts: await collect((after) => tx.evidence("receipt", { after, limit: pageSize })),
-        reviews: await collect((after) => tx.evidence("review", { after, limit: pageSize })),
-      },
-      configurations: await collect((after) => tx.configurations({ after, limit: pageSize })),
-      baselines: await collect((after) => tx.baselines({ after, limit: pageSize })),
-      savedViews: await collect(async () => ({ items: await tx.listViews() })),
-    };
-    ensure(
-      value.savedViews.length <= 50,
-      "validation",
-      "Project export cannot include more than 50 saved views; no partial export was produced",
-    );
-    ensure(
-      new TextEncoder().encode(serializeProjectExport(value)).length <= byteLimit,
-      "validation",
-      limitMessage,
-    );
-    return value;
-  });
+  return repository.transaction(
+    async (tx) => {
+      const collect = exportCollector();
+      const value: ProjectExport = {
+        format: "tracer-project-export",
+        formatVersion: 1,
+        scope: {
+          nativeHistory: "all-recorded",
+          evidence: "all-recorded",
+          externalContent: "references-only",
+        },
+        projectRevision: await tx.headRevision(),
+        evidenceRevision: await tx.impactEvidenceRevision(),
+        current: {
+          schema: (await tx.get("schema", "project")) ?? null,
+          entities: (await collect((after) =>
+            tx.query("entity", { after, limit: pageSize }),
+          )) as Entity[],
+          relationships: (await collect((after) =>
+            tx.query("relationship", { after, limit: pageSize }),
+          )) as Relationship[],
+        },
+        provenance: {
+          changesets: await collect((after) => changesetPage(tx, after)),
+          revisions: await collect((after) => tx.history({ after, limit: pageSize })),
+        },
+        evidence: {
+          external: await collect((after) => tx.evidence("external", { after, limit: pageSize })),
+          observations: await collect((after) =>
+            tx.evidence("observation", { after, limit: pageSize }),
+          ),
+          receipts: await collect((after) => tx.evidence("receipt", { after, limit: pageSize })),
+          reviews: await collect((after) => tx.evidence("review", { after, limit: pageSize })),
+        },
+        configurations: await collect((after) => tx.configurations({ after, limit: pageSize })),
+        baselines: await collect((after) => tx.baselines({ after, limit: pageSize })),
+        savedViews: await collect(async () => ({ items: await tx.listViews() })),
+      };
+      ensure(
+        value.savedViews.length <= 50,
+        "validation",
+        "Project export cannot include more than 50 saved views; no partial export was produced",
+      );
+      ensure(
+        new TextEncoder().encode(serializeProjectExport(value)).length <= byteLimit,
+        "validation",
+        limitMessage,
+      );
+      return value;
+    },
+    { readOnly: true },
+  );
 }
 
 function exportCollector() {

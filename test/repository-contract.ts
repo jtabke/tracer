@@ -30,6 +30,24 @@ export function repositoryContract(name: string, open: () => Promise<RepositoryF
     return { tracer, repository: fixture.repository };
   }
 
+  test(`${name}: read-only transactions reject writes and leave the repository usable`, async (t) => {
+    const { tracer, repository } = await setup(t);
+    const before = await tracer.exportProject();
+    await assert.rejects(
+      repository.transaction(
+        async (tx) => {
+          assert.equal(await tx.headRevision(), 1);
+          await tx.beginChangeset(crypto.randomUUID(), 1, provenance);
+        },
+        { readOnly: true },
+      ),
+      { code: "storage" },
+    );
+    assert.deepEqual(await tracer.exportProject(), before);
+    const item = await tracer.createEntity({ type: "item", fields: {} }, 1, provenance);
+    assert.equal((await tracer.getEntity(item.id)).version, 1);
+  });
+
   test(`${name}: callback rejection rolls back state, identity, history and head`, async (t) => {
     const { tracer, repository } = await setup(t);
     const item: Entity = {

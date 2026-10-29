@@ -75,53 +75,62 @@ export class ChangeAssessments {
   }
   async locate(assessmentId: string) {
     assessmentText(assessmentId, 200);
-    return this.repository.transaction(async (tx) => {
-      const first = await tx.evidence("receipt", { subject: assessmentId, limit: 1 });
-      const receipt = first.items[0];
-      ensure(receipt, "not_found", "No recorded assessment opening was found");
-      const openingCommandId = await tx.evaluationCommandForReceipt(receipt.id);
-      ensure(openingCommandId, "conflict", "This record has no controlled assessment opening");
-      const { view } = await assessmentContext(tx, { assessmentId, openingCommandId });
-      ensure(
-        new TextEncoder().encode(JSON.stringify(view)).byteLength <=
-          changeAssessmentLimits.viewBytes,
-        "validation",
-        "Assessment view exceeds 256 KiB",
-      );
-      return view;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const first = await tx.evidence("receipt", { subject: assessmentId, limit: 1 });
+        const receipt = first.items[0];
+        ensure(receipt, "not_found", "No recorded assessment opening was found");
+        const openingCommandId = await tx.evaluationCommandForReceipt(receipt.id);
+        ensure(openingCommandId, "conflict", "This record has no controlled assessment opening");
+        const { view } = await assessmentContext(tx, { assessmentId, openingCommandId });
+        ensure(
+          new TextEncoder().encode(JSON.stringify(view)).byteLength <=
+            changeAssessmentLimits.viewBytes,
+          "validation",
+          "Assessment view exceeds 256 KiB",
+        );
+        return view;
+      },
+      { readOnly: true },
+    );
   }
   async analyze(input: AssessmentSelection) {
     input = prepareAssessmentSelection(input);
-    return this.repository.transaction(async (tx) => {
-      const result = (await analyzeAssessment(tx, input)).analysis;
-      ensure(
-        new TextEncoder().encode(JSON.stringify(result)).byteLength <=
-          changeAssessmentLimits.viewBytes,
-        "validation",
-        "Assessment analysis exceeds 256 KiB",
-      );
-      return result;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const result = (await analyzeAssessment(tx, input)).analysis;
+        ensure(
+          new TextEncoder().encode(JSON.stringify(result)).byteLength <=
+            changeAssessmentLimits.viewBytes,
+          "validation",
+          "Assessment analysis exceeds 256 KiB",
+        );
+        return result;
+      },
+      { readOnly: true },
+    );
   }
   async disposition(input: AssessmentSelection, subject: CandidateKey) {
     input = prepareAssessmentSelection(input);
     subject = parseCandidate(snapshotInput(subject));
-    return this.repository.transaction(async (tx) => {
-      const { view } = await assessmentContext(tx, input);
-      ensure(
-        view.scope.candidates.some(
-          (candidate) => candidateKey(candidate) === candidateKey(subject),
-        ),
-        "validation",
-        "Candidate is outside the declared assessment population",
-      );
-      return (
-        (await assessmentDispositions(tx, view)).find(
-          (item) => candidateKey(item.disposition.data.subject) === candidateKey(subject),
-        )?.disposition ?? null
-      );
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const { view } = await assessmentContext(tx, input);
+        ensure(
+          view.scope.candidates.some(
+            (candidate) => candidateKey(candidate) === candidateKey(subject),
+          ),
+          "validation",
+          "Candidate is outside the declared assessment population",
+        );
+        return (
+          (await assessmentDispositions(tx, view)).find(
+            (item) => candidateKey(item.disposition.data.subject) === candidateKey(subject),
+          )?.disposition ?? null
+        );
+      },
+      { readOnly: true },
+    );
   }
   async setDisposition(input: SetAssessmentDisposition, actor: Provenance) {
     input = prepareDisposition(input);
@@ -150,16 +159,19 @@ export class ChangeAssessments {
   }
   async get(input: AssessmentSelection) {
     input = prepareAssessmentSelection(input);
-    return this.repository.transaction(async (tx) => {
-      const view = (await assessmentContext(tx, input)).view;
-      ensure(
-        new TextEncoder().encode(JSON.stringify(view)).byteLength <=
-          changeAssessmentLimits.viewBytes,
-        "validation",
-        "Assessment view exceeds 256 KiB",
-      );
-      return view;
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const view = (await assessmentContext(tx, input)).view;
+        ensure(
+          new TextEncoder().encode(JSON.stringify(view)).byteLength <=
+            changeAssessmentLimits.viewBytes,
+          "validation",
+          "Assessment view exceeds 256 KiB",
+        );
+        return view;
+      },
+      { readOnly: true },
+    );
   }
   async refresh(input: RefreshChangeAssessment, actor: Provenance) {
     input = prepareAssessmentMutation(input, ["reason"]);

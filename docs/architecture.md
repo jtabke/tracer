@@ -1108,13 +1108,36 @@ MVP arrays are ordered, so reordering is meaningful. Future sets/reference colle
 
 ## 7. Operational boundaries
 
+Application reads declare `repository.transaction(callback, { readOnly: true })`.
+A read-only callback observes a consistent committed native/evidence snapshot,
+established by its first storage read, and cannot write. SQLite enforces this
+with `query_only` and a deferred transaction in WAL mode; it resets the mode
+before the next queued callback. An independent writer can commit while that
+reader retains its prior snapshot. The default transaction remains read/write
+and uses `BEGIN IMMEDIATE`, preserving guard validation and atomic commit without
+callback replay. Independent writers can still receive `busy` after the bounded
+wait; callers inspect uncertain command outcomes before any deliberate new attempt.
+Separate read requests/pages do not share a snapshot unless their existing
+operation explicitly pins or guards its context.
+
+The portable repository contract requires read-only enforcement, rollback and
+subsequent usability. SQLite process tests additionally cover reader/writer
+coexistence, stable held snapshots, competing command identities and termination
+before/after native-plus-receipt commit. These are bounded local proofs. The
+selected [concurrent-local specification](../projects/tracer/concurrent-local-specification.json)
+also requires broader application races and workload evidence; they are not
+established merely by the process tests. Future authenticated team/backend
+parity remains the separate REQ-025 obligation. Opening a new SQLite repository
+still runs physical migration/index checks under a writer reservation; the
+read-only mode concerns transactions on an already-open adapter.
+
 | Area                  | Current guarantee / remaining proof                                                                                                                                                                                                       |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Local HTTP            | Exact Host/Origin, fetch-site, JSON content type, per-process mutation token, confined assets, restrictive CSP; trusted local processes, **not authentication**                                                                           |
 | Organizational server | Planned PostgreSQL, authenticated actor identity, project permissions; clients cannot supply trusted identities                                                                                                                           |
 | Physical migrations   | Storage format **11**, independent of user-schema versions; transactional format-1–10 migrations preserve existing history/evidence/command outcomes and add immutable evaluation recovery; unknown formats reject and failure rolls back |
 | Backups               | Back up a closed database or use SQLite-aware backup tooling; copying only a live WAL main file is unsafe                                                                                                                                 |
-| Adapter lifetime      | Serialize one repository's transactions; close only after pending work completes; read/write lock tuning deferred                                                                                                                         |
+| Adapter lifetime      | Serialize one repository's transactions; close only after pending work completes; explicit read-only callbacks use committed snapshots without reserving the SQLite writer slot                                                           |
 | PostgreSQL proof      | Same contracts, project-counter lock, conditional updates, relational constraints/indexes, JSONB; shared success/failure/concurrency tests still required                                                                                 |
 | Performance           | `npm run benchmark`: 10,000 entities / 100,000 links; measurements guide optimization, not arbitrary gates                                                                                                                                |
 

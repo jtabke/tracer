@@ -168,7 +168,7 @@ export class Baselines {
     });
   }
   get(id: string) {
-    return this.repository.transaction((tx) => requiredBaseline(tx, id));
+    return this.repository.transaction((tx) => requiredBaseline(tx, id), { readOnly: true });
   }
   async list(query: BaselineQuery = {}) {
     query = snapshotInput(query);
@@ -182,7 +182,9 @@ export class Baselines {
       "validation",
       "Invalid baseline catalogue cursor",
     );
-    return this.repository.transaction((tx) => tx.baselines({ ...query, limit }));
+    return this.repository.transaction((tx) => tx.baselines({ ...query, limit }), {
+      readOnly: true,
+    });
   }
   async contents(query: BaselineContentsQuery): Promise<BaselineContents> {
     query = snapshotInput(query);
@@ -195,25 +197,28 @@ export class Baselines {
     );
     const limit = pageLimit(query.limit, 100, 1000),
       after = contentsAfter(query);
-    return this.repository.transaction(async (tx) => {
-      const baseline = await requiredBaseline(tx, query.baselineId);
-      const schema = await tx.getAt("schema", "project", baseline.projectRevision);
-      ensure(
-        schema && schema.version === baseline.schemaVersion,
-        "storage",
-        "Baseline schema is unavailable",
-      );
-      const result = await tx.queryAt(query.kind, baseline.projectRevision, { after, limit });
-      return {
-        baseline,
-        schema,
-        objects: {
-          items: result.items as (Entity | Relationship)[],
-          ...(result.nextAfter === undefined
-            ? {}
-            : { nextAfter: JSON.stringify(["v1", baseline.id, query.kind, result.nextAfter]) }),
-        },
-      };
-    });
+    return this.repository.transaction(
+      async (tx) => {
+        const baseline = await requiredBaseline(tx, query.baselineId);
+        const schema = await tx.getAt("schema", "project", baseline.projectRevision);
+        ensure(
+          schema && schema.version === baseline.schemaVersion,
+          "storage",
+          "Baseline schema is unavailable",
+        );
+        const result = await tx.queryAt(query.kind, baseline.projectRevision, { after, limit });
+        return {
+          baseline,
+          schema,
+          objects: {
+            items: result.items as (Entity | Relationship)[],
+            ...(result.nextAfter === undefined
+              ? {}
+              : { nextAfter: JSON.stringify(["v1", baseline.id, query.kind, result.nextAfter]) }),
+          },
+        };
+      },
+      { readOnly: true },
+    );
   }
 }

@@ -181,7 +181,13 @@ export interface Repository {
    * adapter’s isolation and guard rules; they are not nested calls.
    * Adapters must not silently replay callbacks after a conflict.
    */
-  transaction<T>(work: (tx: Transaction) => Promise<T>): Promise<T>;
+  /** Read-only callbacks retain a consistent committed snapshot and must reject
+   * every attempted write without side effects. They must not reserve a writer
+   * slot solely to read. The default remains a guarded read/write transaction;
+   * adapters never promote or replay read-only callbacks to perform writes.
+   * Snapshots belong to a callback, not to separate requests or pages.
+   */
+  transaction<T>(work: (tx: Transaction) => Promise<T>, options?: { readOnly: true }): Promise<T>;
   /** Caller drains pending work before closing; later transaction calls reject with storage. */
   close(): void;
 }

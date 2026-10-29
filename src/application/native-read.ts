@@ -11,9 +11,12 @@ export async function readNative<K extends "entity" | "relationship">(
     kind,
     path: ["id"],
   });
-  return repository.transaction(async (tx) => {
-    const value = await tx.get(kind, id);
-    ensure(value, "not_found", "Object not found", { kind, id });
-    return value;
-  });
+  return repository.transaction(
+    async (tx) => {
+      const value = await tx.get(kind, id);
+      ensure(value, "not_found", "Object not found", { kind, id });
+      return value;
+    },
+    { readOnly: true },
+  );
 }

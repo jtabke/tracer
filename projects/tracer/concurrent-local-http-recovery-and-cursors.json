@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-28",
+  "scope": "Two independent HTTP server OS processes share a disposable online copy of actual Tracer native190/schema7; separate typed clients and a CLI process inspect common durable outcomes. Local trusted-process APIs, not authenticated team clients.",
+  "sourceHashes": [
+    {
+      "path": "output/concurrent-local/http-worker.mjs",
+      "sha256": "6c2d9630318c93e46da0cd2b6592d7ce8c1c65c24fbe630b47f3ca9bece87390"
+    },
+    {
+      "path": "src/persistence/sqlite.ts",
+      "sha256": "b1946b0df4fe99c7ea8c4b539fe79c91b23bce3a71e3fe4d7d326aa5c29eb66a"
+    }
+  ],
+  "sameCommand": {
+    "commandId": "same-http-process-command",
+    "expectedSchemaVersion": 7,
+    "operations": [
+      {
+        "op": "entity.create",
+        "input": {
+          "type": "@resource",
+          "fields": {},
+          "resource": {
+            "label": "Synthetic HTTP concurrency/recovery probe",
+            "source": { "system": "file", "externalId": "same-http-process-command" }
+          }
+        }
+      }
+    ]
+  },
+  "concurrentOutcomes": [
+    {
+      "status": "fulfilled",
+      "result": {
+        "changeset": {
+          "actor": "concurrent-http-proof",
+          "reason": "Disposable real-project copy only",
+          "id": "a4c7a8cc-7c5b-45c4-a818-32a4effb7fc4",
+          "schemaVersion": 7,
+          "projectRevision": 191,
+          "at": "2026-10-29T06:50:22.868Z"
+        },
+        "results": [
+          {
+            "id": "9c885564-e5ad-4f3f-99e6-383573304e0b",
+            "version": 1,
+            "type": "@resource",
+            "fields": {},
+            "resource": {
+              "label": "Synthetic HTTP concurrency/recovery probe",
+              "source": { "system": "file", "externalId": "same-http-process-command" }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "status": "fulfilled",
+      "result": {
+        "changeset": {
+          "actor": "concurrent-http-proof",
+          "reason": "Disposable real-project copy only",
+          "id": "a4c7a8cc-7c5b-45c4-a818-32a4effb7fc4",
+          "schemaVersion": 7,
+          "projectRevision": 191,
+          "at": "2026-10-29T06:50:22.868Z"
+        },
+        "results": [
+          {
+            "id": "9c885564-e5ad-4f3f-99e6-383573304e0b",
+            "version": 1,
+            "type": "@resource",
+            "fields": {},
+            "resource": {
+              "label": "Synthetic HTTP concurrency/recovery probe",
+              "source": { "system": "file", "externalId": "same-http-process-command" }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "lostResponseCommand": {
+    "commandId": "lost-http-process-response",
+    "expectedSchemaVersion": 7,
+    "operations": [
+      {
+        "op": "entity.create",
+        "input": {
+          "type": "@resource",
+          "fields": {},
+          "resource": {
+            "label": "Synthetic HTTP concurrency/recovery probe",
+            "source": { "system": "file", "externalId": "lost-http-process-response" }
+          }
+        }
+      }
+    ]
+  },
+  "lostResponsePostCount": 1,
+  "inspection": {
+    "changeset": {
+      "actor": "concurrent-http-proof",
+      "reason": "Disposable real-project copy only",
+      "id": "4629838c-422a-4170-b441-d160244f616e",
+      "schemaVersion": 7,
+      "projectRevision": 192,
+      "at": "2026-10-29T06:50:22.876Z"
+    },
+    "results": [
+      {
+        "id": "64e50fe1-bbe4-4982-9224-e7a7f2445ed3",
+        "version": 1,
+        "type": "@resource",
+        "fields": {},
+        "resource": {
+          "label": "Synthetic HTTP concurrency/recovery probe",
+          "source": { "system": "file", "externalId": "lost-http-process-response" }
+        }
+      }
+    ]
+  },
+  "results": {
+    "originalOutcomeEqualAcrossServerProcesses": true,
+    "oneLostResponseWrite": true,
+    "restartedProcessInspectsExactSuccess": true,
+    "cliInspectionEqualsHttp": true,
+    "fixedPairEqualAcrossProcesses": true,
+    "existingCandidateVerification": "verified",
+    "staleEvidenceContinuationRejected": true,
+    "exactCandidateObligationsUnchangedAfterNewEvidence": true
+  },
+  "limitations": "Bounded changeset identity/lost-response task with existing controlled verification inspection. No browser concurrent throughput, controlled disposition/result-selection race, cloud or authentication claim."
+}

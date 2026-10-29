@@ -1,5 +1,59 @@
 # Tracer implementation status
 
+## Concurrent local reliability — selected, first implementation slice
+
+2026-10-28: registered REQ-036 / VER-036 / WORK-028 at native190/schema7 after an
+online backup of native189. The owner selected independent-process correctness,
+recovery and measured workloads. REQ-025 retains its separate future authenticated
+team/backend obligation; this local proof does not close it. The
+[specification](../projects/tracer/concurrent-local-specification.json) owns nine
+criteria and the [budgets](../projects/tracer/concurrent-local-budgets.json) own
+explicit local engineering thresholds, independently of user validation.
+
+An independent-process probe on `fb0c323` reproduced read/read contention: a held
+read callback caused another schema read to return `busy` after approximately
+146 ms. Every transaction previously used `BEGIN IMMEDIATE`. Application reads
+now declare a read-only callback; SQLite uses deferred WAL snapshots and enforces
+no writes with `query_only`, resetting it before subsequent queued work. Default
+write locking and existing guards stay in place. Portable checks reject attempted
+read-only writes and prove subsequent usability. Independent-process checks cover
+snapshot retention during commit, reading under a writer reservation, explicit
+writer contention, successful-outcome identity, and termination before/after an
+atomic native-plus-receipt commit. Test barriers intentionally hold callbacks;
+production callbacks must still avoid external I/O.
+
+A [backup while writes were pending](../projects/tracer/concurrent-local-active-backup.json)
+on a faithful real-project copy restored exactly the preceding committed export
+and its configuration/assessment/verification reads; the later committed outcome
+was inspected exactly. The [actual-project baseline](../projects/tracer/concurrent-local-real-workload-baseline.json)
+retains page25's existing 8 MiB rejection and complete page1 dependency traversal
+(about 0.8 s, roughly 42 MB accumulated by the measuring driver). This is explicit
+complete scope, not silent truncation; a production consumer should stream pages.
+The [expanded contention measurement](../projects/tracer/concurrent-local-real-contention-expanded.json)
+uses two/four reader processes plus one writer on a disposable real-project copy:
+100/200 reads and 25 acknowledged writes per profile, all outcomes recovered,
+with unchanged fixed-pair comparison. These are bounded core page workloads;
+shared UI timing, sustained large connected workloads, broader native/application
+races and complete goal acceptance remain pending. The register retains
+`in_progress`, `not_verified` and `not_validated`; no full-goal claim is made.
+
+Additional bounded proof: [native process races](../projects/tracer/concurrent-local-native-races.json)
+cover stale entity versions, canonical resource identities (including refusal to
+reassign a deleted identity), endpoint deletion versus link creation, schema/data
+races and identical native-plus-receipt command IDs. [Application reopen races](../projects/tracer/concurrent-local-application-races.json)
+cover verification/assessment together and competing reopens of each service,
+with one guarded winner, no loser outcome and unchanged fixed-pair comparison.
+These are simultaneous independent-process requests, not held-lock instrumentation
+inside the application commands. The [streamed complete actual scope](../projects/tracer/concurrent-local-real-streamed-scope.json)
+accounts for all 56 receipts/pages, about 42 MB transferred in 0.93 s with sampled
+RSS below 274 MB. It checks the evidence watermark across pages; discovery digests
+are explicitly page-scoped. The [connected synthetic contention run](../projects/tracer/concurrent-local-synthetic-contention.json)
+uses the original 10,000-record/100,000-link topology and 5,000 unrelated receipts:
+two/four reader processes plus one writer, 100/200 bounded mixed reads and 25
+acknowledged resource writes per profile, p95 round trips below 12 ms and sampled
+RSS below 79 MB on this machine. These measurements do not establish arbitrary
+scale, query-count bounds, hosted operation or representative-human readiness.
+
 ## Complete configuration-aware engineering change capability — verified local scope
 
 2026-10-28: executed and audited every unchanged REQ-035 AC-1–12 against committed candidate `bafed89` and the explicit original capture-enhancement pair. Controlled case `0c7a9a41-0e55-4161-b058-5ff7b719045f` v4 retains twelve current passing obligations, complete activity accounting and exact-after conclusion `df399671-0e5b-4602-a46f-bc69753d2840`. The original assessment completes **13/13 candidates, current discovery, zero open actions**, preserving its original reverify action identity and all historical partial outcomes. A different target's conclusion and an unexecuted conclusion were rejected without writes. The [performed results](../projects/tracer/configuration-full-verification-execution.json), [completed original task](../projects/tracer/configuration-original-change-completed.json) and [criterion-level audit](../projects/tracer/configuration-acceptance-audit.json) retain exact procedures, candidate states, results and limits. Driver-only postcondition/serialization corrections are explicitly distinguished from product failures; original successful commands were inspected before exact recovery checks.

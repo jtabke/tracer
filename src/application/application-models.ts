@@ -145,6 +145,8 @@ export class ApplicationModels {
   }
   async resolve(input: ApplicationModelPin): Promise<ResolvedApplicationModel> {
     input = prepareModelPin(input);
-    return this.repository.transaction((tx) => resolveApplicationModel(tx, input));
+    return this.repository.transaction((tx) => resolveApplicationModel(tx, input), {
+      readOnly: true,
+    });
   }
 }

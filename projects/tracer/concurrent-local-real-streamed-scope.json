@@ -1,0 +1,705 @@
+{
+  "date": "2026-10-28",
+  "scope": "Read-only complete actual-project fixed-pair dependency population, streamed page1 without retaining full page bodies; summary/IDs retained. No source observation or mutation.",
+  "nativeRevision": 190,
+  "pair": {
+    "beforeId": "96dd613d-1bb6-4d45-a661-4056b649eea6",
+    "afterId": "841b02ea-59d9-4839-a655-45fceabe5217"
+  },
+  "boundary": {
+    "limit": 25,
+    "code": "validation",
+    "message": "Pair impact exceeds 8 MiB; narrow the captured scope"
+  },
+  "pageSize": 1,
+  "pageCount": 56,
+  "receiptCount": 56,
+  "duplicateReceiptCount": 0,
+  "evidenceWatermark": 1096,
+  "totalTransferredJsonBytes": 41630464,
+  "durationMs": 930.5315420000001,
+  "initialMemory": {
+    "rss": 182053664,
+    "heapTotal": 78331904,
+    "heapUsed": 43863464,
+    "external": 15663255,
+    "arrayBuffers": 9318879
+  },
+  "maxSampledRssBytes": 273683384,
+  "maxSampledRssGrowthBytes": 91629720,
+  "pages": [
+    {
+      "bytes": 718987,
+      "pageDigest": "sha256:eb7d85c7e46bbffc28b49e8d0ae30fc162ac50efb653086ead820650477860a9",
+      "receipts": ["d3a634fb-e728-4503-b2be-a68e58dea39b"],
+      "memory": {
+        "rss": 184888408,
+        "heapTotal": 82968576,
+        "heapUsed": 36670672,
+        "external": 7775104,
+        "arrayBuffers": 1430592
+      }
+    },
+    {
+      "bytes": 518015,
+      "pageDigest": "sha256:0051ddadde5983dccb8e188e8938c71c54150c20b5fd053065e2a9ce90b0ee1d",
+      "receipts": ["171eddcf-625f-4529-aa81-340c7b9b104f"],
+      "memory": {
+        "rss": 187772424,
+        "heapTotal": 83689472,
+        "heapUsed": 40733416,
+        "external": 7762948,
+        "arrayBuffers": 1418404
+      }
+    },
+    {
+      "bytes": 524226,
+      "pageDigest": "sha256:5869376fdb0c608782af53da962e352edccda1a21c3d6a5d95d8fdb49883ba6c",
+      "receipts": ["eaed5bc5-0bbb-47c3-be0f-dec3db9656c2"],
+      "memory": {
+        "rss": 188509776,
+        "heapTotal": 84983808,
+        "heapUsed": 45288512,
+        "external": 7768467,
+        "arrayBuffers": 1423891
+      }
+    },
+    {
+      "bytes": 628371,
+      "pageDigest": "sha256:4b3cdacd408a6200e42c7fc973bf4f22c0975ca67b782e70afd1e130a3a8d309",
+      "receipts": ["3fabe33d-44f4-4154-86e1-8e87b3f97d01"],
+      "memory": {
+        "rss": 190639768,
+        "heapTotal": 83443712,
+        "heapUsed": 32363568,
+        "external": 7374889,
+        "arrayBuffers": 1030409
+      }
+    },
+    {
+      "bytes": 734732,
+      "pageDigest": "sha256:a1249a2c60adc03a9c23b3b8e022f1188d939f8f3f8e1a7c6bf769e11981ad46",
+      "receipts": ["8f80340f-c373-4b04-81f7-a9c8a2068fed"],
+      "memory": {
+        "rss": 193376136,
+        "heapTotal": 86687744,
+        "heapUsed": 42081504,
+        "external": 7807446,
+        "arrayBuffers": 1462934
+      }
+    },
+    {
+      "bytes": 484055,
+      "pageDigest": "sha256:1c33d98a5cc8998da762f00611c63d2b179902aaf5e3a40e8abd9b7d1e02ac9a",
+      "receipts": ["caf0f6f4-99c8-4264-9803-20894b89857d"],
+      "memory": {
+        "rss": 212367880,
+        "heapTotal": 84951040,
+        "heapUsed": 43226928,
+        "external": 7696324,
+        "arrayBuffers": 1351780
+      }
+    },
+    {
+      "bytes": 743485,
+      "pageDigest": "sha256:c6bb262bf732f45d489045d053fe0836784e0118eabf050b9dec173f4c921c65",
+      "receipts": ["7f1a5f40-80bb-4815-baa8-6fa0864a5271"],
+      "memory": {
+        "rss": 233768120,
+        "heapTotal": 121372672,
+        "heapUsed": 49843416,
+        "external": 8106204,
+        "arrayBuffers": 1761660
+      }
+    },
+    {
+      "bytes": 1187730,
+      "pageDigest": "sha256:b44a8f1b9ce0d53ad1ce9f15ad1b6e09adcedee670c8e447bebfb3c238d15ca6",
+      "receipts": ["ed3c8feb-fc80-4123-9a3f-5b023eb29a0a"],
+      "memory": {
+        "rss": 241436432,
+        "heapTotal": 128647168,
+        "heapUsed": 66558608,
+        "external": 8871097,
+        "arrayBuffers": 2526521
+      }
+    },
+    {
+      "bytes": 509515,
+      "pageDigest": "sha256:61e7f6f73e8b2e2d4deea01d4947125c9a6892c0f41656feffebffceda175384",
+      "receipts": ["635f7a8b-8177-466b-a953-4ac82117c9b7"],
+      "memory": {
+        "rss": 243353576,
+        "heapTotal": 104628224,
+        "heapUsed": 36415296,
+        "external": 7225077,
+        "arrayBuffers": 880597
+      }
+    },
+    {
+      "bytes": 489524,
+      "pageDigest": "sha256:5bf0ba28a1d2eee9c6db80ec400bdfad25ea023a6d564ec0c69c501dd6c5c9d8",
+      "receipts": ["acb20c2f-fabf-490f-b46c-273727fe9831"],
+      "memory": {
+        "rss": 243435496,
+        "heapTotal": 104628224,
+        "heapUsed": 41409144,
+        "external": 7432870,
+        "arrayBuffers": 1088358
+      }
+    },
+    {
+      "bytes": 569477,
+      "pageDigest": "sha256:6880c71c6e3a7d0494b4861560d60f7367c95da68889d938c6a5cead2520845b",
+      "receipts": ["6bef81d5-9b37-4d18-99bc-2783c7ac2bd4"],
+      "memory": {
+        "rss": 244123720,
+        "heapTotal": 106971136,
+        "heapUsed": 50771072,
+        "external": 7860198,
+        "arrayBuffers": 1515654
+      }
+    },
+    {
+      "bytes": 572541,
+      "pageDigest": "sha256:07212fbd9799f3b70f79b1dd910ac2cdc631c39a0632ee7e6a604ea986d23fcf",
+      "receipts": ["a6530a0f-2569-4af1-bbee-459923f82642"],
+      "memory": {
+        "rss": 244795560,
+        "heapTotal": 108478464,
+        "heapUsed": 55792960,
+        "external": 7865514,
+        "arrayBuffers": 1520938
+      }
+    },
+    {
+      "bytes": 585028,
+      "pageDigest": "sha256:34bdd880a9aec1629bd775deded89c9351d167cfba4e4841dfcff2e5f3c32311",
+      "receipts": ["7d0cfa8a-79e3-49dc-9dbd-ede9ea7d21c0"],
+      "memory": {
+        "rss": 245467424,
+        "heapTotal": 112607232,
+        "heapUsed": 59409608,
+        "external": 8303922,
+        "arrayBuffers": 1959346
+      }
+    },
+    {
+      "bytes": 776432,
+      "pageDigest": "sha256:18b70b54f1acb1eec48e3931f35e8c004544371bea1313b4e743a38ede1392ed",
+      "receipts": ["df349c27-b731-4f80-b417-ea5e5ec3a466"],
+      "memory": {
+        "rss": 246909384,
+        "heapTotal": 125534208,
+        "heapUsed": 40755696,
+        "external": 7587661,
+        "arrayBuffers": 1243181
+      }
+    },
+    {
+      "bytes": 892518,
+      "pageDigest": "sha256:61dfe6e0bc50d6ec29b858d8591ae5a3cbcb99f3b7ff3f4b204e1de2d2fb5930",
+      "receipts": ["bec01819-81b8-4b49-95d2-1eb1a30a5df0"],
+      "memory": {
+        "rss": 247138760,
+        "heapTotal": 127156224,
+        "heapUsed": 53678240,
+        "external": 8101052,
+        "arrayBuffers": 1756540
+      }
+    },
+    {
+      "bytes": 554782,
+      "pageDigest": "sha256:f119dde8d388c96d609af7cdf993b59653fd4476aa273602c0a1dd74574cbf3b",
+      "receipts": ["e2e1230b-66ec-4dff-a6bd-3d711174ab5f"],
+      "memory": {
+        "rss": 243370128,
+        "heapTotal": 102531072,
+        "heapUsed": 47457624,
+        "external": 8259110,
+        "arrayBuffers": 1914566
+      }
+    },
+    {
+      "bytes": 554698,
+      "pageDigest": "sha256:1277762fa56bd2b757860fd4b9b9877d24950cea02c66ede2a7a696f5f371544",
+      "receipts": ["ac48d74f-5b27-4b76-b905-f499ae4c86d3"],
+      "memory": {
+        "rss": 243370128,
+        "heapTotal": 99041280,
+        "heapUsed": 22272464,
+        "external": 7283155,
+        "arrayBuffers": 938707
+      }
+    },
+    {
+      "bytes": 588858,
+      "pageDigest": "sha256:96f2c0316dab88b2dc41d33231b3144cc194fa9f02ddbc70bf079c4e59a61cb6",
+      "receipts": ["9f323570-ef68-4f68-982d-0e1e7408754a"],
+      "memory": {
+        "rss": 243370128,
+        "heapTotal": 99041280,
+        "heapUsed": 29538856,
+        "external": 7605720,
+        "arrayBuffers": 1261240
+      }
+    },
+    {
+      "bytes": 653214,
+      "pageDigest": "sha256:a6437ba0e45817a6164c98381ded3b7ca86b87e43bbcbff7d25a700f9dddd288",
+      "receipts": ["7dc73f3b-03de-48ae-8fdf-75d797b255f2"],
+      "memory": {
+        "rss": 243370128,
+        "heapTotal": 100810752,
+        "heapUsed": 37801224,
+        "external": 7992437,
+        "arrayBuffers": 1647925
+      }
+    },
+    {
+      "bytes": 747225,
+      "pageDigest": "sha256:3c3863d3cc66760704fa4c8f3d914b3b8c8b3e6435d64ea94b3a7a1a950cbf9f",
+      "receipts": ["dae1ca3a-592f-42fd-87d2-c96d96bc54bb"],
+      "memory": {
+        "rss": 243370128,
+        "heapTotal": 120438784,
+        "heapUsed": 45736824,
+        "external": 8158450,
+        "arrayBuffers": 1813906
+      }
+    },
+    {
+      "bytes": 832251,
+      "pageDigest": "sha256:4697a000f62852f9e1b1847aa8e6ac5ecf6ae87d2a477b752984558c96323946",
+      "receipts": ["65d94e7d-961a-4f16-8a8e-0bddbef3d05a"],
+      "memory": {
+        "rss": 243386512,
+        "heapTotal": 116539392,
+        "heapUsed": 26136904,
+        "external": 7663631,
+        "arrayBuffers": 1319183
+      }
+    },
+    {
+      "bytes": 704745,
+      "pageDigest": "sha256:0a1c5be7fe3a24e3fb09c5575494a64ab621c718501341e4977fe6fbe5a65555",
+      "receipts": ["f9de2066-9c0f-4f6b-8519-0dff9f315694"],
+      "memory": {
+        "rss": 243386512,
+        "heapTotal": 100384768,
+        "heapUsed": 33963112,
+        "external": 7777809,
+        "arrayBuffers": 1433329
+      }
+    },
+    {
+      "bytes": 720399,
+      "pageDigest": "sha256:3c924f6492d0b71fc4cabee0b073a1b3dbb9600d8be7a7ea6ee3546b6366bbfd",
+      "receipts": ["3a384608-e4b3-47e5-979c-8c414772b573"],
+      "memory": {
+        "rss": 243386512,
+        "heapTotal": 102514688,
+        "heapUsed": 41129656,
+        "external": 8077368,
+        "arrayBuffers": 1732856
+      }
+    },
+    {
+      "bytes": 519989,
+      "pageDigest": "sha256:a6fd11b6df46c4fa16d39a9bc1e81f33d2d19b8f8ec1fd67762162698ad40c5e",
+      "receipts": ["e5d61923-b860-4542-9380-a5122d5f2d5c"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 101892096,
+        "heapUsed": 41199488,
+        "external": 7770941,
+        "arrayBuffers": 1426397
+      }
+    },
+    {
+      "bytes": 470861,
+      "pageDigest": "sha256:289ff17fb60706323b7ff272fdcc501526eaa3aada793198dd913c87a62c0d05",
+      "receipts": ["3db1cbe8-a298-423a-902c-d36309da1e16"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 101892096,
+        "heapUsed": 41736400,
+        "external": 7693779,
+        "arrayBuffers": 1349235
+      }
+    },
+    {
+      "bytes": 481677,
+      "pageDigest": "sha256:1713c4592e6ab23e4050d99dd15ae2ff720e2e30099eea92b8ff4bea3a8d389d",
+      "receipts": ["2350c535-793f-486b-b9de-ce7f5a0926b8"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 101892096,
+        "heapUsed": 42709384,
+        "external": 7710739,
+        "arrayBuffers": 1366195
+      }
+    },
+    {
+      "bytes": 454148,
+      "pageDigest": "sha256:ef5a158979e15ca8fb8e198e01a76110f726a528a9a5857d7813cc1a8aca20ed",
+      "receipts": ["a3617bf6-d6a7-4dc4-afc3-d407c2739705"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 102449152,
+        "heapUsed": 44003944,
+        "external": 7812906,
+        "arrayBuffers": 1468362
+      }
+    },
+    {
+      "bytes": 453790,
+      "pageDigest": "sha256:7f26c5e1b10a13a15be660c79330db4313546d38ba9b43d76b1cfc40b6862c90",
+      "receipts": ["0743270f-fbc0-4c68-84c4-ed2fb740730b"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 103333888,
+        "heapUsed": 45465392,
+        "external": 8113417,
+        "arrayBuffers": 1768873
+      }
+    },
+    {
+      "bytes": 453858,
+      "pageDigest": "sha256:2e8554a0c01c280fc929eca6243d808f9492e30a373d1518a1fb62d3e3ea6661",
+      "receipts": ["1ce39085-2d4c-4317-a914-e3e9be40c929"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 103333888,
+        "heapUsed": 46029128,
+        "external": 8113573,
+        "arrayBuffers": 1769029
+      }
+    },
+    {
+      "bytes": 453859,
+      "pageDigest": "sha256:5dd8d1a5769da175f4f4de32805c47335186f63aee0bbb8533164ef9b6fd1f95",
+      "receipts": ["c5ef47b5-40fd-4528-bea2-6c782bc2eac7"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 103333888,
+        "heapUsed": 46714472,
+        "external": 8113606,
+        "arrayBuffers": 1769062
+      }
+    },
+    {
+      "bytes": 453989,
+      "pageDigest": "sha256:2fdec560550faa2b66f2b95a373a993bcb862d1840eac2dc53a9bf7c9c54949f",
+      "receipts": ["326b4d02-5902-45b4-9117-29d9f2bc26a6"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 103333888,
+        "heapUsed": 47275808,
+        "external": 8113799,
+        "arrayBuffers": 1769255
+      }
+    },
+    {
+      "bytes": 592170,
+      "pageDigest": "sha256:0fd4fe22f8f560ed13e452213b9411c2af7502e0f1d40d875f461fcc1ee81d27",
+      "receipts": ["22e728e7-3272-40b6-b6bc-10b4e1e190d5"],
+      "memory": {
+        "rss": 243779728,
+        "heapTotal": 103333888,
+        "heapUsed": 51904760,
+        "external": 8350833,
+        "arrayBuffers": 2006289
+      }
+    },
+    {
+      "bytes": 581492,
+      "pageDigest": "sha256:fd0a45ea9d5ac4ea0e10676da680d110a0f1c531098839bb0b8f2d42d55f68f5",
+      "receipts": ["f61cf6e5-a248-4b08-952a-488a73e7d78d"],
+      "memory": {
+        "rss": 243828880,
+        "heapTotal": 103333888,
+        "heapUsed": 61117784,
+        "external": 8484632,
+        "arrayBuffers": 2140056
+      }
+    },
+    {
+      "bytes": 619627,
+      "pageDigest": "sha256:e9057cc242fb1086a0a72fe2fb1ccea21b375bb84de2df2cc52f5673a3d52939",
+      "receipts": ["80dfcfa6-c054-4f78-a032-3e752d4e3cd2"],
+      "memory": {
+        "rss": 243910800,
+        "heapTotal": 100892672,
+        "heapUsed": 33535328,
+        "external": 7375434,
+        "arrayBuffers": 1030986
+      }
+    },
+    {
+      "bytes": 996650,
+      "pageDigest": "sha256:87ef146b5ee81871ee6da7705f68629ae43ece6f1fb2e06a0193adc2c82cbf42",
+      "receipts": ["2cce9005-cf19-4c2b-92e9-4ef006564be3"],
+      "memory": {
+        "rss": 243927184,
+        "heapTotal": 120471552,
+        "heapUsed": 52253712,
+        "external": 8277897,
+        "arrayBuffers": 1933417
+      }
+    },
+    {
+      "bytes": 1122076,
+      "pageDigest": "sha256:63139f08104f7189b2885fb8e904dd4cb478753245b2cb354f2e386c6180dd24",
+      "receipts": ["a1197065-9d8d-4124-b82b-ef1be50e9d00"],
+      "memory": {
+        "rss": 243959952,
+        "heapTotal": 119963648,
+        "heapUsed": 37445696,
+        "external": 8050934,
+        "arrayBuffers": 1706486
+      }
+    },
+    {
+      "bytes": 1509304,
+      "pageDigest": "sha256:fabc386294771068cb819e3bc593ef54848f1db7eae3c63e96949f1886a64688",
+      "receipts": ["726d2967-887b-4701-b5d3-c3e3dce85c7e"],
+      "memory": {
+        "rss": 247023808,
+        "heapTotal": 128139264,
+        "heapUsed": 68224152,
+        "external": 9166135,
+        "arrayBuffers": 2821655
+      }
+    },
+    {
+      "bytes": 1487981,
+      "pageDigest": "sha256:7f47fead2343e2ec4fa6d4f753520263f909540e39468f0abafd61148cafca5d",
+      "receipts": ["23438d7a-8eb2-418e-a550-1c509bf7e953"],
+      "memory": {
+        "rss": 247073032,
+        "heapTotal": 126615552,
+        "heapUsed": 61065304,
+        "external": 8976537,
+        "arrayBuffers": 2632057
+      }
+    },
+    {
+      "bytes": 655455,
+      "pageDigest": "sha256:bd1307defdafaef2b5ec3b6244e58c40a35bee64a410f02437ee7b4d29c84e60",
+      "receipts": ["73284851-3bb1-408a-8b17-af030624953a"],
+      "memory": {
+        "rss": 245434680,
+        "heapTotal": 106446848,
+        "heapUsed": 38920848,
+        "external": 7442306,
+        "arrayBuffers": 1097858
+      }
+    },
+    {
+      "bytes": 717086,
+      "pageDigest": "sha256:e1fa154a4f962917bf7578827255842459a6253df1c024ecef8bd766b403e3b5",
+      "receipts": ["5b66f630-d188-4126-b0c1-2229ee4b6110"],
+      "memory": {
+        "rss": 245631288,
+        "heapTotal": 108806144,
+        "heapUsed": 48466144,
+        "external": 7844324,
+        "arrayBuffers": 1499844
+      }
+    },
+    {
+      "bytes": 694549,
+      "pageDigest": "sha256:7bd552280492f2937f32586bde5df8a6b802665796c1d959589a2051b664dae8",
+      "receipts": ["a3029188-ba24-478d-a21e-805f0769d440"],
+      "memory": {
+        "rss": 246286768,
+        "heapTotal": 116817920,
+        "heapUsed": 57178944,
+        "external": 8088654,
+        "arrayBuffers": 1744142
+      }
+    },
+    {
+      "bytes": 696450,
+      "pageDigest": "sha256:2a5e268a8d91585ec12187106b55aea773786048e63f14f395bb0f131dc9aa8f",
+      "receipts": ["c802e488-31ec-4326-96e3-4369ea925374"],
+      "memory": {
+        "rss": 247089776,
+        "heapTotal": 119308288,
+        "heapUsed": 64941272,
+        "external": 8533960,
+        "arrayBuffers": 2189416
+      }
+    },
+    {
+      "bytes": 699071,
+      "pageDigest": "sha256:97a73155fb1f995fd08dd11d464ebca46f5059c86433f7249e74aadf5a928647",
+      "receipts": ["07f1742c-a4eb-4915-a732-51710c96cbd8"],
+      "memory": {
+        "rss": 248384304,
+        "heapTotal": 109330432,
+        "heapUsed": 41861752,
+        "external": 7500716,
+        "arrayBuffers": 1156268
+      }
+    },
+    {
+      "bytes": 697405,
+      "pageDigest": "sha256:c894bf50b81fa4c28ba06cdedfe11bb990021d0bf660cc8faa67eda771f66dcf",
+      "receipts": ["a08228a3-18ed-4687-b39d-9129697d8bbc"],
+      "memory": {
+        "rss": 248646448,
+        "heapTotal": 111722496,
+        "heapUsed": 52626568,
+        "external": 7796261,
+        "arrayBuffers": 1451781
+      }
+    },
+    {
+      "bytes": 699540,
+      "pageDigest": "sha256:7f6bd8cb5c19876909062bea7c00107c447930645039ce7e23b3bb1b6c3c076a",
+      "receipts": ["5faba0d8-3cbc-4683-9297-797d72e6d8f2"],
+      "memory": {
+        "rss": 249400280,
+        "heapTotal": 118800384,
+        "heapUsed": 61083208,
+        "external": 8098199,
+        "arrayBuffers": 1753655
+      }
+    },
+    {
+      "bytes": 702215,
+      "pageDigest": "sha256:4fb3aed4e1219e2fae521017fd944bb76c791ba368fa90f94827ffddf8094aa1",
+      "receipts": ["9ed8e9e4-34e3-4b67-8807-b412fa642545"],
+      "memory": {
+        "rss": 251006080,
+        "heapTotal": 119930880,
+        "heapUsed": 68444128,
+        "external": 8544763,
+        "arrayBuffers": 2200219
+      }
+    },
+    {
+      "bytes": 704311,
+      "pageDigest": "sha256:9331404598c7742869514f1551146c4d21a83dd2d702ba1d5918670ff5d2ea2f",
+      "receipts": ["3ec439fc-b1e5-42fe-85e7-e2ff2921ed52"],
+      "memory": {
+        "rss": 253840848,
+        "heapTotal": 115195904,
+        "heapUsed": 44847432,
+        "external": 7508300,
+        "arrayBuffers": 1163852
+      }
+    },
+    {
+      "bytes": 706747,
+      "pageDigest": "sha256:abb75fc269f927a428af7f774ba20cc6675e5c84ab7e2238d74d5c0229c8c86d",
+      "receipts": ["73505c03-d5e0-4071-b4d1-4fcc34ce17c7"],
+      "memory": {
+        "rss": 254102992,
+        "heapTotal": 117719040,
+        "heapUsed": 55998416,
+        "external": 7813027,
+        "arrayBuffers": 1468547
+      }
+    },
+    {
+      "bytes": 916847,
+      "pageDigest": "sha256:9ba2163fa2fa743a2fc03cb409cfeef6eb6ef52e72ca23b748baf26fec19986e",
+      "receipts": ["5dc960d3-f7c6-48d6-90f8-e6e277c56b69"],
+      "memory": {
+        "rss": 254807624,
+        "heapTotal": 141508608,
+        "heapUsed": 66876408,
+        "external": 8460428,
+        "arrayBuffers": 2115884
+      }
+    },
+    {
+      "bytes": 1232257,
+      "pageDigest": "sha256:3b042feb5aac37b72b2c02b1b2f93e9eb64b16871f6e912c21003acfdeff78a0",
+      "receipts": ["f58db09c-0c04-4d72-8024-442f11f0a440"],
+      "memory": {
+        "rss": 260296624,
+        "heapTotal": 135086080,
+        "heapUsed": 50116832,
+        "external": 8237053,
+        "arrayBuffers": 1892605
+      }
+    },
+    {
+      "bytes": 1445904,
+      "pageDigest": "sha256:4839c295c8d0afaa64436503cc40a4659a03e5bb373a7e6deb059c9d3dead50d",
+      "receipts": ["df399671-0e5b-4602-a46f-bc69753d2840"],
+      "memory": {
+        "rss": 265064368,
+        "heapTotal": 148455424,
+        "heapUsed": 76537360,
+        "external": 9067038,
+        "arrayBuffers": 2722558
+      }
+    },
+    {
+      "bytes": 1476790,
+      "pageDigest": "sha256:7f25fe2a9c540ff4930ea3e00b7351fac5173d5bd0cdded16e7564a175d2ff73",
+      "receipts": ["98a4dd0c-e388-492f-a973-8d9c3f60b5d4"],
+      "memory": {
+        "rss": 263327904,
+        "heapTotal": 140836864,
+        "heapUsed": 64943936,
+        "external": 8569847,
+        "arrayBuffers": 2225367
+      }
+    },
+    {
+      "bytes": 905538,
+      "pageDigest": "sha256:9725f5e1a65fdb23d7201631726cf537be40c6d1aa29d08c58d8757d4d874118",
+      "receipts": ["191c3484-310b-4ef9-a429-d94c984493e5"],
+      "memory": {
+        "rss": 270274648,
+        "heapTotal": 154550272,
+        "heapUsed": 75106072,
+        "external": 8452513,
+        "arrayBuffers": 2107969
+      }
+    },
+    {
+      "bytes": 843644,
+      "pageDigest": "sha256:71e799ca5655842c82d63cd136cbac91acf106c9cef660dd3cde8affe2618c0a",
+      "receipts": ["df000790-399c-4a28-9f35-2adb01749970"],
+      "memory": {
+        "rss": 268505632,
+        "heapTotal": 124141568,
+        "heapUsed": 52603992,
+        "external": 7699420,
+        "arrayBuffers": 1354972
+      }
+    },
+    {
+      "bytes": 939328,
+      "pageDigest": "sha256:5ae12f0efd53429990be2f51ca056b73c66a3c758974138db2c46f2a0ef164e8",
+      "receipts": ["5724f4a9-858c-493d-908d-0b1fbc2894b0"],
+      "memory": {
+        "rss": 269046424,
+        "heapTotal": 129515520,
+        "heapUsed": 68827976,
+        "external": 8211346,
+        "arrayBuffers": 1866866
+      }
+    },
+    {
+      "bytes": 955048,
+      "pageDigest": "sha256:ec68b8254348961ae1f4293b7c5bdc68ccaa807f837fb6c52a0c3260f2d17f6d",
+      "receipts": ["c38c2370-8f1a-4202-a378-84b90d905738"],
+      "memory": {
+        "rss": 273683384,
+        "heapTotal": 157188096,
+        "heapUsed": 80819864,
+        "external": 8536029,
+        "arrayBuffers": 2191485
+      }
+    }
+  ],
+  "limits": "One local full-population run with full regression/browser check active. Page25 cap is a rejection, not a successful supported response. Read-only snapshot belongs to each callback; unchanged evidence watermark checked across the entire traversal. An initial driver incorrectly treated the explicitly page-scoped discovery digest as a population digest; corrected before retaining this report."
+}

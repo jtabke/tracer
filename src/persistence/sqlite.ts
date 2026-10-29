@@ -133,7 +133,8 @@ export class SQLiteRepository implements Repository {
       throw storageError(error);
     }
   }
-  transaction<T>(work: (tx: Transaction) => Promise<T>): Promise<T> {
+  transaction<T>(work: (tx: Transaction) => Promise<T>, options?: { readOnly: true }): Promise<T> {
+    const readOnly = options?.readOnly === true;
     return this.queue.run(async () => {
       let current: Changeset | undefined;
       let ordinal = 0;
@@ -522,7 +523,8 @@ export class SQLiteRepository implements Repository {
         },
       };
       try {
-        this.db.exec("BEGIN IMMEDIATE");
+        if (readOnly) this.db.exec("PRAGMA query_only=ON");
+        this.db.exec(readOnly ? "BEGIN" : "BEGIN IMMEDIATE");
         const result = await work(tx);
         ensure(!current || ordinal > 0, "validation", "Empty changesets are not committed");
         this.db.exec("COMMIT");
@@ -533,6 +535,7 @@ export class SQLiteRepository implements Repository {
         throw error instanceof TracerError ? error : storageError(error);
       } finally {
         active = false;
+        if (readOnly) this.db.exec("PRAGMA query_only=OFF");
       }
     });
   }

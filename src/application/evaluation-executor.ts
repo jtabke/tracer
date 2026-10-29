@@ -107,6 +107,7 @@ export class EvaluationExecutor {
     changesetCommandId(commandId);
     return this.repository.transaction(
       async (tx) => (await tx.getEvaluationCommand(commandId))?.result ?? null,
+      { readOnly: true },
     );
   }
 }

@@ -1,0 +1,564 @@
+{
+  "date": "2026-10-28",
+  "scope": "Two independent OS processes per disposable minimal public-command fixture. Simultaneous guarded operation requests; exact outcomes and final committed invariants retained.",
+  "workerSha256": "5d3e8770b2378cb6583569306a18a53373af20725400ce64b0d705fa994d5916",
+  "results": [
+    {
+      "name": "same-native-version",
+      "proposals": [
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "update-A",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.update",
+                  "id": "2071f7ad-dd48-4e69-9ed3-72bb39d47a11",
+                  "expectedVersion": 1,
+                  "input": { "fields": { "title": "A" } }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        },
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "update-B",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.update",
+                  "id": "2071f7ad-dd48-4e69-9ed3-72bb39d47a11",
+                  "expectedVersion": 1,
+                  "input": { "fields": { "title": "B" } }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "error": { "code": "conflict", "message": "Expected version 1, current version 2" },
+          "durationMs": null,
+          "result": null
+        },
+        {
+          "error": null,
+          "durationMs": 4.657666999999989,
+          "result": {
+            "changeset": {
+              "actor": "native-process-proof",
+              "id": "820cb2b0-a7d7-49bf-aeb3-fe4c19e9b612",
+              "schemaVersion": 1,
+              "projectRevision": 3,
+              "at": "2026-10-29T06:49:39.599Z"
+            },
+            "results": [
+              {
+                "id": "2071f7ad-dd48-4e69-9ed3-72bb39d47a11",
+                "version": 2,
+                "type": "item",
+                "fields": { "title": "B" }
+              }
+            ]
+          }
+        }
+      ],
+      "nativeBefore": 2,
+      "nativeAfter": 3,
+      "receiptDelta": 0,
+      "activeEndpointsValid": true
+    },
+    {
+      "name": "canonical-resource-identity",
+      "proposals": [
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "resource-A",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.create",
+                  "input": {
+                    "type": "@resource",
+                    "fields": {},
+                    "resource": {
+                      "label": "A",
+                      "source": { "system": "file", "externalId": "same-external-identity" }
+                    }
+                  }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        },
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "resource-B",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.create",
+                  "input": {
+                    "type": "@resource",
+                    "fields": {},
+                    "resource": {
+                      "label": "B",
+                      "source": { "system": "file", "externalId": "same-external-identity" }
+                    }
+                  }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "error": null,
+          "durationMs": 4.41304199999999,
+          "result": {
+            "changeset": {
+              "actor": "native-process-proof",
+              "id": "4f652ce7-979d-48f4-bd34-20e62e72135e",
+              "schemaVersion": 1,
+              "projectRevision": 2,
+              "at": "2026-10-29T06:49:39.864Z"
+            },
+            "results": [
+              {
+                "id": "d969b665-cfcc-4264-8a3a-52d1a732741a",
+                "version": 1,
+                "type": "@resource",
+                "fields": {},
+                "resource": {
+                  "label": "A",
+                  "source": { "system": "file", "externalId": "same-external-identity" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "error": {
+            "code": "conflict",
+            "message": "Resource identity already belongs to another object; reuse it"
+          },
+          "durationMs": null,
+          "result": null
+        }
+      ],
+      "nativeBefore": 1,
+      "nativeAfter": 2,
+      "receiptDelta": 0,
+      "activeEndpointsValid": true
+    },
+    {
+      "name": "endpoint-deletion-versus-link",
+      "proposals": [
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "delete-endpoint",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.remove",
+                  "id": "5a96a61c-1d19-4530-bb83-942e91a40e06",
+                  "expectedVersion": 1
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        },
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "connect-endpoint",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "relationship.create",
+                  "input": {
+                    "type": "connects",
+                    "source": "53513ba1-dd5d-4541-b0dc-79bae3e5e310",
+                    "target": "5a96a61c-1d19-4530-bb83-942e91a40e06",
+                    "fields": {}
+                  },
+                  "expectedEndpoints": { "sourceVersion": 1, "targetVersion": 1 }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "error": null,
+          "durationMs": 3.501833000000005,
+          "result": {
+            "changeset": {
+              "actor": "native-process-proof",
+              "id": "84357b6e-b039-4d1a-b4fd-e0ca439b5c17",
+              "schemaVersion": 1,
+              "projectRevision": 4,
+              "at": "2026-10-29T06:49:40.121Z"
+            },
+            "results": [
+              { "id": "5a96a61c-1d19-4530-bb83-942e91a40e06", "version": 2, "deleted": true }
+            ]
+          }
+        },
+        {
+          "error": { "code": "referential_integrity", "message": "Both endpoints must be active" },
+          "durationMs": null,
+          "result": null
+        }
+      ],
+      "nativeBefore": 3,
+      "nativeAfter": 4,
+      "receiptDelta": 0,
+      "activeEndpointsValid": true
+    },
+    {
+      "name": "schema-versus-data",
+      "proposals": [
+        {
+          "method": "setSchema",
+          "args": [
+            {
+              "entityTypes": { "item": { "fields": { "title": { "type": "number" } } } },
+              "relationshipTypes": { "connects": { "fields": {} } }
+            },
+            1,
+            { "actor": "native-process-proof" }
+          ]
+        },
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "string-under-old-schema",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.create",
+                  "input": { "type": "item", "fields": { "title": "string" } }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "error": { "code": "validation", "message": "Wrong field type: title" },
+          "durationMs": null,
+          "result": null
+        },
+        {
+          "error": null,
+          "durationMs": 3.9541660000000007,
+          "result": {
+            "changeset": {
+              "actor": "native-process-proof",
+              "id": "f6bd3d30-3203-4aaa-8e95-57fd897a4932",
+              "schemaVersion": 1,
+              "projectRevision": 2,
+              "at": "2026-10-29T06:49:40.383Z"
+            },
+            "results": [
+              {
+                "id": "3d440b01-63db-4420-a725-43259f6b5a44",
+                "version": 1,
+                "type": "item",
+                "fields": { "title": "string" }
+              }
+            ]
+          }
+        }
+      ],
+      "nativeBefore": 1,
+      "nativeAfter": 2,
+      "receiptDelta": 0,
+      "activeEndpointsValid": true
+    },
+    {
+      "name": "identical-native-plus-receipt-identity",
+      "proposals": [
+        {
+          "method": "evaluations.commit",
+          "args": [
+            {
+              "commandId": "same-evaluation",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.create",
+                  "id": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                  "input": { "type": "item", "fields": { "title": "output" } }
+                }
+              ],
+              "receipt": {
+                "outputId": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                "expectedOutputVersion": 1,
+                "outcome": "Synthetic identity-race proof",
+                "inputs": [{ "entityId": "c40abd1d-b1c7-476b-93ea-48c05a89d4e3" }]
+              }
+            },
+            { "actor": "native-process-proof" }
+          ]
+        },
+        {
+          "method": "evaluations.commit",
+          "args": [
+            {
+              "commandId": "same-evaluation",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.create",
+                  "id": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                  "input": { "type": "item", "fields": { "title": "output" } }
+                }
+              ],
+              "receipt": {
+                "outputId": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                "expectedOutputVersion": 1,
+                "outcome": "Synthetic identity-race proof",
+                "inputs": [{ "entityId": "c40abd1d-b1c7-476b-93ea-48c05a89d4e3" }]
+              }
+            },
+            { "actor": "native-process-proof" }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "error": null,
+          "durationMs": 4.510583999999994,
+          "result": {
+            "commandId": "same-evaluation",
+            "native": {
+              "changeset": {
+                "actor": "native-process-proof",
+                "id": "4e76dcc9-3c43-4adf-8aff-4626c607c83d",
+                "schemaVersion": 1,
+                "projectRevision": 3,
+                "at": "2026-10-29T06:49:40.640Z"
+              },
+              "results": [
+                {
+                  "id": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                  "version": 1,
+                  "type": "item",
+                  "fields": { "title": "output" }
+                }
+              ]
+            },
+            "receipt": {
+              "actor": "native-process-proof",
+              "id": "609c57a3-f485-4b52-98f1-066c0878a4e7",
+              "at": "2026-10-29T06:49:40.641Z",
+              "output": {
+                "id": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                "version": 1,
+                "type": "item",
+                "fields": { "title": "output" }
+              },
+              "schema": {
+                "id": "project",
+                "version": 1,
+                "entityTypes": { "item": { "fields": { "title": { "type": "string" } } } },
+                "relationshipTypes": { "connects": { "fields": {} } }
+              },
+              "outcome": "Synthetic identity-race proof",
+              "inputs": [
+                {
+                  "entityId": "c40abd1d-b1c7-476b-93ea-48c05a89d4e3",
+                  "contentRetention": "native-history",
+                  "entity": {
+                    "id": "c40abd1d-b1c7-476b-93ea-48c05a89d4e3",
+                    "version": 1,
+                    "type": "item",
+                    "fields": { "title": "criterion" }
+                  },
+                  "links": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "error": null,
+          "durationMs": 4.860416999999998,
+          "result": {
+            "commandId": "same-evaluation",
+            "native": {
+              "changeset": {
+                "actor": "native-process-proof",
+                "id": "4e76dcc9-3c43-4adf-8aff-4626c607c83d",
+                "schemaVersion": 1,
+                "projectRevision": 3,
+                "at": "2026-10-29T06:49:40.640Z"
+              },
+              "results": [
+                {
+                  "id": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                  "version": 1,
+                  "type": "item",
+                  "fields": { "title": "output" }
+                }
+              ]
+            },
+            "receipt": {
+              "actor": "native-process-proof",
+              "id": "609c57a3-f485-4b52-98f1-066c0878a4e7",
+              "at": "2026-10-29T06:49:40.641Z",
+              "output": {
+                "id": "b7ebbed0-d644-465c-b8a4-bdd5ee855396",
+                "version": 1,
+                "type": "item",
+                "fields": { "title": "output" }
+              },
+              "schema": {
+                "id": "project",
+                "version": 1,
+                "entityTypes": { "item": { "fields": { "title": { "type": "string" } } } },
+                "relationshipTypes": { "connects": { "fields": {} } }
+              },
+              "outcome": "Synthetic identity-race proof",
+              "inputs": [
+                {
+                  "entityId": "c40abd1d-b1c7-476b-93ea-48c05a89d4e3",
+                  "contentRetention": "native-history",
+                  "entity": {
+                    "id": "c40abd1d-b1c7-476b-93ea-48c05a89d4e3",
+                    "version": 1,
+                    "type": "item",
+                    "fields": { "title": "criterion" }
+                  },
+                  "links": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "nativeBefore": 2,
+      "nativeAfter": 3,
+      "receiptDelta": 1,
+      "activeEndpointsValid": true
+    },
+    {
+      "name": "relink-versus-cascading-endpoint-deletion",
+      "proposals": [
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "relink-to-survivor",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "relationship.update",
+                  "id": "fa1127e2-2c0a-4ac7-afce-c563ea753103",
+                  "expectedVersion": 1,
+                  "input": {
+                    "type": "connects",
+                    "source": "41e647cb-41a3-4e44-acf8-646d7f36312a",
+                    "target": "2e10a2c2-fcc8-48be-aca3-c33d9c78a12c",
+                    "fields": {}
+                  }
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        },
+        {
+          "method": "applyChangeset",
+          "args": [
+            {
+              "commandId": "cascade-old-target",
+              "expectedSchemaVersion": 1,
+              "operations": [
+                {
+                  "op": "entity.remove",
+                  "id": "7dffa2c6-f1f8-4bf2-9c61-7f49805bf2af",
+                  "expectedVersion": 1,
+                  "cascade": true
+                }
+              ],
+              "provenance": { "actor": "native-process-proof" }
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "error": null,
+          "durationMs": 4.575542000000013,
+          "result": {
+            "changeset": {
+              "actor": "native-process-proof",
+              "id": "7bbfe8d8-4d71-49ba-8d9f-e62097e57824",
+              "schemaVersion": 1,
+              "projectRevision": 6,
+              "at": "2026-10-29T06:49:40.912Z"
+            },
+            "results": [
+              {
+                "id": "fa1127e2-2c0a-4ac7-afce-c563ea753103",
+                "type": "connects",
+                "source": "41e647cb-41a3-4e44-acf8-646d7f36312a",
+                "target": "2e10a2c2-fcc8-48be-aca3-c33d9c78a12c",
+                "fields": {},
+                "version": 2
+              }
+            ]
+          }
+        },
+        {
+          "error": null,
+          "durationMs": 8.655165999999994,
+          "result": {
+            "changeset": {
+              "actor": "native-process-proof",
+              "id": "a3328146-5cf6-4cf2-8722-2306cccc7b9e",
+              "schemaVersion": 1,
+              "projectRevision": 7,
+              "at": "2026-10-29T06:49:40.917Z"
+            },
+            "results": [
+              { "id": "7dffa2c6-f1f8-4bf2-9c61-7f49805bf2af", "version": 2, "deleted": true }
+            ]
+          }
+        }
+      ],
+      "nativeBefore": 5,
+      "nativeAfter": 7,
+      "receiptDelta": 0,
+      "activeEndpointsValid": true
+    }
+  ],
+  "limitations": "One run per scenario; no instrumented held-lock overlap within these application requests. Existing committed process tests separately hold transactions to establish lock/snapshot overlap. Controlled changed-basis/result-selection races and authenticated backend semantics are not established by these cases."
+}
