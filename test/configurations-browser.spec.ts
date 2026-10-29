@@ -63,6 +63,12 @@ async function chooseOldHardware(page: BrowserPage, hardwareId: string) {
   ).toHaveCount(1);
   await capture.getByLabel("Input revision").selectOption("1");
   await expect(capture).toContainText("Selected v1: HARDWARE original");
+  await capture
+    .getByLabel("Capture purpose", { exact: true })
+    .fill("Retain exact native engineering revisions");
+  await capture
+    .getByLabel("Scope rationale", { exact: true })
+    .fill("Partial native member scope; no unselected content or topology is inferred");
   return capture;
 }
 
@@ -76,10 +82,14 @@ test("mixed native revisions are captured, evaluated, compared and reopened with
   try {
     await page.goto(value.server.origin);
     const capture = await chooseOldHardware(page, value.hardware.id);
-    await capture.getByLabel("Configuration subject").selectOption(value.build.id);
+    await capture.getByLabel("Configuration subject", { exact: true }).selectOption(value.build.id);
     await capture.getByRole("button", { name: "Add configuration member" }).click();
-    await capture.getByLabel("Member entity").nth(1).selectOption(value.software.id);
+    await capture
+      .getByLabel("Member entity", { exact: true })
+      .nth(1)
+      .selectOption(value.software.id);
     const history = await value.tracer.history();
+    await capture.getByRole("button", { name: "Prepare capture", exact: true }).click();
     await capture.getByRole("button", { name: "Capture configuration", exact: true }).click();
     await expect(capture.getByRole("article", { name: "Pinned configuration" })).toContainText(
       "SOFTWARE · pinned v2",
@@ -194,7 +204,7 @@ test("capture conflicts and unknown outcomes retain proposals and pause blind re
   try {
     await page.goto(value.server.origin);
     const capture = await chooseOldHardware(page, value.hardware.id);
-    await capture.getByLabel("Configuration subject").selectOption(value.build.id);
+    await capture.getByLabel("Configuration subject", { exact: true }).selectOption(value.build.id);
     await value.tracer.updateEntity(
       value.build.id,
       1,
@@ -202,6 +212,8 @@ test("capture conflicts and unknown outcomes retain proposals and pause blind re
       1,
       { actor: "other-editor" },
     );
+    await capture.getByRole("button", { name: "Refresh capture context", exact: true }).click();
+    await capture.getByRole("button", { name: "Prepare capture", exact: true }).click();
     await capture.getByRole("button", { name: "Capture configuration", exact: true }).click();
     await expect(page.getByRole("alert")).toContainText(
       "Configuration subject changed before capture",
@@ -210,31 +222,38 @@ test("capture conflicts and unknown outcomes retain proposals and pause blind re
     await expect(capture.getByLabel("Input revision")).toHaveValue("1");
     await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
     await expect(
-      capture.getByLabel("Configuration subject").locator(`option[value="${value.build.id}"]`),
+      capture
+        .getByLabel("Configuration subject", { exact: true })
+        .locator(`option[value="${value.build.id}"]`),
     ).toContainText("v2");
-    await capture.getByLabel("Configuration subject").selectOption("");
-    await capture.getByLabel("Configuration subject").selectOption(value.build.id);
-    await page.route("**/api/configurations", async (route) => {
+    await capture.getByLabel("Configuration subject", { exact: true }).selectOption("");
+    await capture.getByLabel("Configuration subject", { exact: true }).selectOption(value.build.id);
+    await capture
+      .getByRole("button", { name: "Adopt refreshed capture selection", exact: true })
+      .click();
+    await page.route("**/api/configuration-captures", async (route) => {
       if (route.request().method() !== "POST") return route.continue();
       const response = await route.fetch();
       expect(response.status()).toBe(200);
       await route.fulfill({ response, body: "unreadable response" });
     });
     await capture.getByRole("button", { name: "Capture configuration", exact: true }).click();
-    const recovery = capture.getByRole("region", { name: "Capture recovery" });
+    const recovery = page.getByRole("region", { name: "Save recovery", exact: true });
     await expect(
       capture.getByRole("button", { name: "Capture configuration", exact: true }),
     ).toBeDisabled();
     await expect(
-      recovery.getByRole("button", { name: "I inspected refreshed captures; continue editing" }),
+      recovery.getByRole("button", { name: "I inspected saved records; continue editing" }),
     ).toBeDisabled();
     expect((await value.tracer.configurations.list()).items).toHaveLength(1);
-    await recovery.getByRole("button", { name: "Refresh configurations", exact: true }).click();
-    await expect(recovery.getByText(/^Recorded capture:/)).toBeVisible();
-    await recovery.getByText(/^Recorded capture:/).click();
-    await expect(recovery).toContainText("HARDWARE · pinned v1");
+    await recovery.getByRole("button", { name: "Refresh saved records", exact: true }).click();
+    await expect(recovery).toContainText("Exact configuration Hardware A + software B");
+    await recovery.getByText("Full recorded data", { exact: true }).click();
+    await expect(recovery).toContainText(value.hardware.id);
+    const saved = (await value.tracer.configurations.list()).items[0];
+    expect(saved.capture!.intent.members).toEqual([{ entityId: value.hardware.id, version: 1 }]);
     await recovery
-      .getByRole("button", { name: "I inspected refreshed captures; continue editing" })
+      .getByRole("button", { name: "I inspected saved records; continue editing" })
       .click();
     await expect(capture.getByLabel("Configuration name")).toHaveValue("Hardware A + software B");
     await expect(capture.getByLabel("Input revision")).toHaveValue("1");

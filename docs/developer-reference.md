@@ -575,6 +575,22 @@ To capture a receipt against this configuration, supply `configurationId` and ex
 
 The operation accepts at most 100 members, 200 links, 100 content selections and 128 KiB input; a complete result exceeding 2 MiB rolls back before publication. Comparisons/assessments against a fixed pair are still under implementation; existing receipt comparison and verification continue to evaluate current inputs under their existing contracts.
 
+## Use the configuration workspace
+
+Open **Project tools → Configurations → Capture configuration**. Choose a subject, exact native member versions, a purpose and complete/partial scope rationale. Record selection searches show up to 50 matching records from the bounded project snapshot. For external members, choose an existing observation or explain an unknown content state; native annotations do not stand in for bytes. Include relationships explicitly after selecting both endpoints, and use their recorded-revision chooser when needed. No graph expansion automatically adds membership.
+
+**Prepare capture** retains the exact proposal and guards. Refresh keeps the draft; changed context or selections require explicit preparation again. **Capture configuration** uses one stable identity. Returning to the map retains the in-session draft. After an unknown outcome, use shared saved-record inspection against the original identity before acknowledging; no retry occurs automatically. **Start new capture** deliberately creates another identity and confirms disposal of a pending draft.
+
+Use **Compare configurations** to choose before/after captures, then **Compare selected pair** to apply those choices. Changing a picker alone does not replace the displayed comparison. Inspect native, topology/reference and observed-content differences separately, with exact identities and unchanged context available in disclosures. Unknown content, qualified scope and legacy captures remain explicit. Failed exact reads retain the previously read pair rather than substitute current state.
+
+**Discover declared dependencies** reads a bounded page of evaluations against the displayed pair. Each row separates the original outcome, dependency change, full input correspondence and supersession. A page is not complete engineering impact. Continuations bind the evidence watermark; drift requires **Restart dependency discovery**, while **Retry exact dependency page** retains the requested context. Select a smaller page after a payload refusal. Native/evidence state is not modified by comparison or discovery.
+
+When recording a native-input receipt against a controlled capture, choose **Configuration input facet** for each input. Native annotations retain the exact native pin; observed content uses that configuration's exact observation and cannot select a latest replacement. A null/unselected content state has no selectable observed-content facet; a recorded unavailable observation retains its unavailable meaning. Changing the facet resets field scope, and content inputs do not carry native field selectors. Legacy native-only capture bases retain their original meaning.
+
+Controlled capture and pair/dependency inspection are exposed here. Pair-assessment and target-verification authoring/handoff remain headless while the complete workspace task is integrated; use their documented shared operations below rather than infer completion from this screen.
+
+For explicit historical annotation reads, use `getNativePin(id, version, "annotations")`, GET `/api/native-pin?facet=annotations&id=...&version=...`, or `native-pin annotations ID VERSION`. Discover `native-annotation-pins`. Default native-pin reads still refuse external members, and neither form observes or retains bytes.
+
 ## Assess an exact configuration pair
 
 Discover feature `configuration-pair-assessments`. Use the existing `changeAssessments.open` operation, POST `/api/change-assessments/open` or CLI `assessment open JSON`, with normal model selection, stable command/assessment identities, purpose, additional fields and exact schema/native/evidence guards. Replace the baseline query with:

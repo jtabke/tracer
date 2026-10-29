@@ -149,10 +149,10 @@ export function NativeTasks({
     ),
     configurations: () => (
       <ConfigurationWorkspace
-        epoch={editing.epoch}
-        busy={editing.busy}
+        editing={editing}
+        entities={entities}
+        onDirty={taskDirty(onTaskDirty, "configurations")}
         changed={changed}
-        report={editing.report}
       />
     ),
     import: () => (

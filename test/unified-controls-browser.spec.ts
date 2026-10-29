@@ -207,16 +207,33 @@ for (const domain of ["medical", "integrated"] as const) {
       await dialog.getByRole("button", { name: "Capture configuration", exact: true }).click();
       const task = dialog.getByRole("region", { name: "Capture configuration task", exact: true });
       await task.getByLabel("Configuration name", { exact: true }).fill(name);
+      await task
+        .getByLabel("Find configuration subject", { exact: true })
+        .fill(seed.subject.key ?? seed.subject.resource?.label ?? seed.subject.id);
       await task.getByLabel("Configuration subject", { exact: true }).selectOption(seed.subject.id);
+      await task
+        .getByLabel("Find member entity", { exact: true })
+        .fill(
+          seed.members[0].entity.key ??
+            seed.members[0].entity.resource?.label ??
+            seed.members[0].entity.id,
+        );
       await task
         .getByLabel("Member entity", { exact: true })
         .selectOption(seed.members[0].entity.id);
       const revision = Number(
         await task.getByLabel("Input revision", { exact: true }).inputValue(),
       );
+      await task
+        .getByLabel("Capture purpose", { exact: true })
+        .fill("Retain selected native revision for this task");
+      await task
+        .getByLabel("Scope rationale", { exact: true })
+        .fill("Partial native scope; no unselected content or relationships are inferred");
       await dialog.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "Configurations", exact: true }).click();
       await expect(task.getByLabel("Configuration name", { exact: true })).toHaveValue(name);
+      await task.getByRole("button", { name: "Prepare capture", exact: true }).click();
       await task.getByRole("button", { name: "Capture configuration", exact: true }).click();
       await expect
         .poll(

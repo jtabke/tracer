@@ -12,7 +12,7 @@ import { ConfigurationWorkspace } from "../ui/configuration-workspace.tsx";
 import { useConfigurationNavigation } from "./legacy-ui/components/use-configuration-navigation.ts";
 import { ProjectHome, useProjectGuide } from "./legacy-ui/components/project-studio.tsx";
 import type { ViewDefinition } from "../src/core/presentation.ts";
-import type { Focus } from "../ui/editing.ts";
+import type { Focus, Editing } from "../ui/editing.ts";
 import { EvidenceView } from "../ui/evidence.tsx";
 import {
   EvidenceReviewStage,
@@ -25,6 +25,7 @@ import { ModelOverview } from "./legacy-ui/components/model-overview.tsx";
 import { MutationRecovery } from "../ui/mutation-recovery.tsx";
 import "../ui/style.css";
 import { useMutation } from "../ui/use-mutation.ts";
+import { useProjection } from "../ui/use-projection.ts";
 import { WorkView } from "./legacy-ui/components/work.tsx";
 import type { WorkspaceIntent } from "./legacy-ui/components/workspace.tsx";
 import { Workspace } from "./legacy-ui/components/workspace.tsx";
@@ -201,14 +202,12 @@ export function App() {
               />
             </ProjectPanel>
             <ProjectPanel name="configurations" tab={visibleTab} opened={opened}>
-              <ConfigurationWorkspace
+              <LegacyConfigurationWorkspace
                 intent={configurationNavigation.intent}
                 onReturn={configurationNavigation.returnToResult}
-                returnLabel="Return to recorded result"
-                epoch={epoch}
-                busy={editing.busy}
+                editing={editing}
+                active={opened.has("configurations")}
                 changed={changed}
-                report={report}
               />
             </ProjectPanel>
             {temporal && (
@@ -863,4 +862,36 @@ function initialProjectView() {
   const selected = params.get("view");
   if (selected && views.includes(selected)) return selected;
   return params.has("item") ? "workspace" : "project";
+}
+
+function LegacyConfigurationWorkspace({
+  intent,
+  onReturn,
+  editing,
+  active,
+  changed,
+}: {
+  intent: import("../ui/configuration-workspace.tsx").ConfigurationIntent | undefined;
+  onReturn: (() => void) | undefined;
+  editing: Editing;
+  active: boolean;
+  changed(): void;
+}) {
+  const snapshot = useProjection(
+    "/api/project-snapshot",
+    active ? {} : undefined,
+    editing.epoch,
+    editing.report,
+  );
+  return (
+    <ConfigurationWorkspace
+      intent={intent}
+      onReturn={onReturn}
+      returnLabel="Return to recorded result"
+      editing={{ ...editing, busy: editing.busy || !snapshot.ready }}
+      entities={snapshot.data?.entities ?? []}
+      onDirty={() => {}}
+      changed={changed}
+    />
+  );
 }

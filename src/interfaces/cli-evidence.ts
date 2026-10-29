@@ -80,4 +80,8 @@ export const evidenceCommands: Record<string, CliCommand> = {
     arity(args, 2);
     return tracer.getNativePin(args[0], Number(args[1]));
   },
+  "native-pin annotations": ({ tracer, args }) => {
+    arity(args, 2);
+    return tracer.getNativePin(args[0], Number(args[1]), "annotations");
+  },
 };

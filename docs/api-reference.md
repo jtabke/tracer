@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `configuration-bound-verification`, `configuration-comparison`, `configuration-impact`, `configuration-input-comparison`, `configuration-pair-assessments`, `contextual-input-correspondence`, `evidence-revision-guards`, `exact-configuration-captures`, `historical-content-inputs`, `native-resources`, `pinned-application-models`, `qualified-references`, `qualified-target-reviews`, `reference-evaluation-inputs`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
+Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `configuration-bound-verification`, `configuration-comparison`, `configuration-impact`, `configuration-input-comparison`, `configuration-pair-assessments`, `contextual-input-correspondence`, `evidence-revision-guards`, `exact-configuration-captures`, `historical-content-inputs`, `native-annotation-pins`, `native-resources`, `pinned-application-models`, `qualified-references`, `qualified-target-reviews`, `reference-evaluation-inputs`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -51,7 +51,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/impact` | `after` (text), `limit` (integer), `baselineId`* (text), `rootId`* (text), `direction`* (text), `relationshipTypes`* (json), `depth` (integer), `expectedProjectRevision` (integer) |
 | GET | `/api/matrix` | `sourceType`* (text), `targetType`* (text), `relationshipType`* (text), `sourceFocus` (text), `targetFocus` (text), `sourceAfter` (text), `targetAfter` (text), `limit` (integer) |
 | GET | `/api/model-connections` | `after` (text), `limit` (integer), `type`* (text) |
-| GET | `/api/native-pin` | `id`* (text), `version`* (integer) |
+| GET | `/api/native-pin` | `id`* (text), `version`* (integer), `facet` (text) |
 | GET | `/api/next-work` | `requirementType` (text), `statementField` (text), `allocationExpectationId` (text), `verificationExpectationId` (text) |
 | GET | `/api/project-export` | — |
 | GET | `/api/project-snapshot` | — |

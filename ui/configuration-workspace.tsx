@@ -1,51 +1,68 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Configuration } from "../src/core/configuration.ts";
+import type { Entity } from "../src/core/model.ts";
+import type { Editing } from "./editing.ts";
+import { ControlledConfigurationCapture } from "./configuration-capture.tsx";
+import { ConfigurationPairWorkspace } from "./configuration-pair.tsx";
+import { useApplicationDirty } from "./application-choices.tsx";
 import "./configuration-workspace.css";
-import {
-  ConfigurationCapture,
-  ConfigurationDetails,
-  ConfigurationPaging,
-  useConfigurations,
-} from "./configurations.tsx";
+import { ConfigurationDetails, ConfigurationPaging, useConfigurations } from "./configurations.tsx";
 import { useProjection } from "./use-projection.ts";
 
 export type ConfigurationIntent = { id: string; sequence: number };
 
 export function ConfigurationWorkspace({
-  epoch,
-  busy,
+  editing,
+  entities,
+  onDirty,
   changed,
-  report,
   intent,
   returnLabel,
   onReturn,
 }: {
-  epoch: number;
-  busy: boolean;
+  editing: Editing;
+  entities: Entity[];
+  onDirty(value: boolean): void;
   changed(): void;
-  report(error: unknown, attempted?: unknown): void;
   intent?: ConfigurationIntent;
   returnLabel?: string;
   onReturn?(): void;
 }) {
-  const catalog = useConfigurations(epoch);
-  const entities = useProjection("/api/entities", { limit: 1000 }, epoch, report);
-  const [selected, setSelected] = useState("");
-  const [capturing, setCapturing] = useState(false);
+  const catalog = useConfigurations(editing.epoch);
+  const [{ selected, mode, captureKey }, setNavigation] = useState({
+    selected: "",
+    mode: "catalog",
+    captureKey: 0,
+  });
+  const [dirty, setDirty] = useState(false);
+  const capturing = mode === "capture",
+    comparing = mode === "compare";
+  const setMode = (mode: string) => setNavigation((previous) => ({ ...previous, mode }));
+  const setSelected = (selected: string) =>
+    setNavigation((previous) => ({ ...previous, selected }));
+  useApplicationDirty(dirty, onDirty);
+  function startCapture() {
+    setNavigation((previous) => ({
+      ...previous,
+      captureKey: previous.captureKey + 1,
+      mode: "capture",
+    }));
+  }
   useEffect(() => {
     if (!intent?.id) return;
-    setSelected(intent.id);
-    setCapturing(false);
+    setNavigation((previous) => ({ ...previous, selected: intent.id, mode: "catalog" }));
   }, [intent?.sequence, intent?.id]);
   return (
     <section className="configuration-workspace" aria-label="Project configurations">
-      <div hidden={capturing}>
+      <div hidden={capturing || comparing}>
         <header className={`configuration-workspace-header ${selected ? "has-selection" : ""}`}>
           <div>
             <h2>Configurations</h2>
-            <p>Captured sets of exact native revisions.</p>
+            <p>Exact native, relationship and observed-content selections.</p>
           </div>
-          <button onClick={() => setCapturing(true)}>Capture configuration</button>
+          <button onClick={() => setMode("capture")}>Capture configuration</button>
+          <button onClick={() => setMode("compare")}>Compare configurations</button>
+          <NewCaptureButton dirty={dirty} busy={editing.busy} start={startCapture} />
           {onReturn && (
             <button className="text-action" onClick={onReturn}>
               {returnLabel ?? "Return to previous task"}
@@ -57,24 +74,55 @@ export function ConfigurationWorkspace({
           {selected && (
             <SelectedConfiguration
               id={selected}
-              epoch={epoch}
-              report={report}
+              epoch={editing.epoch}
+              report={editing.report}
               onBack={() => setSelected("")}
             />
           )}
         </div>
       </div>
-      <ConfigurationCapture
-        stage
+      <ControlledConfigurationCapture
+        key={captureKey}
         active={capturing}
-        onReturn={() => setCapturing(false)}
-        catalog={catalog}
-        entities={entities.data?.items ?? []}
-        disabled={busy || !entities.ready || !!entities.data?.nextAfter}
+        onReturn={() => setMode("catalog")}
+        entities={entities}
+        editing={editing}
+        onDirty={setDirty}
         changed={changed}
-        report={report}
+      />
+      <ConfigurationPairWorkspace
+        catalog={catalog}
+        editing={editing}
+        active={comparing}
+        onReturn={() => setMode("catalog")}
       />
     </section>
+  );
+}
+
+function NewCaptureButton({
+  dirty,
+  busy,
+  start,
+}: {
+  dirty: boolean;
+  busy: boolean;
+  start(): void;
+}) {
+  return (
+    <button
+      disabled={busy}
+      onClick={() => {
+        if (
+          dirty &&
+          !window.confirm("Discard this capture draft and start a new capture identity?")
+        )
+          return;
+        start();
+      }}
+    >
+      Start new capture
+    </button>
   );
 }
 

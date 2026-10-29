@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import type { Configuration, PinnedEntity } from "../src/core/configuration.ts";
 import { label } from "./entity-label.ts";
 import { statementText } from "./statement-text.ts";
+import { ConfigurationSelectedStates } from "./configuration-selected-states.tsx";
 
 /** Every row and statement comes from this exact immutable capture. */
 export function ConfigurationDetails({ value }: { value: Configuration }) {
@@ -50,6 +51,7 @@ export function ConfigurationDetails({ value }: { value: Configuration }) {
         </section>
         {pin && <PinnedMemberReading pin={pin} reading={reading} />}
       </div>
+      <ConfigurationSelectedStates value={value} />
       <details className="configuration-identity">
         <summary>Capture identity and provenance</summary>
         <p>

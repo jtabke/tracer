@@ -146,10 +146,43 @@
   margin: 1rem 0;
 }
 .configuration-task input,
-.configuration-task select {
+.configuration-task select,
+.configuration-task textarea,
+.configuration-comparison select {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
+}
+.configuration-comparison label {
+  display: grid;
+  gap: 0.4rem;
+  margin: 1rem 0;
+}
+.configuration-comparison article,
+.configuration-comparison section,
+.configuration-task article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.configuration-comparison article > h5 {
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+}
+.configuration-comparison section,
+.configuration-comparison dl > div {
+  margin-block: 1rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+.configuration-comparison dd {
+  margin-left: 1rem;
+  white-space: pre-wrap;
+}
+.configuration-workspace pre {
+  max-width: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 @container (max-width: 800px) {
   .configuration-workspace-header.has-selection > div {

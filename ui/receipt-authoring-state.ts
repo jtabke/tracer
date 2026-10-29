@@ -11,6 +11,7 @@ export type InputDraft = {
   external: boolean;
   needsSelection: boolean;
   mode: "current" | "history" | "configuration";
+  facet?: "native" | "content";
   revision?: number;
   pin?: PinnedEntity;
   pinEpoch?: number;
@@ -59,6 +60,7 @@ export function chooseInput(
     chosen: structuredClone({ entity, schema }),
     external: external.some((value) => value.id === entity.id),
     mode: pin ? "configuration" : "current",
+    ...(configuration?.capture ? { facet: "native" as const } : {}),
     pin,
     notice: "Selection changed; field scope and dependency are reset.",
   };
@@ -139,6 +141,8 @@ export function inputProblem(
   if (input.mode === "history" && input.pinEpoch !== epoch)
     return "Exact pin read pending or failed";
   if (!snapshot) return "Exact pin not ready";
+  if (input.mode === "configuration" && input.facet === "content")
+    return input.observationId ? "" : "Selected configuration has no known observation";
   if (input.fieldsMode === "selected" && !input.fields.length) return "Choose at least one field";
   if (input.mode !== "current") return "";
   return currentInputProblem(input, entities, schema, external, epoch);
@@ -172,7 +176,12 @@ export function pathComplete(outputId: string, inputId: string, hops: PathHop[])
 function declaration(input: InputDraft): InputDeclaration {
   const entityId = input.chosen!.entity.id;
   const fields = input.fieldsMode === "selected" ? { fields: input.fields } : {};
-  if (input.mode === "configuration") return { entityId, ...fields };
+  if (input.mode === "configuration")
+    return {
+      entityId,
+      ...(input.facet ? { facet: input.facet } : {}),
+      ...(input.facet === "content" ? { observationId: input.observationId } : fields),
+    };
   if (input.mode === "history") return { entityId, revision: input.revision, ...fields };
   return {
     entityId,

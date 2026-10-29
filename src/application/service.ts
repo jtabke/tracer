@@ -134,8 +134,16 @@ export class Tracer {
   getReference(id: string) {
     return referenceContext(this.repository, id);
   }
-  getNativePin(id: string, version: number) {
-    return this.repository.transaction((tx) => pinEntity(tx, id, version));
+  /** Annotation reads never assert external-content capture; default native input semantics are unchanged. */
+  getNativePin(id: string, version: number, facet: "native" | "annotations" = "native") {
+    return this.repository.transaction((tx) => {
+      ensure(
+        facet === "native" || facet === "annotations",
+        "validation",
+        "Invalid native pin facet",
+      );
+      return pinEntity(tx, id, version, facet === "annotations");
+    });
   }
   /** Export current native state and all recorded provenance/evidence in one read snapshot. */
   exportProject() {

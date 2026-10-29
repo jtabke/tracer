@@ -1,0 +1,277 @@
+{
+  "date": "2026-10-28",
+  "status": "shared_controlled_capture_comparison_verified_full_application_task_pending",
+  "requirement": "REQ-035",
+  "work": "WORK-027",
+  "plan": "VER-035",
+  "specification": "projects/tracer/configuration-change-specification.json",
+  "originalAcceptanceUnchanged": true,
+  "candidate": {
+    "baseCommit": "bd4169d95e945a58f96474ed897be73d3f0d402a",
+    "sourcePatch": {
+      "path": "output/configuration-change/workspace-capture-source.patch",
+      "sha256": "c6f19b9a0ed91d673c9e75f5fd68f00b42b7675a2ed8914c44efe5849ba1c880"
+    },
+    "sourceFingerprints": [
+      {
+        "path": "src/application/service.ts",
+        "sha256": "c0e654e12a4bd2dbbd256a3c24cee7e946114f7425572d7e1d1eadcb35b55b9a"
+      },
+      {
+        "path": "src/interfaces/api/native.ts",
+        "sha256": "bf9b8100f680655aed77526f4b66adfcdaa1031240068c98b171409280da45a6"
+      },
+      {
+        "path": "src/interfaces/cli-evidence.ts",
+        "sha256": "cdf363d4d072816576c52c59d3794f41cfcbf383ef440c710b3f0101ac5909e7"
+      },
+      {
+        "path": "src/interfaces/cli-help.ts",
+        "sha256": "fb304d40d69bbb6d31135d63f2008f7875e768f5e8fa80312df22060e70c85f8"
+      },
+      {
+        "path": "test/api-capabilities.test.ts",
+        "sha256": "8078726f930a03ef4665cbe1430c4105302f8bf5b3f5f0f9449ee1bee2044f30"
+      },
+      {
+        "path": "test/configuration-change-browser.spec.ts",
+        "sha256": "cda372ed22cafae9b03d265a886905e5b637cf8f6a3c7f245bb0b08d245db16c"
+      },
+      {
+        "path": "test/configuration-workspace-browser.spec.ts",
+        "sha256": "33a69176485363f1ff5fb2e17aa88e4a26bbada3db2a5e06a73c29d5ffe29a43"
+      },
+      {
+        "path": "test/configurations-browser.spec.ts",
+        "sha256": "a857d7183828c148fabf75780cc93de1955efeb24e105974cf2ba916d1b36304"
+      },
+      {
+        "path": "test/legacy-app.tsx",
+        "sha256": "cd74370ea4b29a5ab127e4e8ec61632771a5e56b38503c2c9a5bcc68b5833bcb"
+      },
+      {
+        "path": "test/native-annotation-pin.test.ts",
+        "sha256": "23be5e4a797779bbc7e1bbee0c01764c5bb78018fb0e9697aac1858a472e326d"
+      },
+      {
+        "path": "test/unified-controls-browser.spec.ts",
+        "sha256": "a930147ce0df84bab4547380ffe207624704179b4a1e1d6f25262af630c68a84"
+      },
+      {
+        "path": "ui/configuration-capture.tsx",
+        "sha256": "525a963f446ffa380bee398647daed511d3ba02a6477296cdd34d7adf69f658c"
+      },
+      {
+        "path": "ui/configuration-dependencies.tsx",
+        "sha256": "0d918a7bb1a8e1fdb5e2d23a113f4e4c47076df8de7987397d1358f5a0dadd5a"
+      },
+      {
+        "path": "ui/configuration-details.tsx",
+        "sha256": "5f973cdd4f7370d3207734e34418467ee054b71518bc72d60119e8600dae431c"
+      },
+      {
+        "path": "ui/configuration-differences.tsx",
+        "sha256": "5c11cffe6e7e67572b9f4fe69bf5aee19c113f1e4bae497052ebdcc92ba49969"
+      },
+      {
+        "path": "ui/configuration-member.tsx",
+        "sha256": "8023242b7f2b7b99c35435b19465a60f202fa8033b787fb266643906abef39a2"
+      },
+      {
+        "path": "ui/configuration-pair.tsx",
+        "sha256": "28b9359e31e90ddec218ba7e2c8ba07125e4590867f83dc0a229006c959e4ee8"
+      },
+      {
+        "path": "ui/configuration-relationships.tsx",
+        "sha256": "2173570e1af03b458eb79caa27451adad66b3d15c7ef52dff44fbbcc3a819631"
+      },
+      {
+        "path": "ui/configuration-selected-states.tsx",
+        "sha256": "2b3ff3d6049f69245703e1ac01a1b985e3cccd31214ae3ec5af4360bbaad8501"
+      },
+      {
+        "path": "ui/configuration-workspace.css",
+        "sha256": "03e305586691ebba3bbf26613dffdfaeb58baa4f82d176b5093e598ddcb3a9e3"
+      },
+      {
+        "path": "ui/configuration-workspace.tsx",
+        "sha256": "a78d4afaef584cee2ffd9df97823fa5f76cab2644fc26d4018110b7a31854d57"
+      },
+      {
+        "path": "ui/native-task.tsx",
+        "sha256": "f59e4a39d16b84f342b0110c120b8f1eb4cb124d16f001cc335a41e9ddee3766"
+      },
+      {
+        "path": "ui/receipt-authoring-state.ts",
+        "sha256": "b1bc83dd7da987090b47fc4e320c1381c8914e4dd53f8ae734fcc094b9f380cb"
+      },
+      {
+        "path": "ui/receipt-input-editor.tsx",
+        "sha256": "5350927636edd6e6ce1139a3ef2f531da90f2b9efb256878ad2a7bd6cac0531f"
+      }
+    ],
+    "originals": {
+      "meaning": "Retained pre-phase committed bytes. Genuine pre-edit observations are identified separately; other originals are Git evidence only, not fabricated observations.",
+      "files": [
+        {
+          "path": "src/application/service.ts",
+          "sha256": "fa2b1c5b2cc2ad4b850c8c6553f6f1a63c1bdd406facbf02b8f3641fd4b2efb5",
+          "archive": "output/configuration-change/workspace-capture-originals/src/application/service.ts"
+        },
+        {
+          "path": "src/interfaces/api/native.ts",
+          "sha256": "1983dd8428d029846819f4076258e87c53690854ae9afe35a161a74537c5cb46",
+          "archive": "output/configuration-change/workspace-capture-originals/src/interfaces/api/native.ts"
+        },
+        {
+          "path": "src/interfaces/cli-evidence.ts",
+          "sha256": "de9ed35d9fb004f33e6c5cad1de946f48f7cde4407023bd937ec669a00e4cc18",
+          "archive": "output/configuration-change/workspace-capture-originals/src/interfaces/cli-evidence.ts"
+        },
+        {
+          "path": "src/interfaces/cli-help.ts",
+          "sha256": "716765eeb659e601e2840e8f82e93a425f3c00cdd86dcd7099d956595e0d5147",
+          "archive": "output/configuration-change/workspace-capture-originals/src/interfaces/cli-help.ts"
+        },
+        {
+          "path": "test/api-capabilities.test.ts",
+          "sha256": "51c6de09e9f2e4c2048c8b685e3329897a107f915c65f1b658bee2635bfc68e5",
+          "archive": "output/configuration-change/workspace-capture-originals/test/api-capabilities.test.ts"
+        },
+        {
+          "path": "test/configuration-workspace-browser.spec.ts",
+          "sha256": "785bd3e3f866ba1d55fd621eae45ede2b9d1d3fa95dfab9ce4c7514b1760371c",
+          "archive": "output/configuration-change/workspace-capture-originals/test/configuration-workspace-browser.spec.ts"
+        },
+        {
+          "path": "test/configurations-browser.spec.ts",
+          "sha256": "0bd42e2dc6a61081055eae8ab71cb2bc1b750e4a0dd11b0575f5c75a3e94fce3",
+          "archive": "output/configuration-change/workspace-capture-originals/test/configurations-browser.spec.ts"
+        },
+        {
+          "path": "test/legacy-app.tsx",
+          "sha256": "721b4aeff8d2884305053dd8d5a65faa9ee985f84dfa12d4ad7ab5816bfd14ef",
+          "archive": "output/configuration-change/workspace-capture-originals/test/legacy-app.tsx"
+        },
+        {
+          "path": "test/unified-controls-browser.spec.ts",
+          "sha256": "1b7fcb9c4e097b827c5b43d4f4517f5ad0ab7b80bb7c85ec250492bef5ac870c",
+          "archive": "output/configuration-change/workspace-capture-originals/test/unified-controls-browser.spec.ts"
+        },
+        {
+          "path": "ui/configuration-details.tsx",
+          "sha256": "00bb5356e0f0d6a90baa2be625a0b980c525ca3600e4a5bdabc471e2f0acee36",
+          "archive": "output/configuration-change/workspace-capture-originals/ui/configuration-details.tsx"
+        },
+        {
+          "path": "ui/configuration-workspace.css",
+          "sha256": "66553692a2212261e9fbd32bf7580426a1eba3fc2fd9eecc9bc647f4cb085012",
+          "archive": "output/configuration-change/workspace-capture-originals/ui/configuration-workspace.css"
+        },
+        {
+          "path": "ui/configuration-workspace.tsx",
+          "sha256": "fc2f42735de71a38ae02ca27cd69f0ef480066cf69f905931985b7a9fc0e60b7",
+          "archive": "output/configuration-change/workspace-capture-originals/ui/configuration-workspace.tsx"
+        },
+        {
+          "path": "ui/native-task.tsx",
+          "sha256": "8e29ee4525eeb9ece3457281e07c412d273cb6a040c1523858c7eac575b8b0f1",
+          "archive": "output/configuration-change/workspace-capture-originals/ui/native-task.tsx"
+        },
+        {
+          "path": "ui/receipt-authoring-state.ts",
+          "sha256": "3987951ac6bbf242e7d68466668cce23afeb85978d727daf6de5abe57e580448",
+          "archive": "output/configuration-change/workspace-capture-originals/ui/receipt-authoring-state.ts"
+        },
+        {
+          "path": "ui/receipt-input-editor.tsx",
+          "sha256": "c74674cc23457474a6112eaf412689e1404ca61a91f8a1ce245b4982ffbcc82c",
+          "archive": "output/configuration-change/workspace-capture-originals/ui/receipt-input-editor.tsx"
+        }
+      ]
+    },
+    "preEditObservationArtifacts": [
+      {
+        "path": "output/configuration-change/configuration-workspace-pre-edit-observations.json",
+        "sha256": "ebf4cbeef9ccf266fce0c84d2c95b59666a31e671461ba429897ff734ba37673"
+      },
+      {
+        "path": "output/configuration-change/configuration-workspace-annotation-originals.json",
+        "sha256": "35f09ed204c80c7f3722e03ccf2a6dcdb63797435018678e4a126ab3b64e96f4"
+      },
+      {
+        "path": "output/configuration-change/configuration-workspace-annotation-cli-originals.json",
+        "sha256": "ea39c73a72dd2826b83cb94b4c45fe94a404774cebc944e67de2f7db8389d0e2"
+      },
+      {
+        "path": "output/configuration-change/configuration-workspace-receipt-originals.json",
+        "sha256": "41e790984cf13b43da8df191a44e37b2a4aac7715d3c203102966b0e986e4ddd"
+      }
+    ]
+  },
+  "implemented": [
+    "Shared Configurations task authors controlled captures with stable identity, explicit native/topology/content selection and stated scope. Existing legacy receipt capture retains its native-only meaning.",
+    "Preparation retains exact proposal/guards, refreshed or changed selections require explicit adoption, drafts survive task/map return, and shared exact-identity recovery inspects a lost committed response without replay.",
+    "Explicit native-annotation read facet reuses historical pin resolution across core/typed HTTP/CLI, including deletion. Default native-input reads retain external-content refusal; neither read observes bytes.",
+    "Controlled receipt authoring explicitly selects native annotations or the configuration’s exact observed-content facet; legacy basis behavior is retained.",
+    "Exact pair comparison retains displayed identities until explicit adoption, separates native/topology/reference/content facts and uncertainty, preserves unchanged context and original failure outcomes.",
+    "Declared-dependency browsing uses bounded pages and retained pair, separates dependency change/full correspondence/outcomes/supersession, rejects evidence-watermark drift and provides explicit restart, exact retry and smaller page selection.",
+    "Selected statement stays before detailed scope metadata at narrow widths; related form/navigation state has shared owners rather than independently synchronized hooks."
+  ],
+  "bounds": {
+    "nativeMembers": 100,
+    "relationships": 200,
+    "contentSelections": 100,
+    "captureInputBytes": 131072,
+    "captureResultBytes": 2097152,
+    "recordChoiceDOM": 50,
+    "relationshipPage": 25,
+    "relationshipHistoryPage": 25,
+    "observationPage": 25,
+    "dependencyPage": {
+      "default": 5,
+      "choices": [1, 5, 10, 25]
+    },
+    "qualification": "Existing bounded project snapshot and backend read/work limits remain unchanged. No arbitrary-scale readiness claim."
+  },
+  "verification": {
+    "command": "npm run check",
+    "log": {
+      "path": "output/configuration-change/workspace-capture-comparison-confirmed-check.log",
+      "sha256": "f9a59bf013201977cff63744aaccc9fa2ab22612a926e47c80edbed0d62a2ff9"
+    },
+    "node": "v26.12.1",
+    "unitTests": 714,
+    "browserScenarios": 214,
+    "workbenchOriginalScreenshots": 18,
+    "formatTypesLintBuilds": true,
+    "architectureDeadCodeDuplicationComplexityGatesUnchanged": true,
+    "cases": [
+      "Engineering desktop and research 390px controlled capture selects exact native v2, explicit relationship v1 and chosen observed B independent of observed A; a raw receipt then records that exact selected B while original receipt/outcome and native state remain unchanged.",
+      "Native-only selection cannot prepare required external content; explicit recorded observations do not invoke observer IO.",
+      "Capture draft and exact revisions survive map/task return; stale evidence requires explicit preparation; failed context reads pause writes.",
+      "Committed capture response loss retains original proposal, exact saved-identity inspection and one recorded capture with no automatic replay.",
+      "Displayed pair is not replaced when pickers change; failed exact reread retains the original comparison.",
+      "Actual multi-page declared population retains every failed outcome, rejects evidence drift and requires explicit restart. Exact retry does not silently rebase.",
+      "Core/typed HTTP/CLI historical annotation parity for resource and legacy external identity after deletion/schema change; default refusal, invalid/duplicate facet rejection, no observation or project mutation.",
+      "Existing fifteen-member reader geometry, legacy receipt captures, shared navigation, application/verification lifecycle and unchanged full regressions."
+    ],
+    "earlierFindings": [
+      "Initial new browser preparation exposed the native-input pin read deliberately refusing external annotations; added explicit annotation facet without weakening that default.",
+      "Adding an optional facet to a previously exact-key query initially rejected old native-pin requests; ordinary strict required/optional query validation restores both forms, with regression checks.",
+      "Initial fixture attempted an invalid schema transition and included a receipt without inputs; corrected fixtures respect existing guards.",
+      "Pagination fixture initially assumed an opening receipt declared product dependencies; actual discovery correctly returned only the five explicitly declaring receipts.",
+      "Initial integrated browser run found selected-reader metadata pushing content below the existing narrow geometry budget and a legacy test still expecting the superseded workspace capture protocol. Metadata ordering and controlled/shared-recovery expectations were corrected; no geometry bound or no-replay assertion weakened.",
+      "An intermediate complete functional run passed 714 unit/213 browser/workbench checks, but the unchanged final health gate identified zero runtime coverage of the retained native-only capture closure. A meaningful legacy UI compatibility task was added before the final complete run; coverage thresholds were unchanged.",
+      "A later full browser run found a fixture relying on an unsorted record being in the first 50 choices. Search is now explicit; failed-read safety is tested against capture context rather than an independent catalogue. Three independent seeded repetitions passed before the final complete run.",
+      "Measured component/hook complexity prompted separate state/read/selection owners and consolidated form/navigation state. No gate, threshold or exclusion changed."
+    ]
+  },
+  "qualification": [
+    "This is the controlled capture/comparison workspace slice, not the complete engineering application task or original AC-1–12 acceptance.",
+    "Pair-assessment opening/handoff, exact-target verification and qualified support authoring remain to be integrated into the shared workspace.",
+    "Actual real Tracer/REQ-011 reassessment, materially different domain follow-through, fresh-agent comprehension and complete original acceptance audit remain required.",
+    "Synthetic fixtures establish software behavior, not representative-human, physical-product, regulatory, authenticated-team or arbitrary-scale validation.",
+    "No structural primitive, second evidence store or physical migration was introduced."
+  ]
+}

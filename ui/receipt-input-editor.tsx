@@ -98,6 +98,7 @@ export function ReceiptInputEditor({
           input={input}
           chosen={snapshot}
           observations={observations}
+          configuration={configuration}
           onChange={onChange}
         />
       )}
@@ -218,7 +219,7 @@ function InputRevisionChoice({
     return (
       <p>
         Configuration member · exact pinned v{input.pin?.entity.version}. Direct declaration; no
-        live path or observation.
+        live path. Native annotations and selected observed content are separate facets.
       </p>
     );
   if (input.external) return null;
@@ -238,13 +239,24 @@ function InputScope({
   input,
   chosen,
   observations,
+  configuration,
   onChange,
 }: {
   input: InputDraft;
   chosen: NonNullable<ReturnType<typeof inputSnapshot>>;
   observations: Observation[];
+  configuration?: Configuration;
   onChange(patch: Partial<InputDraft>): void;
 }) {
+  if (input.mode === "configuration" && configuration?.capture)
+    return (
+      <ConfigurationInputScope
+        input={input}
+        chosen={chosen}
+        configuration={configuration}
+        onChange={onChange}
+      />
+    );
   if (input.mode !== "current" || !input.external)
     return <ReceiptFieldScope input={input} chosen={chosen} onChange={onChange} />;
   return (
@@ -265,6 +277,54 @@ function InputScope({
           ))}
       </select>
     </label>
+  );
+}
+
+function ConfigurationInputScope({
+  input,
+  chosen,
+  configuration,
+  onChange,
+}: {
+  input: InputDraft;
+  chosen: NonNullable<ReturnType<typeof inputSnapshot>>;
+  configuration: Configuration;
+  onChange(patch: Partial<InputDraft>): void;
+}) {
+  const observation = configuration.capture!.content.find(
+    (x) => x.entityId === chosen.entity.id,
+  )?.observation;
+  return (
+    <section aria-label="Configuration input material">
+      <label>
+        Configuration input facet
+        <select
+          aria-label="Configuration input facet"
+          value={input.facet ?? "native"}
+          onChange={(e) =>
+            onChange({
+              facet: e.target.value as "native" | "content",
+              fieldsMode: "whole",
+              fields: [],
+              observationId: e.target.value === "content" ? (observation?.id ?? "") : "",
+            })
+          }
+        >
+          <option value="native">Exact native annotations</option>
+          <option value="content" disabled={!observation}>
+            Exact selected observed content
+          </option>
+        </select>
+      </label>
+      {input.facet === "content" ? (
+        <p>
+          {observation?.availability} · {observation?.hash ?? "no hash"} · exact observation{" "}
+          {observation?.id}. No latest source is substituted.
+        </p>
+      ) : (
+        <ReceiptFieldScope input={input} chosen={chosen} onChange={onChange} />
+      )}
+    </section>
   );
 }
 function InputDependency({

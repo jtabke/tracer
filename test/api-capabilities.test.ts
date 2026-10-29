@@ -55,6 +55,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "evidence-revision-guards",
     "exact-configuration-captures",
     "historical-content-inputs",
+    "native-annotation-pins",
     "native-resources",
     "pinned-application-models",
     "qualified-references",

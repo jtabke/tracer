@@ -185,13 +185,10 @@ export const nativeReads = {
     handle: ({ tracer }, q) => tracer.configurations.get(q.id),
   }),
   "/api/native-pin": read({
+    features: ["native-annotation-pins"],
     query: q.query(
-      { id: q.textParam, version: q.positive },
+      { id: q.textParam, version: q.positive, facet: q.optionalParam(q.choice("annotations")) },
       {
-        exact: {
-          code: "validation",
-          message: "Native revision requires an id and positive exact version",
-        },
         invalid: {
           code: "validation",
           message: "Native revision requires an id and positive exact version",
@@ -199,7 +196,7 @@ export const nativeReads = {
       },
     ),
     response: pin,
-    handle: ({ tracer }, q) => tracer.getNativePin(q.id, q.version),
+    handle: ({ tracer }, q) => tracer.getNativePin(q.id, q.version, q.facet),
   }),
   "/api/entities": read({
     query: q.query({

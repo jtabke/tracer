@@ -70,6 +70,7 @@ Commands:
   coverage evaluate QUERY_JSON         {expectationId,baselineId?,expectedProjectRevision?,after?,limit?}; limit 1–100
   impact get QUERY_JSON                {baselineId,rootId,direction,relationshipTypes:[],depth?,expectedProjectRevision?,after?,limit?}
   native-pin get ID VERSION             exact native entity and its historical schema; readonly
+  native-pin annotations ID VERSION     exact native annotations; never external content
   saved-view save JSON                  {id?,name,definition,expectedVersion,expectedSchemaVersion}
   saved-view list                       project presentation metadata, maximum 50 views
   saved-view remove ID VERSION          version-guarded metadata removal
