@@ -285,3 +285,15 @@ body[data-panel="sheet"] .inspector:not(.full-artifact)[data-sheet="partial"] {
 .node.path-context.dim {
   opacity: 0.8;
 }
+.recorded-properties dl {
+  margin: 12px 0;
+}
+.recorded-properties dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.recorded-properties dd {
+  margin: 4px 0 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

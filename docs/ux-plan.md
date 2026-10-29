@@ -74,6 +74,8 @@ Relationship creation shows source and chosen target identities, titles and type
 
 The inspector shows identity/type/version, readable fields, direct connections, configured reachable trace paths and recent history. Known relationship types use role-aware labels such as Decomposed from and Decomposes into. Direct connections and reachable paths are distinct.
 
+The real-project agent review found that restricting ordinary reading to title, statement and acceptance hid delivery and human-validation status and outstanding work. **Recorded properties** therefore presents the other selected record fields as labeled read-only values, independently of the text editor. Vocabulary remains project-defined; property strings do not establish a controlled verification outcome. Historical reading uses historical values, and unrelated text edits preserve the stored properties.
+
 The panel docks only when enough usable canvas remains. Intermediate widths use a dismissible drawer; narrow graph work uses a compact or partial sheet. Partial details reserve at least 300px of graph workspace. A full artifact editor is a separate intentional task with an explicit return route.
 
 At 680px, preserve usable graph area, stable node positions and selection when sheets expand or collapse. Longer edits use a task-specific sheet; short cell and link operations remain contextual. Matrix identity/headers stay anchored during horizontal scrolling. History should prioritize reading the selected change rather than shrinking every desktop column.

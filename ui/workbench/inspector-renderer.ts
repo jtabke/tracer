@@ -175,7 +175,9 @@ export function renderInspector(context: InspectorRenderContext): string {
       header +
         fields +
         retainedArtifactDraft(record) +
-        (!state.editing ? relationships + reachableSection + recent : ""),
+        (!state.editing
+          ? recordedProperties(record, e) + relationships + reachableSection + recent
+          : ""),
     );
   }
   function retainedArtifactDraft(record: EditingRecord) {
@@ -185,6 +187,14 @@ export function renderInspector(context: InspectorRenderContext): string {
     return '<div class="retained-artifact-draft"><span>Unsaved edits in this tab</span><div><button data-action="edit">Resume editing</button><button data-action="cancel-edit">Discard edits</button></div></div>';
   }
   return inspector();
+}
+
+function recordedProperties(record: EditingRecord, escape: (value: unknown) => string) {
+  const fields = Object.entries(record.fields).filter(
+    ([name]) => !textFields.includes(name as TextField),
+  );
+  if (!fields.length) return "";
+  return `<section class="recorded-properties" aria-label="Recorded properties"><h3>Recorded properties</h3><p class="trace-scope-note">Stored project context. These values do not establish verification.</p><dl>${fields.map(([name, value]) => `<dt>${escape(titleCase(name.replace(/([a-z])([A-Z])/g, "$1 $2")))}</dt><dd>${escape(typeof value === "string" ? value : JSON.stringify(value))}</dd>`).join("")}</dl></section>`;
 }
 
 export function renderEdgeDetail(context: InspectorRenderContext): string {

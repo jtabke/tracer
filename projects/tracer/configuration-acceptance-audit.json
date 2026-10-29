@@ -1,0 +1,381 @@
+{
+  "date": "2026-10-28",
+  "requirement": "REQ-035",
+  "work": "WORK-027",
+  "status": "incomplete_original_scope_retained",
+  "specification": {
+    "path": "projects/tracer/configuration-change-specification.json",
+    "sha256": "e2d40ba5f5ab399361f9b341bd88d869f0653126c375d98bb7b99b4fe552b781"
+  },
+  "candidateManifest": {
+    "path": "projects/tracer/configuration-final-candidate-manifest.json",
+    "sha256": "0b40ec003059ee465828b796704c0f2e0a1369b981821b27d331959b08433460"
+  },
+  "qualification": "This is a criterion-by-criterion engineering evidence audit with explicit remaining obligations, not a controlled passing result. Matching names and test counts do not alone prove acceptance. Relevant test bodies and actual task reports were inspected; full final candidate gates passed; original controlled acceptance and closure remain explicitly open.",
+  "criteria": [
+    {
+      "id": "AC-1",
+      "expected": "Controlled capture retains an explicit bounded set of exact native member/relationship revisions, external observation selections, schema/context and declared scope; omissions and legacy captures never imply undeclared topology/content completeness. Stable caller identity and captured original intent recover an identical committed capture after lost response/restart without duplicate creation or silent rebasing; conflicting intent/guards/provenance reject.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Exact capture/recovery/atomicity and legacy semantics",
+      "tests": [
+        {
+          "path": "test/configuration-capture.test.ts",
+          "sha256": "61385d80c0ad309eeb07ffe03189a50c29a758d4052d90b3f37aa0b4ecbb275b"
+        },
+        {
+          "path": "test/configuration-capture-interfaces.test.ts",
+          "sha256": "bc67fa9d512e0be8bf5893ee613eae0f9b9255d42cd889add72f5e1b3c42428f"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-original-pair-follow-through.json",
+          "sha256": "b8ff05316c373ea4f9e05f93963d72bdd0c2f9f0869ae6f10f9da2c632173a39"
+        }
+      ],
+      "remaining": "Final candidate gates pass; controlled acceptance execution pending."
+    },
+    {
+      "id": "AC-2",
+      "expected": "A deterministic read-only comparison binds two immutable configuration identities and all governing policy/state digests. Later live native/evidence changes do not alter that pair comparison; switching either side is explicit. Incompatible subject/project/model/schema/scope and unavailable historical information produce explained comparability/uncertainty or refusal rather than inferred equivalence.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Fixed deterministic pair/context, history and incompatible/partial scope",
+      "tests": [
+        {
+          "path": "test/configuration-comparison.test.ts",
+          "sha256": "b5f826ad9c2c2b050dffd0a54c45ab4c6172ce40b1b2c8e5de3bce0455524b93"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-original-pair-follow-through.json",
+          "sha256": "b8ff05316c373ea4f9e05f93963d72bdd0c2f9f0869ae6f10f9da2c632173a39"
+        }
+      ],
+      "remaining": "Final candidate gates pass."
+    },
+    {
+      "id": "AC-3",
+      "expected": "Native comparison explains added/removed membership, type/key/resource/field differences and version-only changes with exact original/current-selected versions, schemas and provenance. Missing versus null, ordered arrays and nested JSON remain meaningful. Removed-from-configuration is distinct from deleted-from-project, and mutable current liveness is not silently substituted for the selected state.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Added/removed/modified/version-only; missing/null/nested/ordered data and selected historical state",
+      "tests": [
+        {
+          "path": "test/configuration-comparison.test.ts",
+          "sha256": "b5f826ad9c2c2b050dffd0a54c45ab4c6172ce40b1b2c8e5de3bce0455524b93"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-original-pair-follow-through.json",
+          "sha256": "b8ff05316c373ea4f9e05f93963d72bdd0c2f9f0869ae6f10f9da2c632173a39"
+        }
+      ],
+      "remaining": "Final candidate gates pass."
+    },
+    {
+      "id": "AC-4",
+      "expected": "Selected relationship topology comparison preserves exact endpoints, type, metadata and contextual-reference role/selector/state changes, including relinking, removed relationships and historical endpoints. Undeclared legacy topology is explicitly unknown, not an empty complete graph; no reachability implies engineering causation or membership.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Historical endpoints/relink/removal/parallel/self-loop and contextual selector/state differences",
+      "tests": [
+        {
+          "path": "test/configuration-relationships.test.ts",
+          "sha256": "f2459a4633a28a23c2da574e67e224768723118bed880c4750daac9aa356ba1b"
+        },
+        {
+          "path": "test/configuration-comparison.test.ts",
+          "sha256": "b5f826ad9c2c2b050dffd0a54c45ab4c6172ce40b1b2c8e5de3bce0455524b93"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-research-follow-through.json",
+          "sha256": "ef2621909a5323b91d449ad1044eab12d08f6b5a8615af57eed78f4459be35b5"
+        }
+      ],
+      "remaining": "Final candidate gates pass."
+    },
+    {
+      "id": "AC-5",
+      "expected": "Content comparison uses explicitly captured resource/observation identities, availability and hashes/commits; annotation changes and observed-byte changes remain separate. Same hash is not identity merging or byte retention, and document change cannot establish passage change without sufficient selected evidence. Reads perform no observer IO and never replace pinned selections with the latest observation.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Independent annotations/observations, no observer IO/latest fallback, hashes do not retain bytes or assess passage relevance",
+      "tests": [
+        {
+          "path": "test/configuration-comparison.test.ts",
+          "sha256": "b5f826ad9c2c2b050dffd0a54c45ab4c6172ce40b1b2c8e5de3bce0455524b93"
+        },
+        {
+          "path": "test/configuration-applicability.test.ts",
+          "sha256": "1c6a663577b866a3b0b5743e6ea48b2c5d7a0098eed00eec33995cea3f8bfda8"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-original-pair-follow-through.json",
+          "sha256": "b8ff05316c373ea4f9e05f93963d72bdd0c2f9f0869ae6f10f9da2c632173a39"
+        },
+        {
+          "path": "projects/tracer/configuration-research-follow-through.json",
+          "sha256": "ef2621909a5323b91d449ad1044eab12d08f6b5a8615af57eed78f4459be35b5"
+        }
+      ],
+      "remaining": "Final candidate gates pass."
+    },
+    {
+      "id": "AC-6",
+      "expected": "Configuration-bound dependency/applicability analysis explains changed inputs, potentially affected and unaffected declared scope, exact inclusion/exclusion basis and remaining uncertainty. Captured input field/path/direct-link/content semantics are reused; incomplete scope, absent evidence and unknown availability cannot establish no impact. Bounded populations and summaries state completeness and refuse overflow explicitly.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Selected member/field/path/direct-link/reference dependencies, explicit unknown/exclusions; paging/watermarks/payload and work refusal",
+      "tests": [
+        {
+          "path": "test/configuration-applicability.test.ts",
+          "sha256": "1c6a663577b866a3b0b5743e6ea48b2c5d7a0098eed00eec33995cea3f8bfda8"
+        },
+        {
+          "path": "test/configuration-impact.test.ts",
+          "sha256": "a081b99d4cd142c23d1775d2674f9b135f9559e4b48388d50541b9845087d077"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-req011-execution.json",
+          "sha256": "6c8540f0656022557639a6c450c9861f104e8ca060dab49e6a2b4a26d03403c7"
+        },
+        {
+          "path": "projects/tracer/configuration-research-follow-through.json",
+          "sha256": "ef2621909a5323b91d449ad1044eab12d08f6b5a8615af57eed78f4459be35b5"
+        }
+      ],
+      "remaining": "Final candidate gates pass; outside declared pair/traversal remains unknown."
+    },
+    {
+      "id": "AC-7",
+      "expected": "Controlled pair-bound assessments preserve the original pair/policy and every discovered obligation, reasoned disposition, action and immutable conclusion. No-action, investigation, required revision and re-verification remain distinct. Pair/policy changes require explicit reassessment while retaining prior judgments; closure requires complete accounting under the pinned policy and never implies release approval.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Controlled fixed-pair dispositions/actions/refresh/closure, preserved history and distinct new pair",
+      "tests": [
+        {
+          "path": "test/pair-assessment.test.ts",
+          "sha256": "9700450d6dfa14c9b017247077914d7fa3768e87cc8220c7fa2a472195b726ef"
+        },
+        {
+          "path": "test/pair-assessment-bounds.test.ts",
+          "sha256": "3fe7840d8dc3ad4265f2a4a515db524863c616e507ee1cf5c8ce0e4af3b7d5f8"
+        },
+        {
+          "path": "test/pair-assessment-interfaces.test.ts",
+          "sha256": "5af5d4199881b98709f6b9e5affdd5552fad772d75432af42b0f21ec6053f8e8"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-req011-execution.json",
+          "sha256": "6c8540f0656022557639a6c450c9861f104e8ca060dab49e6a2b4a26d03403c7"
+        },
+        {
+          "path": "projects/tracer/configuration-research-follow-through.json",
+          "sha256": "ef2621909a5323b91d449ad1044eab12d08f6b5a8615af57eed78f4459be35b5"
+        }
+      ],
+      "remaining": "Original REQ-035 assessment remains open with explicit reverification action; final candidate gates pass."
+    },
+    {
+      "id": "AC-8",
+      "expected": "Verification follow-through retains exact criterion/method/candidate/support states and explains whether selected recorded outcomes apply to the target configuration, independently of unrelated live-head changes. Existing current-head verification keeps its meaning. Failed/not_run results stay non-passing; generic reviews/status strings cannot override changed governing criteria, incomplete accounting or unknown support. Work executed after configuration capture can support that candidate only through validated exact input correspondence and explicit provenance, never by silently adding membership.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Exact criterion/method/model/mapping and native/content uses; genuine controlled proof, independent B/C/B, unknown/failure and same-target retirement",
+      "tests": [
+        {
+          "path": "test/verification-target.test.ts",
+          "sha256": "c7fc793046e0afae07223ef74cc23c9174f6e88d607e2b3625d24ad65b3b9624"
+        },
+        {
+          "path": "test/verification-target-review.test.ts",
+          "sha256": "23b23ca99f88db4d9571dd4309a5bc68012b3b83f13f5aad3ebe5be0c368c28f"
+        },
+        {
+          "path": "test/pair-verification-support.test.ts",
+          "sha256": "c2d586caa71c30b95287cd4640f33a8ce33fdd02db39ffdc299865c6d48dad04"
+        },
+        {
+          "path": "test/pair-reference-use-support.test.ts",
+          "sha256": "95ed49ce80e6ca6bf93abfe34ab0a5540755e7d3a645b817f6ea9a0a9c068b33"
+        },
+        {
+          "path": "test/pair-material-support.test.ts",
+          "sha256": "916528823afebd019a211e4ae631e71d84ae4054ef557de7ab712713e84a4951"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-req011-execution.json",
+          "sha256": "6c8540f0656022557639a6c450c9861f104e8ca060dab49e6a2b4a26d03403c7"
+        },
+        {
+          "path": "projects/tracer/configuration-research-follow-through.json",
+          "sha256": "ef2621909a5323b91d449ad1044eab12d08f6b5a8615af57eed78f4459be35b5"
+        }
+      ],
+      "remaining": "Controlled REQ-035 case is now open for the exact after configuration and all twelve original criteria, with zero executions and not ready to conclude. Execute complete audit/results and explicit accounting; no outcome inferred from opening."
+    },
+    {
+      "id": "AC-9",
+      "expected": "Core, typed HTTP/client and CLI/agent interfaces share the same domain operations, captured queries and original-intent recovery. Atomic guards reject stale/concurrent/invalid proposals without partial state/history/evidence/outcomes; failed reads pause writes and uncertain writes are inspected without automatic replay. Existing API/storage/receipt/configuration/baseline/assessment/verification contracts retain their semantics and historical readability.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Core/typed HTTP/client/CLI equivalence; exact original-intent read/recovery, stale/invalid/concurrent atomic refusal",
+      "tests": [
+        {
+          "path": "test/configuration-capture-interfaces.test.ts",
+          "sha256": "bc67fa9d512e0be8bf5893ee613eae0f9b9255d42cd889add72f5e1b3c42428f"
+        },
+        {
+          "path": "test/configuration-applicability.test.ts",
+          "sha256": "1c6a663577b866a3b0b5743e6ea48b2c5d7a0098eed00eec33995cea3f8bfda8"
+        },
+        {
+          "path": "test/pair-assessment-interfaces.test.ts",
+          "sha256": "5af5d4199881b98709f6b9e5affdd5552fad772d75432af42b0f21ec6053f8e8"
+        },
+        {
+          "path": "test/verification-target-review.test.ts",
+          "sha256": "23b23ca99f88db4d9571dd4309a5bc68012b3b83f13f5aad3ebe5be0c368c28f"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-original-pair-preservation.json",
+          "sha256": "53438017e5a6207b5171d3d4be0c3d784f4ebe61ac15a102420fce3c5bceff7e"
+        }
+      ],
+      "remaining": "Final candidate gates pass."
+    },
+    {
+      "id": "AC-10",
+      "expected": "The shared workspace captures/selects the pair, explains native/content/topology differences and comparable/unknown scope, investigates consequences, records dispositions, opens appropriate existing assessment/verification follow-through and shows outstanding/resolved work. Drafts survive navigation, stale inputs require explicit adoption, lost responses use shared recovery and supported responsive views preserve exact context. A fresh independent agent completes an unfamiliar task and material findings are addressed; human validation remains separate.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Shared capture/compare/dependency/assessment/verification task, responsive context, independent references, retained drafts, failure/lost-response recovery",
+      "tests": [
+        {
+          "path": "test/configuration-change-browser.spec.ts",
+          "sha256": "cda372ed22cafae9b03d265a886905e5b637cf8f6a3c7f245bb0b08d245db16c"
+        },
+        {
+          "path": "test/configuration-workspace-browser.spec.ts",
+          "sha256": "33a69176485363f1ff5fb2e17aa88e4a26bbada3db2a5e06a73c29d5ffe29a43"
+        },
+        {
+          "path": "test/configuration-application-browser.spec.ts",
+          "sha256": "21236689ee2672fa04d686e40e1409da346760988108f8d46e5c5d18e1a0e92e"
+        },
+        {
+          "path": "test/configuration-reference-authoring-browser.spec.ts",
+          "sha256": "7a78f59b147cabccc2c5e62f66b029fa115bdab74f6c5d6d671555f3f4f3a6b0"
+        },
+        {
+          "path": "test/recorded-properties-browser.spec.ts",
+          "sha256": "41bb667de01e441d6b94ce8dfa2fde324ea472293473c47e1080555884a17169"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-application-walkthrough.json",
+          "sha256": "920c2c0ab8d85899f34fc2a407fbf21e2c6911a615e6b500d7ab43f1478a0113"
+        }
+      ],
+      "remaining": "Fresh agent completed original synthetic task. Actual-project follow-up found hidden project properties; production correction regression passes. Full gates pass; human validation remains unrun."
+    },
+    {
+      "id": "AC-11",
+      "expected": "A justified real Tracer software change retains exact before/after configurations and original conclusions, identifies actual changed and unaffected scope, completes necessary assessment/verification and explains final remaining work without manufactured engineering claims. A materially different configured domain demonstrates the same semantics. Exact candidate/procedure/results cover additions/removals, reference/content changes, unavailable/deleted inputs, partial/incompatible scope, drift, supersession/reassessment and workload/payload boundaries.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Actual original capture enhancement, affected real REQ-011 rerun, numeric configured research task, retained outcomes and qualified scope",
+      "tests": [
+        {
+          "path": "test/configuration-comparison.test.ts",
+          "sha256": "b5f826ad9c2c2b050dffd0a54c45ab4c6172ce40b1b2c8e5de3bce0455524b93"
+        },
+        {
+          "path": "test/configuration-impact.test.ts",
+          "sha256": "a081b99d4cd142c23d1775d2674f9b135f9559e4b48388d50541b9845087d077"
+        },
+        {
+          "path": "test/pair-assessment-bounds.test.ts",
+          "sha256": "3fe7840d8dc3ad4265f2a4a515db524863c616e507ee1cf5c8ce0e4af3b7d5f8"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-original-pair-follow-through.json",
+          "sha256": "b8ff05316c373ea4f9e05f93963d72bdd0c2f9f0869ae6f10f9da2c632173a39"
+        },
+        {
+          "path": "projects/tracer/configuration-req011-execution.json",
+          "sha256": "6c8540f0656022557639a6c450c9861f104e8ca060dab49e6a2b4a26d03403c7"
+        },
+        {
+          "path": "projects/tracer/configuration-research-follow-through.json",
+          "sha256": "ef2621909a5323b91d449ad1044eab12d08f6b5a8615af57eed78f4459be35b5"
+        }
+      ],
+      "remaining": "Original real-change pair prepared; 9 initial candidates and one open root action. Complete its individual judgments and exact-target controlled verification before full acceptance. Initial proposed REQ-011 unaffected control was disproved; genuine affected-task reverification is retained."
+    },
+    {
+      "id": "AC-12",
+      "expected": "Existing identities, native/evidence history, command outcomes and both prior application capabilities are preserved; necessary migrations are rehearsed and deterministic export/online SQLite backup/restored recovery verified. Appropriate regression, browser, architecture and quality gates pass unchanged. Owning architecture/usage docs, checkpoint and register retain exact evidence, unchanged criteria, delivery/verification/human-validation distinctions and remaining limits. Full goal acceptance is audited before completion.",
+      "status": "evidence_reviewed_full_acceptance_pending",
+      "coverage": "Native/evidence/history/outcome preservation, legacy readability, unchanged storage, online/restored backup/export and existing application contracts",
+      "tests": [
+        {
+          "path": "test/configuration-capture.test.ts",
+          "sha256": "61385d80c0ad309eeb07ffe03189a50c29a758d4052d90b3f37aa0b4ecbb275b"
+        },
+        {
+          "path": "test/configuration-capture-interfaces.test.ts",
+          "sha256": "bc67fa9d512e0be8bf5893ee613eae0f9b9255d42cd889add72f5e1b3c42428f"
+        },
+        {
+          "path": "test/pair-assessment-interfaces.test.ts",
+          "sha256": "5af5d4199881b98709f6b9e5affdd5552fad772d75432af42b0f21ec6053f8e8"
+        },
+        {
+          "path": "test/verification-target.test.ts",
+          "sha256": "c7fc793046e0afae07223ef74cc23c9174f6e88d607e2b3625d24ad65b3b9624"
+        }
+      ],
+      "reports": [
+        {
+          "path": "projects/tracer/configuration-capture-preservation.json",
+          "sha256": "b9ee8129f01dc60233dc6ee8c3c09b1a6d499387471ddadfaa70319a341d4c2f"
+        },
+        {
+          "path": "projects/tracer/configuration-original-pair-preservation.json",
+          "sha256": "53438017e5a6207b5171d3d4be0c3d784f4ebe61ac15a102420fce3c5bceff7e"
+        }
+      ],
+      "remaining": "Preparation preservation at native166 passes. Final gates pass. Complete docs/register/status/export/restored backup and committed-byte proof after full controlled acceptance; no physical migration was introduced."
+    }
+  ],
+  "nativeRevision": 167,
+  "controlledVerification": {
+    "caseId": "0c7a9a41-0e55-4161-b058-5ff7b719045f",
+    "openingCommandId": "configuration-original-req035-verification-open-2026-10-28"
+  },
+  "gates": {
+    "focusedCommand": "node_modules/.bin/playwright test test/recorded-properties-browser.spec.ts --workers=1",
+    "focusedPassed": 1,
+    "scope": "Production entry point at 390px; independent delivery/verification/validation values, false/zero/null/JSON/prototype-like own key, no observer or database write while reading, no horizontal body overflow, preservation through title save/reload.",
+    "fullCommand": "npm run check",
+    "fullCheckExitCode": 0,
+    "unitTests": 714,
+    "browserScenarios": 219,
+    "workbenchOriginalScreenshots": 18,
+    "unchangedArchitectureAndQualityGates": true,
+    "log": {
+      "path": "output/configuration-change/status-properties-full-check.log",
+      "sha256": "e0c43d5f915db00a4e06021afa7580085b4b71c11550f8feeac535b4965b5c13"
+    }
+  }
+}

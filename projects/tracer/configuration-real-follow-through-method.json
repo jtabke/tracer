@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-28",
+  "status": "declared_before_execution",
+  "requirement": "REQ-011",
+  "scope": "Rerun both unchanged queue criteria after the actual configuration-change implementation altered declared comparison sources. Preserve all earlier results and conclude only the exact selected software candidate; no representative-human or physical-product validation.",
+  "selection": {
+    "caseId": "823f8a49-117c-4c85-81d1-cee87bc1892d",
+    "openingCommandId": "req011-verification-case-open-2026-10-28"
+  },
+  "candidateCommit": "90c282407c87cccc5971fb9126e4a9fd7f5d5f37",
+  "manifest": {
+    "path": "projects/tracer/configuration-real-candidate-manifest.json"
+  },
+  "sourceFiles": [
+    {
+      "path": "src/application/next-work.ts",
+      "sha256": "d42bd5fc7ca8b23ddd24008b547b170c7cda1b59dd2f2b020247ad0fe8249da6"
+    },
+    {
+      "path": "src/application/next-work-evidence.ts",
+      "sha256": "b2af078511a538a275951c76970c9d0c5a76250edae7438ac34c8a19b87df090"
+    },
+    {
+      "path": "src/application/next-work-structure.ts",
+      "sha256": "2923b9b4b828516f71471292d35178ddd2f7bdc80b151cba03856cd23854878b"
+    },
+    {
+      "path": "src/application/receipt-comparison.ts",
+      "sha256": "8bd5a53155e57e5e16d3c9c57cb10edebe9bba6e5468b8dc62addea5b96ff674"
+    },
+    {
+      "path": "src/application/relationship-inputs.ts",
+      "sha256": "d2d84da09fa67bea7165bf53fa9f4b35dc9fd50324e51a66f89cf8390d23ab5c"
+    },
+    {
+      "path": "src/core/next-work.ts",
+      "sha256": "7a2b66c67305ef9079c8a622fc225cb7c1fe58a4e1e7f65949b233968767964e"
+    },
+    {
+      "path": "ui/next-work.tsx",
+      "sha256": "045a5bfbd6148d06fdcb09d0603dc330ad238a8f446e4b89f766eb897a385474"
+    },
+    {
+      "path": "ui/next-work-queues.tsx",
+      "sha256": "c6d907db9585055945ec9c69d4c70aed5a68a96d6ff45aca1d4fe5bca3c5971d"
+    },
+    {
+      "path": "test/next-work.test.ts",
+      "sha256": "1aa8b42dcc21d062fd7053362ac16e317e140501d20947ccf0b806beb841d929"
+    },
+    {
+      "path": "test/next-work-relationship-evidence.test.ts",
+      "sha256": "1487cd3e379514c6cacb8fccfc5418df832a9fd1e3eecb52d8a0c7930ceaa69c"
+    },
+    {
+      "path": "test/next-work-browser.spec.ts",
+      "sha256": "7aaa2e543760cabeb8a8feb9cf52571453a5065aa6ea6da8277e6e92cbef5862"
+    },
+    {
+      "path": "test/next-work-relationship-browser.spec.ts",
+      "sha256": "55165c4d86258f7bed13e3f8216d5450d01083f3e54b17eb4934df38dfae9716"
+    }
+  ],
+  "originalMethod": {
+    "path": "projects/tracer/req011-reassessment-method.json",
+    "sha256": "f626b622bd19e2419dfcbf4aa622538eb009e114758dbfdb04f2cb1fff945dfc"
+  },
+  "commands": [
+    {
+      "command": "node --test test/next-work.test.ts test/next-work-relationship-evidence.test.ts",
+      "log": "output/configuration-change/real-req011-unit.log",
+      "covers": ["AC-1", "AC-2"]
+    },
+    {
+      "command": "npm run build",
+      "log": "output/configuration-change/real-req011-build.log",
+      "covers": ["production candidate for browser execution"]
+    },
+    {
+      "command": "node_modules/.bin/playwright test test/next-work-browser.spec.ts test/next-work-relationship-browser.spec.ts --workers=1",
+      "log": "output/configuration-change/real-req011-browser.log",
+      "covers": ["AC-1", "AC-2"]
+    }
+  ],
+  "expected": "Every declared command succeeds against the manifest. Queues explain population/gaps, direct relationship edit/removal is counted correctly, structural missing traces do not assert execution failure, failed reads are not zero, and original outcomes/read-only projections remain unchanged.",
+  "plannedControl": "Create qualified retrospective before capture from genuine original activity pins/observations; capture current native requirement/method/model and actual after observations. Open a pair-bound change assessment, explicitly revise/reverify against exact after state, retain prior evidence, and account for discovered obligations.",
+  "bounds": "Captured source scope is explicit and partial, not an inferred whole dependency graph. The committed manifest inventories implementation/procedure bytes; full engineering impact outside declared dependencies remains unassessed.",
+  "priorFullRegression": {
+    "report": "projects/tracer/configuration-application-handoff-verification.json",
+    "unitTests": 714,
+    "browserScenarios": 218,
+    "sourceFingerprintCheck": "Verify exact current bytes against retained report and committed manifest before recording results."
+  }
+}

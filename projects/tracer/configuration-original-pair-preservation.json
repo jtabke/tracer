@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-28",
+  "status": "preparation_preserved_full_acceptance_pending",
+  "nativeRevision": 166,
+  "priorRevision": 163,
+  "schemaVersion": 7,
+  "noPhysicalMigration": true,
+  "allPriorNativeStatesUnchanged": true,
+  "priorHistoryEvidenceCapturesBaselinesViewsPreserved": true,
+  "ledgers": {
+    "evaluation_commands": {
+      "before": 76,
+      "after": 78,
+      "priorRowsUnchanged": true,
+      "restoredRowsExact": true
+    },
+    "changeset_commands": {
+      "before": 59,
+      "after": 60,
+      "priorRowsUnchanged": true,
+      "restoredRowsExact": true
+    }
+  },
+  "deterministicExportExact": true,
+  "onlineBackup": "projects/tracer/backups/register-2026-10-28-original-pair-prepared.sqlite",
+  "restoredCopy": "output/configuration-change/original-pair-restored.sqlite",
+  "restoredExportAndAnalysisExact": true,
+  "exactCoreHTTPCLIRecoveryWithoutDuplicateWrites": true,
+  "realREQ011": {
+    "caseVersion": 14,
+    "completion": "verified",
+    "assessment": "completed",
+    "discovery": "current"
+  },
+  "originalREQ035": {
+    "assessment": {
+      "assessmentId": "4dc81851-217e-4e9b-95d4-4dd1e0d494af",
+      "openingCommandId": "configuration-original-final-assessment-open-2026-10-28"
+    },
+    "initialCandidates": 9,
+    "requiredReverification": "open",
+    "fullAcceptance": "pending"
+  },
+  "qualification": "Preparation preservation only. No full-goal verification, representative-human validation or new backend claim.",
+  "physicalFormat": [
+    {
+      "path": "projects/tracer/backups/register-2026-10-28-real-follow-through.sqlite",
+      "storageVersion": 11
+    },
+    {
+      "path": "projects/tracer/backups/register-2026-10-28-original-pair-prepared.sqlite",
+      "storageVersion": 11
+    },
+    {
+      "path": "projects/tracer/tracer.sqlite",
+      "storageVersion": 11
+    }
+  ],
+  "physicalFormatQualification": "Verified actual storage_version table (format 11) across prior backup, preparation backup and current database; independent of project schema version and SQLite PRAGMA user_version."
+}

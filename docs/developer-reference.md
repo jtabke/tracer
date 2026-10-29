@@ -12,6 +12,8 @@ Open the printed loopback URL (default `http://127.0.0.1:4317`; override with `-
 
 The complete native snapshot rejects beyond 10,000 records / 100,000 links; rendering bounds are separate. Named Matrix recipes persist in SQLite. Spatial/investigation recovery is browser/origin-local; unsaved drafts remain tab-local. Development-map organization/unnamed recipes are session-only. Project switching confirms draft disposal and reloads against an explicitly configured database. The local server has no organizational authentication.
 
+Open an artifact's details to read **Recorded properties** below its statement and acceptance. This section shows other stored fields, including project-defined delivery, verification, validation and remaining-work context. It displays the selected historical state when browsing history. These values are recorded project assertions; inspect controlled assessment and verification conclusions for their actual evidence and scope. Text editing preserves these properties.
+
 ## CSV import planning
 
 The public `parseCsv` and `previewCsvImport` helpers provide bounded, read-only parsing and create-only planning over a complete native project snapshot. The resulting explicit-ID operations use `applyChangeset` and its schema, key, endpoint and duplicate-link guards. Supply the preview's head as optional `expectedProjectRevision` to require the exact reviewed native project revision; a mismatch rejects before any write. See the [CSV import guide](csv-import.md#use-the-planner-from-a-script) for mappings and a script. There is no dedicated CSV CLI command.

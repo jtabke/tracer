@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-28",
+  "status": "orientation_pair_progress_preserved_full_acceptance_pending",
+  "nativeRevision": 177,
+  "priorRevision": 163,
+  "schemaVersion": 7,
+  "noPhysicalMigration": true,
+  "priorNativeStatesPreservedWithOnlyDeclaredPlanningUpdates": true,
+  "priorHistoryEvidenceCapturesBaselinesViewsPreserved": true,
+  "ledgers": {
+    "evaluation_commands": {
+      "before": 76,
+      "after": 87,
+      "priorRowsUnchanged": true,
+      "restoredRowsExact": true
+    },
+    "changeset_commands": {
+      "before": 59,
+      "after": 62,
+      "priorRowsUnchanged": true,
+      "restoredRowsExact": true
+    }
+  },
+  "deterministicExportExact": true,
+  "onlineBackup": "projects/tracer/backups/register-2026-10-28-orientation-original-pair-progress.sqlite",
+  "restoredCopy": "output/configuration-change/orientation-pair-progress-restored.sqlite",
+  "restoredExportAndAnalysisExact": true,
+  "exactCoreHTTPCLIRecoveryWithoutDuplicateWrites": true,
+  "realREQ011": {
+    "caseVersion": 14,
+    "completion": "verified",
+    "assessment": "completed",
+    "discovery": "current"
+  },
+  "originalREQ035": {
+    "assessment": {
+      "assessmentId": "4dc81851-217e-4e9b-95d4-4dd1e0d494af",
+      "openingCommandId": "configuration-original-final-assessment-open-2026-10-28"
+    },
+    "initialCandidates": 9,
+    "eightHistoricalPhasesIndividuallyAccounted": true,
+    "controlledCaseOpenedAllTwelveCriteriaNoResults": true,
+    "requiredReverification": "open",
+    "fullAcceptance": "pending"
+  },
+  "qualification": "Preparation preservation only. No full-goal verification, representative-human validation or new backend claim."
+}
