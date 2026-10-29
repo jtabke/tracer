@@ -543,6 +543,16 @@ Inspect `basis`, `scope`, `comparison` and `completeness` together. The existing
 
 The read covers all declared dependencies or refuses: 100 total declarations, 1,000 path-link uses, 1 MiB per complete configuration/receipt digest, 4 MiB aggregate selected reads and 4 MiB output. Partial configuration scope and absent legacy direct-input metadata remain visible. The typed client correlates the exact requested context and rejects an incomplete returned dependency population. Existing `evidence.compareReceipt(id)` continues to compare with current-head state.
 
+## Discover dependencies across a configuration pair
+
+Use `tracer.configurations.compareDependencies({beforeId, afterId, limit: 5})`, GET `/api/configuration-impact?beforeId=...&afterId=...&limit=5`, or `configuration impact BEFORE AFTER '{"limit":5}'`. Discover feature `configuration-impact` first. Both captures must have controlled scope/content declarations.
+
+Inspect `pair.comparability` before interpreting the result. Each `evaluations.items` row explains its inclusion, retains the original outcome, and compares all declared inputs with both selected configurations. `dependencyChange` is `changed`, `unchanged` or `unknown`. Even an unchanged dependency state does not establish a passing outcome, unchanged passage, controlled verification or no impact outside the declarations. Independent pinned references resolve their own selected states; the resource default remains available separately. Missing selections and absent legacy relationship metadata stay unknown. Application control dependencies outside the pair are also visible as unknown; this operation does not silently discard them or interpret application receipts as verification authority.
+
+Continue with `after: result.evaluations.nextAfter`. Keep both configuration IDs unchanged. The cursor binds that pair and the evidence watermark; new evidence or another pair rejects continuation. Explicitly restart from the first page to adopt a new evidence population. Optional `expectedEvidenceRevision` also guards a first-page read. A page is partial discovery until exhausted; callers must not close an assessment or declare complete impact accounting from one page.
+
+Page size is 1–25, default five. Receipt population, selected-read and response budgets can refuse even a valid row count; explicitly choose a smaller page instead of silently narrowing the engineering scope. The operation creates no receipts, judgments, observations or native changes. Pair-bound assessment authoring and the shared configuration-change workspace remain under development.
+
 ## Compare two fixed configurations
 
 Call `tracer.configurations.compare({beforeId, afterId})`, GET `/api/configuration-comparison?beforeId=...&afterId=...`, or `configuration compare BEFORE AFTER`. Discover `configuration-comparison` before using the endpoint. Both IDs select immutable local captures; the read creates no receipt and never adopts newer native revisions or observations.

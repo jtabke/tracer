@@ -1,0 +1,37 @@
+{
+  "status": "selected_pair_dependency_discovery_preservation_pass_full_goal_pending",
+  "nativeRevision": 126,
+  "schemaVersion": 7,
+  "newNativeMaterial": "One lightweight report resource and its qualified requirement reference; only REQ-035/WORK-027 planning fields otherwise changed.",
+  "reportResourceId": "350f2923-32e8-4245-ac84-5c5c50aff8ff",
+  "phaseReceiptId": "0743270f-fbc0-4c68-84c4-ed2fb740730b",
+  "explicitQualifiedReportInput": "93edd2a5-4998-42f5-8768-6e098d50b47a",
+  "phaseReceiptCurrent": true,
+  "originalAcceptanceUnchanged": true,
+  "priorHistoryEvidenceConfigurationsBaselinesViewsPreserved": true,
+  "priorDurableCommandRowsUnchanged": {
+    "evaluation_commands": {
+      "before": 44,
+      "after": 45
+    },
+    "changeset_commands": {
+      "before": 52,
+      "after": 53
+    }
+  },
+  "deterministicExportExact": true,
+  "restoredOnlineBackupExact": true,
+  "coreHTTPCLIOriginalIntentRecoveryWithoutDuplicateWrites": true,
+  "originalConfigurationDirectReadExact": true,
+  "pairComparisonAndRestoredDependencyReadExact": true,
+  "oldDiscoveryCursorRefusesChangedEvidence": true,
+  "realREQ011": {
+    "caseVersion": 9,
+    "threeActivitiesAndOriginalConclusionUnchanged": true,
+    "currentCompletion": "needs_reassessment"
+  },
+  "prePublicationBackup": "projects/tracer/backups/register-2026-10-28-before-pair-discovery-publication.sqlite",
+  "backup": "projects/tracer/backups/register-2026-10-28-pair-discovery-foundation.sqlite",
+  "verificationReport": "projects/tracer/configuration-pair-discovery-verification.json",
+  "qualification": "Scoped pair dependency discovery proof only. Controlled pair assessment, shared workspace and full actual task acceptance remain unfinished; no representative-human/regulatory/arbitrary-scale claim."
+}

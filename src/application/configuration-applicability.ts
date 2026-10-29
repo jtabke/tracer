@@ -7,6 +7,16 @@ import type { Transaction } from "./ports/repository.ts";
 import { configurationEngineeringState, boundedEngineeringState } from "./engineering-state.ts";
 import { compareCapturedInputs, comparisonToken } from "./receipt-comparison.ts";
 import { factDigest } from "./fact-digest.ts";
+import type { Receipt } from "../core/evidence.ts";
+
+export function validateReceiptDependencyPopulation(receipt: Receipt) {
+  ensure(
+    receipt.inputs.length + (receipt.relationshipInputs?.length ?? 0) <= 100 &&
+      receipt.inputs.reduce((n, value) => n + value.links.length, 0) <= 1000,
+    "validation",
+    "Configuration receipt comparison exceeds its complete dependency population budget",
+  );
+}
 
 export function validateConfigurationReceiptQuery(input: ConfigurationReceiptQuery) {
   ensure(record(input) && json(input), "validation", "Choose a configuration and receipt");
@@ -25,12 +35,7 @@ export async function compareConfigurationReceipt(
   const selected = await configurationEngineeringState(tx, input.configurationId);
   const receipt = await tx.getEvidence("receipt", input.receiptId);
   ensure(receipt, "not_found", "Receipt not found");
-  ensure(
-    receipt.inputs.length + (receipt.relationshipInputs?.length ?? 0) <= 100 &&
-      receipt.inputs.reduce((n, value) => n + value.links.length, 0) <= 1000,
-    "validation",
-    "Configuration receipt comparison exceeds its complete dependency population budget",
-  );
+  validateReceiptDependencyPopulation(receipt);
   const basis = {
     ...input,
     policy: "selected-dependencies-v1" as const,

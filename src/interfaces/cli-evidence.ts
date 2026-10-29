@@ -1,4 +1,5 @@
 import type { ConfigurationInput, ExactConfigurationInput } from "../core/configuration.ts";
+import type { ConfigurationImpactQuery } from "../core/configuration-impact.ts";
 import type {
   EvidenceKind,
   EvidenceQuery,
@@ -15,6 +16,21 @@ type BindInput = {
   ownership: "external";
 };
 export const evidenceCommands: Record<string, CliCommand> = {
+  "configuration impact": ({ tracer, args }) => {
+    arity(args, 2, 3);
+    const options = args[2]
+      ? jsonInput<Omit<ConfigurationImpactQuery, "beforeId" | "afterId">>(args[2], [
+          "after",
+          "limit",
+          "expectedEvidenceRevision",
+        ])
+      : {};
+    return tracer.configurations.compareDependencies({
+      ...options,
+      beforeId: args[0],
+      afterId: args[1],
+    });
+  },
   "configuration compare-receipt": ({ tracer, args }) => {
     arity(args, 2);
     return tracer.configurations.compareReceipt({ configurationId: args[0], receiptId: args[1] });

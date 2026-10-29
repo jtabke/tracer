@@ -48,6 +48,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "changeset-command-recovery",
     "configuration-bound-verification",
     "configuration-comparison",
+    "configuration-impact",
     "configuration-input-comparison",
     "contextual-input-correspondence",
     "evidence-revision-guards",

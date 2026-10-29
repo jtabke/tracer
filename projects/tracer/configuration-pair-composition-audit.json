@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-28",
+  "status": "composition audit; full pair-bound assessment not implemented",
+  "requirement": "REQ-035",
+  "work": "WORK-027",
+  "baseCommit": "4ce4315f5fd5160c5f6aa3a803a6b176907b4d8f",
+  "selectedSpecification": "projects/tracer/configuration-change-specification.json",
+  "acceptanceUnchanged": true,
+  "executedReadOnlyAudit": {
+    "artifact": "output/configuration-change/pair-impact-real-discovery.json",
+    "sha256": "192c573ee08645473e630106d743f58a6bca1ad7e784fa8e120ffeb8a40600c8",
+    "configurationPair": {
+      "beforeId": "c37b8600-af52-41b6-9053-dcb028c4d4e1",
+      "afterId": "d8ad2578-5726-402a-9dc3-fb9742845cae",
+      "limit": 1
+    },
+    "nativeRevision": 124,
+    "matchingReceipts": 50,
+    "pages": 50,
+    "fullCorrespondenceUnknown": 50,
+    "exportUnchanged": true,
+    "qualification": "Actual bounded discovery audit; these differently scoped reconstruction captures are not final before/after acceptance.",
+    "comparability": {
+      "state": "qualified",
+      "issues": [
+        {
+          "code": "scope_changed",
+          "explanation": "Scope declarations differ; membership differences do not establish equivalent engineering coverage."
+        },
+        {
+          "code": "unknown_content",
+          "explanation": "Some selected content lacks comparable available hashes; missing membership or observations is not proven byte deletion."
+        }
+      ],
+      "engineeringMeaning": "not_assessed"
+    },
+    "finding": "Unpaged receipt expansion exceeded the 4 MiB population budget. Retained the bound and introduced pair/watermark-bound pagination rather than silently narrowing the engineering scope."
+  },
+  "inspectedContracts": [
+    {
+      "path": "src/application/assessment-scope.ts",
+      "sha256": "a77374a30011fac30b996893d31906d2d3a264f9d764e66578ad68de187dd3c6"
+    },
+    {
+      "path": "src/core/assessment-scope-validation.ts",
+      "sha256": "9e653a3b9f0307f5324bf657cf6c00f827a799407f0a30d7957ee96daeca5bfe"
+    },
+    {
+      "path": "src/application/assessment-context.ts",
+      "sha256": "943abc0b52f04733ad44fbae6f1df6fee3ece911a44cee96f631c5236dd08c40"
+    },
+    {
+      "path": "src/application/assessment-facts.ts",
+      "sha256": "6535c9514e56314fd703a6c3abc41c0f83adebc0ac6baef4755eda0a29e571ac"
+    },
+    {
+      "path": "src/application/captured-facts.ts",
+      "sha256": "9882be8196cc9716d8c117f1501a386e40d9616ba9a9d5ea26f4f0db0dfd9873"
+    },
+    {
+      "path": "src/core/assessment-disposition.ts",
+      "sha256": "8674ab7db7e71173b434b7001bee7581f8a91e3aa27e5323ad9070906a72abd5"
+    },
+    {
+      "path": "src/application/assessment-dispositions.ts",
+      "sha256": "131d7afd2c35957747f701fff88b4e384f327736d8e6ea143b17996dc700fd24"
+    },
+    {
+      "path": "src/application/assessment-analysis.ts",
+      "sha256": "088d830bb3b7907f6e255f776ca36f8f3b70ba78b3fe8900e89bee4973fdaef6"
+    },
+    {
+      "path": "src/application/assessment-closure.ts",
+      "sha256": "7ff9ca7d87be07f9891fc2adb039bb0b3d2b61aa7b4887146458604fa10a259f"
+    },
+    {
+      "path": "src/application/verification-receipt-origin.ts",
+      "sha256": "13cd92f670d8456b1f6c1e517ec1646de84117755002b16aa48764354dd95df9"
+    },
+    {
+      "path": "src/application/verification-support.ts",
+      "sha256": "a8e4dd1b7806ace96d5c10f412015b4de76de867795524705844c5d5a998a31c"
+    }
+  ],
+  "gaps": [
+    {
+      "owner": "assessment-scope/context/validation",
+      "finding": "The controlled version-1 scope is explicitly baseline-to-current. Genesis fixes its query and purpose; its baseline revision is mandatory. A configuration pair cannot be represented by a fake baseline identity or mutable current snapshot.",
+      "requiredComposition": "Introduce an explicit versioned pair-bound source while preserving all existing baseline/current reads and writes."
+    },
+    {
+      "owner": "assessment-facts",
+      "finding": "Native candidates, latest observations and receipt dependency fingerprints resolve current head. Missing selected configuration membership is different from known live deletion.",
+      "requiredComposition": "Use the shared selected engineering-state reader for pair candidate facts; bind pair/policy and scoped selected-state facts independently from live guard clocks. Keep absence semantics explicit."
+    },
+    {
+      "owner": "assessment-dispositions/analysis/closure",
+      "finding": "Existing support modes distinguish historical/current head. A generic related current receipt can discharge a reverification action; this is not authenticated target-configuration verification authority.",
+      "requiredComposition": "Define explicit target support correspondence and use existing controlled verification rules for appropriate follow-through. Preserve failed/not_run outcomes and old conclusions; do not infer passing authority from prose or a relationship."
+    },
+    {
+      "owner": "captured-facts/assessment-disposition",
+      "finding": "Shared captured facts intentionally allow only one selected state per relationship in a receipt; the legacy basis parser does not accept referenceId associations.",
+      "requiredComposition": "Retain immutable before/after configurations as the source of both relationship states. Do not weaken the one-state receipt invariant or duplicate historical snapshots in a parallel store. Explicitly version contextual captured-basis additions."
+    },
+    {
+      "owner": "assessment-scope/analysis and configuration-impact",
+      "finding": "The actual reconstruction pair has 50 matching receipts with unresolved full-input correspondence and non-equivalent declared scopes. One overview page cannot establish complete assessment population or verification applicability.",
+      "requiredComposition": "Compose explicitly declared investigation scope with exact captured topology and shared scoped-input semantics. Exhaust bounded discovery or refuse; retain every discovered obligation and show work outside selected scope separately. Never reinterpret scoped no-action as full receipt validity."
+    }
+  ],
+  "preservedBoundaries": [
+    "No new structural primitive, managed review type or evidence store.",
+    "Existing 25-candidate/64 KiB assessment and captured-fact bounds remain unchanged unless separately justified.",
+    "No inferred membership, reachability causation, live-state substitution, passage resolution or fabricated pre-edit observations.",
+    "Pure review-token projection was relocated without changing bytes; target/impact wire correspondence validation is shared."
+  ],
+  "next": "Implement fixed-pair investigation scope, versioned assessment source and exact candidate/support fingerprints through existing lifecycle services; then shared workspace and complete real/second-domain/fresh-agent acceptance.",
+  "fullGoalPending": true,
+  "executedScopedProbe": {
+    "artifact": "output/configuration-change/pair-scoped-source-probe.json",
+    "sha256": "355dc92a8d87a32b513bdb5b6a6d8c61d06b09c0fa4dda361cb1424f4acc6bfc",
+    "nativeRevision": 124,
+    "rootId": "2b2b7281-04a9-4ad3-82c3-1fbc88419801",
+    "source": "src/application/configurations.ts",
+    "matchingReceipts": 5,
+    "fullUnknownButScopedKnown": 5,
+    "sharedRule": "scopedInputState(..., configuration)",
+    "exportUnchanged": true,
+    "scopeMeaning": "Only declared uses of this selected source. All other dependencies explicitly excluded from this projection, not declared irrelevant or valid. Shared scopedInputState configuration semantics; no new dependency comparison rules.",
+    "qualification": "Differently scoped reconstruction pair; this is not a controlled assessment or proof that recorded results are applicable/passing. Retain both full correspondence and scoped impact facts."
+  }
+}

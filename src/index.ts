@@ -36,6 +36,7 @@ export type * from "./core/next-work.ts";
 export { serializeProjectExport } from "./core/project-export.ts";
 export type * from "./core/configuration.ts";
 export type * from "./core/configuration-comparison.ts";
+export type * from "./core/configuration-impact.ts";
 export type * from "./core/configuration-applicability.ts";
 export type * from "./core/baseline.ts";
 export type { Repository, Transaction } from "./application/ports/repository.ts";

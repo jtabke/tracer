@@ -6,7 +6,7 @@ API: `tracer-http`. Contract version: **2** (independent of project schema and d
 
 See the [developer reference](developer-reference.md#headless-http-operation) for connection, errors, trusted provenance and recovery. This index lists wire query parameters and accepted top-level JSON keys. Nested payload/response types derive from the same definitions through the typed client; semantic guards and per-query bounds remain documented in their owning guides.
 
-Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `configuration-bound-verification`, `configuration-comparison`, `configuration-input-comparison`, `contextual-input-correspondence`, `evidence-revision-guards`, `exact-configuration-captures`, `historical-content-inputs`, `native-resources`, `pinned-application-models`, `qualified-references`, `qualified-target-reviews`, `reference-evaluation-inputs`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
+Features: `atomic-evaluation-commands`, `change-assessment-closure`, `change-assessment-dispositions`, `change-assessment-opening`, `change-assessment-scope-refresh`, `changeset-command-recovery`, `configuration-bound-verification`, `configuration-comparison`, `configuration-impact`, `configuration-input-comparison`, `contextual-input-correspondence`, `evidence-revision-guards`, `exact-configuration-captures`, `historical-content-inputs`, `native-resources`, `pinned-application-models`, `qualified-references`, `qualified-target-reviews`, `reference-evaluation-inputs`, `relationship-evaluation-inputs`, `verification-cases`, `verification-executions`, `verification-models`, `verification-results`.
 
 <!-- prettier-ignore -->
 | Limit | Maximum |
@@ -35,6 +35,7 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/configuration` | `id`* (text) |
 | GET | `/api/configuration-capture-context` | — |
 | GET | `/api/configuration-comparison` | `beforeId`* (text), `afterId`* (text) |
+| GET | `/api/configuration-impact` | `beforeId`* (text), `afterId`* (text), `after` (text), `limit` (integer), `expectedEvidenceRevision` (integer) |
 | GET | `/api/configuration-receipt-comparison` | `configurationId`* (text), `receiptId`* (text) |
 | GET | `/api/configurations` | `after` (text), `limit` (integer), `subject` (text) |
 | GET | `/api/connections` | `after` (text), `limit` (integer), `id`* (text), `type` (text) |

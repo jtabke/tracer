@@ -23,6 +23,11 @@ import {
 } from "./configuration-applicability.ts";
 import type { ConfigurationPair } from "../core/configuration-comparison.ts";
 import { compareConfigurations, validateConfigurationPair } from "./configuration-comparison.ts";
+import {
+  readConfigurationImpact,
+  validateConfigurationImpactQuery,
+} from "./configuration-impact.ts";
+import type { ConfigurationImpactQuery } from "../core/configuration-impact.ts";
 
 function validateCapture(input: ConfigurationInput) {
   ensure(
@@ -96,6 +101,11 @@ export class Configurations {
     input = snapshotInput(input);
     validateConfigurationPair(input);
     return this.repository.transaction((tx) => compareConfigurations(tx, input));
+  }
+  async compareDependencies(input: ConfigurationImpactQuery) {
+    input = snapshotInput(input);
+    validateConfigurationImpactQuery(input);
+    return this.repository.transaction((tx) => readConfigurationImpact(tx, input));
   }
   async compareReceipt(input: ConfigurationReceiptQuery) {
     input = snapshotInput(input);
