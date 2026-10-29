@@ -8,7 +8,7 @@ const paths: Record<NativeTask | "refresh" | "map" | "close", string> = {
   create: "M14 3H5v18h14V8l-5-5Zm0 0v5h5m-7 3v6m-3-3h6",
   item: "m15 4 5 5M4 20l5-1L21 7l-5-5L4 14v6Z",
   references:
-    "m10 14 4-4m-6 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 2 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0",
+    "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
   evaluations: "M5 3h10l4 4v14H5V3Zm10 0v5h4M9 17v-3m3 3V9m3 8v-5",
   schema: "M9 3h6v6H9V3ZM3 15h6v6H3v-6Zm12 0h6v6h-6v-6ZM12 9v3M6 15v-3h12v3",
   import: "M4 15v6h16v-6M12 3v12m-5-5 5 5 5-5",

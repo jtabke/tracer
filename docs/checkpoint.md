@@ -2,6 +2,14 @@
 
 ## Project tools menu polish — bounded presentation follow-up
 
+2026-10-29 follow-up: corrected the owner-reported References icon clipping.
+The original SVG path reached x=-0.243 outside its 24×24 viewBox; the replacement
+path and complete stroke fit inside the bounds. Browser geometry, screenshot
+inspection, build and three-width navigation checks passed. Exact diagnostics
+are under `output/project-tools-icon-fix/`. Guarded work evidence/export advanced
+to native196; the online backup's restored export and durable command outcome
+match. The backup is `projects/tracer/backups/register-2026-10-29-reference-icon-fix.sqlite`.
+
 2026-10-29: added consistent line icons and brief task descriptions to the
 shared Project tools catalog. The menu has explicit hover/focus states, a named
 close action, separated utility controls and a scrolling task list that retains
