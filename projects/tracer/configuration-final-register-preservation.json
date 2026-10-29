@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-28",
+  "status": "complete_selected_capability_preservation_pass",
+  "originalNativeRevision": 114,
+  "prePublicationRevision": 187,
+  "finalNativeRevision": 189,
+  "schemaVersion": 7,
+  "physicalFormat": 11,
+  "noNewPhysicalMigration": true,
+  "allOriginalAcceptanceUnchanged": true,
+  "priorNativeIdentitiesHistoryEvidenceOutcomesPreserved": true,
+  "currentNativeChanges": "Only declared REQ-035/WORK-027 status/planning, VER-035 execution summary and genuine REQ-011 reassessment control/status changes since selected baseline. All original links remain unchanged.",
+  "ledgers": {
+    "evaluation_commands": {
+      "original": 40,
+      "prePublication": 97,
+      "final": 97,
+      "olderRowsUnchanged": true,
+      "restoredRowsExact": true
+    },
+    "changeset_commands": {
+      "original": 46,
+      "prePublication": 62,
+      "final": 64,
+      "olderRowsUnchanged": true,
+      "restoredRowsExact": true
+    }
+  },
+  "immutableConfigurationsBaselinesSavedViewsPreserved": true,
+  "originalLegacyAndExactPairReadIdentically": true,
+  "deterministicExportExact": true,
+  "canonicalExportSha256": "6df0fd4441cead499545329d50641c19c40e07176c0f81404a412333cd4f0a36",
+  "onlineBackup": {
+    "path": "projects/tracer/backups/register-2026-10-28-configuration-change-complete.sqlite",
+    "sha256": "59143dbac93069824592f138a47037f049d1060796405cc13bcc60ed4536c425"
+  },
+  "restoredCopy": "output/configuration-change/final-configuration-restored-v2.sqlite",
+  "restoredExportCaseAndAssessmentExact": true,
+  "coreHTTPCLIOriginalIntentRecoveryWithoutDuplicateWrites": true,
+  "metadataDidNotRebaseTarget": true,
+  "controlledVerification": {
+    "selection": {
+      "caseId": "0c7a9a41-0e55-4161-b058-5ff7b719045f",
+      "openingCommandId": "configuration-original-req035-verification-open-2026-10-28"
+    },
+    "caseVersion": 4,
+    "criteria": 12,
+    "completion": {
+      "state": "verified",
+      "commandId": "configuration-original-req035-conclude-2026-10-28",
+      "receiptId": "df399671-0e5b-4602-a46f-bc69753d2840"
+    },
+    "target": {
+      "configurationId": "841b02ea-59d9-4839-a655-45fceabe5217",
+      "digest": "sha256:97a92dbfc5107229fb3930155feec97622b65d49f50cce4ae827d06621b9f13e",
+      "policy": "target-reference-uses-v2"
+    }
+  },
+  "originalAssessment": {
+    "selection": {
+      "assessmentId": "4dc81851-217e-4e9b-95d4-4dd1e0d494af",
+      "openingCommandId": "configuration-original-final-assessment-open-2026-10-28"
+    },
+    "completion": {
+      "state": "completed",
+      "receiptId": "4156466c-e5a0-45e7-afb1-c1d5b260d950"
+    },
+    "discovery": "current",
+    "candidates": 13,
+    "openActions": 0
+  },
+  "realREQ011": {
+    "caseVersion": 14,
+    "activities": 4,
+    "originalFailedNotRunPreserved": true,
+    "verification": "verified",
+    "assessment": "completed",
+    "candidates": 18
+  },
+  "projectStatus": {
+    "delivery": "implemented",
+    "verification": "verified",
+    "representativeHumanValidation": "not_validated",
+    "work": "completed"
+  },
+  "procedure": {
+    "path": "output/configuration-change/verify-final-configuration-preservation.mjs",
+    "sha256": "b5d7d180ec676973b27257d7de173271e57153484988067d42cfc2f03c149d30",
+    "source": "import assert from 'node:assert/strict';\nimport { readFileSync, writeFileSync, existsSync, copyFileSync } from 'node:fs';\nimport { createHash } from 'node:crypto';\nimport { DatabaseSync } from 'node:sqlite';\nimport { spawnSync } from 'node:child_process';\nimport { Tracer } from '../../src/index.ts';\nimport { canonical } from '../../src/core/evidence.ts';\nimport { SQLiteRepository } from '../../src/persistence/sqlite.ts';\nimport { createClient } from '../../src/client.ts';\nimport { startHeadlessServer } from '../../src/interfaces/headless-server.ts';\nconst destination = 'projects/tracer/configuration-final-register-preservation.json';\nconst restoredPath = 'output/configuration-change/final-configuration-restored-v2.sqlite';\nassert.ok(!existsSync(destination)); assert.ok(!existsSync(restoredPath));\nconst backup = 'projects/tracer/backups/register-2026-10-28-configuration-change-complete.sqlite'; copyFileSync(backup, restoredPath);\nconst paths = ['projects/tracer/backups/register-2026-10-28-configuration-change-selected.sqlite', 'projects/tracer/backups/register-2026-10-28-before-configuration-final-publication.sqlite', 'projects/tracer/tracer.sqlite', restoredPath];\nconst repositories = paths.map(path => new SQLiteRepository(path)); let server;\nconst hash = value => createHash('sha256').update(value).digest('hex');\ntry {\n  const [original, previous, live, restored] = repositories.map(r => new Tracer(r));\n  const before = await original.exportProject(), pre = await previous.exportProject(), after = await live.exportProject();\n  assert.equal(before.projectRevision, 114); assert.equal(pre.projectRevision, 187); assert.equal(after.projectRevision, 189);\n  assert.deepEqual(await restored.exportProject(), after); assert.deepEqual(await live.exportProject(), after);\n  assert.deepEqual(JSON.parse(readFileSync('projects/tracer/project-export.json')), after);\n  assert.equal(hash(readFileSync('projects/tracer/project-export.json', 'utf8').trimEnd()), hash(canonical(after))); \n  const changedFields = { 'REQ-035': ['deliveryStatus', 'verificationStatus', 'remaining', 'statusBasis'], 'WORK-027': ['deliveryStatus', 'nextAction', 'completionEvidence'], 'REQ-011': ['verificationStatus', 'remaining', 'statusBasis'], 'VER-035': ['executionStatus'] };\n  const originalQueueCase = '823f8a49-117c-4c85-81d1-cee87bc1892d';\n  for (const row of before.current.entities) {\n    const current = after.current.entities.find(x => x.id === row.id); assert.ok(current);\n    if (row.id === originalQueueCase) { assert.equal(row.version, 9); assert.equal(current.version, 14); continue; }\n    const allowed = changedFields[row.key];\n    if (allowed) { assert.equal(current.id, row.id); assert.equal(current.type, row.type); assert.equal(current.key, row.key); assert.deepEqual(current.resource, row.resource); for (const field of Object.keys(row.fields).filter(x => !allowed.includes(x))) assert.deepEqual(current.fields[field], row.fields[field], row.key + '.' + field); }\n    else assert.deepEqual(current, row);\n  }\n  for (const row of before.current.relationships) assert.deepEqual(after.current.relationships.find(x => x.id === row.id), row);\n  assert.deepEqual(after.current.schema, before.current.schema);\n  for (const state of [before, pre]) {\n    for (const section of ['provenance', 'evidence']) for (const [key, rows] of Object.entries(state[section])) {\n      const preserved = new Set(after[section][key].map(x => JSON.stringify(x)));\n      for (const row of rows) assert.ok(preserved.has(JSON.stringify(row)), section + '.' + key);\n    }\n    for (const section of ['configurations', 'baselines', 'savedViews']) for (const row of state[section]) assert.deepEqual(after[section].find(x => x.id === row.id), row);\n  }\n  for (const row of pre.current.entities) {\n    const current = after.current.entities.find(x => x.id === row.id), allowed = changedFields[row.key];\n    if (['REQ-035', 'WORK-027', 'VER-035'].includes(row.key)) { assert.equal(current.version, row.version + 1); for (const field of Object.keys(row.fields).filter(x => !allowed.includes(x))) assert.deepEqual(current.fields[field], row.fields[field]); }\n    else assert.deepEqual(current, row);\n  }\n  for (const row of pre.current.relationships) assert.deepEqual(after.current.relationships.find(x => x.id === row.id), row);\n  assert.equal(after.current.entities.length, pre.current.entities.length + 2); assert.equal(after.current.relationships.length, pre.current.relationships.length + 2);\n  for (const section of ['configurations', 'baselines', 'savedViews']) assert.deepEqual(after[section], pre[section]);\n  const dbs = paths.map(path => new DatabaseSync(path, { readOnly: true })), ledgers = {};\n  try {\n    for (const db of dbs) assert.equal(db.prepare('SELECT version FROM storage_version').get().version, 11);\n    for (const table of ['evaluation_commands', 'changeset_commands']) {\n      const rows = dbs.map(db => db.prepare(`SELECT * FROM ${table} ORDER BY command_id`).all());\n      for (const older of rows.slice(0, 2)) for (const row of older) assert.deepEqual(rows[2].find(x => x.command_id === row.command_id), row);\n      assert.deepEqual(rows[3], rows[2]); ledgers[table] = { original: rows[0].length, prePublication: rows[1].length, final: rows[2].length, olderRowsUnchanged: true, restoredRowsExact: true };\n    }\n  } finally { dbs.forEach(db => db.close()); }\n  const p = JSON.parse(readFileSync('output/configuration-change/original-follow-through-prepared.json'));\n  const o = JSON.parse(readFileSync('output/configuration-change/original-controlled-verification-opened.json'));\n  const v = JSON.parse(readFileSync('output/configuration-change/original-controlled-verification-completed.json'));\n  const a = JSON.parse(readFileSync('output/configuration-change/original-pair-assessment-completed.json'));\n  const pub = JSON.parse(readFileSync('output/configuration-change/complete-capability-published.json'));\n  assert.deepEqual(await restored.configurations.get(p.before.id), p.before); assert.deepEqual(await restored.configurations.get(p.after.id), p.after);\n  assert.deepEqual(await restored.configurations.get(p.originalLegacy.id), p.originalLegacy);\n  assert.deepEqual(await restored.configurations.compare({ beforeId: p.before.id, afterId: p.after.id }), p.comparison);\n  const analysis = await live.verification.analyze(v.selection), assessed = await live.changeAssessments.analyze(a.selection);\n  assert.equal(analysis.completion.state, 'verified'); assert.equal(analysis.view.case.version, 4); assert.equal(analysis.basis.state, 'current'); assert.equal(analysis.obligations.length, 12); assert.ok(analysis.obligations.every(x => x.outcome === 'passed' && x.applicability === 'current'));\n  assert.equal(analysis.view.scope.target.configurationId, p.after.id); assert.equal(analysis.view.scope.basis.methods[0].version, 1);\n  assert.equal(after.current.entities.find(x => x.key === 'VER-035').version, 2);\n  assert.equal(assessed.completion.state, 'completed'); assert.equal(assessed.discovery, 'current'); assert.equal(assessed.obligations.length, 13); assert.ok(assessed.obligations.every(x => x.state === 'accounted' && x.openActions === 0));\n  assert.deepEqual(await restored.verification.analyze(v.selection), analysis); assert.deepEqual(await restored.changeAssessments.analyze(a.selection), assessed);\n  const queue = JSON.parse(readFileSync('output/configuration-change/real-follow-through-prepared.json'));\n  const queueCase = await live.verification.analyze(queue.selection), queueAssessment = await live.changeAssessments.analyze(queue.assessment);\n  assert.equal(queueCase.completion.state, 'verified'); assert.equal(queueCase.view.case.version, 14); assert.equal(queueCase.executions.length, 4); assert.equal(queueCase.executions[0].results[0].outcome, 'failed'); assert.equal(queueCase.executions[0].results[1].outcome, 'not_run');\n  assert.equal(queueAssessment.completion.state, 'completed'); assert.equal(queueAssessment.discovery, 'current'); assert.equal(queueAssessment.obligations.length, 18);\n  assert.deepEqual(await restored.verification.analyze(queue.selection), queueCase);\n  const req = after.current.entities.find(x => x.key === 'REQ-035'), method = after.current.entities.find(x => x.key === 'VER-035'), work = after.current.entities.find(x => x.key === 'WORK-027');\n  assert.equal(req.fields.deliveryStatus, 'implemented'); assert.equal(req.fields.verificationStatus, 'verified'); assert.equal(req.fields.validationStatus, 'not_validated'); assert.equal(method.fields.executionStatus, 'passed'); assert.equal(work.fields.deliveryStatus, 'completed');\n  const spec = JSON.parse(readFileSync('projects/tracer/configuration-change-specification.json')); assert.equal(req.fields.acceptance, spec.acceptance.map(x => x.id + ': ' + x.expected).join(' '));\n  for (const x of [...v.commands, ...a.commands]) assert.deepEqual(await restored.evaluations.getOutcome(x.request.commandId), x.result);\n  assert.deepEqual(await restored.verification.open(o.request, o.actor), o.result);\n  const conclude = v.commands.find(x => x.operation === 'conclude'); assert.deepEqual(await restored.verification.conclude(conclude.request, v.actor), conclude.result);\n  const close = a.commands.find(x => x.operation === 'close'); assert.deepEqual(await restored.changeAssessments.close(close.request, a.actor), close.result);\n  for (const [request, result] of [[pub.materialCommand, pub.materialResult], [pub.statusCommand, pub.statusResult]]) { assert.deepEqual(await restored.getChangesetOutcome(request.commandId), result); assert.deepEqual(await restored.applyChangeset(request, pub.actor), result); }\n  server = await startHeadlessServer(restored, { port: 0, provenance: v.actor });\n  let client = createClient({ baseUrl: server.origin }); await client.connect();\n  assert.deepEqual(await client.write('/api/verifications/conclude', conclude.request), conclude.result); assert.deepEqual(await client.read('/api/verification-analysis', v.selection), analysis);\n  await server.close(); server = await startHeadlessServer(restored, { port: 0, provenance: pub.actor }); client = createClient({ baseUrl: server.origin }); await client.connect();\n  assert.deepEqual(await client.write('/api/changesets', pub.statusCommand), pub.statusResult);\n  assert.deepEqual(await client.read('/api/changeset-outcome', { commandId: pub.statusCommand.commandId }), pub.statusResult);\n  const cli = (group, operation, request, actor, expected) => {\n    const command = spawnSync(process.execPath, ['src/interfaces/cli.ts', '--db', restoredPath, '--actor', actor.actor, '--reason', actor.reason, group, operation, JSON.stringify(request)], { encoding: 'utf8', maxBuffer: 16000000 });\n    assert.equal(command.status, 0, command.stderr); assert.deepEqual(JSON.parse(command.stdout), expected);\n  };\n  cli('verification', 'conclude', conclude.request, v.actor, conclude.result); cli('assessment', 'close', close.request, a.actor, close.result); cli('changeset', 'apply', pub.statusCommand, pub.actor, pub.statusResult);\n  for (const x of pub.materials) assert.equal(x.observation.hash, 'sha256:' + hash(readFileSync(x.path)));\n  assert.deepEqual(await restored.exportProject(), after); assert.deepEqual(await live.exportProject(), after);\n  const report = { date: '2026-10-28', status: 'complete_selected_capability_preservation_pass', originalNativeRevision: 114, prePublicationRevision: 187, finalNativeRevision: 189, schemaVersion: 7, physicalFormat: 11, noNewPhysicalMigration: true, allOriginalAcceptanceUnchanged: true, priorNativeIdentitiesHistoryEvidenceOutcomesPreserved: true, currentNativeChanges: 'Only declared REQ-035/WORK-027 status/planning, VER-035 execution summary and genuine REQ-011 reassessment control/status changes since selected baseline. All original links remain unchanged.', ledgers, immutableConfigurationsBaselinesSavedViewsPreserved: true, originalLegacyAndExactPairReadIdentically: true, deterministicExportExact: true, canonicalExportSha256: hash(canonical(after)), onlineBackup: { path: backup, sha256: hash(readFileSync(backup)) }, restoredCopy: restoredPath, restoredExportCaseAndAssessmentExact: true, coreHTTPCLIOriginalIntentRecoveryWithoutDuplicateWrites: true, metadataDidNotRebaseTarget: true, controlledVerification: { selection: v.selection, caseVersion: 4, criteria: 12, completion: analysis.completion, target: analysis.view.scope.target }, originalAssessment: { selection: a.selection, completion: assessed.completion, discovery: 'current', candidates: 13, openActions: 0 }, realREQ011: { caseVersion: 14, activities: 4, originalFailedNotRunPreserved: true, verification: 'verified', assessment: 'completed', candidates: 18 }, projectStatus: { delivery: 'implemented', verification: 'verified', representativeHumanValidation: 'not_validated', work: 'completed' }, procedure: { path: 'output/configuration-change/verify-final-configuration-preservation.mjs', sha256: hash(readFileSync('output/configuration-change/verify-final-configuration-preservation.mjs')), source: readFileSync('output/configuration-change/verify-final-configuration-preservation.mjs', 'utf8') }, qualification: 'Complete selected local software capability preservation. No representative-human/physical/regulatory validation, new-backend/team parity, retained external bytes/passage resolution, release approval or arbitrary-scale claim.' };\n  writeFileSync(destination, JSON.stringify(report, null, 2) + '\\n');\n  console.log(JSON.stringify({ nativeRevision: 189, verifiedCriteria: 12, assessmentCandidates: 13, openActions: 0, restoredExact: true, ledgers }));\n} finally { await server?.close(); repositories.forEach(r => r.close()); }\n"
+  },
+  "qualification": "Complete selected local software capability preservation. No representative-human/physical/regulatory validation, new-backend/team parity, retained external bytes/passage resolution, release approval or arbitrary-scale claim.",
+  "driverNotes": "The first preservation driver compared ordinary object insertion-order JSON with the canonical review-export bytes. Its read-only check stopped before recovery operations. The corrected driver checked parsed equality and canonical bytes, then reexecuted all checks against a fresh restored copy without live writes."
+}

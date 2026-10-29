@@ -78,7 +78,7 @@ A different whole-file hash does not prove that section 4.2 changed, and an unch
 
 Graph, Matrix, History and evidence views project the same identities and links. A different presentation does not create another engineering model or infer an evidence dependency. Structural coverage means qualifying connections exist; it does not mean the requirement passed a test.
 
-A **configuration** captures selected exact native members/relationships. A **baseline** captures a committed native project state, including schema and topology. Use these to reconstruct declared native context; neither captures external file bytes or proves release readiness. A named **Matrix configuration** is instead a saved presentation recipe for row/path/search choices. It does not pin the engineering versions shown.
+A **configuration** captures explicitly selected native member and relationship revisions, observed-content selections and declared scope/context. Older native-only captures retain their original omissions; omitted topology or content stays unknown. A **baseline** captures a committed native project state, including schema and topology. Neither retains external file bytes or proves release readiness. A named **Matrix configuration** is instead a saved presentation recipe for row/path/search choices. It does not pin the engineering versions shown.
 
 For implementation contracts, see [primitive contracts for extension](architecture.md#primitive-contracts-for-extension). For exact source/state selectors, receipt inputs and commands, use the [developer reference](developer-reference.md#local-resources-and-contextual-references).
 
