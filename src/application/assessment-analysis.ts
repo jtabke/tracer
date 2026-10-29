@@ -11,15 +11,21 @@ import type {
 } from "../core/change-assessment.ts";
 import { assessmentContext } from "./assessment-context.ts";
 import { assessmentDispositions } from "./assessment-dispositions.ts";
-import { candidateBasis, candidateKey, resolveSupport, factDigest } from "./assessment-facts.ts";
+import { candidateBasis, candidateKey, factDigest } from "./assessment-facts.ts";
+import { assessmentSupportResolver } from "./assessment-support.ts";
+import type { AssessmentSupportResolver } from "./assessment-support.ts";
 import { discoverAssessmentScope } from "./assessment-scope.ts";
+import { pairAssessmentState } from "./pair-assessment-facts.ts";
+import type { PairAssessmentState } from "./pair-assessment-facts.ts";
 
-async function supportingState(tx: Transaction, support: ResolvedSupport[]) {
+async function supportingState(resolver: AssessmentSupportResolver, support: ResolvedSupport[]) {
   let changed = false,
     unknown = false;
   for (const previous of support) {
-    const current = await resolveSupport(tx, previous.reference);
-    changed ||= previous.digest !== current.digest;
+    const current = await resolver.resolve(previous.reference);
+    changed ||=
+      previous.digest !== current.digest ||
+      (current.applicability !== undefined && current.applicability !== "applicable");
     unknown ||= current.hasUnknown;
   }
   return { changed, unknown };
@@ -29,11 +35,13 @@ async function obligation(
   view: ChangeAssessmentView,
   subject: AssessmentObligation["subject"],
   disposition: DispositionView | undefined,
+  selected?: PairAssessmentState,
+  resolver = assessmentSupportResolver(tx, view.scope),
 ): Promise<AssessmentObligation> {
-  const basis = await candidateBasis(tx, view.scope, subject);
+  const basis = await candidateBasis(tx, view.scope, subject, selected);
   const result: AssessmentObligation = {
     subject,
-    label: await candidateLabel(tx, subject),
+    label: await candidateLabel(tx, subject, selected),
     currentDigest: basis.digest,
     hasUnknown: basis.hasUnknown,
     disposition: null,
@@ -49,22 +57,29 @@ async function obligation(
     decision: disposition.decision,
     rationalePreview: disposition.rationale.slice(0, 200),
   };
-  const support = await supportingState(tx, disposition.data.support);
+  const support = await supportingState(resolver, disposition.data.support);
   for (const action of disposition.actions) {
     result.openActions += Number(action.state === "open");
     result.waivedActions += Number(action.state === "waived");
     if (action.state === "open") continue;
     const captured = disposition.data.actionSupport.find((item) => item.id === action.id);
     ensure(captured, "storage", "Action supporting basis is unavailable");
-    const state = await supportingState(tx, captured.support);
+    const state = await supportingState(resolver, captured.support);
     support.changed ||= state.changed;
     support.unknown ||= state.unknown;
+    if (
+      view.scope.version === 2 &&
+      action.kind === "reverify" &&
+      action.state === "done" &&
+      !(await resolver.verifies(subject, action.support))
+    )
+      support.changed = true;
   }
   result.hasUnknown ||= support.unknown;
   const exception =
     disposition.decision === "acknowledge_unknown" && view.model.definition.policy.allowUnknown;
   const replaced =
-    subject.kind === "receipt" &&
+    (subject.kind === "receipt" || view.scope.version === 2) &&
     disposition.decision === "reverify" &&
     disposition.actions.some((action) => action.kind === "reverify" && action.state === "done");
   result.state = obligationState(
@@ -74,11 +89,21 @@ async function obligation(
   );
   return result;
 }
-async function candidateLabel(tx: Transaction, subject: CandidateKey) {
+async function candidateLabel(
+  tx: Transaction,
+  subject: CandidateKey,
+  selected?: PairAssessmentState,
+) {
   const value =
     subject.kind === "receipt"
       ? (await tx.getEvidence("receipt", subject.id))?.output
-      : await tx.get(subject.kind, subject.id);
+      : selected
+        ? subject.kind === "entity"
+          ? ((await selected.after.getEntity(subject.id)) ??
+            (await selected.before.getEntity(subject.id)))
+          : ((await selected.after.getRelationship(subject.id)) ??
+            (await selected.before.getRelationship(subject.id)))
+        : await tx.get(subject.kind, subject.id);
   if (!value) return `Removed ${subject.kind} ${subject.id.slice(0, 8)}`;
   const title = typeof value.fields.title === "string" ? value.fields.title : undefined;
   const identity =
@@ -140,6 +165,8 @@ export async function analyzeAssessmentContext(
   context: Awaited<ReturnType<typeof assessmentContext>>,
 ) {
   const { view } = context;
+  const selected = view.scope.version === 2 ? await pairAssessmentState(tx, view.scope) : undefined;
+  const resolver = assessmentSupportResolver(tx, view.scope);
   const owned = await assessmentDispositions(tx, view),
     obligations: AssessmentObligation[] = [];
   for (const candidate of view.scope.candidates)
@@ -151,6 +178,8 @@ export async function analyzeAssessmentContext(
         owned.find(
           (item) => candidateKey(item.disposition.data.subject) === candidateKey(candidate),
         )?.disposition,
+        selected,
+        resolver,
       ),
     );
   const population = await discovery(tx, view);
@@ -162,7 +191,7 @@ export async function analyzeAssessmentContext(
       owned,
       obligations,
       population.state,
-      view.model.compatibility.writable,
+      view.scope.version === 2 || view.model.compatibility.writable,
     ));
   const analysis: AssessmentAnalysis = {
     view,

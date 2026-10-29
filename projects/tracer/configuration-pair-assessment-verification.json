@@ -1,0 +1,401 @@
+{
+  "date": "2026-10-28",
+  "status": "controlled_pair_assessment_headless_verified_full_goal_pending",
+  "requirement": "REQ-035",
+  "work": "WORK-027",
+  "plan": "VER-035",
+  "specification": "projects/tracer/configuration-change-specification.json",
+  "originalAcceptanceUnchanged": true,
+  "candidate": {
+    "baseCommit": "9c813946475137fd93a0d3ea571a772fad77ce4f",
+    "sourcePatch": {
+      "path": "output/configuration-change/pair-assessment-source.patch",
+      "sha256": "753989934c6444a6aaefef1dc32f58a5de99563845f28e90bb604eaa108edad7"
+    },
+    "sourceFingerprints": [
+      {
+        "path": "src/application/assessment-analysis.ts",
+        "sha256": "13340e019cbea92a34a2c8a7abfae997740615fa75d965c0ce4693dc7a138f44"
+      },
+      {
+        "path": "src/application/assessment-candidates.ts",
+        "sha256": "713d1330017a728403c8b746f72fe3701945d0ed21659b06916690dd780b031c"
+      },
+      {
+        "path": "src/application/assessment-closure.ts",
+        "sha256": "76dc1b5ba3d92fc0066ef2f279084039b1e069d6327da5c21aa83c468cccaa70"
+      },
+      {
+        "path": "src/application/assessment-dispositions.ts",
+        "sha256": "c89aaefe3a0de8d55772d5cfd14e50465ebb00290d0682deb3404e73c487886a"
+      },
+      {
+        "path": "src/application/assessment-fact-capture.ts",
+        "sha256": "f8e94ed2dcfe4b826ba8bfce4315fb83fb38cac707e3d1b311909c737e29a35a"
+      },
+      {
+        "path": "src/application/assessment-facts.ts",
+        "sha256": "6b32286ab2e7600ff030ba1c59f9fd7ed18d352bf1632a2e2751f454fe34ecde"
+      },
+      {
+        "path": "src/application/assessment-receipt-facts.ts",
+        "sha256": "c65a5850ecd7795b8cf83cac9972cc7dcb9495f431a7b9dc20e53bcd85459f0e"
+      },
+      {
+        "path": "src/application/assessment-scope-query.ts",
+        "sha256": "63540c8b3e6d88a94db9c36e8db151c77d0c90f077cb530340275f1c1ed12330"
+      },
+      {
+        "path": "src/application/assessment-scope.ts",
+        "sha256": "9187bedc36d3f1384223e8302328d897d14c7a4ead8b3144065402f76f33cafa"
+      },
+      {
+        "path": "src/application/assessment-support.ts",
+        "sha256": "53c959a4e30a66ef9c7137cbfb551dd8524ad7ee698e6ec54e0f11772d7c7f03"
+      },
+      {
+        "path": "src/application/change-assessments.ts",
+        "sha256": "6e487c72b70945404ca56981cd7e7cd74caa031a0decc16aada4fabf09c90683"
+      },
+      {
+        "path": "src/application/configuration-impact-graph.ts",
+        "sha256": "b2eeccdde6ddf0b8ae3c4cc09a163539766ca20c966a2c09077591383302a5c2"
+      },
+      {
+        "path": "src/application/configuration-verification-support.ts",
+        "sha256": "1280a8d6d07cab9fbb873ea6e0fd70a5449799f78d3b1034c97cf632b7416fda"
+      },
+      {
+        "path": "src/application/engineering-state.ts",
+        "sha256": "25dc49cd11e659ab67a61fecc66b5b183de4908db537a472e86cc998ba4f7856"
+      },
+      {
+        "path": "src/application/impact-context.ts",
+        "sha256": "96abce5abddb928c4ca9fc89cfc61f531e04f8807b6a051570d7b774f0595def"
+      },
+      {
+        "path": "src/application/impact-graph.ts",
+        "sha256": "bb7d19bf081f43e74302dea5d04b5ea361e54b8f5681375f8621502e5d368c9a"
+      },
+      {
+        "path": "src/application/impact-native.ts",
+        "sha256": "8258992729ee3e7fcd796aaaed1669a32a870b8f538257154954c88130801ea3"
+      },
+      {
+        "path": "src/application/impact-receipt-scope.ts",
+        "sha256": "e6ac9fe0a974dc869e7439dadbf8c7384b12dd2e0d89f42531b5070c70b2c245"
+      },
+      {
+        "path": "src/application/impact.ts",
+        "sha256": "14581e3167b880143f355d858b000ed23259f76d4ec6e87c13cf4b4e40e1824f"
+      },
+      {
+        "path": "src/application/pair-assessment-facts.ts",
+        "sha256": "215f86d14d5e51c9c1b181e6d801ab4458371ae7c9f575d8d44fae886812e264"
+      },
+      {
+        "path": "src/application/pair-assessment-scope.ts",
+        "sha256": "826886dfc5cfe592f028fbf3e26c2d9c45f9a2e22b58479a023ebaaf34dd4715"
+      },
+      {
+        "path": "src/application/verification-analysis.ts",
+        "sha256": "901b40ebf14c3dc0d92f61cb17e7c166237ad2a132afe922f79c20285ad9f41a"
+      },
+      {
+        "path": "src/application/verification-conclusion-applicability.ts",
+        "sha256": "1addfd0426a2b43a615e5f5b446d1bcf7655ebf133bc78dda5abd1eaf487e40e"
+      },
+      {
+        "path": "src/application/verification-context.ts",
+        "sha256": "cd12528726f24e4b6c5d8a3b1f9159ea113b08e41b547a1a74226dd7c754d235"
+      },
+      {
+        "path": "src/application/verification-execution-read.ts",
+        "sha256": "626a34bc900f0b451cf76a0f2c3e7306c101af6f83c64f5ea0a6afbaf988a1d2"
+      },
+      {
+        "path": "src/core/assessment-disposition.ts",
+        "sha256": "1abe3ba2ff9b7bc6bfcebbf7cddeca5931670bc0e5ae90b74d83415d133d269c"
+      },
+      {
+        "path": "src/core/assessment-pair-source.ts",
+        "sha256": "1194ec9cf6d710e83db6076df8029bade85bc16b4ae0e935a3939914858340f8"
+      },
+      {
+        "path": "src/core/assessment-scope-validation.ts",
+        "sha256": "e624922dbe4aa38a4ea3f345db68e23c598b409174d6ddd68c941a06f462a74b"
+      },
+      {
+        "path": "src/core/change-assessment.ts",
+        "sha256": "2ec55174ea54556a28ca5721b41e13b3a984a64b7d85748ca93826a21e980b02"
+      },
+      {
+        "path": "src/interfaces/api/change-assessments.ts",
+        "sha256": "5c908e972a25bdfea9219d414db1ae93c3cae1aba2fffe34044c0035b2d7bea8"
+      },
+      {
+        "path": "test/api-capabilities.test.ts",
+        "sha256": "51c6de09e9f2e4c2048c8b685e3329897a107f915c65f1b658bee2635bfc68e5"
+      },
+      {
+        "path": "test/application-model-fixture.ts",
+        "sha256": "ebc034cb193a3046001f46bed549c800e200ad82e3d3a10f164db301eb2aedce"
+      },
+      {
+        "path": "test/pair-assessment-bounds.test.ts",
+        "sha256": "3fe7840d8dc3ad4265f2a4a515db524863c616e507ee1cf5c8ce0e4af3b7d5f8"
+      },
+      {
+        "path": "test/pair-assessment-interfaces.test.ts",
+        "sha256": "5af5d4199881b98709f6b9e5affdd5552fad772d75432af42b0f21ec6053f8e8"
+      },
+      {
+        "path": "test/pair-assessment.test.ts",
+        "sha256": "9700450d6dfa14c9b017247077914d7fa3768e87cc8220c7fa2a472195b726ef"
+      },
+      {
+        "path": "test/pair-material-support.test.ts",
+        "sha256": "916528823afebd019a211e4ae631e71d84ae4054ef557de7ab712713e84a4951"
+      },
+      {
+        "path": "test/pair-reference-use-support.test.ts",
+        "sha256": "95ed49ce80e6ca6bf93abfe34ab0a5540755e7d3a645b817f6ea9a0a9c068b33"
+      },
+      {
+        "path": "test/pair-verification-fixture.ts",
+        "sha256": "8ba3efdeeeedf11816d108549dbab7b2a240b08d80768a7b243cf6fdc7606846"
+      },
+      {
+        "path": "test/pair-verification-support.test.ts",
+        "sha256": "c2d586caa71c30b95287cd4640f33a8ce33fdd02db39ffdc299865c6d48dad04"
+      },
+      {
+        "path": "test/verification-conclusion-context.test.ts",
+        "sha256": "4e32654161aa6c6b831effc8c93cd8443c5a5d26dd1b8c38f8586c6755202882"
+      },
+      {
+        "path": "test/verification-fixture.ts",
+        "sha256": "c77d4cf6f4f87399be4d8782ada912b7d47a1bcbc84fae254e43ce64cc75cf5b"
+      },
+      {
+        "path": "test/verification-target.test.ts",
+        "sha256": "c7fc793046e0afae07223ef74cc23c9174f6e88d607e2b3625d24ad65b3b9624"
+      },
+      {
+        "path": "ui/assessments/detail-sections.tsx",
+        "sha256": "60af6c36ab806b5723adb3f0fb4d8c2472a47945d2457593bcc0de3b93412bba"
+      },
+      {
+        "path": "ui/assessments/support.tsx",
+        "sha256": "9d915844c9e7b4a9369707d470436c3c18af8c04df23c44a1a3c1a8200c02890"
+      }
+    ],
+    "originals": {
+      "meaning": "Retained pre-phase committed bytes. Genuine pre-edit observations are identified separately; Git originals are not fabricated file observations.",
+      "files": [
+        {
+          "path": "src/application/assessment-analysis.ts",
+          "sha256": "088d830bb3b7907f6e255f776ca36f8f3b70ba78b3fe8900e89bee4973fdaef6",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/assessment-analysis.ts"
+        },
+        {
+          "path": "src/application/assessment-closure.ts",
+          "sha256": "7ff9ca7d87be07f9891fc2adb039bb0b3d2b61aa7b4887146458604fa10a259f",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/assessment-closure.ts"
+        },
+        {
+          "path": "src/application/assessment-dispositions.ts",
+          "sha256": "131d7afd2c35957747f701fff88b4e384f327736d8e6ea143b17996dc700fd24",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/assessment-dispositions.ts"
+        },
+        {
+          "path": "src/application/assessment-facts.ts",
+          "sha256": "6535c9514e56314fd703a6c3abc41c0f83adebc0ac6baef4755eda0a29e571ac",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/assessment-facts.ts"
+        },
+        {
+          "path": "src/application/assessment-scope.ts",
+          "sha256": "a77374a30011fac30b996893d31906d2d3a264f9d764e66578ad68de187dd3c6",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/assessment-scope.ts"
+        },
+        {
+          "path": "src/application/change-assessments.ts",
+          "sha256": "8a65734f7be10949c101bc1c9b2015bbdcc52b87b3180408c512054e78e242f0",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/change-assessments.ts"
+        },
+        {
+          "path": "src/application/engineering-state.ts",
+          "sha256": "93e6dddbeedad80d138ac42b2f9e366ae4f0c6c538d7fe7afaf52973432230ab",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/engineering-state.ts"
+        },
+        {
+          "path": "src/application/impact-context.ts",
+          "sha256": "eff72954e5ec50f910345c405f0b3ad70895f0c9439f08c0595c24661398b193",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/impact-context.ts"
+        },
+        {
+          "path": "src/application/impact-native.ts",
+          "sha256": "7ea38a471de812362bff30028d6d51f7ae70f346b1831e4d6bb91b963b652a0a",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/impact-native.ts"
+        },
+        {
+          "path": "src/application/impact.ts",
+          "sha256": "7d0f2e1033302f45d1654881b284509c2e5705a89bd395cd977da09f539817ed",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/impact.ts"
+        },
+        {
+          "path": "src/application/verification-analysis.ts",
+          "sha256": "dcc519cb76c7a914113cd0a869bf5eaec7dfe790abe45e6a252da6622f29b7e9",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/verification-analysis.ts"
+        },
+        {
+          "path": "src/application/verification-context.ts",
+          "sha256": "0f83e1ddd6eda1eecd92948509748fdb0a80cda4fca5d9882c7fa230ddc7c342",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/verification-context.ts"
+        },
+        {
+          "path": "src/application/verification-execution-read.ts",
+          "sha256": "269bc8847c2fb0855cf83b44a3a2974cab5fb7c21a2cacd1e567b25b1ae5b2f3",
+          "archive": "output/configuration-change/pair-assessment-originals/src/application/verification-execution-read.ts"
+        },
+        {
+          "path": "src/core/assessment-disposition.ts",
+          "sha256": "8674ab7db7e71173b434b7001bee7581f8a91e3aa27e5323ad9070906a72abd5",
+          "archive": "output/configuration-change/pair-assessment-originals/src/core/assessment-disposition.ts"
+        },
+        {
+          "path": "src/core/assessment-scope-validation.ts",
+          "sha256": "9e653a3b9f0307f5324bf657cf6c00f827a799407f0a30d7957ee96daeca5bfe",
+          "archive": "output/configuration-change/pair-assessment-originals/src/core/assessment-scope-validation.ts"
+        },
+        {
+          "path": "src/core/change-assessment.ts",
+          "sha256": "c87afa8ebc7b3a984fe3b3a4970294e99da74455a8e841db55f97d2ed650fd28",
+          "archive": "output/configuration-change/pair-assessment-originals/src/core/change-assessment.ts"
+        },
+        {
+          "path": "src/interfaces/api/change-assessments.ts",
+          "sha256": "6b80d61bf6bff09ba71fd5342d89e2fbcf594b31985a9fb6cf09279fdc409fc0",
+          "archive": "output/configuration-change/pair-assessment-originals/src/interfaces/api/change-assessments.ts"
+        },
+        {
+          "path": "test/api-capabilities.test.ts",
+          "sha256": "eb889f7e4f1152c4e8dafeff5ac1af4bf217127bf4f172f1f97724f531b154e4",
+          "archive": "output/configuration-change/pair-assessment-originals/test/api-capabilities.test.ts"
+        },
+        {
+          "path": "test/application-model-fixture.ts",
+          "sha256": "78526107cd3e8b0839b6336061859009c0f5e5b5f2ded51c7a36f2f28a47a95f",
+          "archive": "output/configuration-change/pair-assessment-originals/test/application-model-fixture.ts"
+        },
+        {
+          "path": "test/verification-fixture.ts",
+          "sha256": "f8276f42b06d934cb04649eeb9251314ba68c68bb12df64d4f1642d3d022cc32",
+          "archive": "output/configuration-change/pair-assessment-originals/test/verification-fixture.ts"
+        },
+        {
+          "path": "test/verification-target.test.ts",
+          "sha256": "77e250c296114e801705cb079fbe2126e73ec4c63e4c0d97d2cf10c4acf7b5fc",
+          "archive": "output/configuration-change/pair-assessment-originals/test/verification-target.test.ts"
+        },
+        {
+          "path": "ui/assessments/detail-sections.tsx",
+          "sha256": "f0473e7cb08ba4cb6d707efce7906a88cdd338a87e58135a7aebb1e57f1af4b1",
+          "archive": "output/configuration-change/pair-assessment-originals/ui/assessments/detail-sections.tsx"
+        },
+        {
+          "path": "ui/assessments/support.tsx",
+          "sha256": "ebb9634640f783a6d91eaef933d41bf991c8ec71d2c49a66c0b16b46ff09085b",
+          "archive": "output/configuration-change/pair-assessment-originals/ui/assessments/support.tsx"
+        }
+      ]
+    },
+    "preEditObservationArtifacts": [
+      {
+        "path": "output/configuration-change/pair-assessment-pre-edit-observations.json",
+        "sha256": "e6737061fac1adbb3fb4bf289544a026f1386acba23120ec79473a05face966e"
+      },
+      {
+        "path": "output/configuration-change/pair-assessment-verification-originals.json",
+        "sha256": "921074c92c83cf4f898cc26c0ded4625ff7207aa08d997b592bcb7c25e830e8d"
+      },
+      {
+        "path": "output/configuration-change/pair-assessment-reader-originals.json",
+        "sha256": "b614b01582111d5bbce82600ff053b8daa06d69681027e99e091271d75b8ab86"
+      }
+    ]
+  },
+  "implemented": [
+    "Explicit scope-v2 configuration pair and policy through existing controlled assessment lifecycle; baseline/current meanings unchanged.",
+    "Shared selected/native traversal and captured-fact ownership; exact selected after inputs and qualified absences, with before states authoritative in immutable pair.",
+    "Immutable pair/query judgment authority; refresh retains obligations; another pair/policy requires a new assessment identity.",
+    "Authenticated historical controlled verification conclusion reuses shared governing, accounting, provenance, qualified-review and target-support engine.",
+    "Clean move to another target preserves original applicability; new work for the same target retires prior current-use authority and later retarget cannot resurrect it.",
+    "Actual selected product/facet/reference-use correspondence for completed re-verification, preserving original failed and unknown historical facts.",
+    "One support-resolution work session across references and actions, cached repeated proofs, fresh post-write guards, no observer IO or current-head substitution.",
+    "Core/typed HTTP/client/CLI authoring and original-intent uncertain-write recovery; shared UI currently only inspects pair/support provenance."
+  ],
+  "bounds": {
+    "candidates": 25,
+    "scopeBytes": 65536,
+    "viewBytes": 262144,
+    "capturedFacts": 80,
+    "inputDeclarationBytes": 16384,
+    "distinctTargetProofsPerSession": 25,
+    "sharedVerificationWork": {
+      "bytes": 16777216,
+      "declarations": 10000,
+      "pathLinkUses": 20000
+    },
+    "existingProposalLimitsUnchanged": {
+      "supportPerUse": 10,
+      "supportUsesPerDisposition": 20
+    },
+    "overflow": "Explicit refusal with no partial native/history/evidence/outcome publication; no dropped obligations."
+  },
+  "verification": {
+    "command": "npm run check",
+    "log": {
+      "path": "output/configuration-change/pair-assessment-resumed-full-check.log",
+      "sha256": "6a77559cf5b4907485fe4038572b072379efe261a6fbdd940f9665828fb52062"
+    },
+    "node": "v26.12.1",
+    "unitTests": 713,
+    "browserScenarios": 209,
+    "workbenchOriginalScreenshots": 18,
+    "formatTypesLintBuilds": true,
+    "architectureDeadCodeDuplicationComplexityGatesUnchanged": true,
+    "focused": {
+      "tests": 18,
+      "logs": [
+        {
+          "path": "output/configuration-change/pair-assessment-integrated-focused.log",
+          "sha256": "e64a1f0441ed3225d7075215881f205b348e6276a705db890ac95a2dc58251e0"
+        },
+        {
+          "path": "output/configuration-change/pair-assessment-bounds-final.log",
+          "sha256": "13de76e6dad2c20a35f38c8422bf7fe78c31f1caf4581c4649daa3b4e70746f6"
+        }
+      ]
+    },
+    "cases": [
+      "Engineering/research selected-state scope through later native drift, deletion and restart; immutable query and new-pair namespace.",
+      "Scoped known reference facts versus full unknown original receipt correspondence; later supersession/discovery retains obligations.",
+      "Selected membership/link removal is not live deletion; old unknown bytes remain explicit.",
+      "Genuine historical conclusion authentication and original execution registry; reject raw execution or generic passing material as controlled proof.",
+      "Wrong target/configuration, failed outcome and unrelated scope refusal; actual performed after-target replacement can account while retaining old failed/unknown facts.",
+      "Clean retarget remains stable; same-target new work cannot resurrect an old conclusion after later retarget.",
+      "Unknown external default versus native annotation, explicit known replacement, independent B/C/B reference uses and original failure retention.",
+      "Typed response correlation, HTTP lost committed disposition response, restart/CLI exact replay and changed-intent refusal without duplicates.",
+      "25 complete obligations and 26th-candidate refusal without dropping earlier scope; repeated-proof cache, 25-proof boundary and aggregate 16 MiB work refusal before native writes."
+    ],
+    "fixtureCorrections": "The initial shared-budget fixture hit the existing response limit, then the supporting-use limit, before reaching its intended boundary. The final fixture stays within both and proves aggregate refusal across disposition/action supports. No production limits were relaxed."
+  },
+  "qualification": [
+    "Headless backend/software verification only; original AC-1–12 and complete REQ-035/WORK-027 acceptance remain pending.",
+    "Actual real REQ-011 reassessment and materially different domain end-to-end acceptance are not established by synthetic fixtures.",
+    "Shared capture/compare/investigate/assessment/target-verification authoring, retained task drafts, fresh-agent UI comprehension and full original acceptance audit remain required.",
+    "No new structural primitive, evidence store or physical migration. Existing history/current-head semantics retained.",
+    "No representative-human, regulatory, backend/team or arbitrary-scale claim."
+  ]
+}

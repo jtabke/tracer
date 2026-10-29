@@ -13,7 +13,7 @@ import type {
   VerificationExecutionSummary,
   VerificationObligation,
 } from "../core/verification-lifecycle.ts";
-import { verificationContext } from "./verification-context.ts";
+import { verificationContext, verificationConclusionContext } from "./verification-context.ts";
 import { verificationExecutionContext } from "./verification-execution-read.ts";
 import {
   verificationGoverningBasis,
@@ -21,7 +21,7 @@ import {
 } from "./verification-governing.ts";
 import { verificationSupport, verificationWorkBudget } from "./verification-support.ts";
 import { factDigest } from "./fact-digest.ts";
-import { boundedEngineeringState } from "./engineering-state.ts";
+import { boundedEngineeringState, accountedEngineeringState } from "./engineering-state.ts";
 import type { EngineeringStateReader } from "./engineering-state.ts";
 import { verificationEngineeringState } from "./verification-target.ts";
 import { verificationBytes } from "../core/verification-case-validation.ts";
@@ -34,8 +34,9 @@ async function execution(
   work: ReturnType<typeof verificationWorkBudget>,
   state: EngineeringStateReader,
   basisDigest: string,
+  sourceKind: "current" | "recorded_conclusion" = "current",
 ) {
-  const raw = await verificationExecutionContext(tx, view, registration);
+  const raw = await verificationExecutionContext(tx, view, registration, sourceKind);
   work(raw.receipt);
   if (raw.source) work(raw.source);
   const supportContext = { executionId: registration.executionId, basisDigest };
@@ -232,18 +233,55 @@ export async function analyzeVerification(
   selection: VerificationSelection,
   expectedVersion?: number,
 ) {
-  const context = await verificationContext(tx, selection, expectedVersion),
-    { view, selected, certificate } = context;
-  const state = boundedEngineeringState(
+  return analyzeVerificationContext(tx, await verificationContext(tx, selection, expectedVersion));
+}
+export async function analyzeVerificationConclusion(
+  tx: Transaction,
+  receiptId: string,
+  work = verificationWorkBudget(),
+) {
+  const context = await verificationConclusionContext(tx, receiptId);
+  ensure(
+    context.view.scope.target,
+    "validation",
+    "Recorded target verification requires an explicit controlled configuration target",
+  );
+  work.account(context.view);
+  work(context.receipt);
+  return analyzeVerificationContext(tx, context, work);
+}
+async function verificationReadState(
+  tx: Transaction,
+  context: Awaited<ReturnType<typeof verificationContext>>,
+  work: ReturnType<typeof verificationWorkBudget>,
+) {
+  const view = context.view;
+  const bounded = boundedEngineeringState(
     await verificationEngineeringState(tx, view.scope),
     16777216,
     "Verification analysis exceeds its 16 MiB resolved-state read budget",
   );
+  const state =
+    context.source === "recorded_conclusion"
+      ? accountedEngineeringState(bounded, work.account)
+      : bounded;
+  if (context.source === "recorded_conclusion" && state.kind === "configuration")
+    work.account(state.configuration);
+  return state;
+}
+async function analyzeVerificationContext(
+  tx: Transaction,
+  context: Awaited<ReturnType<typeof verificationContext>>,
+  work = verificationWorkBudget(),
+) {
+  const { view, selected, certificate } = context;
+  const state = await verificationReadState(tx, context, work);
   const governing = await verificationGoverningBasis(tx, view, state),
     entries = [];
-  const work = verificationWorkBudget();
   for (const registration of view.executions)
-    entries.push(await execution(tx, view, registration, work, state, governing.digest));
+    entries.push(
+      await execution(tx, view, registration, work, state, governing.digest, context.source),
+    );
   const executions = entries.map((x) => x.summary),
     basis = { state: governing.state, digest: governing.digest, reasons: governing.reasons };
   const obligations = view.scope.basis.methods.flatMap((method) =>
@@ -292,5 +330,5 @@ export async function analyzeVerification(
     completion,
   };
   verificationBytes(analysis, 262144);
-  return { analysis, context, governing, entries };
+  return { analysis, context, governing, entries, engineeringState: state };
 }

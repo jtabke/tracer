@@ -1,14 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { createClient } from "../src/client.ts";
 import { startHeadlessServer } from "../src/interfaces/headless-server.ts";
 import { decodeRead, decodeWrite } from "../src/interfaces/api-endpoints.ts";
 import { Tracer } from "../src/index.ts";
-import type { ExactConfigurationInput, VerificationSelection } from "../src/index.ts";
+import type { VerificationSelection } from "../src/index.ts";
 import {
   verificationFixture,
+  verificationTargetInput as targetInput,
   verificationActor as actor,
   verificationOpening,
   verificationExecution,
@@ -17,26 +17,6 @@ import {
 } from "./verification-fixture.ts";
 
 type Fixture = Awaited<ReturnType<typeof verificationFixture>>;
-async function targetInput(f: Fixture): Promise<ExactConfigurationInput> {
-  const context = await f.tracer.configurations.captureContext();
-  return {
-    id: randomUUID(),
-    name: "Exact verification candidate",
-    subjectId: f.requirement.id,
-    expectedSubjectVersion: 1,
-    members: [f.requirement, f.method, f.profile].map((e) => ({ entityId: e.id, version: 1 })),
-    relationships: [{ relationshipId: f.relationship.id, version: 1 }],
-    content: [],
-    scope: {
-      purpose: "Synthetic exact criterion/method/model candidate",
-      coverage: "complete",
-      rationale: "Declared fixture scope, not physical or representative-human validation",
-    },
-    expectedSchemaVersion: context.schema.version,
-    expectedProjectRevision: context.projectRevision,
-    expectedEvidenceRevision: context.evidenceRevision,
-  };
-}
 async function conclude(
   f: Fixture,
   selection: VerificationSelection,

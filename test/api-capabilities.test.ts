@@ -50,6 +50,7 @@ test("capabilities derive operations/features from dispatch, work without a mode
     "configuration-comparison",
     "configuration-impact",
     "configuration-input-comparison",
+    "configuration-pair-assessments",
     "contextual-input-correspondence",
     "evidence-revision-guards",
     "exact-configuration-captures",

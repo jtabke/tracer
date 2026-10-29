@@ -9,7 +9,7 @@ import {
   verificationBytes,
 } from "../core/verification-case-validation.ts";
 import { verificationCaseLimits } from "../core/verification-case.ts";
-import { pinEntity } from "./native-pins.ts";
+import { pinEntity, pinRelationship } from "./native-pins.ts";
 import { resolveVerificationModel } from "./verification-models.ts";
 import { expectVersion } from "./version-guard.ts";
 import type { Transaction } from "./ports/repository.ts";
@@ -123,9 +123,66 @@ function assertConclusion(
   } else
     ensure(certificate === null, "conflict", "Open verification cannot carry a current conclusion");
 }
-export async function verificationContext(
+type VerificationReadSource = { kind: "current" } | { kind: "recorded_conclusion"; entity: Entity };
+export function verificationContext(
   tx: Transaction,
   selection: VerificationSelection,
+  expectedVersion?: number,
+) {
+  return readVerificationContext(tx, selection, { kind: "current" }, expectedVersion);
+}
+/** Authenticate an exact immutable conclusion, rather than substituting the case's latest basis. */
+export async function verificationConclusionContext(tx: Transaction, receiptId: string) {
+  const receipt = await tx.getEvidence("receipt", receiptId);
+  ensure(receipt, "not_found", "Verification conclusion receipt is unavailable");
+  verificationBytes(receipt, verificationCaseLimits.priorReceiptBytes);
+  const commandId = await tx.evaluationCommandForReceipt(receiptId);
+  ensure(commandId, "validation", "Supporting receipt has no controlled verification origin");
+  const stored = await tx.getEvaluationCommand(commandId);
+  ensure(stored, "storage", "Verification conclusion command is unavailable");
+  const intent: unknown = JSON.parse(stored.intent);
+  ensure(
+    record(intent) &&
+      record(intent.input) &&
+      typeof intent.input.caseId === "string" &&
+      typeof intent.input.openingCommandId === "string",
+    "validation",
+    "Supporting receipt is not a controlled verification conclusion",
+  );
+  const selection = {
+    caseId: intent.input.caseId,
+    openingCommandId: intent.input.openingCommandId,
+  };
+  const command = await verificationCommand(tx, commandId, selection);
+  ensure(
+    command.operation === "verification.conclude" &&
+      canonical(command.result.receipt) === canonical(receipt),
+    "validation",
+    "Supporting receipt is not an authentic controlled verification conclusion",
+  );
+  const recorded = controlledCase(command.result, selection.caseId);
+  const pinned = await pinEntity(tx, selection.caseId, recorded.version, true);
+  ensure(
+    canonical(pinned.entity) === canonical(recorded) &&
+      canonical(receipt.output) === canonical(recorded),
+    "conflict",
+    "Conclusion does not match its exact native case revision",
+  );
+  const context = await readVerificationContext(tx, selection, {
+    kind: "recorded_conclusion",
+    entity: pinned.entity,
+  });
+  ensure(
+    context.certificate && context.view.control.commandId === commandId,
+    "validation",
+    "Supporting receipt does not establish this recorded conclusion",
+  );
+  return { ...context, receipt };
+}
+async function readVerificationContext(
+  tx: Transaction,
+  selection: VerificationSelection,
+  source: VerificationReadSource,
   expectedVersion?: number,
 ) {
   const opening = await verificationCommand(tx, selection.openingCommandId, selection);
@@ -144,7 +201,8 @@ export async function verificationContext(
     "conflict",
     "Verification opening does not match native case genesis",
   );
-  const entity = await tx.get("entity", selection.caseId);
+  const entity =
+    source.kind === "current" ? await tx.get("entity", selection.caseId) : source.entity;
   ensure(entity, "not_found", "Verification case is unavailable");
   if (expectedVersion !== undefined)
     expectVersion(entity.version, expectedVersion, false, { kind: "entity", id: entity.id });
@@ -186,7 +244,10 @@ export async function verificationContext(
     "conflict",
     "Verification basis changed since genesis",
   );
-  const membership = await tx.get("relationship", request.membershipId),
+  const membership =
+      source.kind === "current"
+        ? await tx.get("relationship", request.membershipId)
+        : (await pinRelationship(tx, request.membershipId, 1)).relationship,
     created = opening.result.native?.results.find((x) => x.id === request.membershipId);
   ensure(
     membership &&
@@ -230,5 +291,5 @@ export async function verificationContext(
     executions: parseExecutionRegistry(entity.fields[binding.fields.executions]),
   };
   verificationBytes(view, verificationCaseLimits.viewBytes);
-  return { entity, view, selected, certificate };
+  return { entity, view, selected, certificate, source: source.kind };
 }

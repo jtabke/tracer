@@ -575,6 +575,42 @@ To capture a receipt against this configuration, supply `configurationId` and ex
 
 The operation accepts at most 100 members, 200 links, 100 content selections and 128 KiB input; a complete result exceeding 2 MiB rolls back before publication. Comparisons/assessments against a fixed pair are still under implementation; existing receipt comparison and verification continue to evaluate current inputs under their existing contracts.
 
+## Assess an exact configuration pair
+
+Discover feature `configuration-pair-assessments`. Use the existing `changeAssessments.open` operation, POST `/api/change-assessments/open` or CLI `assessment open JSON`, with normal model selection, stable command/assessment identities, purpose, additional fields and exact schema/native/evidence guards. Replace the baseline query with:
+
+```json
+{
+  "source": "configuration_pair",
+  "beforeId": "BEFORE_CONFIGURATION_ID",
+  "afterId": "AFTER_CONFIGURATION_ID",
+  "policy": "scoped-reference-dependencies-v1",
+  "rootId": "ENGINEERING_RECORD_ID",
+  "direction": "outgoing",
+  "relationshipTypes": [],
+  "depth": 1
+}
+```
+
+An empty relationship selection examines the root only. Select configured relationship types to expand the bounded traversal. Inspect returned `scope.version`, `scope.basis.pair`, discovery qualifications and candidate basis before authoring a disposition. Pair facts remain fixed when live product state changes; discovery can still require explicit refresh after new evidence. Refresh retains earlier obligations. A different pair/policy requires a new assessment identity and new judgments.
+
+To complete re-verification, perform the existing controlled verification task against the exact after configuration. Use its genuine passing conclusion receipt as an action's support:
+
+```json
+{
+  "kind": "receipt",
+  "id": "CONTROLLED_CONCLUSION_RECEIPT_ID",
+  "mode": "configuration",
+  "configurationId": "AFTER_CONFIGURATION_ID"
+}
+```
+
+The shared engine checks authenticated origin, selected target, complete passing coverage and the candidate's actual declared inputs. A generic passing report or a different configuration with similar contents is insufficient. Read support `applicability` separately from captured basis uncertainty and original outcomes. New work for the same target can require reassessment; work for another target does not silently rebase this assessment.
+
+Use existing guarded disposition/action and close operations. Unknown scope cannot establish no impact, and closure accounts only for declared scope. Candidate/population/work limits refuse overflow; narrow the investigation explicitly rather than assuming a partial list is complete. After a lost response, inspect `evaluation outcome COMMAND_ID` and retain the original request. Exact repeat recovery preserves original intent; changed input under the same identity conflicts. Do not automatically retry an uncertain write.
+
+Pair assessment is currently a headless capability undergoing integrated verification; shared workspace authoring and full real-task acceptance are still pending. Existing baseline queries and historical/current support modes retain their meanings.
+
 ## Controlled verification cases and execution capture
 
 Use `tracer.verification.open(input, provenance)`, POST `/api/verifications/open` or CLI `verification open JSON` with `commandId`, `caseId`, `membershipId`, `title`, `purpose`, the `basis` selection described above, explicit `additionalFields`, and exact `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`. A successful command creates the case/membership and one immutable opening receipt atomically. Recover through `evaluation outcome COMMAND_ID`; exact repeats return the original result before current guards, while changed intent conflicts. No result or verified conclusion is inferred by opening.

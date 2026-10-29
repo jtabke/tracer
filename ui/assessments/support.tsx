@@ -20,10 +20,10 @@ export function AssessmentSupport({
   onChange(value: SupportReference[]): void;
 }) {
   const [kind, setKind] = useState<SupportReference["kind"]>("entity");
-  const [mode, setMode] = useState<SupportReference["mode"]>("historical");
+  const [mode, setMode] = useState<"historical" | "current">("historical");
   const [selected, setSelected] = useState<SupportReference>();
   const add = () => {
-    if (!selected || value.length >= 10) return;
+    if (!selected || selected.mode === "configuration" || value.length >= 10) return;
     onChange([...value, { ...selected, mode }]);
     setSelected(undefined);
   };
@@ -38,6 +38,7 @@ export function AssessmentSupport({
             <span>
               {supportName(reference, entities)} · {reference.mode}
               {"version" in reference && ` · v${reference.version}`}
+              {reference.mode === "configuration" && ` · target ${reference.configurationId}`}
             </span>
             <button
               type="button"

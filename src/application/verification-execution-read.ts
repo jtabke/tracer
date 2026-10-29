@@ -13,6 +13,7 @@ import {
   verificationBytes,
 } from "../core/verification-case-validation.ts";
 import { verificationCaseLimits } from "../core/verification-case.ts";
+import { pinEntity, pinRelationship } from "./native-pins.ts";
 import { verificationContext, verificationCommand } from "./verification-context.ts";
 import { compareCapturedInputs } from "./receipt-comparison.ts";
 import type { Transaction } from "./ports/repository.ts";
@@ -77,6 +78,7 @@ export async function verificationExecutionContext(
   tx: Transaction,
   view: VerificationCaseView,
   registration: VerificationExecutionRegistration,
+  sourceKind: "current" | "recorded_conclusion" = "current",
 ) {
   const selection = { caseId: view.case.id, openingCommandId: view.opening.commandId },
     executionId = registration.executionId;
@@ -90,12 +92,21 @@ export async function verificationExecutionContext(
     "Execution command does not match its registered output",
   );
   const fields = view.model.definition.execution.fields,
-    current = await tx.get("entity", executionId);
+    current =
+      sourceKind === "current"
+        ? await tx.get("entity", executionId)
+        : (await pinEntity(tx, executionId, receipt.output.version, true)).entity;
   ensure(
     receipt.output.type === view.model.definition.execution.type,
     "conflict",
     "Execution type does not match its governing model",
   );
+  if (sourceKind === "recorded_conclusion")
+    ensure(
+      canonical(current) === canonical(receipt.output),
+      "conflict",
+      "Recorded execution does not match its exact native revision",
+    );
   if (current)
     ensure(
       current.type === receipt.output.type &&
@@ -112,7 +123,10 @@ export async function verificationExecutionContext(
     "conflict",
     "Execution data does not match its case registration",
   );
-  const membership = await tx.get("relationship", registration.membershipId),
+  const membership =
+      sourceKind === "current"
+        ? await tx.get("relationship", registration.membershipId)
+        : (await pinRelationship(tx, registration.membershipId, 1)).relationship,
     recorded = command.result.native?.results.find((x) => x.id === registration.membershipId);
   const source =
     data.source.kind === "prior_receipt"

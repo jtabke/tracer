@@ -28,9 +28,18 @@ export function boundedEngineeringState(
   message: string,
 ): EngineeringStateReader {
   let bytes = 0;
-  const account = <T>(value: T): T => {
+  return accountedEngineeringState(state, (value) => {
     bytes += new TextEncoder().encode(JSON.stringify(value ?? null)).length;
     ensure(bytes <= maximum, "validation", message);
+  });
+}
+/** Compose one explicit work budget across independently evaluated selected sources. */
+export function accountedEngineeringState(
+  state: EngineeringStateReader,
+  accountValue: (value: unknown) => void,
+): EngineeringStateReader {
+  const account = <T>(value: T): T => {
+    accountValue(value ?? null);
     return value;
   };
   return {

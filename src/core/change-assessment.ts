@@ -4,12 +4,23 @@ import type { Fields } from "./model.ts";
 import type { ResolvedApplicationModel } from "./application-model.ts";
 import type { AssessmentDecision } from "./application-model.ts";
 import type { InputDeclaration, RelationshipDeclaration } from "./evidence.ts";
+import type { ConfigurationComparison } from "./configuration-comparison.ts";
 
 export const changeAssessmentLimits = { candidates: 25, scopeBytes: 65536, viewBytes: 262144 };
-export type AssessmentScopeQuery = Pick<
+export type AssessmentBaselineQuery = Pick<
   ChangeImpactQuery,
   "baselineId" | "rootId" | "direction" | "relationshipTypes" | "depth"
 >;
+export type AssessmentPairQuery = Omit<AssessmentBaselineQuery, "baselineId"> & {
+  source: "configuration_pair";
+  beforeId: string;
+  afterId: string;
+  policy: "scoped-reference-dependencies-v1";
+};
+export type AssessmentScopeQuery = AssessmentBaselineQuery | AssessmentPairQuery;
+export function isPairAssessmentQuery(query: AssessmentScopeQuery): query is AssessmentPairQuery {
+  return "source" in query && query.source === "configuration_pair";
+}
 export type OpenChangeAssessment = {
   commandId: string;
   assessmentId: string;
@@ -44,24 +55,32 @@ export type AssessmentReceiptCandidate = {
   }[];
   relationshipInputs: { id: string; version: number | null }[];
 };
-export type AssessmentScope = {
+type ScopeClock = { projectRevision: number; evidenceRevision: number; schemaVersion: number };
+type ScopeTraversal = {
+  complete: true;
+  excludedReceiptOutputId: string;
+  before: ChangeImpact["native"]["before"];
+  after: ChangeImpact["native"]["after"];
+};
+type ScopeSource =
+  | {
+      version: 1;
+      query: AssessmentBaselineQuery & { depth: number };
+      basis: ScopeClock & { baselineRevision: number };
+      discovery: ScopeTraversal & { interpretation: "selected_traversal" };
+    }
+  | {
+      version: 2;
+      query: AssessmentPairQuery & { depth: number };
+      basis: ScopeClock & { pair: ConfigurationComparison["basis"] };
+      discovery: ScopeTraversal & {
+        interpretation: "selected_configuration_pair";
+        comparability: ConfigurationComparison["comparability"];
+      };
+    };
+export type AssessmentScope = ScopeSource & {
   contract: "change_assessment_scope";
-  version: 1;
   purpose: string;
-  query: AssessmentScopeQuery & { depth: number };
-  basis: {
-    projectRevision: number;
-    evidenceRevision: number;
-    schemaVersion: number;
-    baselineRevision: number;
-  };
-  discovery: {
-    complete: true;
-    interpretation: "selected_traversal";
-    excludedReceiptOutputId: string;
-    before: ChangeImpact["native"]["before"];
-    after: ChangeImpact["native"]["after"];
-  };
   candidates: (AssessmentNativeCandidate | AssessmentReceiptCandidate)[];
   /** Additive metadata; original openings have neither property. */
   control?: { commandId: string; openingCommandId: string };
@@ -76,16 +95,21 @@ export type AssessmentScope = {
 };
 
 export type CandidateKey = { kind: "entity" | "relationship" | "receipt"; id: string };
+export function assessmentCandidateKey(value: CandidateKey) {
+  return value.kind + ":" + value.id;
+}
 export type DispositionRegistration = {
   subject: CandidateKey;
   id: string;
   membershipId: string;
   commandId: string;
 };
-export type SupportReference = (
-  | { kind: "entity" | "relationship"; id: string; version: number }
-  | { kind: "receipt" | "observation"; id: string }
-) & { mode: "historical" | "current" };
+export type SupportReference =
+  | ((
+      | { kind: "entity" | "relationship"; id: string; version: number }
+      | { kind: "receipt" | "observation"; id: string }
+    ) & { mode: "historical" | "current" })
+  | { kind: "receipt"; id: string; mode: "configuration"; configurationId: string };
 export type AssessmentAction = {
   id: string;
   kind: "revise" | "reverify" | "investigate";
@@ -94,17 +118,23 @@ export type AssessmentAction = {
   resolution: string;
   support: SupportReference[];
 };
+export type AssessmentPairContext = {
+  query: AssessmentPairQuery & { depth: number };
+  pairDigest: string;
+};
 export type CapturedBasis = {
   contract: "assessment_basis";
-  version: 1;
   digest: string;
   hasUnknown: boolean;
   at: { projectRevision: number; evidenceRevision: number };
   inputs: InputDeclaration[];
   relationshipInputs: RelationshipDeclaration[];
   absences: CandidateKey[];
+} & ({ version: 1 } | { version: 2; context: AssessmentPairContext });
+export type ResolvedSupport = CapturedBasis & {
+  reference: SupportReference;
+  applicability?: "applicable" | "not_applicable" | "unknown";
 };
-export type ResolvedSupport = CapturedBasis & { reference: SupportReference };
 export type DispositionData = {
   subject: CandidateKey;
   basis: CapturedBasis;

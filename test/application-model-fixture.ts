@@ -88,18 +88,22 @@ const vocabularies: Record<"engineering" | "research", ModelVocabulary> = {
     },
   },
 };
+export function assessmentFixtureDefinition(domain: "engineering" | "research" = "engineering") {
+  const { field, ...bindings } = structuredClone(vocabularies[domain]);
+  const definition: ChangeAssessmentModel = {
+    contract: "change_assessment",
+    version: 1,
+    ...bindings,
+    policy: { allowUnknown: false },
+  };
+  return { field, definition };
+}
 export async function applicationModelFixture(domain: "engineering" | "research" = "engineering") {
   const f = await evaluationFixture(domain);
   try {
     const original = await f.tracer.getSchema();
     if (!original) throw Error("Fixture schema missing");
-    const { field, ...bindings } = structuredClone(vocabularies[domain]);
-    const definition: ChangeAssessmentModel = {
-      contract: "change_assessment",
-      version: 1,
-      ...bindings,
-      policy: { allowUnknown: false },
-    };
+    const { field, definition } = assessmentFixtureDefinition(domain);
     const fragment = changeAssessmentSchema(definition);
     const schema: Schema = {
       entityTypes: {
@@ -170,7 +174,7 @@ export async function assessmentOpenRequest(
 }
 
 export async function assessmentCommand(
-  f: Awaited<ReturnType<typeof applicationModelFixture>>,
+  f: Pick<Awaited<ReturnType<typeof applicationModelFixture>>, "tracer">,
   selection: AssessmentSelection,
 ): Promise<RefreshChangeAssessment> {
   const view = await f.tracer.changeAssessments.get(selection);
@@ -185,7 +189,7 @@ export async function assessmentCommand(
   };
 }
 export async function dispositionProposal(
-  f: Awaited<ReturnType<typeof applicationModelFixture>>,
+  f: Pick<Awaited<ReturnType<typeof applicationModelFixture>>, "tracer">,
   selection: AssessmentSelection,
   subject: CandidateKey,
 ): Promise<SetAssessmentDisposition> {

@@ -30,6 +30,33 @@ function cursorScope(value: unknown) {
     value[4] <= 6
   );
 }
+export function impactTraversalScope(
+  query: Pick<ChangeImpactQuery, "rootId" | "direction" | "relationshipTypes" | "depth">,
+) {
+  ensure(identity(query.rootId), "validation", "Select a bounded impact root");
+  ensure(
+    ["incoming", "outgoing", "both"].includes(query.direction),
+    "validation",
+    "Choose a native impact direction",
+  );
+  ensure(
+    selectedTypes(query.relationshipTypes),
+    "validation",
+    "Choose at most twelve distinct relationship types; an empty list selects the root only",
+  );
+  const depth = query.depth === undefined ? 2 : query.depth;
+  ensure(
+    Number.isSafeInteger(depth) && depth >= 1 && depth <= 6,
+    "validation",
+    "Impact depth must be 1–6",
+  );
+  return {
+    rootId: query.rootId,
+    direction: query.direction,
+    relationshipTypes: [...query.relationshipTypes].sort(),
+    depth,
+  };
+}
 export function impactQuery(query: ChangeImpactQuery) {
   queryShape(
     query,
@@ -50,22 +77,7 @@ export function impactQuery(query: ChangeImpactQuery) {
     "validation",
     "Impact needs a baseline and native root identity",
   );
-  ensure(
-    ["incoming", "outgoing", "both"].includes(query.direction),
-    "validation",
-    "Choose a native impact direction",
-  );
-  ensure(
-    selectedTypes(query.relationshipTypes),
-    "validation",
-    "Choose at most twelve distinct relationship types; an empty list selects the root only",
-  );
-  const depth = query.depth === undefined ? 2 : query.depth;
-  ensure(
-    Number.isSafeInteger(depth) && depth >= 1 && depth <= 6,
-    "validation",
-    "Impact depth must be 1–6",
-  );
+  const scope = impactTraversalScope(query);
   const limit = query.limit === undefined ? 10 : query.limit;
   validatePageLimit(limit, 25, "Impact evaluation page limit must be 1–25");
   ensure(
@@ -74,12 +86,7 @@ export function impactQuery(query: ChangeImpactQuery) {
     "Expected project revision must be positive",
   );
   return {
-    scope: {
-      rootId: query.rootId,
-      direction: query.direction,
-      relationshipTypes: [...query.relationshipTypes].sort(),
-      depth,
-    },
+    scope,
     limit,
   };
 }

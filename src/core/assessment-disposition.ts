@@ -1,5 +1,6 @@
 import { ensure, json, knownProperties, record } from "./model.ts";
 import { canonical } from "./evidence.ts";
+import { parseAssessmentPairContext } from "./assessment-pair-source.ts";
 import type {
   AssessmentAction,
   SupportReference,
@@ -36,15 +37,18 @@ export function parseSupport(value: unknown): SupportReference[] {
       "kind",
       "id",
       "mode",
+      ...(reference.mode === "configuration" ? ["configurationId"] : []),
       ...(["entity", "relationship"].includes(String(reference.kind)) ? ["version"] : []),
     ]);
     assessmentText(reference.id, 200);
     ensure(
       ["entity", "relationship", "receipt", "observation"].includes(String(reference.kind)) &&
-        ["historical", "current"].includes(String(reference.mode)),
+        (["historical", "current"].includes(String(reference.mode)) ||
+          (reference.kind === "receipt" && reference.mode === "configuration")),
       "validation",
-      "Supporting references need a kind and explicit historical/current mode",
+      "Supporting references need a kind and explicit historical/current/configuration mode",
     );
+    if (reference.mode === "configuration") assessmentText(reference.configurationId, 200);
     if (reference.kind === "entity" || reference.kind === "relationship")
       ensure(
         Number.isSafeInteger(reference.version) && Number(reference.version) > 0,
@@ -99,6 +103,55 @@ function revision(value: unknown) {
     "Invalid captured native version",
   );
 }
+function basisInput(input: unknown, version: unknown) {
+  ensure(record(input), "validation", "Invalid captured entity use");
+  knownProperties(input, [
+    "entityId",
+    "facet",
+    "revision",
+    "observationId",
+    "fields",
+    ...(version === 2 ? ["referenceId"] : []),
+  ]);
+  if (input.referenceId !== undefined) assessmentText(input.referenceId, 200);
+  assessmentText(input.entityId, 200);
+  if (input.facet === "native") revision(input.revision);
+  else {
+    ensure(input.facet === "content", "validation", "Explicit captured facet required");
+    assessmentText(input.observationId, 200);
+    if (version === 2 && input.revision !== undefined) revision(input.revision);
+  }
+  if (input.fields !== undefined) {
+    ensure(
+      Array.isArray(input.fields) && input.fields.length > 0,
+      "validation",
+      "Invalid field scope",
+    );
+    input.fields.forEach((name) => assessmentText(name, 200));
+  }
+}
+function resolvedBasisReference(value: Record<string, unknown>) {
+  const reference = parseSupport([value.reference])[0];
+  if (reference.mode === "configuration") {
+    ensure(value.version === 2, "validation", "Configuration support needs captured pair context");
+    const context = parseAssessmentPairContext(value.context);
+    ensure(
+      reference.configurationId === context.query.afterId,
+      "validation",
+      "Supporting target differs from captured pair context",
+    );
+    ensure(
+      ["applicable", "not_applicable", "unknown"].includes(String(value.applicability)),
+      "validation",
+      "Selected verification support needs explicit applicability",
+    );
+  } else
+    ensure(
+      value.applicability === undefined,
+      "validation",
+      "Legacy support cannot claim selected verification applicability",
+    );
+}
 function basis(value: unknown, resolved = false) {
   ensure(record(value), "validation", "Invalid captured basis");
   knownProperties(value, [
@@ -110,13 +163,21 @@ function basis(value: unknown, resolved = false) {
     "inputs",
     "relationshipInputs",
     "absences",
-    ...(resolved ? ["reference"] : []),
+    "context",
+    ...(resolved ? ["reference", "applicability"] : []),
   ]);
   ensure(
-    value.contract === "assessment_basis" && value.version === 1,
+    value.contract === "assessment_basis" && (value.version === 1 || value.version === 2),
     "validation",
     "Unsupported captured assessment basis",
   );
+  if (value.version === 2) parseAssessmentPairContext(value.context);
+  else
+    ensure(
+      value.context === undefined,
+      "validation",
+      "Legacy basis cannot claim selected pair context",
+    );
   ensure(
     typeof value.digest === "string" &&
       /^sha256:[a-f0-9]{64}$/.test(value.digest) &&
@@ -145,31 +206,14 @@ function basis(value: unknown, resolved = false) {
     "validation",
     "Captured basis exceeds 80 direct facts",
   );
-  for (const input of value.inputs) {
-    ensure(record(input), "validation", "Invalid captured entity use");
-    knownProperties(input, ["entityId", "facet", "revision", "observationId", "fields"]);
-    assessmentText(input.entityId, 200);
-    if (input.facet === "native") revision(input.revision);
-    else {
-      ensure(input.facet === "content", "validation", "Explicit captured facet required");
-      assessmentText(input.observationId, 200);
-    }
-    if (input.fields !== undefined) {
-      ensure(
-        Array.isArray(input.fields) && input.fields.length > 0,
-        "validation",
-        "Invalid field scope",
-      );
-      input.fields.forEach((name) => assessmentText(name, 200));
-    }
-  }
+  value.inputs.forEach((input) => basisInput(input, value.version));
   for (const link of value.relationshipInputs) {
     ensure(record(link), "validation", "Invalid captured relationship use");
     knownProperties(link, ["id", "revision"]);
     assessmentText(link.id, 200);
     revision(link.revision);
   }
-  if (resolved) parseSupport([value.reference]);
+  if (resolved) resolvedBasisReference(value);
 }
 function supporting(value: unknown) {
   ensure(Array.isArray(value) && value.length <= 10, "validation", "Invalid resolved support");

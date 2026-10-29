@@ -16,7 +16,8 @@ import {
   parseDispositionView,
 } from "../core/assessment-disposition.ts";
 import { assessmentContext } from "./assessment-context.ts";
-import { candidateBasis, candidateKey, resolveSupport, declaredFacts } from "./assessment-facts.ts";
+import { candidateBasis, candidateKey, declaredFacts } from "./assessment-facts.ts";
+import { assessmentSupportResolver } from "./assessment-support.ts";
 import { expectVersion } from "./version-guard.ts";
 import { parseAssessmentScope } from "../core/assessment-scope-validation.ts";
 import type { Operation } from "./commands.ts";
@@ -147,43 +148,53 @@ async function relatedReceipt(
   }
   ensure(false, "validation", "Verification supersession chain exceeds 25 receipts");
 }
+async function assertCompletedAction(
+  tx: Transaction,
+  view: ChangeAssessmentView,
+  request: SetAssessmentDisposition,
+  action: SetAssessmentDisposition["actions"][number],
+  resolved: import("../core/change-assessment.ts").ResolvedSupport[],
+  resolver: ReturnType<typeof assessmentSupportResolver>,
+) {
+  ensure(
+    resolved.every((item) => !item.hasUnknown) &&
+      action.support.some((item) => item.mode === "current" || item.mode === "configuration"),
+    "validation",
+    "Completed actions need known current supporting evidence",
+  );
+  if (action.kind === "reverify") {
+    let related =
+      view.scope.version === 2 ? await resolver.verifies(request.subject, action.support) : false;
+    if (view.scope.version === 1)
+      for (const reference of action.support)
+        related ||= await relatedReceipt(tx, reference, request.subject);
+    ensure(
+      related,
+      "validation",
+      view.scope.version === 2
+        ? "Pair reverification requires applicable controlled verification for the exact after target and related engineering scope"
+        : "Reverification requires a current receipt declaring the candidate or superseding its result",
+    );
+  }
+}
 async function supportData(
   tx: Transaction,
   request: SetAssessmentDisposition,
   view: ChangeAssessmentView,
 ) {
-  const support = await Promise.all(
-    request.support.map((reference) => resolveSupport(tx, reference, true)),
-  );
+  const resolver = assessmentSupportResolver(tx, view.scope);
+  const support = await resolver.resolveAll(request.support, true);
   const actionSupport = [];
   for (const action of request.actions) {
-    const resolved = await Promise.all(
-      action.support.map((reference) => resolveSupport(tx, reference, true)),
-    );
+    const resolved = await resolver.resolveAll(action.support, true);
     if (action.state === "waived")
       ensure(
         view.model.definition.policy.allowActionWaiver === true,
         "validation",
         "This pinned model does not permit action waivers",
       );
-    if (action.state === "done") {
-      ensure(
-        resolved.every((item) => !item.hasUnknown) &&
-          action.support.some((item) => item.mode === "current"),
-        "validation",
-        "Completed actions need known current supporting evidence",
-      );
-      if (action.kind === "reverify") {
-        let related = false;
-        for (const reference of action.support)
-          related ||= await relatedReceipt(tx, reference, request.subject);
-        ensure(
-          related,
-          "validation",
-          "Reverification requires a current receipt declaring the candidate or superseding its result",
-        );
-      }
-    }
+    if (action.state === "done")
+      await assertCompletedAction(tx, view, request, action, resolved, resolver);
     actionSupport.push({ id: action.id, support: resolved });
   }
   return { support, actionSupport };
@@ -346,6 +357,7 @@ export async function setAssessmentDisposition(tx: Transaction, request: SetAsse
   return {
     operations,
     assertResult: async (current: Transaction) => {
+      const resolver = assessmentSupportResolver(current, view.scope);
       ensure(
         (await candidateBasis(current, view.scope, request.subject)).digest === basis.digest,
         "conflict",
@@ -355,9 +367,9 @@ export async function setAssessmentDisposition(tx: Transaction, request: SetAsse
         ...resolved.support,
         ...resolved.actionSupport.flatMap((item) => item.support),
       ])
-        if (support.reference.mode === "current")
+        if (support.reference.mode !== "historical")
           ensure(
-            (await resolveSupport(current, support.reference)).digest === support.digest,
+            (await resolver.resolve(support.reference)).digest === support.digest,
             "conflict",
             "The operation changes its own current supporting basis; use independent evidence or an explicit historical reference",
           );

@@ -1,174 +1,49 @@
+import { observed, inputFact, receiptCandidateBasis } from "./assessment-receipt-facts.ts";
+import { captureAssessmentFact } from "./assessment-fact-capture.ts";
+import { pairCandidateBasis } from "./pair-assessment-facts.ts";
+import type { PairAssessmentState } from "./pair-assessment-facts.ts";
 import { ensure } from "../core/model.ts";
 import { canonical } from "../core/evidence.ts";
 import type {
-  CapturedBasis,
   CandidateKey,
+  CapturedBasis,
   AssessmentScope,
   SupportReference,
   ResolvedSupport,
 } from "../core/change-assessment.ts";
-import type {
-  InputDeclaration,
-  RelationshipDeclaration,
-  InputComparison,
-} from "../core/evidence.ts";
+import type { InputDeclaration, RelationshipDeclaration } from "../core/evidence.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { pinEntity, pinRelationship } from "./native-pins.ts";
-import { compareCapturedInputs, comparisonToken, nativeState } from "./receipt-comparison.ts";
+import { compareCapturedInputs, comparisonToken } from "./receipt-comparison.ts";
 
-export function candidateKey(value: CandidateKey) {
-  return value.kind + ":" + value.id;
-}
+export { assessmentCandidateKey as candidateKey } from "../core/change-assessment.ts";
+import { assessmentCandidateKey as candidateKey } from "../core/change-assessment.ts";
 export { factDigest } from "./fact-digest.ts";
-import { factDigest } from "./fact-digest.ts";
 export { declaredFacts } from "./captured-facts.ts";
-import { declaredFacts } from "./captured-facts.ts";
 
-async function fact(
+function fact(
   tx: Transaction,
   value: unknown,
   hasUnknown: boolean,
   inputs: InputDeclaration[],
   relationshipInputs: RelationshipDeclaration[],
   absences: CandidateKey[] = [],
-): Promise<CapturedBasis> {
-  const selected = declaredFacts([{ inputs, relationshipInputs }]);
-  const absentByKey = new Map(absences.map((value) => [candidateKey(value), value]));
-  const absent = [...absentByKey.keys()].sort().map((key) => absentByKey.get(key)!);
-  ensure(
-    selected.inputs.length + selected.relationshipInputs.length + absent.length <= 80,
-    "validation",
-    "Assessment basis exceeds 80 direct or absence facts",
-  );
-  ensure(
-    new TextEncoder().encode(JSON.stringify(selected)).byteLength <= 16384,
-    "validation",
-    "Assessment capture declarations exceed 16 KiB",
-  );
-  return {
-    contract: "assessment_basis",
-    version: 1,
-    digest: await factDigest({ version: 1, hasUnknown, value, absences: absent }),
-    hasUnknown,
-    at: {
-      projectRevision: await tx.headRevision(),
-      evidenceRevision: await tx.impactEvidenceRevision(),
-    },
-    inputs: selected.inputs.map(({ role: _role, ...input }) => input),
-    relationshipInputs: selected.relationshipInputs,
-    absences: absent,
-  };
-}
-function observed(value: import("../core/evidence.ts").Observation | null | undefined) {
-  return { availability: value?.availability ?? "unknown", hash: value?.hash ?? null };
-}
-function inputSource(input: InputComparison, inputs: InputDeclaration[], absences: CandidateKey[]) {
-  if (!input.current.entity) {
-    absences.push({ kind: "entity", id: input.entityId });
-    return input.recorded.observation ? observed(input.current.observation) : null;
-  }
-  if (input.recorded.observation) {
-    if (input.current.observation)
-      inputs.push({
-        entityId: input.entityId,
-        facet: "content",
-        observationId: input.current.observation.id,
-      });
-    return observed(input.current.observation);
-  }
-  inputs.push({
-    entityId: input.entityId,
-    facet: "native",
-    revision: input.current.entity.version,
-    ...(input.recorded.fields ? { fields: input.recorded.fields } : {}),
-  });
-  return nativeState(input.current.entity, input.recorded.fields);
-}
-function inputFact(
-  input: InputComparison,
-  content: boolean,
-  links: Set<string>,
-  inputs: InputDeclaration[],
-  relationshipInputs: RelationshipDeclaration[],
-  absences: CandidateKey[],
 ) {
-  const source = content ? inputSource(input, inputs, absences) : null;
-  const path = input.recorded.links.flatMap((link, index) => {
-    if (!links.has(link.id)) return [];
-    const current = input.current.links[index] ?? null;
-    if (current) relationshipInputs.push({ id: current.id, revision: current.version });
-    else absences.push({ kind: "relationship", id: link.id });
-    return [{ id: link.id, current }];
-  });
-  return {
-    entityId: input.entityId,
-    ...(content ? { exists: input.current.entity !== null, source } : {}),
-    path,
-  };
-}
-async function receiptBasis(tx: Transaction, scope: AssessmentScope, subject: CandidateKey) {
-  const candidate = scope.candidates.find(
-    (value) => value.kind === "receipt" && value.id === subject.id,
-  );
-  ensure(
-    candidate?.kind === "receipt",
-    "validation",
-    "Receipt is outside the declared assessment population",
-  );
-  const receipt = await tx.getEvidence("receipt", subject.id);
-  ensure(receipt, "not_found", "Candidate receipt is unavailable");
-  const comparison = await compareCapturedInputs(tx, receipt);
-  const entities = new Set(
-    candidate.contentIds ??
-      scope.candidates.filter((value) => value.kind === "entity").map((value) => value.id),
-  );
-  const links = new Set(candidate.scope.relationshipIds),
-    inputs: InputDeclaration[] = [],
-    relationshipInputs: RelationshipDeclaration[] = [],
-    absences: CandidateKey[] = [];
-  const matched = comparison.inputs.filter(
-    (input) =>
-      entities.has(input.entityId) || input.recorded.links.some((link) => links.has(link.id)),
-  );
-  const values = matched.map((input) =>
-    inputFact(input, entities.has(input.entityId), links, inputs, relationshipInputs, absences),
-  );
-  let unknown = matched.some(
-    (input) =>
-      entities.has(input.entityId) &&
-      (!input.current.entity ||
-        (input.recorded.observation &&
-          (input.recorded.observation.availability !== "available" ||
-            input.current.observation?.availability !== "available"))),
-  );
-  const direct = (comparison.relationshipInputs ?? [])
-    .filter((link) => links.has(link.id))
-    .map((link) => {
-      if (link.current) relationshipInputs.push({ id: link.id, revision: link.current.version });
-      else absences.push({ kind: "relationship", id: link.id });
-      unknown ||= link.hasUnknown;
-      return { id: link.id, current: link.current };
-    });
-  return fact(
-    tx,
-    { subject, values, direct, supersession: await tx.impactSupersession(subject.id) },
-    Boolean(unknown),
-    inputs,
-    relationshipInputs,
-    absences,
-  );
+  return captureAssessmentFact(tx, { value, hasUnknown, inputs, relationshipInputs, absences });
 }
 export async function candidateBasis(
   tx: Transaction,
   scope: AssessmentScope,
   subject: CandidateKey,
+  selected?: PairAssessmentState,
 ): Promise<CapturedBasis> {
   ensure(
     scope.candidates.some((value) => candidateKey(value) === candidateKey(subject)),
     "validation",
     "Candidate is outside the declared assessment population",
   );
-  if (subject.kind === "receipt") return receiptBasis(tx, scope, subject);
+  if (scope.version === 2) return pairCandidateBasis(tx, scope, subject, selected);
+  if (subject.kind === "receipt") return receiptCandidateBasis(tx, scope, subject);
   const current = await tx.get(subject.kind, subject.id);
   if (subject.kind === "relationship")
     return fact(
@@ -292,8 +167,7 @@ async function receiptSupport(
   const links = new Set(
     compared.inputs.flatMap((input) => input.recorded.links.map((link) => link.id)),
   );
-  for (const input of compared.inputs)
-    inputFact(input, true, links, result.inputs, result.relationshipInputs, result.absences);
+  for (const input of compared.inputs) inputFact(input, true, links, result);
   for (const link of compared.relationshipInputs ?? [])
     if (link.current)
       result.relationshipInputs.push({ id: link.id, revision: link.current.version });
@@ -306,6 +180,11 @@ export async function resolveSupport(
   reference: SupportReference,
   requireCurrent = false,
 ): Promise<ResolvedSupport> {
+  ensure(
+    reference.mode !== "configuration",
+    "validation",
+    "Configuration support requires its controlled assessment source",
+  );
   const state =
     reference.kind === "entity" || reference.kind === "relationship"
       ? await nativeSupport(tx, reference)

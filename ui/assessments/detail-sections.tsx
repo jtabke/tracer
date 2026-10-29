@@ -47,7 +47,15 @@ export function AssessmentSummary({
           selected traversal.
         </p>
         <p>
-          Baseline {analysis.view.scope.query.baselineId} · captured native r
+          {analysis.view.scope.version === 2 ? (
+            <>
+              Configuration pair {analysis.view.scope.query.beforeId} →{" "}
+              {analysis.view.scope.query.afterId} · {analysis.view.scope.query.policy}
+            </>
+          ) : (
+            <>Baseline {analysis.view.scope.query.baselineId}</>
+          )}{" "}
+          · {analysis.view.scope.version === 2 ? "work discovery at" : "captured"} native r
           {analysis.view.scope.basis.projectRevision} / evidence{" "}
           {analysis.view.scope.basis.evidenceRevision}
         </p>

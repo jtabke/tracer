@@ -1,6 +1,7 @@
 import { ensure, json, knownProperties, record } from "./model.ts";
 import { changeAssessmentLimits } from "./change-assessment.ts";
 import type { AssessmentScope } from "./change-assessment.ts";
+import { parseAssessmentPairQuery } from "./assessment-pair-source.ts";
 
 function object(value: unknown, keys: string[]): asserts value is Record<string, unknown> {
   ensure(record(value), "validation", "Invalid assessment scope object");
@@ -28,10 +29,31 @@ function ids(value: unknown, limit: number): asserts value is string[] {
   value.forEach(text);
 }
 function basis(value: unknown) {
-  object(value, ["projectRevision", "evidenceRevision", "schemaVersion", "baselineRevision"]);
+  object(value, [
+    "projectRevision",
+    "evidenceRevision",
+    "schemaVersion",
+    "baselineRevision",
+    "pair",
+  ]);
   revision(value.projectRevision);
   revision(value.evidenceRevision, 0);
   revision(value.schemaVersion);
+  if (value.pair !== undefined) {
+    knownProperties(value, ["projectRevision", "evidenceRevision", "schemaVersion", "pair"]);
+    object(value.pair, ["beforeId", "afterId", "policy", "beforeDigest", "afterDigest", "digest"]);
+    text(value.pair.beforeId);
+    text(value.pair.afterId);
+    ensure(
+      value.pair.policy === "exact-selected-state-v1" &&
+        [value.pair.beforeDigest, value.pair.afterDigest, value.pair.digest].every(
+          (x) => typeof x === "string" && /^sha256:[a-f0-9]{64}$/.test(x),
+        ),
+      "validation",
+      "Invalid captured pair basis",
+    );
+    return;
+  }
   revision(value.baselineRevision);
   ensure(
     Number(value.baselineRevision) <= Number(value.projectRevision),
@@ -201,6 +223,88 @@ function registrationMetadata(value: Record<string, unknown>, keys: Set<string>)
     );
   }
 }
+function scopeQuery(query: unknown, version: unknown) {
+  object(
+    query,
+    version === 1
+      ? ["baselineId", "rootId", "direction", "relationshipTypes", "depth"]
+      : [
+          "source",
+          "beforeId",
+          "afterId",
+          "policy",
+          "rootId",
+          "direction",
+          "relationshipTypes",
+          "depth",
+        ],
+  );
+  if (version === 1) text(query.baselineId);
+  else {
+    parseAssessmentPairQuery(query);
+  }
+  text(query.rootId);
+  ids(query.relationshipTypes, 12);
+  ensure(
+    new Set(query.relationshipTypes as string[]).size ===
+      (query.relationshipTypes as string[]).length,
+    "validation",
+    "Duplicate selected relationship types",
+  );
+  revision(query.depth);
+  ensure(
+    Number(query.depth) <= 6 && ["incoming", "outgoing", "both"].includes(String(query.direction)),
+    "validation",
+    "Invalid traversal scope",
+  );
+  return query;
+}
+function scopeDiscovery(discovery: unknown, version: unknown) {
+  object(
+    discovery,
+    version === 1
+      ? ["complete", "interpretation", "excludedReceiptOutputId", "before", "after"]
+      : [
+          "complete",
+          "interpretation",
+          "excludedReceiptOutputId",
+          "before",
+          "after",
+          "comparability",
+        ],
+  );
+  ensure(
+    discovery.complete === true &&
+      discovery.interpretation ===
+        (version === 1 ? "selected_traversal" : "selected_configuration_pair"),
+    "validation",
+    "Incomplete assessment discovery",
+  );
+  if (version === 2) {
+    object(discovery.comparability, ["state", "issues", "engineeringMeaning"]);
+    ensure(
+      ["exact", "qualified"].includes(String(discovery.comparability.state)) &&
+        discovery.comparability.engineeringMeaning === "not_assessed",
+      "validation",
+      "Invalid selected pair comparability",
+    );
+    list(discovery.comparability.issues, 12);
+    for (const issue of discovery.comparability.issues) {
+      object(issue, ["code", "explanation"]);
+      text(issue.code);
+      ensure(
+        typeof issue.explanation === "string" &&
+          issue.explanation.length > 0 &&
+          issue.explanation.length <= 4000,
+        "validation",
+        "Invalid pair comparability explanation",
+      );
+    }
+  }
+  text(discovery.excludedReceiptOutputId);
+  reachability(discovery.before);
+  reachability(discovery.after);
+}
 /** Validate stored and wire scope data without treating a JSON status as engineering proof. */
 export function parseAssessmentScope(value: unknown): AssessmentScope {
   ensure(
@@ -226,41 +330,26 @@ export function parseAssessmentScope(value: unknown): AssessmentScope {
   ]);
   ensure(
     value.contract === "change_assessment_scope" &&
-      value.version === 1 &&
+      (value.version === 1 || value.version === 2) &&
       typeof value.purpose === "string" &&
       value.purpose.trim().length > 0 &&
       value.purpose.length <= 4000,
     "validation",
     "Invalid assessment scope contract",
   );
-  const query = value.query;
-  object(query, ["baselineId", "rootId", "direction", "relationshipTypes", "depth"]);
-  text(query.baselineId);
-  text(query.rootId);
-  ids(query.relationshipTypes, 12);
-  ensure(
-    new Set(query.relationshipTypes as string[]).size ===
-      (query.relationshipTypes as string[]).length,
-    "validation",
-    "Duplicate selected relationship types",
-  );
-  revision(query.depth);
-  ensure(
-    Number(query.depth) <= 6 && ["incoming", "outgoing", "both"].includes(String(query.direction)),
-    "validation",
-    "Invalid traversal scope",
-  );
+  const query = scopeQuery(value.query, value.version);
   basis(value.basis);
-  const discovery = value.discovery;
-  object(discovery, ["complete", "interpretation", "excludedReceiptOutputId", "before", "after"]);
+  ensure(record(value.basis), "validation", "Invalid assessment basis");
   ensure(
-    discovery.complete === true && discovery.interpretation === "selected_traversal",
+    value.version === 1
+      ? value.basis.pair === undefined
+      : record(value.basis.pair) &&
+          value.basis.pair.beforeId === query.beforeId &&
+          value.basis.pair.afterId === query.afterId,
     "validation",
-    "Incomplete assessment discovery",
+    "Assessment source and captured basis differ",
   );
-  text(discovery.excludedReceiptOutputId);
-  reachability(discovery.before);
-  reachability(discovery.after);
+  scopeDiscovery(value.discovery, value.version);
   list(value.candidates, changeAssessmentLimits.candidates);
   const keys = new Set<string>();
   for (const candidate of value.candidates) {

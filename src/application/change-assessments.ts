@@ -16,7 +16,7 @@ import { parseAssessmentScope } from "../core/assessment-scope-validation.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { EvaluationExecutor } from "./evaluation-executor.ts";
 import { prepareModelPin, resolveApplicationModel } from "./application-models.ts";
-import { impactQuery } from "./impact-context.ts";
+import { prepareAssessmentQuery } from "./assessment-scope-query.ts";
 import { discoverAssessmentScope } from "./assessment-scope.ts";
 import { prepareDisposition, prepareAssessmentMutation } from "./assessment-disposition-input.ts";
 import { setAssessmentDisposition, assessmentDispositions } from "./assessment-dispositions.ts";
@@ -56,9 +56,7 @@ function prepareOpen(input: OpenChangeAssessment) {
       { path: [key] },
     );
   input.model = prepareModelPin(input.model);
-  ensure(record(input.query), "validation", "Select an assessment discovery scope");
-  knownProperties(input.query, ["baselineId", "rootId", "direction", "relationshipTypes", "depth"]);
-  impactQuery(input.query);
+  prepareAssessmentQuery(input.query);
   ensure(
     record(input.additionalFields),
     "validation",

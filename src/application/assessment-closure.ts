@@ -5,7 +5,9 @@ import { analyzeAssessmentContext, judgmentDigest } from "./assessment-analysis.
 import { assessmentContext } from "./assessment-context.ts";
 import { parseAssessmentScope } from "../core/assessment-scope-validation.ts";
 import type { EvaluationComposition } from "./evaluation-executor.ts";
-import { candidateBasis, resolveSupport } from "./assessment-facts.ts";
+import { candidateBasis } from "./assessment-facts.ts";
+import { assessmentSupportResolver } from "./assessment-support.ts";
+import { pairAssessmentState } from "./pair-assessment-facts.ts";
 
 export async function concludeAssessment(
   tx: Transaction,
@@ -79,9 +81,13 @@ export async function concludeAssessment(
   return {
     assertResult: async (current) => {
       if (reopen) return;
+      const resolver = assessmentSupportResolver(current, view.scope);
+      const selected =
+        view.scope.version === 2 ? await pairAssessmentState(current, view.scope) : undefined;
       for (const item of analysis!.obligations)
         ensure(
-          (await candidateBasis(current, view.scope, item.subject)).digest === item.currentDigest,
+          (await candidateBasis(current, view.scope, item.subject, selected)).digest ===
+            item.currentDigest,
           "conflict",
           "Closure changes its own candidate basis",
         );
@@ -90,9 +96,9 @@ export async function concludeAssessment(
           ...item.disposition.data.support,
           ...item.disposition.data.actionSupport.flatMap((action) => action.support),
         ])
-          if (support.reference.mode === "current")
+          if (support.reference.mode !== "historical")
             ensure(
-              (await resolveSupport(current, support.reference)).digest === support.digest,
+              (await resolver.resolve(support.reference)).digest === support.digest,
               "conflict",
               "Closure changes its own current supporting basis; select independent evidence or historical context",
             );

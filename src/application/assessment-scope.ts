@@ -1,68 +1,29 @@
-import type { ChangeImpact, ImpactReceipt } from "../core/impact.ts";
+import { receiptCandidate, nativeCandidates } from "./assessment-candidates.ts";
+import { discoverPairAssessmentScope } from "./pair-assessment-scope.ts";
 import { ensure } from "../core/model.ts";
 import type { Transaction } from "./ports/repository.ts";
 import { readChangeImpact } from "./impact.ts";
-import { changeAssessmentLimits } from "../core/change-assessment.ts";
+import { changeAssessmentLimits, isPairAssessmentQuery } from "../core/change-assessment.ts";
 import type {
   AssessmentScope,
-  AssessmentNativeCandidate,
-  AssessmentReceiptCandidate,
   OpenChangeAssessment,
+  AssessmentBaselineQuery,
 } from "../core/change-assessment.ts";
-
-function receiptCandidate(item: ImpactReceipt, entityIds: Set<string>): AssessmentReceiptCandidate {
-  return {
-    kind: "receipt",
-    id: item.receipt.id,
-    contentIds: [
-      ...new Set(
-        item.comparison.inputs
-          .filter((input) => entityIds.has(input.entityId))
-          .map((input) => input.entityId),
-      ),
-    ],
-    scope: item.scope,
-    supersession: item.supersession,
-    inputs: item.comparison.inputs.map((input) => ({
-      entityId: input.entityId,
-      version: input.current.entity?.version ?? null,
-      observationId: input.current.observation?.id ?? null,
-      links: input.recorded.links.map((link, index) => ({
-        id: link.id,
-        version: input.current.links[index]?.version ?? null,
-      })),
-    })),
-    relationshipInputs: (item.comparison.relationshipInputs ?? []).map((input) => ({
-      id: input.id,
-      version: input.current?.version ?? null,
-    })),
-  };
-}
-
-async function nativeCandidates(tx: Transaction, native: ChangeImpact["native"]) {
-  const candidates: AssessmentNativeCandidate[] = [];
-  for (const kind of ["entity", "relationship"] as const) {
-    const items = kind === "entity" ? native.entities : native.relationships;
-    for (const item of items) {
-      const observation =
-        kind === "entity" ? await tx.latestEvidence("observation", item.id) : undefined;
-      candidates.push({
-        kind,
-        id: item.id,
-        change: item.state,
-        beforeVersion: item.before?.version ?? null,
-        version: item.after?.version ?? null,
-        ...(kind === "entity" ? { observationId: observation?.id ?? null } : {}),
-      });
-    }
-  }
-  return candidates;
-}
 
 /** Exact selected traversal, not a claim of exhaustive engineering consequences. */
 export async function discoverAssessmentScope(
   tx: Transaction,
   request: Pick<OpenChangeAssessment, "assessmentId" | "purpose" | "query">,
+): Promise<AssessmentScope> {
+  if (isPairAssessmentQuery(request.query))
+    return discoverPairAssessmentScope(tx, { ...request, query: request.query });
+  return discoverBaselineAssessmentScope(tx, { ...request, query: request.query });
+}
+async function discoverBaselineAssessmentScope(
+  tx: Transaction,
+  request: Pick<OpenChangeAssessment, "assessmentId" | "purpose"> & {
+    query: AssessmentBaselineQuery;
+  },
 ): Promise<AssessmentScope> {
   // One receipt per page bounds comparison work even for receipts with 100 declarations.
   let impact = await readChangeImpact(tx, { ...request.query, limit: 1 }, request.assessmentId);
@@ -90,7 +51,7 @@ export async function discoverAssessmentScope(
       before: impact.native.before,
       after: impact.native.after,
     },
-    candidates: await nativeCandidates(tx, impact.native),
+    candidates: await nativeCandidates(impact.native, (id) => tx.latestEvidence("observation", id)),
   };
   // Stop after a bounded number of examined rows, including excluded own-output receipts.
   for (let rows = 1; ; rows++) {

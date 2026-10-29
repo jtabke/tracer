@@ -300,3 +300,26 @@ export async function verificationResults(
     ],
   };
 }
+
+export async function verificationTargetInput(
+  f: Awaited<ReturnType<typeof verificationFixture>>,
+): Promise<import("../src/index.ts").ExactConfigurationInput> {
+  const context = await f.tracer.configurations.captureContext();
+  return {
+    id: randomUUID(),
+    name: "Exact verification candidate",
+    subjectId: f.requirement.id,
+    expectedSubjectVersion: 1,
+    members: [f.requirement, f.method, f.profile].map((e) => ({ entityId: e.id, version: 1 })),
+    relationships: [{ relationshipId: f.relationship.id, version: 1 }],
+    content: [],
+    scope: {
+      purpose: "Synthetic exact criterion/method/model candidate",
+      coverage: "complete",
+      rationale: "Declared fixture scope, not physical or representative-human validation",
+    },
+    expectedSchemaVersion: context.schema.version,
+    expectedProjectRevision: context.projectRevision,
+    expectedEvidenceRevision: context.evidenceRevision,
+  };
+}
