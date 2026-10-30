@@ -1,4 +1,5 @@
 import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { VerificationSubjectRequest } from "./subject.ts";
 import { useState } from "react";
 import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import { record } from "../../src/core/model.ts";
@@ -22,7 +23,9 @@ export function VerificationWorkspace({
   onDirty,
   intent,
   returnToAssessments,
+  subjectRequest,
 }: {
+  subjectRequest?: VerificationSubjectRequest;
   intent?: ConfigurationHandoff;
   returnToAssessments?(): void;
   entities: Entity[];
@@ -38,8 +41,25 @@ export function VerificationWorkspace({
     editor: number;
     target?: ConfigurationHandoff;
     acceptedSequence: number;
-  }>({ selected: "", creating: false, editor: 0, acceptedSequence: 0 });
-  const { selected, creating, editor, target, acceptedSequence } = navigation;
+    requirement?: Entity;
+    acceptedSubjectSequence: number;
+  }>({
+    selected: "",
+    creating: Boolean(subjectRequest),
+    editor: 0,
+    acceptedSequence: 0,
+    requirement: subjectRequest?.requirement,
+    acceptedSubjectSequence: subjectRequest?.sequence ?? 0,
+  });
+  const {
+    selected,
+    creating,
+    editor,
+    target,
+    acceptedSequence,
+    requirement,
+    acceptedSubjectSequence,
+  } = navigation;
   const [dirty, setDirty] = useState(false),
     [epoch, setEpoch] = useState(0);
   const models = applicationModelChoices(entities, schema, "requirement_verification"),
@@ -47,7 +67,12 @@ export function VerificationWorkspace({
       Object.values(e.fields).some((x) => record(x) && x.contract === "verification_case_scope"),
     );
   useApplicationDirty(dirty, onDirty);
-  function navigate(id: string, create: boolean, target?: ConfigurationHandoff) {
+  function navigate(
+    id: string,
+    create: boolean,
+    target?: ConfigurationHandoff,
+    request?: VerificationSubjectRequest,
+  ) {
     if (editing.busy) return;
     if (dirty && !window.confirm("Discard this verification draft to choose another case?")) return;
     setDirty(false);
@@ -58,11 +83,47 @@ export function VerificationWorkspace({
       editor: previous.editor + 1,
       target,
       acceptedSequence: target?.sequence ?? previous.acceptedSequence,
+      requirement: request?.requirement,
+      acceptedSubjectSequence: request?.sequence ?? previous.acceptedSubjectSequence,
     }));
   }
   function refresh() {
     setEpoch((x) => x + 1);
     changed();
+  }
+  function renderSelectedCase() {
+    return creating ? (
+      <VerificationBasisEditor
+        key={editor}
+        intent={target}
+        initialRequirement={requirement}
+        models={models}
+        entities={entities}
+        editing={editing}
+        epoch={epoch}
+        onDirty={setDirty}
+        saved={(id) => {
+          setDirty(false);
+          setNavigation((previous) => ({ ...previous, creating: false, selected: id }));
+          refresh();
+        }}
+      />
+    ) : selected ? (
+      <LocatedVerification
+        key={selected}
+        caseId={selected}
+        entities={entities}
+        editing={editing}
+        epoch={epoch}
+        changed={refresh}
+        onDirty={setDirty}
+      />
+    ) : (
+      <p>
+        Select a recorded case or start a verification from an explicit requirement and method
+        scope. A linked plan or report alone is not a verified conclusion.
+      </p>
+    );
   }
   return (
     <section
@@ -72,7 +133,7 @@ export function VerificationWorkspace({
     >
       <ApplicationTaskHeader
         title="Verification"
-        description="Declare what must be checked, retain actual results and explain whether the conclusion still applies."
+        description="Explicit criteria, actual results and supporting evidence."
         createLabel="New verification"
         refreshLabel="Refresh verification"
         busy={editing.busy}
@@ -97,6 +158,12 @@ export function VerificationWorkspace({
           </button>
         </section>
       )}
+      <IncomingVerificationSubject
+        request={subjectRequest}
+        acceptedSequence={acceptedSubjectSequence}
+        busy={editing.busy}
+        onStart={(request) => navigate("", true, undefined, request)}
+      />
       <div className="verification-layout">
         <nav aria-label="Verification cases">
           <RecordChoice
@@ -109,43 +176,40 @@ export function VerificationWorkspace({
             Choices come from the current project snapshot. Opening validates controlled history.
           </small>
         </nav>
-        <main>
-          {creating ? (
-            <VerificationBasisEditor
-              key={editor}
-              intent={target}
-              models={models}
-              entities={entities}
-              editing={editing}
-              epoch={epoch}
-              onDirty={setDirty}
-              saved={(id) => {
-                setDirty(false);
-                setNavigation((previous) => ({ ...previous, creating: false, selected: id }));
-                refresh();
-              }}
-            />
-          ) : selected ? (
-            <LocatedVerification
-              key={selected}
-              caseId={selected}
-              entities={entities}
-              editing={editing}
-              epoch={epoch}
-              changed={refresh}
-              onDirty={setDirty}
-            />
-          ) : (
-            <p>
-              Select a recorded case or start a verification from an explicit requirement and method
-              scope. A linked plan or report alone is not a verified conclusion.
-            </p>
-          )}
-        </main>
+        <main>{renderSelectedCase()}</main>
       </div>
     </section>
   );
 }
+function IncomingVerificationSubject({
+  request,
+  acceptedSequence,
+  busy,
+  onStart,
+}: {
+  request?: VerificationSubjectRequest;
+  acceptedSequence: number;
+  busy: boolean;
+  onStart(request: VerificationSubjectRequest): void;
+}) {
+  if (!request || request.sequence === acceptedSequence) return null;
+  return (
+    <section aria-label="Incoming requirement verification">
+      <p>
+        Selected requirement: {request.requirement.key ?? request.requirement.id} · v
+        {request.requirement.version} · investigation r{request.projectRevision}.
+      </p>
+      <p>
+        The current case and drafts are retained until you deliberately start another verification.
+        Model resolution and exact basis preparation are still required.
+      </p>
+      <button disabled={busy} onClick={() => onStart(request)}>
+        Start verification for selected requirement
+      </button>
+    </section>
+  );
+}
+
 function LocatedVerification({
   caseId,
   entities,

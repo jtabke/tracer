@@ -31,6 +31,100 @@ validation, authenticated hosting or other-backend proof was performed. Existing
 uncommitted UI work is preserved. Architecture and the developer reference own
 the lifecycle contract and embedding guidance.
 
+## Verification and task-host maintainability cleanup
+
+2026-10-29: the owner requested a cleanup/refactoring round for maintainability,
+robustness and lower LOC. Preserved the existing uncommitted Verification page
+and Atlas UI. Consolidated the repeated model/requirement/target identity-reset
+handlers into one guarded operation, separated ordinary typed field patches from
+identity edits, removed redundant field setter/return bags and reused the selected
+requirement rather than searching twice. Activity/lifecycle updates retain their
+existing command/recovery semantics and update related draft fields atomically.
+
+The shared task host now represents never-opened versus closed-but-retained
+editors in its selection state instead of a separate activation flag. Removed an
+overridden page-height rule. Narrowed legacy input-based dirty detection to the
+Evaluation editor: controlled native editors already report their own drafts.
+A regression first reproduced a false unload warning after read-only Documentation
+topic selection; it now passes, while real verification drafts still warn.
+
+Measured against the **pre-cleanup working tree**, not HEAD: production code is
+**92 physical lines smaller** across five existing owners (basis -53, activity
+-10, detail/lifecycle -11, task host -15, page CSS -3). Added 86 test lines covering
+cancelled/confirmed model, requirement and target changes, retained title/purpose,
+cleared criteria/assignments, no native writes and real versus false unload
+warnings. Total code remains **6 lines smaller**, with normal Prettier formatting
+and no new module, dependency, persistence field or generic form framework.
+Baseline copies, byte hashes, LOC accounting and the red regression are retained
+in `output/maintainability-cleanup/`.
+
+Verification: one complete **`npm run check` passed**: formatting, typecheck, lint,
+**722 unit tests**, **233 browser scenarios**, builds, workbench checks and the
+unchanged dead-code/duplication/health gates. The earlier 18-case focused
+verification/configuration run also passed. No backend contract, visual identity,
+version/read-only lock or uncertain-save no-replay semantics changed.
+
+WORK-031 records completion at native202/schema7, version 2, with the review
+export and online backup
+`projects/tracer/backups/register-2026-10-29-maintainability-cleanup.sqlite`.
+Prior records/history and independent requirement/user-validation statuses remain
+unchanged. [Architecture](architecture.md#shared-workbench-and-retained-map-over-the-headless-core)
+owns these internal boundaries; the [register](../projects/tracer/README.md) owns
+current delivery status. Candidate hashes are in
+`output/maintainability-cleanup/source-hashes.sha256`. No commit, push or deployment
+was authorized or performed.
+
+## Verification workspace presentation
+
+2026-10-29: the owner approved the proposed Verification workspace slice. Implemented
+it in the shared workbench using the existing Atlas identity and controlled
+verification services, not a second engineering store or a redesigned shell.
+Verification is a retained, non-modal page with the shared sidebar/mobile
+navigation and Search, Criteria/Results/Supporting evidence sections and **Back
+to investigation**. Exact Proposed/Prepared/Recorded subject context includes the
+requirement/version, native basis revision and selected configuration identity,
+name and policy (or current-head policy). Recorded context uses captured values,
+even if its current analysis read fails; the failure still pauses authoring.
+
+**Verify this requirement** is offered only for a saved selected type explicitly
+bound by an installed verification-model descriptor. This is a catalog hint, not
+write authorization. It carries the saved identity/version and investigation
+revision; model resolution and preparation remain explicit. Incoming requests do
+not replace an existing draft without the normal discard confirmation. A changed
+requested requirement requires **Adopt displayed requirement version** before
+repreparing; prior criteria/preparation are cleared while title/purpose survive.
+The stable page host preserves reading position, focused DOM/caret and retained
+drafts across shell rerenders/resizes and navigation. Section jumps measure the
+wrapped sticky context and move keyboard focus so headings remain unobscured on
+mobile. Every page-entry path, including assessment handoffs, captures the
+investigation return context. Investigation selection,
+revision, perspective, camera and drafts remain owned by existing controllers;
+confirmed saves still adopt the returned head normally.
+
+Verification: all **722 unit tests** and **230 browser scenarios** passed. The
+unchanged quality gate identified presentation/test complexity increases; after
+extracting presentation-only rendering/assertion helpers and qualifying the
+assessment-return callback at its existing handoff owner, all **15 affected
+verification/configuration browser scenarios** passed again. Typecheck, lint,
+formatting, build, workbench checks and the unchanged dead-code/duplication/health
+gates passed. Local logs/captures and the candidate's `source-hashes.sha256`
+manifest are in `output/verification-workspace/`. Selected
+synthetic desktop/mobile illustrations and reproduction instructions are in
+`docs/images/`; these open cases have no execution and establish no physical or
+representative-user validation.
+
+WORK-030 records this bounded delivery at native200/schema7, version 2, with its
+review export and online backup
+`projects/tracer/backups/register-2026-10-29-verification-workspace.sqlite`.
+REQ-034/PN-09 and their independent verification/validation statuses are not
+promoted by this presentation slice. The retained Development map keeps its
+existing task dialog; Change assessments workspace pages and representative-user
+discoverability/wrong-turn evaluation remain separate. The [UX
+plan](ux-plan.md#shared-workspace) owns the selected direction; the
+[register](../projects/tracer/README.md) owns current delivery status. Working-tree
+candidate is based on `afe23455e8e7236a5a84dda4835199fc92bb2802`; no new commit,
+push or deployment was authorized by this request.
+
 ## Sidebar navigation and screenshot refresh
 
 2026-10-29: the owner selected the desktop/mobile sidebar concept after explicitly

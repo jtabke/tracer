@@ -1,0 +1,173 @@
+/* The retained verification owner shares the workbench's existing Atlas shell and tokens. */
+.sidebar-shell .verification-page {
+  --color-background: var(--paper);
+  --color-surface: var(--paper);
+  --color-panel: var(--panel);
+  --color-control: var(--panel);
+  --color-hover: var(--soft);
+  --color-border: var(--line);
+  --color-divider: var(--line);
+  --color-accent: var(--accent);
+  --color-text: var(--ink);
+  --color-muted: var(--muted);
+}
+.native-task.verification-page {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: auto;
+  background: var(--paper, var(--color-background));
+  color: var(--ink, var(--color-text));
+}
+.verification-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 64px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line, var(--color-divider));
+  background: var(--paper, var(--color-background));
+}
+.verification-page-header button {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--accent, var(--color-accent));
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 6px 0;
+  font-weight: 400;
+}
+.verification-return-context {
+  min-width: 0;
+  font-family: var(--mono, var(--font-mono));
+  font-size: 10px;
+  color: var(--muted, var(--color-muted));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.verification-page > .verification-workspace {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 12px 24px 28px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.verification-page [aria-label="Verification detail"] {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.verification-page .verification-layout > nav {
+  display: block;
+  margin: 0;
+  padding: 0 0 18px;
+}
+.sidebar-shell .verification-page .verification-workspace > header h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.verification-page .verification-workspace > header p {
+  font-size: 12px;
+  color: var(--muted, var(--color-muted));
+}
+.verification-page button {
+  border-color: var(--line, var(--color-border));
+  border-radius: 4px;
+  font-size: 12px;
+}
+.verification-page input,
+.verification-page textarea,
+.verification-page select {
+  color: var(--ink, var(--color-text));
+  background: var(--panel, var(--color-control));
+  border-color: var(--line, var(--color-border));
+}
+.verification-context {
+  position: sticky;
+  top: 64px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 12px;
+  border: 1px solid var(--line, var(--color-divider));
+  border-radius: 4px;
+  background: var(--paper, var(--color-background));
+  color: var(--muted, var(--color-muted));
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.verification-context-inline {
+  position: static;
+}
+.verification-context strong {
+  color: var(--ink, var(--color-text));
+  font-weight: 500;
+}
+.verification-section-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 18px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line, var(--color-divider));
+}
+.verification-section-navigation button {
+  margin: 0;
+  padding: 6px 0;
+  border: 0;
+  color: var(--accent, var(--color-accent));
+}
+.verification-detail-section {
+  padding-top: 10px;
+  margin-top: 20px;
+  border-top: 1px solid var(--line, var(--color-divider));
+  scroll-margin-top: 150px;
+}
+.verification-detail-section > h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+@media (max-width: 1000px) {
+  .verification-page .verification-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+@media (max-width: 680px) {
+  .verification-page-header {
+    padding-inline: 16px;
+    gap: 8px;
+  }
+  .verification-page-header button {
+    font-size: 11px;
+  }
+  .verification-return-context {
+    font-size: 9px;
+  }
+  .verification-page > .verification-workspace {
+    padding-inline: 16px;
+  }
+}

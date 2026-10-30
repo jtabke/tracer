@@ -25,6 +25,8 @@ Regenerate the first four with `npm run workbench:screenshots`. Select, respecti
 
 Regenerate the last three with `npm run build` followed by `npx playwright test test/inspector-polish-browser.spec.ts`. Select the 1440px draft-retention case's `search.png` and `statement-editor.png`, and the 390px relationship-search case's `connection.png`, from `test-results/`.
 
+The selected `verification-workspace-desktop.png` (1440×1000) and `verification-workspace-mobile.png` (390×1000) illustrate the retained Verification page in an explicitly synthetic configured research project. Both show an open controlled case, exact configuration target and declared basis; no verification execution has been recorded in that case. They are software-presentation evidence, not physical or representative-user validation. Regenerate with `npm run build` and `npx playwright test test/configuration-reference-authoring-browser.spec.ts`, then select `recorded-target-1440.png` and `recorded-target-390.png` from `output/verification-workspace/`.
+
 Inspect original PNGs before replacing deliberately selected illustrations. Keep the captions' distinction between a proposal, saved change and recorded review. Full galleries, databases, coverage and other captures remain ignored local review material.
 
 The older `aster-development-map.jpg` remains available for the retained Development map documentation; it is not the shared workbench preview. The original [capture notes](../ux-artifacts/product-identity/README.md#verify-and-capture) describe fixture isolation and the simulated assessment.

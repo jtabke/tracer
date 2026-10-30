@@ -13,8 +13,11 @@ import type { VerificationTargetPolicy } from "../../src/core/verification-case.
 import { CriterionSource, MethodAssignments } from "./basis-source.tsx";
 import type { BasisCapture } from "./basis-source.tsx";
 import { verificationCommand, useRecoveredVerification } from "./common.ts";
+import { VerificationContext } from "./context.tsx";
+import { requirementRequestChanged } from "./subject.ts";
 type BasisEditorProps = {
   intent?: ConfigurationHandoff;
+  initialRequirement?: Entity;
   models?: ReturnType<typeof applicationModelChoices>;
   entities: Entity[];
   editing: Editing;
@@ -38,15 +41,21 @@ type BasisFields = {
   assignments: Record<string, string[]>;
   mapping: Record<string, string | null>;
 };
+type BasisScope = Pick<BasisFields, "targetId" | "modelKey" | "requirementId">;
 function initialBasisFields(
   revision: VerificationAnalysis | undefined,
   intent?: ConfigurationHandoff,
+  initialRequirement?: Entity,
 ): BasisFields {
   return {
     modelKey: "",
     targetId: revision?.view.scope.target?.configurationId ?? intent?.pair.afterId ?? "",
     targetPolicy: revision?.view.scope.target?.policy ?? "target-reference-uses-v2",
-    requirementId: revision?.view.scope.basis.requirement.entityId ?? intent?.rootId ?? "",
+    requirementId:
+      revision?.view.scope.basis.requirement.entityId ??
+      intent?.rootId ??
+      initialRequirement?.id ??
+      "",
     title: "",
     purpose: "",
     reason: "",
@@ -69,8 +78,12 @@ function useBasisDraft({
   revision,
   ready = true,
   intent,
+  initialRequirement,
 }: BasisEditorProps) {
-  const [draft, setDraft] = useState(() => initialBasisFields(revision, intent)),
+  const [requestedRequirement, setRequestedRequirement] = useState(initialRequirement);
+  const [draft, setDraft] = useState(() =>
+      initialBasisFields(revision, intent, initialRequirement),
+    ),
     [preparation, setPreparation] = useState<{
       capture: BasisCapture;
       revision: VerificationAnalysis | undefined;
@@ -93,19 +106,16 @@ function useBasisDraft({
     } = draft,
     capture = preparation?.capture,
     preparedRevision = preparation?.revision;
-  function update(patch: Partial<BasisFields>) {
+  function update(patch: Partial<Omit<BasisFields, keyof BasisScope>>) {
     setDraft((previous) => ({ ...previous, ...patch }));
   }
-  const setModelKey = (value: string) => update({ modelKey: value });
-  const setRequirementId = (value: string) => update({ requirementId: value });
-  const setTitle = (value: string) => update({ title: value });
-  const setPurpose = (value: string) => update({ purpose: value });
-  const setReason = (value: string) => update({ reason: value });
-  const setCoverage = (value: BasisFields["coverage"]) => update({ coverage: value });
-  const setExtra = (value: Record<string, string>) => update({ extra: value });
-  const setCriteria = (value: BasisFields["criteria"]) => update({ criteria: value });
-  const setAssignments = (value: Record<string, string[]>) => update({ assignments: value });
-  const setMapping = (value: Record<string, string | null>) => update({ mapping: value });
+  function changeScope(patch: Partial<BasisScope>, message: string) {
+    if (!ready || editing.busy || (criteria.length && !window.confirm(message))) return;
+    if (patch.requirementId !== undefined && patch.requirementId !== requestedRequirement?.id)
+      setRequestedRequirement(undefined);
+    setDraft((previous) => ({ ...previous, ...patch, criteria: [], assignments: {} }));
+    setCapture(undefined);
+  }
   function setCapture(value: BasisCapture | undefined) {
     setPreparation(value ? { capture: value, revision } : undefined);
   }
@@ -115,6 +125,11 @@ function useBasisDraft({
     epoch,
   );
   const { model, definition } = source;
+  const selectedRequirement = source.entities.find((entity) => entity.id === requirementId);
+  const requestedStale = requirementRequestChanged(requestedRequirement, selectedRequirement);
+  const requirementCompatible = Boolean(
+    selectedRequirement && selectedRequirement.type === definition?.requirement.type,
+  );
   const dirty = [
     title,
     purpose,
@@ -134,12 +149,19 @@ function useBasisDraft({
       (capture.target?.id ?? "") !== targetId ||
       (capture.targetPolicy ?? targetPolicy) !== targetPolicy);
   function prepare() {
-    const requirement = source.entities.find((x) => x.id === requirementId);
-    if (!model.ready || !model.data || !source.ready || !requirement) return;
+    if (
+      !model.ready ||
+      !model.data ||
+      !source.ready ||
+      !selectedRequirement ||
+      requestedStale ||
+      !requirementCompatible
+    )
+      return;
     setCapture(
       structuredClone({
         model: model.data,
-        requirement,
+        requirement: selectedRequirement,
         methods: source.entities.filter((x) => x.type === model.data!.definition.method.type),
         links: source.relationships,
         ...(source.target.data
@@ -149,7 +171,7 @@ function useBasisDraft({
     );
   }
   async function submit() {
-    if (!ready || !capture || stale || !model.ready || !source.ready) return;
+    if (!ready || !capture || stale || !model.ready || !source.ready || requestedStale) return;
     const basis: PrepareVerificationBasis = {
       model: capture.model.pin,
       requirement: { entityId: capture.requirement.id, version: capture.requirement.version },
@@ -220,47 +242,26 @@ function useBasisDraft({
     }
   }
   return {
+    ...draft,
+    update,
+    changeScope,
     models: source.models,
     entities: source.entities,
+    selectedRequirement,
+    requestedRequirement,
+    requestedStale,
+    requirementCompatible,
+    adoptRequestedRequirement: () => {
+      if (!selectedRequirement || !source.ready || editing.busy) return;
+      setRequestedRequirement(structuredClone(selectedRequirement));
+      setCapture(undefined);
+      update({ criteria: [], assignments: {} });
+    },
     editing,
     epoch,
     revision,
     ready,
-    targetId,
-    targetPolicy,
     source,
-    setTargetId: (targetId: string) => {
-      if (
-        criteria.length &&
-        !window.confirm(
-          "Changing the engineering target clears criterion ranges and method assignments. Continue?",
-        )
-      )
-        return;
-      update({ targetId, modelKey: "", criteria: [], assignments: {} });
-      setCapture(undefined);
-    },
-    setTargetPolicy: (targetPolicy: VerificationTargetPolicy) => update({ targetPolicy }),
-    modelKey,
-    setModelKey,
-    requirementId,
-    setRequirementId,
-    title,
-    setTitle,
-    purpose,
-    setPurpose,
-    reason,
-    setReason,
-    coverage,
-    setCoverage,
-    extra,
-    setExtra,
-    criteria,
-    setCriteria,
-    assignments,
-    setAssignments,
-    mapping,
-    setMapping,
     capture,
     setCapture,
     preparedRevision,
@@ -285,6 +286,20 @@ export function VerificationBasisEditor(props: BasisEditorProps) {
       }}
     >
       <h3>{revision ? "Revise the governing basis" : "New verification"}</h3>
+      <BasisContext draft={draft} />
+      {draft.requestedStale && (
+        <p role="alert">
+          The selected requirement changed or is unavailable. The original proposal is retained; no
+          newer version is adopted automatically.
+          <button
+            type="button"
+            disabled={!draft.selectedRequirement || !source.ready || editing.busy}
+            onClick={draft.adoptRequestedRequirement}
+          >
+            Adopt displayed requirement version
+          </button>
+        </p>
+      )}
       <fieldset disabled={!ready || editing.busy}>
         <VerificationTargetChoice
           id={draft.targetId}
@@ -292,8 +307,13 @@ export function VerificationBasisEditor(props: BasisEditorProps) {
           policy={draft.targetPolicy}
           bound={Boolean(revision?.view.scope.target)}
           editing={editing}
-          onChange={draft.setTargetId}
-          onPolicy={draft.setTargetPolicy}
+          onChange={(targetId) =>
+            draft.changeScope(
+              { targetId, modelKey: "" },
+              "Changing the engineering target clears criterion ranges and method assignments. Continue?",
+            )
+          }
+          onPolicy={(targetPolicy) => draft.update({ targetPolicy })}
         />
         {!revision && <BasisIdentity draft={draft} />}
         {(model.loading || source.loading) && (
@@ -307,7 +327,12 @@ export function VerificationBasisEditor(props: BasisEditorProps) {
         <button
           type="button"
           disabled={
-            !model.ready || !source.ready || !model.data?.compatibility.writable || !requirementId
+            !model.ready ||
+            !source.ready ||
+            !model.data?.compatibility.writable ||
+            !requirementId ||
+            draft.requestedStale ||
+            !draft.requirementCompatible
           }
           onClick={prepare}
         >
@@ -325,23 +350,61 @@ export function VerificationBasisEditor(props: BasisEditorProps) {
   );
 }
 
+function BasisContext({ draft }: { draft: BasisDraft }) {
+  const requirement =
+    draft.capture?.requirement ?? draft.requestedRequirement ?? draft.selectedRequirement;
+  const definition = draft.capture?.model.definition ?? draft.definition;
+  const target =
+    draft.capture?.target ??
+    (draft.targetId
+      ? {
+          id: draft.targetId,
+          name:
+            draft.source.target.retained?.id === draft.targetId
+              ? draft.source.target.retained.name
+              : draft.targetId,
+        }
+      : undefined);
+  return (
+    <VerificationContext
+      inline={Boolean(draft.revision)}
+      kind={draft.capture ? "Prepared basis" : "Proposed basis"}
+      requirement={
+        requirement
+          ? {
+              id: requirement.id,
+              key: requirement.key,
+              version: requirement.version,
+              title: String(
+                requirement.fields[definition?.requirement.fields.title ?? "title"] ??
+                  requirement.fields.name ??
+                  requirement.key ??
+                  requirement.id,
+              ),
+            }
+          : undefined
+      }
+      revision={draft.capture?.model.context.projectRevision}
+      target={
+        target
+          ? { ...target, policy: draft.capture?.targetPolicy ?? draft.targetPolicy }
+          : undefined
+      }
+    />
+  );
+}
+
 function BasisIdentity({ draft }: { draft: BasisDraft }) {
   const {
     models,
     entities,
     definition,
     modelKey,
-    setModelKey,
-    setCapture,
-    setRequirementId,
     title,
-    setTitle,
     purpose,
-    setPurpose,
     requirementId,
-    criteria,
-    setCriteria,
-    setAssignments,
+    update,
+    changeScope,
     source,
   } = draft;
   return (
@@ -352,20 +415,12 @@ function BasisIdentity({ draft }: { draft: BasisDraft }) {
           aria-label="Verification model"
           required
           value={modelKey}
-          onChange={(e) => {
-            if (
-              criteria.length &&
-              !window.confirm(
-                "Changing verification model clears selected criterion ranges and method assignments. Continue?",
-              )
+          onChange={(e) =>
+            changeScope(
+              { modelKey: e.target.value, requirementId: draft.requestedRequirement?.id ?? "" },
+              "Changing verification model clears selected criterion ranges and method assignments. Continue?",
             )
-              return;
-            setCriteria([]);
-            setAssignments({});
-            setModelKey(e.target.value);
-            setCapture(undefined);
-            setRequirementId("");
-          }}
+          }
         >
           <option value="">Choose model</option>
           {models.map((x, i) => (
@@ -387,7 +442,7 @@ function BasisIdentity({ draft }: { draft: BasisDraft }) {
           aria-label="Verification title"
           required
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => update({ title: e.target.value })}
         />
       </label>
       <label>
@@ -396,7 +451,7 @@ function BasisIdentity({ draft }: { draft: BasisDraft }) {
           aria-label="Verification purpose"
           required
           value={purpose}
-          onChange={(e) => setPurpose(e.target.value)}
+          onChange={(e) => update({ purpose: e.target.value })}
         />
       </label>
       <RecordChoice
@@ -405,19 +460,12 @@ function BasisIdentity({ draft }: { draft: BasisDraft }) {
         required
         entities={entities.filter((x) => x.type === definition?.requirement.type)}
         value={requirementId}
-        onChange={(id) => {
-          if (
-            criteria.length &&
-            !window.confirm(
-              "Changing requirement clears the selected criterion ranges and method assignments. Continue?",
-            )
+        onChange={(requirementId) =>
+          changeScope(
+            { requirementId },
+            "Changing requirement clears the selected criterion ranges and method assignments. Continue?",
           )
-            return;
-          setRequirementId(id);
-          setCapture(undefined);
-          setCriteria([]);
-          setAssignments({});
-        }}
+        }
       />
     </>
   );
@@ -428,16 +476,12 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
     capture,
     stale,
     criteria,
-    setCriteria,
     assignments,
-    setAssignments,
     coverage,
-    setCoverage,
     revision,
     reason,
-    setReason,
     extra,
-    setExtra,
+    update,
     model,
     source,
   } = draft;
@@ -463,19 +507,23 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
           current source and explicitly reprepare before saving.
         </p>
       )}
-      <CriterionSource capture={capture} criteria={criteria} onChange={setCriteria} />
+      <CriterionSource
+        capture={capture}
+        criteria={criteria}
+        onChange={(criteria) => update({ criteria })}
+      />
       <MethodAssignments
         capture={capture}
         criteria={criteria}
         assignments={assignments}
-        onChange={setAssignments}
+        onChange={(assignments) => update({ assignments })}
       />
       <label>
         Declared source coverage
         <select
           aria-label="Declared source coverage"
           value={coverage}
-          onChange={(e) => setCoverage(e.target.value as typeof coverage)}
+          onChange={(e) => update({ coverage: e.target.value as typeof coverage })}
         >
           <option value="complete">Complete acceptance source</option>
           <option value="partial">Explicitly partial scope</option>
@@ -488,7 +536,7 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
           aria-label="Basis rationale"
           required
           value={reason}
-          onChange={(e) => setReason(e.target.value)}
+          onChange={(e) => update({ reason: e.target.value })}
         />
       </label>
       {!revision && (
@@ -496,7 +544,7 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
           title="Verification"
           definitions={capture.model.requiredFields.case}
           values={extra}
-          onChange={setExtra}
+          onChange={(extra) => update({ extra })}
         />
       )}
       <button type="submit" disabled={stale || !model.ready || !source.ready || !criteria.length}>
@@ -507,7 +555,7 @@ function PreparedBasis({ draft }: { draft: BasisDraft }) {
 }
 
 function PreviousMappings({ draft }: { draft: BasisDraft }) {
-  const { revision, mapping, setMapping, criteria } = draft;
+  const { revision, mapping, update, criteria } = draft;
   if (!revision) return null;
   return (
     <fieldset>
@@ -528,7 +576,7 @@ function PreviousMappings({ draft }: { draft: BasisDraft }) {
                   ? c.id
                   : ""
             }
-            onChange={(e) => setMapping({ ...mapping, [c.id]: e.target.value || null })}
+            onChange={(e) => update({ mapping: { ...mapping, [c.id]: e.target.value || null } })}
           >
             <option value="">Retire this criterion</option>
             {criteria.map((x) => (

@@ -1,9 +1,48 @@
 import { openProjectDestination } from "./project-navigation.ts";
 import { resolve } from "node:path";
-import { test, expect, closeTestPage } from "./browser-test.ts";
+import { mkdirSync } from "node:fs";
+import { test, expect, closeTestPage, type Page, type Locator } from "./browser-test.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 import { referenceUseFixture } from "./reference-use-fixture.ts";
 import { verificationOpening, verificationActor as actor } from "./verification-fixture.ts";
+
+async function checkWorkspacePresentation(
+  page: Page,
+  panel: Locator,
+  target: { id: string; name: string },
+  external: boolean,
+) {
+  await expect(
+    page.getByRole("region", { name: "Verification workspace page", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("dialog:modal")).toHaveCount(0);
+  const context = panel.getByRole("region", { name: "Verification context", exact: true });
+  await expect(context).toContainText(target.id);
+  await expect(context).toContainText(target.name);
+  await expect(context).toContainText("Recorded basis");
+  const navigation = panel.getByRole("navigation", { name: "Verification sections", exact: true });
+  await expect(navigation).toBeVisible();
+  mkdirSync(resolve("output/verification-workspace"), { recursive: true });
+  await page.screenshot({
+    path: resolve("output/verification-workspace", `recorded-target-${external ? 390 : 1440}.png`),
+  });
+  for (const [label, name] of [
+    ["Criteria", "Verification criteria"],
+    ["Results", "Verification results"],
+    ["Supporting evidence", "Supporting evidence"],
+  ]) {
+    await navigation.getByRole("button", { name: label, exact: true }).click();
+    const section = panel.getByRole("region", { name, exact: true });
+    await expect(section).toBeFocused();
+    const heading = section.getByRole("heading", { name: label, exact: true });
+    await expect(heading).toBeInViewport();
+    expect(
+      await heading.evaluate((element) => element.getBoundingClientRect().top),
+    ).toBeGreaterThanOrEqual(
+      await context.evaluate((element) => element.getBoundingClientRect().bottom),
+    );
+  }
+}
 
 for (const external of [false, true])
   test(`target authoring retains independent B/C/B ${external ? "content" : "native"} uses and recovers a qualified judgment without replay`, async ({
@@ -27,6 +66,7 @@ for (const external of [false, true])
       await openProjectDestination(page, "Verification");
       const panel = page.getByRole("region", { name: "Requirement verification", exact: true });
       await panel.getByLabel("Verification case", { exact: true }).selectOption(opening.caseId);
+      await checkWorkspacePresentation(page, panel, target, external);
       await panel.getByRole("button", { name: "Record activity", exact: true }).click();
       const form = panel.getByRole("form", { name: "Record verification activity", exact: true });
       await form.getByLabel("Activity title", { exact: true }).fill("Independent material uses");

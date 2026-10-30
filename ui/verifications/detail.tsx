@@ -8,6 +8,7 @@ import { VerificationBasisEditor } from "./basis.tsx";
 import { ExecutionInspection } from "./inspection.tsx";
 import { EvidenceReviewStage } from "../evidence-review-stage.tsx";
 import { useApplicationDirty } from "../application-choices.tsx";
+import { RecordedVerificationContext } from "./context.tsx";
 type DetailProps = Omit<VerificationEditorProps, "saved"> & { epoch: number; changed(): void };
 export function VerificationDetail({
   analysis,
@@ -33,80 +34,142 @@ export function VerificationDetail({
     transition,
     props,
   } = useVerificationDetail({ analysis, entities, editing, ready, epoch, changed, onDirty });
+  function showSection(name: string) {
+    const section = document.getElementById(`verification-${name}`);
+    if (!section) return;
+    const context = section.parentElement?.querySelector<HTMLElement>(".verification-context");
+    if (context) {
+      const top = Number.parseFloat(getComputedStyle(context).top) || 0;
+      section.style.scrollMarginTop = `${top + context.getBoundingClientRect().height + 12}px`;
+    }
+    section.scrollIntoView({ block: "start" });
+    section.focus({ preventScroll: true });
+  }
   return (
     <section aria-label="Verification detail">
-      <h3>{analysis.view.case.title}</h3>
-      <VerificationSummary analysis={analysis} />
-      <VerificationObligations analysis={analysis} />
-      <VerificationActivities
+      <RecordedVerificationContext
         analysis={analysis}
         entities={entities}
-        blocked={Boolean(analysis.view.scope.target && review.dirty)}
-        onInspect={setInspect}
+        editing={editing}
+        epoch={epoch}
       />
-      {inspect && (
-        <ExecutionInspection
+      <h3>{analysis.view.case.title}</h3>
+      <VerificationSummary analysis={analysis} />
+      <nav className="verification-section-navigation" aria-label="Verification sections">
+        <button type="button" onClick={() => showSection("criteria")}>
+          Criteria
+        </button>
+        <button type="button" onClick={() => showSection("results")}>
+          Results
+        </button>
+        <button type="button" onClick={() => showSection("evidence")}>
+          Supporting evidence
+        </button>
+      </nav>
+      <section
+        className="verification-detail-section"
+        id="verification-criteria"
+        tabIndex={-1}
+        aria-label="Verification criteria"
+      >
+        <h3>Criteria</h3>
+        <VerificationObligations analysis={analysis} />
+      </section>
+      <section
+        className="verification-detail-section"
+        id="verification-results"
+        tabIndex={-1}
+        aria-label="Verification results"
+      >
+        <h3>Results</h3>
+        <VerificationActivities
           analysis={analysis}
-          executionId={inspect}
+          entities={entities}
+          blocked={Boolean(analysis.view.scope.target && review.dirty)}
+          onInspect={(id) => {
+            setInspect(id);
+            requestAnimationFrame(() => showSection("evidence"));
+          }}
+        />
+        {review.dirty && (
+          <p role="status">
+            Save or discard the retained input review before authoring or concluding verification.
+          </p>
+        )}
+        {!closed && (
+          <div>
+            <button disabled={!current || review.dirty} onClick={() => choose("activity")}>
+              Record activity
+            </button>
+            <button
+              disabled={!current || review.dirty || !analysis.executions.length}
+              onClick={() => choose("results")}
+            >
+              Choose results
+            </button>
+            <button disabled={!current || review.dirty} onClick={() => choose("basis")}>
+              Revise basis
+            </button>
+          </div>
+        )}
+        {editor && (
+          <button disabled={editing.busy} onClick={() => choose(undefined)}>
+            Cancel editor
+          </button>
+        )}
+        <VerificationEditor mode={editor} editorProps={props} epoch={epoch} />
+        <VerificationLifecycle
+          analysis={analysis}
+          reason={reason}
+          setReason={setReason}
+          blocked={!current}
+          dirty={dirty || review.dirty}
+          transition={transition}
+          busy={editing.busy}
+        />
+      </section>
+      <section
+        className="verification-detail-section"
+        id="verification-evidence"
+        tabIndex={-1}
+        aria-label="Supporting evidence"
+      >
+        <h3>Supporting evidence</h3>
+        {!inspect && !review.receiptId && (
+          <p>
+            Select a recorded activity in Results to inspect its exact captured inputs, observations
+            and applicability. Evidence review does not change the recorded outcome.
+          </p>
+        )}
+        {inspect && (
+          <ExecutionInspection
+            analysis={analysis}
+            executionId={inspect}
+            epoch={epoch}
+            editing={editing}
+            reviewBlocked={!current || dirty}
+            changed={changed}
+            onTargetDirty={(dirty) => setReview((previous) => ({ ...previous, dirty }))}
+            onReview={(receiptId) =>
+              setReview((previous) => ({ ...previous, receiptId, active: true }))
+            }
+          />
+        )}
+        <ActivityInputReview
+          analysis={analysis}
+          review={review}
+          setReview={setReview}
           epoch={epoch}
           editing={editing}
-          reviewBlocked={!current || dirty}
+          current={current}
+          dirty={dirty}
           changed={changed}
-          onTargetDirty={(dirty) => setReview((previous) => ({ ...previous, dirty }))}
-          onReview={(receiptId) =>
-            setReview((previous) => ({ ...previous, receiptId, active: true }))
-          }
         />
-      )}
-      <ActivityInputReview
-        analysis={analysis}
-        review={review}
-        setReview={setReview}
-        epoch={epoch}
-        editing={editing}
-        current={current}
-        dirty={dirty}
-        changed={changed}
-      />
-      {review.dirty && (
-        <p role="status">
-          Save or discard the retained input review before authoring or concluding verification.
-        </p>
-      )}
-      {!closed && (
-        <div>
-          <button disabled={!current || review.dirty} onClick={() => choose("activity")}>
-            Record activity
-          </button>
-          <button
-            disabled={!current || review.dirty || !analysis.executions.length}
-            onClick={() => choose("results")}
-          >
-            Choose results
-          </button>
-          <button disabled={!current || review.dirty} onClick={() => choose("basis")}>
-            Revise basis
-          </button>
-        </div>
-      )}
-      {editor && (
-        <button disabled={editing.busy} onClick={() => choose(undefined)}>
-          Cancel editor
-        </button>
-      )}
-      <VerificationEditor mode={editor} editorProps={props} epoch={epoch} />
-      <VerificationLifecycle
-        analysis={analysis}
-        reason={reason}
-        setReason={setReason}
-        blocked={!current}
-        dirty={dirty || review.dirty}
-        transition={transition}
-        busy={editing.busy}
-      />
+      </section>
     </section>
   );
 }
+
 function useVerificationDetail({
   analysis,
   entities,
@@ -124,42 +187,34 @@ function useVerificationDetail({
     attempt?: string;
   }>({ dirty: false, reason: "", inspect: "" });
   const [review, setReview] = useState({ receiptId: "", active: false, dirty: false });
-  const { editor, dirty, reason, inspect, attempt } = draft;
-  const setEditor = (value: "activity" | "results" | "basis" | undefined) =>
-    setDraft((previous) => ({ ...previous, editor: value }));
-  const setDirty = (value: boolean) => setDraft((previous) => ({ ...previous, dirty: value }));
-  const setReason = (value: string) => setDraft((previous) => ({ ...previous, reason: value }));
-  const setInspect = (value: string) => setDraft((previous) => ({ ...previous, inspect: value }));
-  const setAttempt = (value: string | undefined) =>
-    setDraft((previous) => ({ ...previous, attempt: value }));
+  const { dirty, reason, attempt } = draft;
+  const update = (patch: Partial<typeof draft>) =>
+    setDraft((previous) => ({ ...previous, ...patch }));
   const closed = analysis.view.case.state === analysis.view.model.definition.states.closed,
     current = ready && !editing.busy && analysis.view.model.compatibility.writable;
   useApplicationDirty(dirty || !!reason || review.dirty, onDirty);
   useRecoveredVerification(attempt, analysis.view.case.id, editing, epoch, () => {
-    setReason("");
+    update({ reason: "" });
     changed();
   });
-  function choose(value: typeof editor) {
+  function choose(editor: typeof draft.editor) {
     if (editing.busy || review.dirty) return;
     if (dirty && !window.confirm("Discard the current verification editor draft?")) return;
-    setDirty(false);
-    setEditor(value);
+    update({ dirty: false, editor });
   }
   function saved() {
-    setDirty(false);
-    setEditor(undefined);
+    update({ dirty: false, editor: undefined });
     changed();
   }
   async function transition() {
     if (!current || dirty || review.dirty || !reason.trim()) return;
     const request = verificationCommand(analysis, reason);
-    setAttempt(request.commandId);
+    update({ attempt: request.commandId });
     const result = closed
       ? await editing.mutate("/api/verifications/reopen", request)
       : await editing.mutate("/api/verifications/conclude", request);
     if (result) {
-      setAttempt(undefined);
-      setReason("");
+      update({ attempt: undefined, reason: "" });
       changed();
     }
   }
@@ -169,17 +224,14 @@ function useVerificationDetail({
     editing,
     ready: current && !closed,
     saved,
-    onDirty: setDirty,
+    onDirty: (dirty: boolean) => update({ dirty }),
   };
   return {
+    ...draft,
     review,
     setReview,
-    editor,
-    dirty,
-    reason,
-    inspect,
-    setReason,
-    setInspect,
+    setReason: (reason: string) => update({ reason }),
+    setInspect: (inspect: string) => update({ inspect }),
     current,
     closed,
     choose,

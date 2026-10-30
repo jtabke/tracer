@@ -1,4 +1,9 @@
 import { VerificationWorkspace } from "./verifications/workspace.tsx";
+import { VerificationPage } from "./verifications/page.tsx";
+import type {
+  VerificationReturnContext,
+  VerificationSubjectRequest,
+} from "./verifications/subject.ts";
 import { AssessmentWorkspace } from "./assessments/workspace.tsx";
 import { ReferenceWorkspace } from "./reference-workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
@@ -44,7 +49,13 @@ export function NativeTasks({
   onSchema,
   onTaskDirty,
   onTask,
+  verificationTarget,
+  verificationSubject,
+  verificationOrigin,
 }: {
+  verificationTarget?: HTMLElement;
+  verificationSubject?: VerificationSubjectRequest;
+  verificationOrigin?: VerificationReturnContext;
   task: NativeTask | null;
   entity?: Entity;
   entities: Entity[];
@@ -61,12 +72,15 @@ export function NativeTasks({
   ): Promise<SchemaObject | false>;
 }) {
   const { dialog, visited, focused, setFocused, setDirty, setReferenceDirty, handoffs } =
-    useNativeTaskState(task, entity, onTaskDirty, onTask);
+    useNativeTaskState(task, entity, onTaskDirty, onTask, Boolean(verificationTarget));
   const panels = {
     verification: () => (
       <VerificationWorkspace
         intent={handoffs.verification}
-        returnToAssessments={onTask ? () => onTask("assessments") : undefined}
+        subjectRequest={verificationSubject}
+        returnToAssessments={
+          onTask && handoffs.verification ? () => onTask("assessments") : undefined
+        }
         entities={entities}
         schema={schema}
         editing={editing}
@@ -169,6 +183,17 @@ export function NativeTasks({
   };
   return (
     <>
+      {verificationTarget && (
+        <VerificationPage
+          active={task === "verification"}
+          visited={visited.includes("verification")}
+          target={verificationTarget}
+          origin={verificationOrigin}
+          error={editing.error}
+          onClose={onClose}
+          render={panels.verification}
+        />
+      )}
       <ModelPage
         active={task === "schema"}
         visited={visited.includes("schema")}
@@ -203,7 +228,7 @@ export function NativeTasks({
           Switching tasks or returning to the workspace retains in-session drafts until reload.
         </p>
         {visited
-          .filter((name) => name !== "schema")
+          .filter((name) => name !== "schema" && !(name === "verification" && verificationTarget))
           .map((name) => (
             <div key={name} hidden={task !== name}>
               {panels[name]()}
@@ -244,8 +269,20 @@ function ModelPage({
   );
 }
 
-function syncTaskSurface(dialog: HTMLDialogElement | null, task: NativeTask | null) {
-  syncTaskDialog(dialog, task === "schema" ? null : task);
+function syncTaskSurface(
+  dialog: HTMLDialogElement | null,
+  task: NativeTask | null,
+  verificationPage: boolean,
+) {
+  syncTaskDialog(
+    dialog,
+    task === "schema" || (task === "verification" && verificationPage) ? null : task,
+  );
+  if (task === "verification" && verificationPage) {
+    requestAnimationFrame(() =>
+      document.querySelector<HTMLElement>(".verification-page:not([hidden])")?.focus(),
+    );
+  }
   if (task === "schema") {
     requestAnimationFrame(() =>
       document.querySelector<HTMLElement>(".model-page:not([hidden]) h2")?.focus(),
@@ -473,6 +510,7 @@ function useNativeTaskState(
   entity: Entity | undefined,
   onTaskDirty: ((task: NativeTask, value: boolean) => void) | undefined,
   onTask: ((task: NativeTask) => void) | undefined,
+  verificationPage: boolean,
 ) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [visited, setVisited] = useState<NativeTask[]>([]);
@@ -482,8 +520,8 @@ function useNativeTaskState(
   const handoffs = useConfigurationHandoff(onTask);
   useEffect(() => {
     if (task) setVisited((current) => (current.includes(task) ? current : [...current, task]));
-    syncTaskSurface(dialog.current, task);
-  }, [task]);
+    syncTaskSurface(dialog.current, task, verificationPage);
+  }, [task, verificationPage]);
   const adoptEntity = useEffectEvent(() => {
     const next = chooseFocusedEntity(entity, focused?.id, dirty || referenceDirty);
     if (next) {

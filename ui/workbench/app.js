@@ -21,6 +21,7 @@ import { createMatrixRecipes } from "./matrix-recipes.ts";
 import { createEvidenceWorkspace } from "./evidence-workspace.tsx";
 import { createProjectTools } from "./project-tools.tsx";
 import { projectTaskGroups } from "../project-task-navigation.tsx";
+import { canPrepareVerification } from "../verifications/subject.ts";
 import {
   containNavigationFocus,
   renderProjectSidebar,
@@ -69,6 +70,11 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     ? createProjectTools(native, {
         changed: refreshAssessmentWorkspace,
         selected: () => state.selected,
+        origin: () => ({
+          key: state.selected,
+          revision: state.revision,
+          perspective: state.settingsOpen ? "Project settings" : state.perspective,
+        }),
         settled: () => render(),
         onMap: () => openDevelopmentMap(),
         onSettings: () => {
@@ -391,6 +397,15 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     relationshipLabel,
     reachableTrace: (key) => reachableTrace(model, key, state.matrixSteps),
     recordedRoute,
+    canVerify: (record) =>
+      Boolean(
+        native &&
+        canPrepareVerification(
+          record,
+          native.projectSnapshot.entities,
+          native.projectSnapshot.schema,
+        ),
+      ),
   };
   const inspectorBindings = createInspectorBindings({
     app,
@@ -713,6 +728,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       state.matrixScroll = { top: previousScroll.scrollTop, left: previousScroll.scrollLeft };
     gridEditor.dispose();
     evidenceWorkspace?.host.remove();
+    projectTools?.detachPage();
     model = workspace.model(state);
     if (!model.records.size) state.inspector = false;
     if (!state.selected && workspace.data.trace.root) {
@@ -727,6 +743,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   }
   function modalInspector() {
     return (
+      !projectTools?.pageOpen() &&
       !state.settingsOpen &&
       !state.evidenceOpen &&
       state.inspector &&
@@ -761,10 +778,16 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
 
     function renderWorkspaceInspector() {
-      return !state.settingsOpen && !state.evidenceOpen && state.inspector ? inspector() : "";
+      return !projectTools?.pageOpen() &&
+        !state.settingsOpen &&
+        !state.evidenceOpen &&
+        state.inspector
+        ? inspector()
+        : "";
     }
 
     function renderWorkspacePerspective() {
+      if (projectTools?.pageOpen()) return '<div id="verification-slot"></div>';
       if (state.settingsOpen) return renderProjectSettings(writesBlocked());
       return state.evidenceOpen
         ? '<div id="evidence-slot"></div>'
@@ -776,7 +799,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
 
     function renderInspectorBackdrop() {
-      return !state.settingsOpen &&
+      return !projectTools?.pageOpen() &&
+        !state.settingsOpen &&
         !state.evidenceOpen &&
         state.inspector &&
         panelMode() === "drawer" &&
@@ -787,6 +811,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
 
     function renderAssessmentSummarySlot() {
       return native &&
+        !projectTools?.pageOpen() &&
         !state.settingsOpen &&
         !state.evidenceOpen &&
         state.revision === workspace.head &&
@@ -826,6 +851,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
 
     function renderWorkspaceHeading() {
+      if (projectTools?.pageOpen()) return "Verification";
       if (state.settingsOpen) return "Project settings";
       if (state.evidenceOpen) return "Evidence review";
       if (state.artifactFull) return "Artifact";
@@ -838,11 +864,13 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
 
     function renderContextActions() {
+      if (projectTools?.pageOpen()) return "";
       return state.settingsOpen
         ? '<button data-action="workspace">Back to workspace</button>'
         : renderCreateRecordAction() + renderAssessmentAction() + renderSelectionActions();
     }
     function workareaMode() {
+      if (projectTools?.pageOpen()) return "verification-focused";
       if (state.settingsOpen) return "settings-focused";
       if (state.evidenceOpen) return "assessment-focused";
       return state.artifactFull ? "artifact-focused" : "";
@@ -853,7 +881,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       count = visibleKeys().length,
       atHead = state.revision === workspace.head;
     const workspaceTabs = `<nav class="view-switch workspace-perspectives" aria-label="Workspace perspective">${["graph", "matrix", "history"].map((view) => `<button data-view="${view}" aria-pressed="${state.perspective === view}">${icon(view)}${view[0].toUpperCase() + view.slice(1)}</button>`).join("")}</nav>`;
-    app.innerHTML = `<div class="shell sidebar-shell">${projectSidebar()}
+    app.innerHTML = `<div class="shell sidebar-shell" data-page="${projectTools?.pageOpen() ? "verification" : "workspace"}">${projectSidebar()}
   <main class="workspace"><header class="topbar"><button class="navigation-toggle" data-action="open-navigation" aria-label="Open navigation" aria-haspopup="dialog">☰</button><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}<button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
   <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderContextActions()}</div></section>
   ${renderRevisionBanner()}
@@ -864,7 +892,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     applyGeometry(app);
     const matrixScroll = app.querySelector(".matrix-scroll");
     if (matrixScroll) matrixScroll.scrollTo(state.matrixScroll.left, state.matrixScroll.top);
-    if (state.artifactFull && !state.settingsOpen) app.querySelector(".view").inert = true;
+    if (state.artifactFull && !state.settingsOpen && !projectTools?.pageOpen())
+      app.querySelector(".view").inert = true;
     if (modalInspector()) {
       app
         .querySelectorAll(".topbar,.context,.view,.historybar,.workspace-notice")
@@ -876,12 +905,14 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     inspectorInteractions.restore();
     if (
       state.perspective === "graph" &&
+      !projectTools?.pageOpen() &&
       !state.settingsOpen &&
       !state.evidenceOpen &&
       model.records.size
     )
       mountGraph();
     updateEvidenceWorkspace();
+    projectTools?.attachPage(app.querySelector("#verification-slot"));
     projectTools?.update(state.evidenceEpoch);
     rememberContext();
   }
@@ -893,6 +924,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
         databases.find((database) => database.id === currentProject)?.title ?? "Local project",
       native: Boolean(native),
       settings: state.settingsOpen,
+      verification: projectTools?.pageOpen(),
     });
   }
   function openNavigation() {
@@ -1510,6 +1542,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   const workspaceActions = {
     "open-navigation": openNavigation,
     "development-map": openDevelopmentMap,
+    "verify-requirement": verifySelectedRequirement,
     workspace: () => changeWorkspacePage(false),
     "project-settings": () => changeWorkspacePage(true),
     "matrix-show-project": () => {
@@ -1654,11 +1687,28 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   }
 
   function changeWorkspacePage(settingsOpen) {
+    projectTools?.closePage();
     state.settingsOpen = settingsOpen;
     render();
     app
       .querySelector(settingsOpen ? ".project-settings-page" : '[data-action="workspace"]')
       ?.focus();
+  }
+  function verifySelectedRequirement() {
+    if (!native || state.revision !== workspace.head || state.readBlocked || writesBlocked())
+      return;
+    const requirement = native.projectSnapshot.entities.find(
+      (entity) => (entity.key ?? entity.id) === state.selected,
+    );
+    if (
+      requirement &&
+      canPrepareVerification(
+        requirement,
+        native.projectSnapshot.entities,
+        native.projectSnapshot.schema,
+      )
+    )
+      projectTools.verify(requirement);
   }
   async function action(name) {
     if (name === "acknowledge-reload") {
@@ -1988,6 +2038,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
           render();
           return;
         }
+        projectTools?.closePage();
         state.settingsOpen = false;
         state.visible.add(key);
         select(key, true);
@@ -2046,7 +2097,11 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable;
     if (document.querySelector(".native-task[open], .model-page:not([hidden])")) return;
     if (searchShortcut(event, typing)) return;
-    if (dialog.open || document.querySelector(".native-task[open]")) return;
+    if (
+      dialog.open ||
+      document.querySelector(".native-task[open], .verification-page:not([hidden])")
+    )
+      return;
     if (state.evidenceOpen) {
       if (event.key === "Escape") {
         event.preventDefault();

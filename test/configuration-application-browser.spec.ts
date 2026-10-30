@@ -139,6 +139,7 @@ for (const [domain, width] of [
         .getByLabel("Judgment rationale", { exact: true })
         .fill("Retain this pending engineering judgment across verification");
       await detail.getByRole("button", { name: "Verify after configuration", exact: true }).click();
+      await expect(page.locator(".verification-return-context")).toContainText("opened r");
       const verification = page.getByRole("region", {
         name: "Requirement verification",
         exact: true,

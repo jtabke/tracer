@@ -59,16 +59,6 @@ export function VerificationExecutionEditor({
   function update(patch: Partial<ActivityDraft>) {
     setDraft((previous) => ({ ...previous, ...patch }));
   }
-  const setAttempt = (attempt: string | undefined) => update({ attempt });
-  const setMethodId = (value: string) => update({ methodId: value });
-  const setTitle = (value: string) => update({ title: value });
-  const setConditions = (value: string) => update({ conditions: value });
-  const setPrior = (value: boolean) => update({ prior: value });
-  const setSource = (value: RecordedMaterial | undefined) => update({ source: value });
-  const setSourceReason = (value: string) => update({ sourceReason: value });
-  const setResults = (value: ActivityDraft["results"]) => update({ results: value });
-  const setSupport = (value: VerificationSupportDraft) => update({ support: value });
-  const setExtra = (value: Record<string, string>) => update({ extra: value });
   const target = useVerificationActivityTarget(captured, editing);
   const method = captured.view.scope.basis.methods.find((x) => x.entityId === methodId),
     stale = !samePreparation(captured, analysis),
@@ -113,9 +103,9 @@ export function VerificationExecutionEditor({
       };
       if (prior && (!source || !("output" in source)))
         throw Error("Choose the original recorded activity before attesting it.");
-      setAttempt(request.commandId);
+      update({ attempt: request.commandId });
       if (await editing.mutate("/api/verifications/execute", request)) {
-        setAttempt(undefined);
+        update({ attempt: undefined });
         saved();
       }
     } catch (error) {
@@ -152,7 +142,7 @@ export function VerificationExecutionEditor({
             aria-label="Activity title"
             required
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => update({ title: e.target.value })}
           />
         </label>
         <label>
@@ -161,7 +151,7 @@ export function VerificationExecutionEditor({
             aria-label="Verification method"
             required
             value={methodId}
-            onChange={(e) => setMethodId(e.target.value)}
+            onChange={(e) => update({ methodId: e.target.value })}
           >
             <option value="">Choose declared method</option>
             {captured.view.scope.basis.methods.map((x) => (
@@ -182,7 +172,7 @@ export function VerificationExecutionEditor({
           <select
             aria-label="Activity source"
             value={prior ? "prior" : "performed"}
-            onChange={(e) => setPrior(e.target.value === "prior")}
+            onChange={(e) => update({ prior: e.target.value === "prior" })}
           >
             <option value="performed">Record current activity and execution state</option>
             <option value="prior">Explicitly interpret an earlier recorded activity</option>
@@ -200,7 +190,7 @@ export function VerificationExecutionEditor({
               entities={entities}
               editing={editing}
               selected={source}
-              onChoose={setSource}
+              onChoose={(source) => update({ source })}
             />
             <label>
               Original activity interpretation
@@ -208,7 +198,7 @@ export function VerificationExecutionEditor({
                 aria-label="Original activity interpretation"
                 required
                 value={sourceReason}
-                onChange={(e) => setSourceReason(e.target.value)}
+                onChange={(e) => update({ sourceReason: e.target.value })}
               />
             </label>
             <p>
@@ -223,14 +213,14 @@ export function VerificationExecutionEditor({
             aria-label="Execution conditions"
             required
             value={conditions}
-            onChange={(e) => setConditions(e.target.value)}
+            onChange={(e) => update({ conditions: e.target.value })}
           />
         </label>
         <ActivityResults
           method={method}
           captured={captured}
           results={results}
-          setResults={setResults}
+          setResults={(results) => update({ results })}
         />
         <VerificationInputs
           target={target.retained}
@@ -238,13 +228,13 @@ export function VerificationExecutionEditor({
           entities={entities}
           editing={editing}
           value={support}
-          onChange={setSupport}
+          onChange={(support) => update({ support })}
         />
         <AdditionalFields
           title="Activity"
           definitions={captured.view.model.requiredFields.execution}
           values={extra}
-          onChange={setExtra}
+          onChange={(extra) => update({ extra })}
         />
         <p>
           Record only work actually performed or explicitly interpreted. No report text is parsed

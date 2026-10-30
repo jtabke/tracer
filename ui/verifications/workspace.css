@@ -1,4 +1,4 @@
-.native-task:has(.verification-workspace:not([hidden])) {
+dialog.native-task:has(.verification-workspace:not([hidden])) {
   width: min(1200px, calc(100vw - 32px));
   height: 92dvh;
   max-height: 92dvh;

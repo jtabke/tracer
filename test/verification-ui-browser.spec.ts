@@ -3,12 +3,18 @@ import { Tracer } from "../src/index.ts";
 import { test, expect, closeTestPage } from "./browser-test.ts";
 import type { Page, Locator } from "@playwright/test";
 import { resolve } from "node:path";
+import { mkdirSync } from "node:fs";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 import {
   verificationFixture,
   verificationOpening,
   verificationActor as actor,
 } from "./verification-fixture.ts";
+async function captureWalkthrough(page: Page, width: number, stage: string) {
+  const directory = resolve("output/verification-review");
+  mkdirSync(directory, { recursive: true });
+  await page.screenshot({ path: resolve(directory, `${stage}-${width}.png`) });
+}
 async function task(page: Page) {
   await openProjectDestination(page, "Verification");
   return page.getByRole("region", { name: "Requirement verification", exact: true });
@@ -87,6 +93,7 @@ async function conclude(panel: Locator) {
 for (const [domain, width] of [
   ["engineering", 1440],
   ["research", 680],
+  ["engineering", 390],
 ] as const)
   test(`${domain}: verification authors explicit bases, retains activity drafts, accounts for failures and reassesses changed support at ${width}px`, async ({
     page,
@@ -136,11 +143,17 @@ for (const [domain, width] of [
       await expect(panel.getByLabel("Verification status", { exact: true })).toContainText(
         "Open verification",
       );
+      await panel
+        .getByRole("navigation", { name: "Verification sections", exact: true })
+        .getByRole("button", { name: "Criteria", exact: true })
+        .click();
+      await captureWalkthrough(page, width, "criteria");
       await panel.getByRole("button", { name: "Record activity", exact: true }).click();
       await panel
         .getByLabel("Activity title", { exact: true })
         .fill("Retain this draft across map return");
-      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
+      await captureWalkthrough(page, width, "activity-draft");
+      await page.getByRole("button", { name: "← Back to investigation", exact: true }).click();
       await task(page);
       await expect(panel.getByLabel("Activity title", { exact: true })).toHaveValue(
         "Retain this draft across map return",
@@ -152,6 +165,13 @@ for (const [domain, width] of [
         panel.getByRole("button", { name: "Conclude verification", exact: true }),
       ).toBeDisabled();
       await record(panel, "Corrected passing activity", "passed", material.id);
+      await panel.getByRole("button", { name: "Corrected passing activity", exact: true }).click();
+      await expect(
+        panel
+          .getByRole("region", { name: "Recorded activity inspection", exact: true })
+          .getByRole("heading", { name: "Corrected passing activity", exact: true }),
+      ).toBeVisible();
+      await captureWalkthrough(page, width, "supporting-evidence");
       const caseEntity = (await f.tracer.queryEntities({ type: f.definition.case.type })).items[0]!,
         view = await f.tracer.verification.locate(caseEntity.id),
         s = { caseId: caseEntity.id, openingCommandId: view.opening.commandId },
@@ -195,7 +215,9 @@ for (const [domain, width] of [
       expect(final.executions[0].results[0].outcome).toBe("failed");
       expect(final.recordedConclusion?.commandId).not.toBe(first.recordedConclusion?.commandId);
       expect(
-        await page.locator("dialog[open]").evaluate((el) => el.scrollWidth <= el.clientWidth + 2),
+        await page
+          .locator(".verification-page:not([hidden])")
+          .evaluate((el) => el.scrollWidth <= el.clientWidth + 2),
       ).toBe(true);
     } finally {
       await closeTestPage(page);
@@ -234,6 +256,13 @@ test("verification activity retains failed-read drafts and inspects a lost commi
     await page.route("**/api/verification-analysis?*", (r) => r.abort("connectionfailed"));
     await panel.getByRole("button", { name: "Refresh verification", exact: true }).click();
     await expect(panel).toContainText("Current verification could not be checked");
+    const retainedContext = panel.getByRole("region", {
+      name: "Verification context",
+      exact: true,
+    });
+    await expect(retainedContext).toContainText("Recorded basis");
+    await expect(retainedContext).toContainText(f.requirement.id);
+    await expect(retainedContext).toContainText("v1");
     await expect(form.getByLabel("Activity title", { exact: true })).toHaveValue(
       "Retained actual activity",
     );
@@ -525,7 +554,7 @@ test("verification reuses exact input review, retains its draft and obeys assess
     await expect(
       panel.getByRole("button", { name: "Record activity", exact: true }),
     ).toBeDisabled();
-    await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
+    await page.getByRole("button", { name: "← Back to investigation", exact: true }).click();
     await task(page);
     await panel
       .getByRole("button", { name: "Return to activity input review", exact: true })
@@ -554,7 +583,9 @@ test("verification reuses exact input review, retains its draft and obeys assess
       ).executions[0].results.every((x) => x.outcome === "passed"),
     ).toBe(true);
     expect(
-      await page.locator("dialog[open]").evaluate((el) => el.scrollWidth <= el.clientWidth + 2),
+      await page
+        .locator(".verification-page:not([hidden])")
+        .evaluate((el) => el.scrollWidth <= el.clientWidth + 2),
     ).toBe(true);
   } finally {
     await closeTestPage(page);

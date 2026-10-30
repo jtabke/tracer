@@ -78,6 +78,32 @@ body[data-direction="atlas"] .project-sidebar .project-sidebar-footer {
 .selected-record-actions button + button {
   border-left: 1px solid var(--line);
 }
+.verify-requirement-action {
+  width: 100%;
+  padding: 9px;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--accent);
+  font-size: 11px;
+  text-align: left;
+}
+.sidebar-shell[data-page="verification"] .workspace-perspectives,
+.sidebar-shell[data-page="verification"] .crumb > span,
+.sidebar-shell[data-page="verification"] .crumb > button,
+.sidebar-shell[data-page="verification"] .context p,
+.sidebar-shell[data-page="verification"] .historybar {
+  display: none;
+}
+#verification-slot,
+.verification-page-host {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
 .navigation-toggle {
   display: none;
 }

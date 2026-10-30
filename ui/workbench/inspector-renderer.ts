@@ -38,6 +38,7 @@ export type InspectorRenderContext = {
   };
   panelMode(): string;
   supportsTextField(record: EditingRecord, field: TextField): boolean;
+  canVerify(record: EditingRecord): boolean;
   escape(value: unknown): string;
   mono(value: unknown): string;
   icon(type: string): string;
@@ -173,7 +174,7 @@ export function renderInspector(context: InspectorRenderContext): string {
     const recent = `<section class="artifact-history"><div class="inspector-section-heading"><h3>Recent history</h3><button data-action="artifact-history" aria-label="View artifact history">↗</button></div>${ownHistory.map((entry) => `<button data-artifact-event="${entry.projectRevision}">${mono(`r${entry.projectRevision}`)}<span>${entry.version === 1 ? "Created" : `Updated to v${entry.version}`}</span></button>`).join("")}</section>`;
     return shell(
       header +
-        referenceAction(native, historical, record.key, e) +
+        referenceAction(native, historical, record.key, e, context.canVerify(record)) +
         fields +
         retainedArtifactDraft(record) +
         (!state.editing
@@ -219,8 +220,9 @@ function referenceAction(
   historical: boolean,
   key: string,
   escape: (value: unknown) => string,
+  canVerify: boolean,
 ) {
   return native
-    ? `<section class="selected-record-actions" aria-label="Actions for ${escape(key)}"><h3 class="sr-only">Record · ${escape(key)}</h3><button data-action="edit-record" aria-label="Edit record and connections" ${historical ? "disabled" : ""}>Edit</button><button data-action="connect" aria-label="Connect record" ${historical ? "disabled" : ""}>Connect</button><button data-action="references" aria-label="References and supporting material" ${historical ? "disabled" : ""}>References</button></section>`
+    ? `<section aria-label="Actions for ${escape(key)}"><h3 class="sr-only">Record · ${escape(key)}</h3><div class="selected-record-actions"><button data-action="edit-record" aria-label="Edit record and connections" ${historical ? "disabled" : ""}>Edit</button><button data-action="connect" aria-label="Connect record" ${historical ? "disabled" : ""}>Connect</button><button data-action="references" aria-label="References and supporting material" ${historical ? "disabled" : ""}>References</button></div>${canVerify ? `<button class="verify-requirement-action" data-action="verify-requirement" aria-label="Verify this requirement" ${historical ? "disabled" : ""}>Verify this requirement ↗</button>` : ""}</section>`
     : "";
 }
