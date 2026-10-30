@@ -1,5 +1,24 @@
 # Tracer implementation status
 
+## Repository cleanup and publication
+
+2026-10-29: the owner authorized another repository cleanup, commits and push.
+Reviewed the remaining Verification workspace/draft cleanup and headless audit
+changes as separate owning slices. Confirmed all 794 source/test files, tooling
+and gate logs still match the recorded passing candidate: 731 unit tests, 234
+browser scenarios, workbench journeys and unchanged full measured-quality gates.
+Repository formatting passed again; no application source repair was needed.
+
+After checking for active repository build/test servers, ran the existing safe
+cleaner's preview and removal. Removed about **2.6 GiB** of reproducible builds,
+coverage, test results and analysis caches. Retained `.fallow/` source snapshots,
+all project databases/backups, dependencies and `output/` evidence. Both cleanup
+safety tests passed. The live native206/schema7 project and deterministic review
+export still match exactly; retained backup/evidence paths remain present.
+Logs are in `output/repo-cleanup/`. Generated coverage was intentionally removed
+only after the passing gates were recorded; `npm run check` can regenerate it.
+No deployment, new feature or database/schema mutation was selected by cleanup.
+
 ## Headless audit quality-gate follow-up
 
 2026-10-29: on the owner's request to continue, completed the outstanding browser
