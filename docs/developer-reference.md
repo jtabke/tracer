@@ -171,6 +171,8 @@ Use `client.write(path, input)` with the named endpoint's input contract. Server
 
 There are no automatic retries. `ApiError.code` preserves structured server failures and conflict details. Failed or malformed reads return `read_failed`. A lost, cancelled or malformed write response returns `outcome_unknown`: the write may have committed. Inspect current state/history before deciding what to do; do not blindly replay. A pre-send serialization failure returns `validation`. Headless programs own their concurrency and recovery policy; the client does not silently serialize commands or provide the browser's draft/write lock.
 
+Embedded hosts borrow the supplied `Tracer` and repositories: always `await server.close()` before closing repositories yourself. Concurrent and repeated `close()` calls return the same promise and drain active requests rather than cancelling an in-flight mutation. The process launcher owns its repositories, releases them on startup failure and drains requests on SIGINT/SIGTERM. Ports and guide files validate before databases are opened; demo seed modules load only with explicit `--seed-demo`.
+
 These are local process interfaces, not authenticated organizational hosting. Direct embedding through `Tracer`, the CLI, the headless HTTP server and the browser share application behavior. SQLite remains the only backend.
 
 ### Discover capabilities and check compatibility

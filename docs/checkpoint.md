@@ -1,5 +1,36 @@
 # Tracer implementation status
 
+## Headless startup and host lifecycle review
+
+2026-10-29: reviewed direct core/CLI, typed HTTP client, shared endpoint dispatch,
+embedded hosting and process startup/shutdown for the owner-requested headless
+maintainability round. Retained the shared application/contract architecture,
+loopback/session/provenance guards and explicit uncertain-write recovery. No new
+hosting framework, dependency, persistence format or API contract is introduced.
+
+Moved demo dispatch into lazily loaded `examples/seed-demo.ts`: ordinary launches
+no longer import demo generators. Port and guide validation precede database
+acquisition; all repository acquisition is now inside startup cleanup ownership,
+including secondary-open failures. Signal shutdown releases repositories after
+request draining, and reports drain failure rather than leaving an unhandled
+rejection. Embedded `close()` caches one promise for concurrent/repeated callers;
+hosts still borrow, rather than close, supplied repositories.
+
+Verification: **19 focused launcher/client/server checks passed**, including a
+subprocess module hook refusing demo/UI imports, no-database invalid startup,
+observed cleanup after secondary-open/server-start failures, explicit demo
+preservation, clean SIGTERM exit, idempotent close and active-mutation draining.
+Strict typecheck and production build passed. The full unit run passed **724/725**;
+the sole failure was the new empty-demo test expecting HTTP `null` instead of core
+`undefined`. After correcting that assertion, all four launcher tests and the
+19-check focused suite passed; unchanged broad-suite evidence was retained.
+Logs and the pre-update register backup are in `output/headless-review/`.
+WORK-032 owns this scoped maintenance result; REQ-022/023/024 verification statuses
+are not promoted by this review. No browser suite, latency benchmark, participant
+validation, authenticated hosting or other-backend proof was performed. Existing
+uncommitted UI work is preserved. Architecture and the developer reference own
+the lifecycle contract and embedding guidance.
+
 ## Sidebar navigation and screenshot refresh
 
 2026-10-29: the owner selected the desktop/mobile sidebar concept after explicitly
