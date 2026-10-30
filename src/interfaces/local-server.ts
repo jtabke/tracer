@@ -212,11 +212,12 @@ function localServerClose(server: Server) {
     socket.once("data", () => preconnections.delete(socket));
     socket.once("close", () => preconnections.delete(socket));
   });
+  let closing: Promise<void> | undefined;
   return () =>
-    new Promise<void>((resolve, reject) => {
+    (closing ??= new Promise<void>((resolve, reject) => {
       server.close((error) => (error ? reject(error) : resolve()));
       for (const socket of preconnections) if (socket.bytesRead === 0) socket.destroy();
-    });
+    }));
 }
 
 function validMutationSession(request: IncomingMessage, origin: string, token: string) {

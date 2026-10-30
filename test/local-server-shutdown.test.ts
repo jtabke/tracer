@@ -70,7 +70,9 @@ test("shutdown drains an active versioned mutation before the database can close
     });
     await entered;
     let closed = false;
-    closing = server.close().then(() => {
+    const firstClose = server.close();
+    assert.strictEqual(server.close(), firstClose);
+    closing = firstClose.then(() => {
       closed = true;
     });
     await new Promise<void>((resolve) => setImmediate(resolve));
@@ -80,6 +82,8 @@ test("shutdown drains an active versioned mutation before the database can close
     assert.equal(response.status, 200);
     await response.json();
     await closing;
+    assert.strictEqual(server.close(), firstClose);
+    await server.close();
     assert.equal((await tracer.getSchema())?.version, 1);
   } finally {
     release();

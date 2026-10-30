@@ -1,16 +1,12 @@
 import { resolve, join } from "node:path";
-import { inNewProject } from "../../examples/isolated-project.ts";
-import { seedWorkspace } from "../../examples/seed-workspace.ts";
-import { seedRealisticProject } from "../../examples/seed-realistic-project.ts";
 import { readDemoGuide } from "./demo-guide.ts";
 import type { DemoGuide } from "./demo-guide.ts";
 import { tmpdir } from "node:os";
-import { seedProject } from "../../examples/seed-project.ts";
-import { seedScaleProject } from "../../examples/seed-scale-project.ts";
 import { SQLiteRepository } from "../persistence/sqlite.ts";
 import { Tracer } from "../application/service.ts";
 import { startLocalServer } from "./local-server.ts";
 import { observeLocal } from "./local-observer.ts";
+import { ensure } from "../core/model.ts";
 
 let db = "tracer.sqlite",
   port = 4317;
@@ -61,6 +57,7 @@ for (let index = 0; index < args.length; index++) {
   else if (flag === "--guide") guidePath = value;
   else port = Number(value);
 }
+ensure(Number.isInteger(port) && port >= 0 && port <= 65535, "usage", "Invalid port");
 if (seeded && explicitDatabase)
   throw new Error("--seed-demo cannot be combined with --db; existing projects are never seeded");
 if (guidePath && (!explicitDatabase || seeded))
@@ -88,16 +85,8 @@ if (seeded && secondaryDb)
   throw new Error("--seed-demo creates an isolated project; do not combine it with --secondary-db");
 if (seeded) {
   const destination = join(tmpdir(), "tracer-demo-" + crypto.randomUUID());
-  const project =
-    demoSize === "medical" || demoSize === "technology" || demoSize === "integrated"
-      ? await seedRealisticProject(destination, demoSize)
-      : demoSize === "empty"
-        ? await inNewProject(destination, async (_tracer, paths) => paths)
-        : demoSize === "software" || demoSize === "engineering"
-          ? await seedWorkspace(destination, demoSize)
-          : demoSize === "small"
-            ? await seedProject(destination)
-            : await seedScaleProject(destination, demoSize as "working" | "large");
+  const { seedDemo } = await import("../../examples/seed-demo.ts");
+  const project = await seedDemo(destination, demoSize);
   db = project.database;
   if ("tasks" in project && Array.isArray(project.tasks)) {
     guidePath = join(project.directory, "tasks.json");
@@ -112,10 +101,12 @@ if (seeded) {
 if (guidePath) guide = await readDemoGuide(guidePath);
 if (secondaryDb && resolve(secondaryDb) === resolve(db))
   throw new Error("Projects must use different database files");
-const repository = new SQLiteRepository(db);
-const secondaryRepository = secondaryDb ? new SQLiteRepository(secondaryDb) : undefined;
+const secondaryGuide = secondaryGuidePath ? await readDemoGuide(secondaryGuidePath) : undefined;
+let repository: SQLiteRepository | undefined;
+let secondaryRepository: SQLiteRepository | undefined;
 try {
-  const secondaryGuide = secondaryGuidePath ? await readDemoGuide(secondaryGuidePath) : undefined;
+  repository = new SQLiteRepository(db);
+  secondaryRepository = secondaryDb ? new SQLiteRepository(secondaryDb) : undefined;
   const server = await startLocalServer(
     new Tracer(repository, undefined, observeLocal),
     headless ? undefined : resolve("dist"),
@@ -150,14 +141,20 @@ try {
   const stop = async () => {
     if (closing) return;
     closing = true;
-    await server.close();
-    repository.close();
-    secondaryRepository?.close();
+    try {
+      await server.close();
+    } catch (error) {
+      console.error(error);
+      process.exitCode = 1;
+    } finally {
+      repository?.close();
+      secondaryRepository?.close();
+    }
   };
   process.once("SIGINT", stop);
   process.once("SIGTERM", stop);
 } catch (error) {
-  repository.close();
+  repository?.close();
   secondaryRepository?.close();
   throw error;
 }
