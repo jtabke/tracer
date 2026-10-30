@@ -1,5 +1,63 @@
 # Tracer implementation status
 
+## Headless audit quality-gate follow-up
+
+2026-10-29: on the owner's request to continue, completed the outstanding browser
+coverage and measured-quality validation. **234 browser scenarios** passed with
+production/harness builds; desktop/680px workbench journeys, controls, layout and
+18 gallery captures passed. Repository formatting, lint and strict types passed.
+The complete coverage merge/dead-code/duplication/health gate now **passes with
+unchanged thresholds and exclusions**. Reused the prior **731/731 unit results**
+after confirming the original headless implementation/procedure hashes remain
+unchanged; no unit rerun or source repair was needed. No application/test source
+or unrelated UI changes were made by this continuation.
+
+The [supplemental report](../projects/tracer/headless-quality-verification.json)
+records current source/tooling/log hashes and exact checks. It supplements rather
+than rewrites the original report's historical blocked-quality observation.
+Rehearsed atomic publication on an online backup, then updated WORK-033 and only
+the three requirements' evidence/remaining notes at native206/schema7. Original
+acceptance, verification plans, human-validation statuses, reports, receipts and
+all unrelated native/history/evidence records are preserved. The new immutable
+receipt is `bbd7c399-38e9-470a-b738-6fce0dd433d1`; outcome lookup and exact replay
+allocate no writes. Export and backup completed; [preservation evidence](../projects/tracer/headless-quality-preservation.json)
+and `output/headless-quality/` retain the publication and recovery details. No
+commit, push, deployment, dedicated headless benchmark or human/backend/hosting
+validation was performed.
+
+## Headless interface acceptance audit
+
+2026-10-29: the owner selected the recommended REQ-022/023/024 end-to-end audit.
+Read the unchanged requirement/plan revision-1 definitions and traced shared
+application guards, CLI dispatch, HTTP codecs/hosting, durable command intent and
+client compatibility readiness. Added `test/headless-acceptance.test.ts`: six
+named criterion tests across core, actual subprocess CLI and typed headless HTTP.
+Two independently configured requirement/research projects prove selection,
+paged reads, export parity and shared schema/object/head rejection. Recovery
+survives a consumed-but-lost write response, SQLite/host restart, output deletion
+and schema advance; repeated original lookup/replay is read-only. Changed intent
+rejects. Real discovery plus controlled response faults prove pre-write blocking
+and that an old success cannot undo malformed, cancelled or local invalidation.
+No runtime defect was found, so no speculative production refactor was made.
+
+All **six criterion tests** and **731/731 unit tests** passed, as did strict types,
+procedure formatting, dead-code and duplication checks. `npm run quality` was
+**blocked** at coverage merge because fresh browser coverage is absent; no full
+measured-quality pass is claimed. No browser run, benchmark, representative-human
+validation, authenticated hosting or other-backend proof was performed.
+
+The [criterion report](../projects/tracer/headless-interface-verification.json)
+owns exact original acceptance, actual results, source-tree/procedure hashes and
+limits. Rehearsed publication on an online backup, then completed WORK-033 at
+native205/schema7. The immutable execution receipt is
+`291bb8e8-a9d0-4639-9d32-31c4401ba692`; REQ-022/023/024 now have scoped verified
+results and VER-022/023/024 recorded execution. Human-validation statuses remain
+unchanged. Original unrelated records, links, histories and evidence were
+preserved; exact evaluation lookup/replay allocates no writes. The register was
+exported and backed up. [Preservation evidence](../projects/tracer/headless-interface-preservation.json)
+and local `output/headless-acceptance/` retain recovery details. Existing UI work
+was not changed or committed by this audit.
+
 ## Headless startup and host lifecycle review
 
 2026-10-29: reviewed direct core/CLI, typed HTTP client, shared endpoint dispatch,

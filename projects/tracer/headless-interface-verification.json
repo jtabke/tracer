@@ -1,0 +1,283 @@
+{
+  "date": "2026-10-29",
+  "workItem": "WORK-033",
+  "result": "passed",
+  "scope": "REQ-022/023/024 revision 1, AC-1 and AC-2 each, executed under VER-022/023/024 revision 1. Bounded local SQLite headless interface acceptance only.",
+  "candidate": {
+    "baseCommit": "9373f32d90d5903d93920b181c4e21ff16492870",
+    "qualification": "Working-tree candidate, not a claim that HEAD includes the new test/report. Pre-existing uncommitted Verification UI/documentation/register work remains separate. No runtime source changed in this audit.",
+    "sourceTree": {
+      "fileCount": 213,
+      "sha256": "872435bb9a75d9dc110dc0a3e070631584777934d7eb1d6e46314bfe63ee569e",
+      "algorithm": "SHA-256 of sorted UTF-8 lines: file SHA-256, two spaces, repository-relative src path, LF. Every file under src is included; exact manifest retained at output/headless-acceptance/source-tree.sha256."
+    },
+    "implementation": [
+      {
+        "path": "src/index.ts",
+        "sha256": "1758f9aab4c822eeb682ceab53f00b311c23a6845555b3ec3e6dd54b8a5fd301"
+      },
+      {
+        "path": "src/client.ts",
+        "sha256": "3e23e467ae43bf96a592147ccb06248d1b8c3031a0d27290e7efb39324b99711"
+      },
+      {
+        "path": "src/application/service.ts",
+        "sha256": "84e0a1b4f1b8dc2507d3e5b1af8576b4f27c313050c7dfd7f0df50568a20bda9"
+      },
+      {
+        "path": "src/application/changeset-command.ts",
+        "sha256": "71687bb042c57a871f745a874bcc5049aa08427e3093be55031dfdb6d38943d6"
+      },
+      {
+        "path": "src/application/native-validation.ts",
+        "sha256": "64ecffc06b38cd4bec31ab1d8a10b78a8879470447e5d66470e5832b6e384e24"
+      },
+      {
+        "path": "src/core/model.ts",
+        "sha256": "1ca8f2f45cc182d3d32e4889dbfc9a32e4f2cb0291ca86cacf869d001885a5f9"
+      },
+      {
+        "path": "src/core/input-snapshot.ts",
+        "sha256": "0ec1eee33270cab1fddc852bb5661228ad8ae4bc5dab1d3455265369ea9712c6"
+      },
+      {
+        "path": "src/core/evidence.ts",
+        "sha256": "e5e5cd1651fd54c131ff93eb4d6393f03d84d77537ff06d13eb1ddbf5669f6a6"
+      },
+      {
+        "path": "src/core/command-limits.ts",
+        "sha256": "6f04b7e232a3be0cb049f557dde5013ffd0bfed1ae1870200f5f4f5068302ddd"
+      },
+      {
+        "path": "src/persistence/sqlite.ts",
+        "sha256": "b1946b0df4fe99c7ea8c4b539fe79c91b23bce3a71e3fe4d7d326aa5c29eb66a"
+      },
+      {
+        "path": "src/persistence/migrations.ts",
+        "sha256": "78b5e0a03ba8571b08dca5aea94ed7ad0d905e5ed8e852e54324e59863ff023a"
+      },
+      {
+        "path": "src/persistence/transaction-queue.ts",
+        "sha256": "dff3b46c59a9c0c1de96bfbd091d3cb60bc10a86fa79bad5a03c93ee37f878c9"
+      },
+      {
+        "path": "src/interfaces/cli.ts",
+        "sha256": "97e56b83477bfdf5a6a4bd230ef3a0dc6ace1ec801c7925e452e20e88ef7bfe1"
+      },
+      {
+        "path": "src/interfaces/cli-input.ts",
+        "sha256": "2ca7afb0d0bacd3717a77928acfc729e5fb5b6a5a224bde146f4940255270bf3"
+      },
+      {
+        "path": "src/interfaces/cli-dispatch.ts",
+        "sha256": "6f080456d0a4cc36712cc96f5cf4b0ee00a9f2519fdc54fe9f3e6f87d3ec2079"
+      },
+      {
+        "path": "src/interfaces/cli-data.ts",
+        "sha256": "705433ee243ad45b176b8452b88a9f954c5a0fd4322755fe120554c93adc2d02"
+      },
+      {
+        "path": "src/interfaces/headless-server.ts",
+        "sha256": "7ae111d736eebb5f62018e79030c2ed901da8b6832c5fdf30a1cb7cba54d686e"
+      },
+      {
+        "path": "src/interfaces/local-server.ts",
+        "sha256": "dea822f71d76a365d98b7c9bcce69b495c40d0347aead2b941ebef8f6aa44168"
+      },
+      {
+        "path": "src/interfaces/serve.ts",
+        "sha256": "7c330ed8a895fb4a2ff40cddebed7997264cc1780463d1417e354ae372680130"
+      },
+      {
+        "path": "src/interfaces/api-endpoints.ts",
+        "sha256": "23147899ada4234dac91d35ce82ec922558201f1723d7a2709ce238a6b0c5316"
+      },
+      {
+        "path": "src/interfaces/api/native.ts",
+        "sha256": "bf9b8100f680655aed77526f4b66adfcdaa1031240068c98b171409280da45a6"
+      },
+      {
+        "path": "src/interfaces/api/query.ts",
+        "sha256": "c9d7b0b8bba1685077bc589ce213d6bb9a19eaa6877ecc6723fa13c2c3c21eef"
+      },
+      {
+        "path": "src/interfaces/api/input.ts",
+        "sha256": "fd91933d1df3805dfeb5a2954248e1747036353f7b13581b4a52fc675cff4575"
+      },
+      {
+        "path": "src/interfaces/api-capabilities.ts",
+        "sha256": "0e4310b7ea95c4ed74b7e413ee82322ee6cc65ee85fb94329ba5c12cbc1d48ab"
+      },
+      {
+        "path": "src/interfaces/api-compatibility.ts",
+        "sha256": "984e3d632c2ed2cf70b7e67f9356158f26085a80236c54808f5c26d7e7253896"
+      },
+      {
+        "path": "src/interfaces/api-contract.ts",
+        "sha256": "82662e305bad3a8f475dc19bd9a9aa2f40225d248b6f3100fe461cf8c1b9d632"
+      },
+      {
+        "path": "src/interfaces/api-errors.ts",
+        "sha256": "6343675ba05984f5f5772e212609029cfd2a691980ab20a19b49ac7158289c3a"
+      },
+      {
+        "path": "src/interfaces/decode.ts",
+        "sha256": "a11723dfb80856586e4379a2f1ae9cdb7cbf46daa3922fd5410d2df930e32259"
+      }
+    ],
+    "procedures": [
+      {
+        "path": "test/headless-acceptance.test.ts",
+        "sha256": "25c056798b1e4bdecadf730b98858393cfa7c4ba1b5f3d0ee83a32ef38e0e18e"
+      },
+      {
+        "path": "test/headless-launcher.test.ts",
+        "sha256": "986d75432dfc28403d6bd82f0dab1ce0fc5a781bd725affac043f6ab9d895bfc"
+      },
+      {
+        "path": "test/api-client.test.ts",
+        "sha256": "786392c0c8efc1b67fd17ea9db2661cd5cb395fb7da145edaa2caea8db40a0bb"
+      },
+      {
+        "path": "test/api-capabilities.test.ts",
+        "sha256": "8078726f930a03ef4665cbe1430c4105302f8bf5b3f5f0f9449ee1bee2044f30"
+      },
+      {
+        "path": "test/changeset-outcomes.test.ts",
+        "sha256": "eb193e9545c026934d793ea2641d4c8f9189940f692839ca0c2a031837dcc8e4"
+      },
+      {
+        "path": "test/cli-parity.test.ts",
+        "sha256": "fbfe7bc0ddbecb1dedcae8b8641c71cb07e5941c86c825028d185ad7080af90e"
+      },
+      {
+        "path": "test/local-server-shutdown.test.ts",
+        "sha256": "cd82e948f81426eacc17d6c420b0edc9d3af5ac33c1367d712caf6f17e2b417b"
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "key": "REQ-022",
+      "id": "631f03c6-d9bd-4fc2-b699-09996a220fa9",
+      "auditedVersion": 1,
+      "acceptance": "AC-1: Operations work without frontend assets. AC-2: Shared schema/version validation and database selection apply across interfaces.",
+      "verificationPlan": {
+        "key": "VER-022",
+        "id": "46904186-d9f1-4587-a5e9-2babdd4565c1",
+        "auditedVersion": 1,
+        "method": "Use a disposable project and record the requirement version, component implementation hashes, setup, steps and actual result. Exercise every acceptance criterion, including rejected/unknown states. Use automated integration/browser checks where applicable and retain inspection evidence for the rest."
+      },
+      "criteria": [
+        {
+          "id": "AC-1",
+          "result": "passed",
+          "test": "test/headless-acceptance.test.ts — REQ-022 AC-1",
+          "actual": "Performed writes through public core, separate CLI processes outside the checkout, and real headless HTTP/client in requirement/title-string and experiment/score-number projects. Each project contains only its three intended records. Paged query and deterministic export responses agree across interfaces without frontend assets in the disposable working directory."
+        },
+        {
+          "id": "AC-2",
+          "result": "passed",
+          "test": "test/headless-acceptance.test.ts — REQ-022 AC-2",
+          "actual": "All three interfaces reject stale schema, object and project guards and missing configured required fields. Structured object conflict details agree; complete recorded exports remain unchanged after rejections. Distinct explicit SQLite paths and HTTP project selections retain independent schemas/populations."
+        }
+      ]
+    },
+    {
+      "key": "REQ-023",
+      "id": "dc2edf68-134c-4d2d-abf7-db33d1c7de53",
+      "auditedVersion": 1,
+      "acceptance": "AC-1: Repeated inspection resolves the original result without duplicate writes. AC-2: A changed payload cannot silently reuse the same identity.",
+      "verificationPlan": {
+        "key": "VER-023",
+        "id": "b2deae6c-9d32-4f19-978d-d2131b106161",
+        "auditedVersion": 1,
+        "method": "Use a disposable project and record the requirement version, component implementation hashes, setup, steps and actual result. Exercise every acceptance criterion, including rejected/unknown states. Use automated integration/browser checks where applicable and retain inspection evidence for the rest."
+      },
+      "criteria": [
+        {
+          "id": "AC-1",
+          "result": "passed",
+          "test": "test/headless-acceptance.test.ts — REQ-023 AC-1",
+          "actual": "Dropped the HTTP response only after consuming a committed result; client reports outcome_unknown and sends exactly one POST. Closed the host and repositories, reopened SQLite, then deleted the output and advanced schema. Repeated core/CLI/HTTP lookups and exact explicit replays return the immutable original result without changing the full recorded export. The other project has no matching outcome."
+        },
+        {
+          "id": "AC-2",
+          "result": "passed",
+          "test": "test/headless-acceptance.test.ts — REQ-023 AC-2",
+          "actual": "Changed operations and schema/head guards reject with commandId conflict across all interfaces. Changed trusted actor/reason reject at the shared application boundary. Original outcome/export remain unchanged. Rejected new identities remain absent and can be deliberately corrected and committed. Existing outcome tests additionally exercise competing connections and intent isolation."
+        }
+      ]
+    },
+    {
+      "key": "REQ-024",
+      "id": "714d5f7b-01b1-411e-93f1-8566a084c6d9",
+      "auditedVersion": 1,
+      "acceptance": "AC-1: Required missing/incompatible capabilities prevent writes. AC-2: A stale compatibility response cannot restore readiness after invalidation.",
+      "verificationPlan": {
+        "key": "VER-024",
+        "id": "42efae17-2ec8-4e6e-84d6-9018178563da",
+        "auditedVersion": 1,
+        "method": "Use a disposable project and record the requirement version, component implementation hashes, setup, steps and actual result. Exercise every acceptance criterion, including rejected/unknown states. Use automated integration/browser checks where applicable and retain inspection evidence for the rest."
+      },
+      "criteria": [
+        {
+          "id": "AC-1",
+          "result": "passed",
+          "test": "test/headless-acceptance.test.ts — REQ-024 AC-1",
+          "actual": "Configured missing feature, missing operation, insufficient limit, wrong API identity and old/new contract versions block writes before and after discovery failure. Real discovery is fetched through the headless host; incompatible identity/version responses are deliberately fault-injected. Request logs contain only one GET /api/capabilities, no session or POST; full project export remains unchanged."
+        },
+        {
+          "id": "AC-2",
+          "result": "passed",
+          "test": "test/headless-acceptance.test.ts — REQ-024 AC-2",
+          "actual": "Held an actual older successful discovery response while a later check fails on invalid local requirements, malformed response or cancellation. Pending/failed state blocks writes; releasing the older success rejects as superseded and cannot restore readiness. A new successful explicit check restores readiness and permits exactly one deliberate write. Existing compatibility tests additionally cover a newer semantically incompatible response, unavailable/legacy discovery, captured requirements and additive extensions."
+        }
+      ]
+    }
+  ],
+  "execution": {
+    "environment": {
+      "node": "v26.12.1",
+      "platform": "darwin",
+      "architecture": "arm64"
+    },
+    "focused": {
+      "command": "node --test test/headless-acceptance.test.ts",
+      "passed": 6,
+      "failed": 0,
+      "log": "output/headless-acceptance/initial.log"
+    },
+    "fullUnit": {
+      "command": "npm test",
+      "passed": 731,
+      "failed": 0,
+      "log": "output/headless-acceptance/unit.log"
+    },
+    "gates": {
+      "strictTypes": "passed",
+      "procedureFormatting": "passed",
+      "deadCode": "passed",
+      "duplication": "passed",
+      "diffWhitespace": "passed",
+      "fullMeasuredQuality": "blocked: npm test clears coverage; no browser coverage exists for merge-coverage.ts. This is not a quality pass."
+    },
+    "logs": [
+      "output/headless-acceptance/typecheck.log",
+      "output/headless-acceptance/format.log",
+      "output/headless-acceptance/dead-code.log",
+      "output/headless-acceptance/dupes.log",
+      "output/headless-acceptance/quality.log"
+    ],
+    "runtimeChanges": false,
+    "findings": "No runtime conformance defect found in the six selected criteria. Added explicit criterion-level cross-interface regression coverage rather than speculative refactoring."
+  },
+  "limits": [
+    "SQLite local process/loopback interfaces only; no authenticated hosting, organizational permissions, other adapter or representative-human validation.",
+    "No new browser run, latency/throughput benchmark, deployment or arbitrary-scale readiness claim. These criteria require no UI interaction.",
+    "Compatibility tests deliberately intercept responses to exercise incompatible server versions and malformed messages; no alternate server implementation is claimed.",
+    "Null command lookup means no visible committed success, not proof an in-flight command failed. Tests recover a known committed result; clients never automatically replay.",
+    "A complete recorded export proves native/history/evidence preservation in the disposable scenarios; the command ledger is checked separately because it is not exported.",
+    "Source hashes and native evidence do not retain external source bytes. The report is a version-controlled exact-result artifact; no standards-conformance claim."
+  ]
+}
