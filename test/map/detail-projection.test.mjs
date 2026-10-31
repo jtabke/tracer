@@ -2,25 +2,23 @@ import { presets } from "./scale-fixture.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { makeAsterFixture } from "../../docs/ux-artifacts/map-first/aster-fixture.mjs";
+import { makeAsterFixture } from "./fixtures/aster-fixture.mjs";
 import { indexFixture } from "../../ui/map/model.ts";
 import {
   folderKey,
   buildDirectory,
   displayFolderChildren,
-  studyOrganization,
+  fixtureOrganization as studyOrganization,
   directoryProjection,
   revealInDirectory,
-} from "../../docs/ux-artifacts/map-first/organization.mjs";
+} from "./fixtures/organization.mjs";
 import {
   folderTraceProjection,
   itemTraceProjection,
   flatDirectoryProjection,
 } from "../../ui/map/detail-projection.ts";
 const data = makeAsterFixture(
-  JSON.parse(
-    readFileSync(new URL("../../docs/ux-artifacts/map-first/fixture.json", import.meta.url)),
-  ),
+  JSON.parse(readFileSync(new URL("./fixtures/fixture.json", import.meta.url))),
 );
 const index = indexFixture(data),
   organization = studyOrganization(data),

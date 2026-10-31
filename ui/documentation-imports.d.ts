@@ -2,6 +2,10 @@ declare module "*.md?raw" {
   const markdown: string;
   export default markdown;
 }
+declare module "*.json?url" {
+  const url: string;
+  export default url;
+}
 declare module "*.md?url" {
   const url: string;
   export default url;

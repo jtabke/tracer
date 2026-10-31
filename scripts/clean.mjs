@@ -22,6 +22,7 @@ const generated = [
   ".fallow/cache.bin",
   ".fallow/churn.bin",
   ".fallow/graph-cache.bin",
+  "test/workbench/data.json",
   ".DS_Store",
 ];
 let count = 0;

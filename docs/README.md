@@ -1,46 +1,26 @@
-# Tracer documentation
+# Documentation
 
-Choose one of the two [getting-started paths](getting-started.md):
+## Use Tracer
 
-- [Explore an example](getting-started.md#explore-an-example): inspect and edit the populated Orbit project.
-- [Start your own project](getting-started.md#start-your-own-project): use the editable Engineering starter and reopen saved work.
+Start with [getting started](guides/getting-started.md): explore the fictional Orbit example or create an Engineering project and reopen saved work.
 
-In the application, **Documentation** in the main navigation opens these guides without replacing an in-session draft. Internal links and named Return preserve reading context; citations open separately.
+- [Workspace reference](guides/workspace-guide.md): records/resources, navigation, authoring, evidence, exact configurations, assessments and Verification.
+- [CSV import](guides/csv-import.md) and [project export](guides/project-export.md).
+- [Next work](guides/next-work.md): independent gap/review queues.
+- [Custom models](guides/custom-model.md): define vocabulary and directed relationships.
+- [Realistic examples](guides/realistic-examples.md) and [industry context](guides/industry-workflows/README.md): fictional datasets and qualified workflow comparisons.
 
-## After getting started
+The in-app **Documentation** reader uses these same sources and retains task drafts while reading. Internal links preserve reading context; external citations open separately.
 
-- [Primitives and how to use them](workspace-guide.md#primitives-what-to-create-and-when): choose records, resources, references, captured states, evaluations and reviews; follow a worked power-verification example.
-- [Workspace navigation](workspace-guide.md#workspace-navigation) and [configuration changes](workspace-guide.md#configuration-changes): move between tasks and follow an exact engineering change.
-- [Workspace reference](workspace-guide.md): editing, evidence, configurations, multiple projects and the retained Development map.
-- [CSV import](csv-import.md): map columns, resolve links by exact keys, preview errors and commit one atomic batch.
-- [Next work](next-work.md): separate statement/allocation/plan gaps, changed evidence and unresolved reviews with direct editing/review actions.
-- [Project export](project-export.md): deterministic JSON with exact versions, recorded provenance and external evidence references.
-- [Define a custom model](custom-model.md): advanced desk-light exercise with types, fields and directed relationships defined from scratch.
-- [Additional realistic examples](realistic-examples.md): medical-device, software and integrated-product datasets, tasks and modeling limits.
-- [Developer reference](developer-reference.md): API/CLI usage, query limits, persistence and [development fixtures](developer-reference.md#development-fixtures).
+## Build and integrate
 
-## Understand development workflows
+- [Contributing](../CONTRIBUTING.md): setup, repository map, checks and contribution rules.
+- [Architecture](architecture.md): source boundaries and focused implementation contracts.
+- [API/CLI developer reference](reference/developer-reference.md) and [generated endpoint reference](reference/api-reference.md).
+- [Application-model templates](reference/models/README.md).
+- [Workbench regression harness](../test/workbench/README.md).
+- [Screenshot capture notes](images/README.md).
 
-The [industry guides](industry-workflows/README.md) compare medical devices, software, hardware, automotive and aerospace. Start with the [shared development model](industry-workflows/common-development-model.md). The [company practices guide](industry-workflows/company-practices.md) distinguishes publicly documented Apple, Tesla and SpaceX practices from illustrative workflows.
+## Product direction
 
-## Build and contribute
-
-- [Tracer development register](../projects/tracer/README.md): persistent headless needs, requirements, delivery status and work selection for developing Tracer itself.
-- [Development evidence index](../projects/tracer/evidence-index.md): specifications, complete-scope audits and preservation reports, with historical phase evidence kept intact.
-- [Contributing](../CONTRIBUTING.md): setup, checks and change expectations.
-- [Architecture](architecture.md): core contracts, adapters, query boundaries and temporal behavior.
-- [Development flow](development-flow.md): implementation and design principles.
-- [Development model audit and plan](development-model-plan.md): findings from Tracer's own needs/requirements register, proposed organization and a model-establishment pilot.
-- [Tracer development model](development-model.md): the selected project model, component responsibilities, trace meanings and evidence/status conventions.
-
-## Product direction and design history
-
-These documents explain decisions and remaining questions; they are not a list of delivered features.
-
-- [Product vision](user-needs.md#product-vision): broader direction, stable UN-001–005 goals and scope limits.
-- [User needs](user-needs.md) and [journeys](user-journeys.md): evidence and candidate stories.
-- [UX plan](ux-plan.md): current direction and evaluation questions.
-- [Engineering workspace slice](industry-workspace-slice.md): gaps exposed by cross-industry examples and two workspace proposals.
-- [Reference review](ux-competitive-review.md): original visual references and design critique.
-- [Design studies and research artifacts](ux-artifacts/README.md): isolated prototypes, reference assets and their status.
-- [Checkpoint](checkpoint.md): implemented behavior, verification and remaining work.
+[Development documentation](development/README.md) contains maintained needs, UX conventions and selected specifications. These are not blanket delivery claims. The optional [private register](development/register.md) and [historical archive](development/archive.md) are not required to build/use the product; generated records and iteration dumps stay outside the public tree.

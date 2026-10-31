@@ -34,9 +34,9 @@
     "format:check": "prettier --check .",
     "build:test-ui": "vite build --config test/legacy-vite.config.ts",
     "lint": "eslint ui --max-warnings 0",
-    "workbench": "node docs/ux-artifacts/product-identity/serve-native.mjs",
-    "workbench:check": "tsc --project docs/ux-artifacts/product-identity/tsconfig.json && node docs/ux-artifacts/product-identity/check-workbench.mjs",
-    "workbench:screenshots": "node docs/ux-artifacts/product-identity/check-workbench.mjs --screenshots-only",
+    "workbench": "node test/workbench/serve-native.mjs",
+    "workbench:check": "tsc --project test/workbench/tsconfig.json && node test/workbench/check-workbench.mjs",
+    "workbench:screenshots": "node test/workbench/check-workbench.mjs --screenshots-only",
     "serve:api": "node src/interfaces/serve.ts --headless",
     "api:reference": "node src/interfaces/generate-api-reference.ts"
   },

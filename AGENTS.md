@@ -1,24 +1,22 @@
 # Tracer project context
 
-Read only the documents relevant to the current task:
+Read only documents relevant to the current request:
 
-| Context                                   | Source                                                                 |
-| ----------------------------------------- | ---------------------------------------------------------------------- |
-| Product vision                            | [docs/user-needs.md](docs/user-needs.md#product-vision)                |
-| User needs and evidence                   | [docs/user-needs.md](docs/user-needs.md)                               |
-| Journeys and candidate stories            | [docs/user-journeys.md](docs/user-journeys.md)                         |
-| UX exploration and evaluation             | [docs/ux-plan.md](docs/ux-plan.md)                                     |
-| Development flow and design principles    | [docs/development-flow.md](docs/development-flow.md)                   |
-| Industry product development workflows    | [docs/industry-workflows/README.md](docs/industry-workflows/README.md) |
-| Existing architecture and invariants      | [docs/architecture.md](docs/architecture.md)                           |
-| Current progress and next actions         | [docs/checkpoint.md](docs/checkpoint.md)                               |
-| Live product requirements and work status | [Headless development register](projects/tracer/README.md)             |
-| Development model and trace meanings      | [Tracer development model](docs/development-model.md)                  |
-| Commands and usage                        | [README.md](README.md)                                                 |
+| Context                            | Source                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------ |
+| Product vision and needs           | [docs/development/user-needs.md](docs/development/user-needs.md)                     |
+| Journeys/candidate stories         | [docs/development/user-journeys.md](docs/development/user-journeys.md)               |
+| Current UX direction               | [docs/development/ux-plan.md](docs/development/ux-plan.md)                           |
+| Development flow                   | [docs/development/development-flow.md](docs/development/development-flow.md)         |
+| Industry workflows                 | [docs/guides/industry-workflows/README.md](docs/guides/industry-workflows/README.md) |
+| Architecture/contracts             | [docs/architecture.md](docs/architecture.md)                                         |
+| Latest engineering checkpoint      | [docs/checkpoint.md](docs/checkpoint.md)                                             |
+| Native development status/recovery | [Private register guide](docs/development/register.md)                               |
+| Development model/trace meanings   | [docs/development/development-model.md](docs/development/development-model.md)       |
+| Usage and contributor checks       | [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md)                           |
 
-- The current request determines scope. Respect each document's evidence/status labels; candidate stories and hypotheses are not automatic implementation approval.
-- Do not infer product requirements solely from existing prototype screens.
-- Keep decisions in their owning documents and progress in the checkpoint, rather than duplicating them here.
-- For feature planning and delivery, inspect `node projects/tracer/project.mjs status` and the relevant need/requirement/work records. The register owns current structured delivery status and work selection; the checkpoint retains dated engineering evidence. Update affected records and export after a slice. Follow the register's backup/recovery guidance if its local database is missing; do not silently reseed it. Candidate records do not authorize implementation.
-
-- UI direction: use the selected medical-device map experience as the shared UI across all examples. Follow the current unified direction in `docs/ux-plan.md`; do not treat the older Orbit/Studio shell or historical demos as independent product directions.
+- The current request determines scope. Candidate stories, historical prototypes and authored status fields do not authorize implementation. Do not infer requirements solely from existing screens.
+- Keep decisions in their owning maintained documents and current technical evidence in the checkpoint; historical reports belong in the local archive, not duplicated public progress lists.
+- For feature planning/delivery, inspect `node scripts/register.mjs status` and the relevant need/requirement/work records when the private register is available. It owns structured delivery/work selection. Update guarded records and export locally after a slice. If its database is missing, follow recovery guidance; never silently reseed or block ordinary product contribution on private data. A fresh clone intentionally has no private register.
+- Keep `.local/`, generated exports, per-run reports and experiments out of commits. Only deliberately retained specifications/templates and selected documentation images belong in the public tree. Preserve immutable source/evidence meanings when archiving paths.
+- UI direction: the selected medical-device/Atlas workspace is shared across examples. Follow the maintained UX plan; older Orbit/Studio experiments are historical, not independent product directions.

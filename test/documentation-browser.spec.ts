@@ -243,8 +243,11 @@ test("direct docs URL and rendered examples diagram preserve source links withou
       .getByRole("figure", { name: "Illustrative development workflow", exact: true })
       .locator("svg"),
   ).toBeVisible({ timeout: 15000 });
-  const source = reader.getByRole("link", { name: /^engineering workspace slice/ });
-  await expect(source).toHaveAttribute("href", /\/assets\/industry-workspace-slice-.*\.md/);
+  const source = reader.getByRole("link", { name: /^historical workspace exploration/ });
+  const href = (await source.getAttribute("href")) ?? "";
+  expect(
+    href.startsWith("data:text/markdown;base64,") || /\/assets\/archive-.*\.md/.test(href),
+  ).toBe(true);
   await expect(source).toHaveAttribute("target", "_blank");
   await expect(reader.locator('a[href^="../"], a[href^="docs/"]')).toHaveCount(0);
 });

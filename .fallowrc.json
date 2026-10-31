@@ -12,7 +12,7 @@
     "test/legacy-entry.tsx",
     "src/client.ts",
     "src/interfaces/headless-server.ts",
-    "projects/tracer/project.mjs"
+    "scripts/register.mjs"
   ],
   "rules": {
     "complexity-cyclomatic": "error",
@@ -96,7 +96,7 @@
       },
       {
         "name": "development-register",
-        "patterns": ["projects/tracer/**"]
+        "patterns": ["scripts/register.mjs"]
       },
       {
         "name": "tooling",
@@ -175,7 +175,7 @@
     }
   },
   "rulePacks": ["config/fallow-policy.json"],
-  "ignorePatterns": ["docs/ux-artifacts/**"],
+  "ignorePatterns": ["test/workbench/**"],
   "health": {
     "coverage": ".fallow/coverage/raw"
   }

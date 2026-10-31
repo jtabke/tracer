@@ -7,10 +7,7 @@ import { projectMap } from "../../ui/map/map-projection.ts";
 import { folderKey, revealInDirectory } from "../../ui/map/organization.ts";
 
 const fixture = JSON.parse(
-  readFileSync(
-    new URL("../../docs/ux-artifacts/task-surface-reset/medical-clean-data.json", import.meta.url),
-    "utf8",
-  ),
+  readFileSync(new URL("./fixtures/medical-clean-data.json", import.meta.url), "utf8"),
 );
 const index = indexFixture(fixture),
   organization = studyOrganization(fixture);

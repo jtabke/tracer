@@ -34,15 +34,19 @@
       "specifiers": [
         "../test/legacy-ui",
         "../docs/ux-artifacts",
+        "../test/workbench",
         "../../test/legacy-ui",
         "../../docs/ux-artifacts",
+        "../../test/workbench",
         "../../../test/legacy-ui",
         "../../../docs/ux-artifacts",
+        "../../../test/workbench",
         "../../../../test/legacy-ui",
-        "../../../../docs/ux-artifacts"
+        "../../../../docs/ux-artifacts",
+        "../../../../test/workbench"
       ],
       "severity": "error",
-      "message": "Production code must not import the test-only legacy UI or archived UX studies."
+      "message": "Production code must not import test harnesses or archived UX studies."
     }
   ]
 }

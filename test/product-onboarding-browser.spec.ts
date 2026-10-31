@@ -11,7 +11,7 @@ import { productModel } from "../examples/product-model-schema.ts";
 test("worked product guide creates a native model, items and links from an empty database", async ({
   page,
 }) => {
-  const guide = readFileSync("docs/custom-model.md", "utf8");
+  const guide = readFileSync("docs/guides/custom-model.md", "utf8");
   const json = guide.match(/```json\n([\s\S]*?)\n```/)?.[1];
   assert.ok(json, "Worked guide must include the complete model JSON");
   assert.deepEqual(JSON.parse(json), productModel);
@@ -86,7 +86,7 @@ test("worked product guide creates a native model, items and links from an empty
       await expect(page.getByRole("button").filter({ hasText: /^REQ-001 ·/ })).toContainText(
         "User-adjustable brightness",
       );
-      const apiGuide = readFileSync("docs/developer-reference.md", "utf8");
+      const apiGuide = readFileSync("docs/reference/developer-reference.md", "utf8");
       const snippet = apiGuide.match(/```js\n([\s\S]*?)\n```/)?.[1];
       assert.ok(snippet, "HTTP quickstart must include runnable browser JavaScript");
       // Execute the checked-in tutorial exactly as a browser-console caller would.

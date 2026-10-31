@@ -1,109 +1,67 @@
 # Contributing to Tracer
 
-Use Node.js 24.15+ and npm. Install the locked dependencies with `npm ci`, then run:
+## Start here
+
+Use **Node.js 24.15+** and the locked npm dependencies:
 
 ```sh
+npm ci
 npx playwright install chromium
 npm run check
 ```
 
-The [CI workflow](.github/workflows/check.yml) keeps automatic runs small: one Node 24.15 job checks formatting, types, hooks, unit/service/projection tests and the production build. It runs for pull requests and pushes to `main`; feature-branch pushes do not create duplicate runs. Documentation-only changes skip CI, and newer runs cancel older runs for the same branch or pull request. Dependency downloads use the npm cache.
-
-Run the full `npm run check` locally before release or after broad changes. Browser workflows and coverage-dependent Fallow gates are omitted from automatic CI to conserve GitHub minutes; they remain available through **Actions → Check → Run workflow → full**. Manual runs default to the smaller checks. Browser installation follows [Playwright’s CI instructions](https://playwright.dev/docs/ci). If branch protection later requires this workflow, account for documentation-only skips, which leave required checks pending.
-
-`npm run demo` starts a fresh isolated integrated-product example. Use its printed database path to resume saved work. Never reseed an existing project to test a change.
-
-## Scope a change
-
-Start with a concrete engineering task and read the relevant documents listed in [AGENTS.md](AGENTS.md). Product hypotheses and existing prototype controls are not automatic requirements. Keep decisions in their owning document and verification in the checkpoint.
-
-Prefer the existing core and query boundaries over adding a parallel domain-specific engine. Examples may use different terminology while sharing entity, relationship, revision and receipt contracts.
-
-## Preserve the contracts
-
-Keep transactional persistence, captured-version checks, historical identities, directed links and immutable evidence/reviews. Reads must remain bounded or paged, with partial context disclosed. An uncertain mutation outcome must not be reported as proof that nothing saved.
-
-UI changes must preserve draft ownership, cancellation, failure recovery and keyboard focus. A recorded link, permitted schema slot or fresh receipt must not be presented as satisfaction, required coverage or release readiness.
-
-## Verify the behavior
-
-Run checks appropriate to the change. Use focused tests for concrete regressions and broaden to the full browser suite when shared navigation, state or server contracts change. Inspect actual pixels at normal and narrow widths for layout changes. Passing automation is technical evidence, not human usability acceptance.
-
-Use disposable directories and databases for examples. Keep project-specific data fictional and identify simulated outcomes. Document new limitations and interfaces without claiming planned capabilities are delivered.
-
-Contributions to Tracer's original source and documentation use the [MIT license](LICENSE). Retain third-party license notices and image credits. Do not add third-party assets or code without establishing their rights and attribution.
+Explore a disposable example with `npm run demo`, or follow [getting started](docs/guides/getting-started.md) for a new project. Never reseed an existing database to test a change. Linux runners may need Chromium system dependencies; see [Playwright's CI guide](https://playwright.dev/docs/ci).
 
 ## Repository map
 
-| Path                 | Purpose                                                                                             |
-| -------------------- | --------------------------------------------------------------------------------------------------- |
-| `src/core/`          | Portable domain types and invariants                                                                |
-| `src/application/`   | Commands, queries and service orchestration                                                         |
-| `src/persistence/`   | Repository contracts, SQLite storage and migrations                                                 |
-| `src/interfaces/`    | CLI and local HTTP adapters                                                                         |
-| `ui/`                | Production workbench, retained React tasks/map and browser assets                                   |
-| `examples/`          | Fictional seeds, fixtures and benchmarks                                                            |
-| `test/`              | Root application unit, integration and browser checks                                               |
-| `config/`            | Versioned tooling policies; `.fallow/` is disposable cache                                          |
-| `scripts/`           | Repository maintenance commands                                                                     |
-| `docs/`              | User guides, architecture, product decisions and progress                                           |
-| `docs/ux-artifacts/` | Isolated design studies and historical research; see the [study index](docs/ux-artifacts/README.md) |
-| `.github/workflows/` | Checks run by GitHub Actions                                                                        |
+| Path                  | Purpose                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| `src/core/`           | Portable domain types and invariants                                       |
+| `src/application/`    | Guarded commands, queries and repository ports                             |
+| `src/persistence/`    | SQLite transactions, migrations and history                                |
+| `src/interfaces/`     | CLI, local HTTP server and typed endpoint contracts                        |
+| `ui/`                 | Production workbench, retained task pages/map and assets                   |
+| `examples/`           | Fictional seeds and benchmarks                                             |
+| `test/`               | Unit, integration and browser checks; fixtures beside callers              |
+| `test/workbench/`     | Isolated production-backed regression/capture harness                      |
+| `docs/guides/`        | User tasks and industry context                                            |
+| `docs/reference/`     | API/CLI, architecture contracts and model templates                        |
+| `docs/development/`   | Maintained direction/specifications, private-register and archive guidance |
+| `scripts/`, `config/` | Maintenance commands and versioned quality policy                          |
 
-`src/index.ts` is the supported portable API entry point; package subpath `@tracer-local/core/sqlite` owns the platform adapter. Prefer named commands for new integrations and retain positional-call compatibility when changing native commands. Core API changes need contract tests for version guards, transaction rollback, invocation-time capture, error details and the runnable guide.
+[Architecture](docs/architecture.md) maps implementation owners. The [documentation index](docs/README.md) is the user/reference entry point. A fresh clone needs no private register, generated history export or research archive to build and test.
 
-Keep source beside the layer that owns its behavior. The root package builds the only product UI, with the default `ui/workbench/` and retained `ui/map/`. All example commands use it over native databases. The former map-first package only delegates to root commands; projection tests live in `test/map/`. The older editor/query components live in `test/legacy-ui/components/` and mount through a test-only harness under `.fallow/legacy-ui`; production imports from this fixture are forbidden. Avoid moving modules solely to make directories smaller: preserve import boundaries and group by behavior when a concrete change warrants it.
+## Scope and preserve behavior
 
-Generated builds, dependency installs, caches, local databases, environment files and `output/` review captures stay out of Git. Preserve useful review images locally; copy only intentionally selected documentation illustrations into `docs/images/` or a documented study.
+Start with the current request and relevant [project context](AGENTS.md). Candidate stories, prototype controls and historical status are not implementation approval. Prefer a thin complete task using existing domain/query/command owners; don't move modules merely to make folders smaller.
 
-## Clean generated files
+Preserve stable identities, exact versions, directed links, immutable history/evidence, transaction rollback and captured-input guards. A link, compatible schema or fresh receipt is not satisfaction or release readiness. Unknown saves require inspection of the original command, never blind replay. UI changes preserve draft ownership, cancellation, historical/failed-read locks, keyboard focus and retained investigation context.
 
-Stop development/test servers that serve generated assets, then preview or remove
-reproducible output:
+Production must not import tests, studies or private development data. Keep Node/files/database concerns outside the portable core/application boundary. Use the typed client and existing mutation/transport owners rather than raw HTTP bypasses. The [focused architecture contracts](docs/architecture.md#detailed-contracts) document these boundaries.
 
-```sh
-npm run clean -- --dry-run
-npm run clean
-```
+## Checks
 
-The command removes `dist/`, coverage and browser test results/reports, generated
-legacy/workbench test builds, Fallow analysis caches and the root `.DS_Store`.
-It resolves paths from its own repository, so invoking it from another working
-directory cannot select a different cleanup target. It refuses a symlinked
-`.fallow/` parent rather than following it into another directory.
+| Command                      | Use                                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------------------- |
+| `npm run check`              | Full formatting, strict types, lint, unit/browser, workbench and measured-quality gates |
+| `npm test`                   | Unit/service/projection tests; starts fresh coverage measurements                       |
+| `npm run test:ui`            | Production and test-harness builds plus Chromium workflows                              |
+| `npm run workbench:check`    | Disposable native journeys, geometry, recovery and paired captures                      |
+| `npm run build`              | Product build                                                                           |
+| `npm run clean -- --dry-run` | Preview safe generated-output cleanup                                                   |
 
-Project databases/backups, retained reports, `output/`, historical baseline/source
-snapshots, environment files and installed dependencies are preserved. The command
-does not purge the entire `.fallow/` directory or guess which historical files are
-obsolete. Use the [development evidence index](projects/tracer/evidence-index.md)
-to find retained proof and its preservation rules.
+Run the full check after shared UI/state/transport changes or broad reorganization. Use focused tests during iteration. Inspect actual desktop/narrow screenshot pixels for layout changes; automation is not representative-user validation. Keep database/server cleanup in `finally` blocks and preserve useful logs in ignored `output/`.
 
-After cleaning, `npm run build` regenerates product assets. Use `npm run check`
-to collect fresh unit/browser coverage and run the quality gates again;
-`npm run quality` alone requires those measurements.
+Quality policy in `.fallowrc.json` and `config/` enforces boundaries, complexity, duplication and measured coverage without raised thresholds or baselines. Unit and browser V8 measurements merge through `test/merge-coverage.ts`; `npm run quality` alone needs the current complete captures. Production TypeScript stays strictly checked; the legacy test UI and [workbench harness](test/workbench/README.md) remain clearly isolated.
 
-## Maintaining the shared UI
+The [CI workflow](.github/workflows/check.yml) runs formatting, types, lint, unit tests and the production build for PRs and pushes to `main`. Documentation-only changes skip it; feature pushes avoid duplicate runs and newer runs cancel older ones. Browser/coverage-dependent gates remain required locally and available through **Actions → Check → Run workflow → full**. If branch protection is added, account for documentation-only skipped checks.
 
-Keep projection/geometry policies independent of React and use strict TypeScript contracts for new policy/lifecycle modules. Keep drafts, working view and native mutation ownership explicit. A retained snapshot supplies display context; it does not authorize writes.
+## Keep the public tree intentional
 
-Use `ui/workbench/dom-bindings.ts` for direct listeners on replacing workbench DOM: reset for each render and dispose on replacement/suspension. Share literal markup encoding through `ui/workbench/html.ts`. An effect that registers a listener or schedules frames must release both on cleanup. Cancel pending work when its scope changes; coalesce repeated resize work. Follow [React's effect dependency guidance](https://react.dev/learn/removing-effect-dependencies): dependencies must reflect the values the effect reads, rather than hiding stale closures. Preserve different map/walker camera policies when sharing lifecycle code.
+Commit maintained code, reusable fixtures, user/reference docs and selected `docs/images/` illustrations with accurate captions. Do not commit whole galleries, generated history exports, per-run review dumps, private databases/backups or alternate prototype implementations. Experiments belong in ignored `studies/`, `experiments/` or `output/`; optional internal dogfooding data belongs in `.local/tracer-development/`. [Register recovery](docs/development/register.md) and [historical recovery](docs/development/archive.md) explain preservation without publishing that paperwork.
 
-Test meaningful invariants such as cancellation between frames, exact recorded identity, deterministic layout/label behavior, nonmutation of snapshots and real browser return/resize flows. Use disposable example databases for workflow checks. Extract behavior around a clear responsibility; file splitting alone is not a reduction in total code or complexity.
+Stop services using generated assets before `npm run clean`. The cleaner removes explicit build/test/analysis output, not dependencies, private data, backups, logs or source snapshots; it rejects a symlinked cache parent. Cleaning invalidates generated coverage, so rerun `npm run check` before the next quality claim.
 
-## Quality checks and coverage
+## License and claims
 
-`npm run check` runs formatting, strict TypeScript, UI lint rules, unit/service/projection tests, production and harness builds, Chromium workflows, then Fallow dependency, architecture, duplication and health gates. `npm test` and `npm run lint` provide focused feedback. Chromium must be installed before the full check.
-
-Loaded workbench snapshots, head and historical caches belong to `ui/workbench/workspace-session.ts`. Use an explicit adoption reason; preserve its assessment/evidence policy and keep read locks, successful-read-before-acknowledgment ordering and mutation authority in the existing controllers.
-
-The retained map renderer and new recovery policy use strict TypeScript. Workbench history, relationship permissions, Matrix recipes/input/placement/proposals, graph geometry/layout/input and browser lifecycle owners also use strict TypeScript. Matrix rendering, draft/save/cancel and ancestor-span policies also use strict TypeScript, alongside their existing input/placement/proposal contracts. Inspector rendering and abortable bindings, artifact draft/save/cancel, relationship scope editing, authoring dialogs and shared picker keyboard navigation also use strict TypeScript. Renderers read current providers; existing editor and commit owners retain mutation authority. `workspace.css` composes the ordered component and responsive styles in `ui/workbench/styles/`; its import order is part of the cascade contract. Put fixes in the owning file, use the theme variables from `base.css`, and preserve media-query boundaries. The stylesheet source checks cover import ownership, theme references and hexadecimal colors. The remaining workbench rendering and orchestration stay JavaScript, verified by production browser journeys and the same dependency, complexity and measured coverage gates. State owners separate the working view, session organization, search, saved views, open tools, trace history and layout lifetime. Pure policies keep graph traversal, geometry and presentation independent of React. The trace lens shares layout policies while owning its dialog focus and chosen-path state.
-
-UI linting includes JavaScript and TypeScript, with unreachable-code, duplicate-case, unsafe-finally and typeof checks alongside React hook dependency and ordering rules. `useEffectEvent` supplies current values to registered listeners and other effect-owned callbacks; reactive scope changes remain explicit dependencies. No production TypeScript source is excluded from strict checking. `skipLibCheck` skips dependency declaration checking because ELK's upstream declarations fail strict checking; this setting applies to all dependency declaration files. ELK's NodeNext constructor adaptation stays at the layout boundary.
-
-Node unit tests use c8 and Chromium browser tests use v8-to-istanbul to collect measured coverage in disposable `.fallow/coverage/`. Both produce Istanbul maps, merged with istanbul-lib-coverage for reporting. The verification merger combines measured V8 ranges across processes with `@bcoe/v8-coverage` before Fallow reads them, so a later zero-count capture cannot hide an earlier exercised handler. Fallow consumes that merged raw V8 capture to match anonymous function locations precisely. Source maps connect browser assets to source; minification preserves function/class names for coverage matching and useful failure traces. `npm test` clears old coverage, and browser workflows append their measurements before health runs. Run the full check after changing UI source so source maps and coverage match. `npm run quality` requires unit and browser measurements; it does not substitute old complexity exemptions. The page fixture snapshots counters before navigation/reload, because execution-context disposal can discard prior counters. Cleanup uses `closeTestPage` to capture before closure. Keep server/database cleanup in a `finally` block.
-
-Architecture regression fixtures verify that forbidden imports, raw HTTP and new complexity are rejected. Production UI cannot import historical fixtures or design artifacts. Dead-code, duplication and health checks run without baselines; thresholds have not been raised. Passing gates measure technical properties, not human usability acceptance or arbitrary-scale performance.
-
-## Maintaining the integrated workbench
-
-The native-backed [product-identity review launcher](docs/ux-artifacts/product-identity/README.md) uses the production `ui/workbench/` sources. Runtime modules in that study directory only re-export production owners. `npm run workbench:check` runs policy/projection checks and disposable native journeys against the production build, with measured browser coverage; it is included in `npm run check`. `npm run workbench:screenshots` regenerates paired desktop/680px review material. Keep generated exports, screenshots and galleries out of commits, and preserve existing personal/review databases. The guide documents module boundaries, interaction contracts and current limits.
+Original contributions use [MIT](LICENSE); retain third-party notices and establish asset rights. Keep fictional/simulated examples labeled. Do not infer hosted collaboration, backend parity, physical/regulatory conformity, release authority or representative-user validation from local software checks.

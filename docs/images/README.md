@@ -1,6 +1,8 @@
 # Documentation images
 
-The selected `aster-workbench-*.png` images illustrate the current shared Graph / Matrix / History workspace in the [workspace reference](../workspace-guide.md) and in-app documentation. Refreshed on 2026-10-29 (America/Los_Angeles) from disposable, fictional Aster projects; evaluation outcomes are explicitly simulated.
+The root README deliberately selects the Graph hero, Matrix editor, History diff and `change-assessments-workspace-desktop.png` rather than embedding a complete review gallery. The assessment image is a 1440×1000 production capture from a synthetic exact-pair follow-through after the readable-name presentation correction: one candidate is accounted for, the original failed evaluation still needs judgment, and changed discovery remains an explicit obligation. A completed Verification conclusion does not silently complete the whole assessment. Regenerate with `npm run build` and `npx playwright test test/configuration-application-browser.spec.ts`, selecting `output/assessment-page/engineering-1440-follow-through.png`. All other generated study/report captures remain local and ignored.
+
+The selected `aster-workbench-*.png` images illustrate the current shared Graph / Matrix / History workspace in the [workspace reference](../guides/workspace-guide.md) and in-app documentation. Refreshed on 2026-10-29 (America/Los_Angeles) from disposable, fictional Aster projects; evaluation outcomes are explicitly simulated.
 
 | Image                                   | Viewport  | Captured state                                                                                                               |
 | --------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
@@ -29,4 +31,4 @@ The selected `verification-workspace-desktop.png` (1440×1000) and `verification
 
 Inspect original PNGs before replacing deliberately selected illustrations. Keep the captions' distinction between a proposal, saved change and recorded review. Full galleries, databases, coverage and other captures remain ignored local review material.
 
-The older `aster-development-map.jpg` remains available for the retained Development map documentation; it is not the shared workbench preview. The original [capture notes](../ux-artifacts/product-identity/README.md#verify-and-capture) describe fixture isolation and the simulated assessment.
+The older `aster-development-map.jpg` remains available for the retained Development map documentation; it is not the shared workbench preview. The original [capture notes](../../test/workbench/README.md#verify-and-capture) describe fixture isolation and the simulated assessment.

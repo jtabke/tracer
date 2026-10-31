@@ -12,7 +12,7 @@ test("documented headless examples run without a server and reopen their saved m
   const example = spawnSync(process.execPath, ["examples/product-model.ts"], { encoding: "utf8" });
   assert.equal(example.status, 0, example.stderr);
   assert.match(example.stdout, /3 items, 2 links, version conflict, trace and database reopen/);
-  const guide = readFileSync("docs/developer-reference.md", "utf8");
+  const guide = readFileSync("docs/reference/developer-reference.md", "utf8");
   const snippet = guide.match(/```ts\n([\s\S]*?)\n```/)?.[1];
   assert.ok(snippet, "Core quickstart must remain a runnable TypeScript code block");
   const directory = mkdtempSync(join(tmpdir(), "tracer-core-quickstart-"));

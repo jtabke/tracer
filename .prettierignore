@@ -5,9 +5,15 @@ playwright-report/
 test-results/
 .fallow/
 
-# Local automation artifacts
+# Local automation artifacts and unpromoted experiments
 .pi/
 .playwright-cli/
+/studies/
+/experiments/
+/.local/
+/projects/
+/docs/ux-artifacts/
+/test/workbench/data.json
 
 # Generated review output and local databases
 /output/
@@ -15,6 +21,3 @@ test-results/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
-
-# Core serializer owns the canonical bytes of the development-register snapshot.
-/projects/tracer/project-export.json

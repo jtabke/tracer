@@ -286,7 +286,7 @@ test("explicit requirements cannot weaken configured requirements and invalid in
 test("generated reference stays in sync with query codecs and registered JSON request keys", () => {
   const reference = renderApiReference();
   assert.equal(
-    readFileSync("docs/api-reference.md", "utf8"),
+    readFileSync("docs/reference/api-reference.md", "utf8"),
     reference,
     "Run npm run api:reference after endpoint changes",
   );

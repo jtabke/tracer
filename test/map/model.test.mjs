@@ -19,9 +19,7 @@ import {
   connectionEndpoints,
 } from "../../ui/map/filters.ts";
 
-const fixture = JSON.parse(
-  readFileSync(new URL("../../docs/ux-artifacts/map-first/fixture.json", import.meta.url)),
-);
+const fixture = JSON.parse(readFileSync(new URL("./fixtures/fixture.json", import.meta.url)));
 const index = indexFixture(fixture);
 const options = {
   types: presets.requirements,
@@ -78,12 +76,7 @@ test("filter presentation exposes every schema choice once, including unfamiliar
 
 test("study data preserves the source schema, identities, fields and links exactly", () => {
   const source = JSON.parse(
-    readFileSync(
-      new URL(
-        "../../docs/ux-artifacts/task-surface-reset/medical-clean-data.json",
-        import.meta.url,
-      ),
-    ),
+    readFileSync(new URL("./fixtures/medical-clean-data.json", import.meta.url)),
   );
   for (const key of ["title", "domain", "schema", "entities", "relationships"]) {
     assert.deepEqual(fixture[key], source[key]);

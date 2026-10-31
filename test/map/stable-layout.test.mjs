@@ -6,15 +6,13 @@ import { stableLayout } from "../../ui/map/stable-layout.ts";
 import { layoutProjection } from "../../ui/map/layout.ts";
 import {
   directoryProjection,
-  studyOrganization,
+  fixtureOrganization as studyOrganization,
   folderKey,
-} from "../../docs/ux-artifacts/map-first/organization.mjs";
+} from "./fixtures/organization.mjs";
 import { indexFixture } from "../../ui/map/model.ts";
 import { readableLabels } from "../../ui/map/connection-labels.ts";
 
-const fixture = JSON.parse(
-  readFileSync(new URL("../../docs/ux-artifacts/map-first/fixture.json", import.meta.url)),
-);
+const fixture = JSON.parse(readFileSync(new URL("./fixtures/fixture.json", import.meta.url)));
 const index = indexFixture(fixture),
   organization = studyOrganization(fixture);
 const options = {
