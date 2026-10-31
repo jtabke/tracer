@@ -10,7 +10,9 @@ export function VerificationPage({
   error,
   onClose,
   render,
+  kind = "verification",
 }: {
+  kind?: "verification" | "assessments";
   active: boolean;
   visited: boolean;
   target: HTMLElement;
@@ -21,9 +23,11 @@ export function VerificationPage({
 }) {
   const page = (
     <section
-      className="native-task verification-page"
+      className={`native-task verification-page ${kind === "assessments" ? "assessment-page" : ""}`}
       hidden={!active}
-      aria-label="Verification workspace page"
+      aria-label={
+        kind === "assessments" ? "Change assessments workspace page" : "Verification workspace page"
+      }
       tabIndex={-1}
     >
       <header className="verification-page-header">

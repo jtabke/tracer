@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AssessmentContext } from "./context.tsx";
 import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import type {
   ApplicationModelPin,
@@ -66,6 +67,7 @@ export function AssessmentOpening(props: OpeningProps) {
     model,
     baselines,
     sourceState,
+    query,
     setSource,
     sourceRead,
     prepare,
@@ -81,7 +83,17 @@ export function AssessmentOpening(props: OpeningProps) {
         void open();
       }}
     >
-      <h3>New assessment</h3>
+      <h3>Scope · New assessment</h3>
+      <AssessmentContext
+        name="Proposed assessment context"
+        title={`${prepared ? "Prepared scope" : "Proposed scope"} · ${title || "Untitled assessment"}`}
+        query={prepared?.query ?? query}
+        basis={prepared?.model.context}
+        changed={Boolean(prepared && stale)}
+        entities={entities}
+        epoch={editing.epoch}
+        report={editing.report}
+      />
       {!models.length && (
         <p role="status">
           No application-model definitions are available. Install a change-assessment model through
@@ -331,6 +343,7 @@ function useOpening({ editing, onOpened, onDirty, pair }: OpeningProps) {
     model,
     baselines,
     sourceState: draft,
+    query,
     setSource,
     sourceRead,
     prepare,

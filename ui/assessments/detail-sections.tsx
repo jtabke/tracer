@@ -24,6 +24,10 @@ export function AssessmentSummary({
         Recorded state: {analysis.view.assessment.state} · v{analysis.view.assessment.version} ·
         model v{analysis.view.model.pin.version}
       </p>
+      <p>
+        Recorded completion is historical; current applicability and remaining obligations are
+        assessed independently below. Completion is not release approval.
+      </p>
       <p>{analysis.view.scope.purpose}</p>
       <details>
         <summary>Selected scope and provenance</summary>
@@ -105,7 +109,7 @@ export function AssessmentObligations({
                 : item.subject.kind === "entity"
                   ? "Record"
                   : "Connection"}{" "}
-              · {item.subject.id.slice(0, 8)} ·{" "}
+              ·{" "}
               {item.label ??
                 candidateName(item.subject, entities, analysis.obligations.indexOf(item))}{" "}
               · {item.state.replaceAll("_", " ")}
@@ -113,6 +117,10 @@ export function AssessmentObligations({
             <span>
               {item.openActions} open actions{item.hasUnknown ? " · unknown basis" : ""}
             </span>
+            <details>
+              <summary>Candidate identity</summary>
+              <code>{item.subject.id}</code>
+            </details>
           </li>
         ))}
       </ol>
@@ -183,7 +191,7 @@ function candidateName(subject: CandidateKey, entities: Entity[], index: number)
   const entity = subject.kind === "entity" && entities.find((value) => value.id === subject.id);
   return entity
     ? label(entity)
-    : `${subject.kind === "receipt" ? "Evaluation" : "Connection"} ${index + 1} · ${subject.id.slice(0, 8)}`;
+    : `${subject.kind === "receipt" ? "Evaluation" : "Connection"} ${index + 1}`;
 }
 
 function CompletionAccounting({ analysis }: { analysis: AssessmentAnalysis }) {

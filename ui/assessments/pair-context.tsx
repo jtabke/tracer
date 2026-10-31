@@ -56,7 +56,7 @@ export function PairCandidateContext({
         </details>
       )}
       {selected && (
-        <details open>
+        <details>
           <summary>After native v{selected.version}</summary>
           <pre>{JSON.stringify(selected, null, 2)}</pre>
         </details>

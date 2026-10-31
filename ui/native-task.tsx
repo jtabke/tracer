@@ -194,6 +194,18 @@ export function NativeTasks({
           render={panels.verification}
         />
       )}
+      {verificationTarget && (
+        <VerificationPage
+          kind="assessments"
+          active={task === "assessments"}
+          visited={visited.includes("assessments")}
+          target={verificationTarget}
+          origin={verificationOrigin}
+          error={editing.error}
+          onClose={onClose}
+          render={panels.assessments}
+        />
+      )}
       <ModelPage
         active={task === "schema"}
         visited={visited.includes("schema")}
@@ -228,7 +240,11 @@ export function NativeTasks({
           Switching tasks or returning to the workspace retains in-session drafts until reload.
         </p>
         {visited
-          .filter((name) => name !== "schema" && !(name === "verification" && verificationTarget))
+          .filter(
+            (name) =>
+              name !== "schema" &&
+              !((name === "verification" || name === "assessments") && verificationTarget),
+          )
           .map((name) => (
             <div key={name} hidden={task !== name}>
               {panels[name]()}
@@ -276,9 +292,11 @@ function syncTaskSurface(
 ) {
   syncTaskDialog(
     dialog,
-    task === "schema" || (task === "verification" && verificationPage) ? null : task,
+    task === "schema" || ((task === "verification" || task === "assessments") && verificationPage)
+      ? null
+      : task,
   );
-  if (task === "verification" && verificationPage) {
+  if ((task === "verification" || task === "assessments") && verificationPage) {
     requestAnimationFrame(() =>
       document.querySelector<HTMLElement>(".verification-page:not([hidden])")?.focus(),
     );

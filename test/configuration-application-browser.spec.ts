@@ -123,9 +123,7 @@ for (const [domain, width] of [
       await expect(candidate.getByRole("button", { name: /^Record ·/ })).toHaveCount(1);
       await expect(
         candidate.getByRole("button", {
-          name: new RegExp(
-            `^Evaluation · ${original.id.slice(0, 8)} · Original failed check remains failed`,
-          ),
+          name: new RegExp(`^Evaluation · Original failed check remains failed`),
         }),
       ).toHaveCount(1);
       await candidate.getByRole("button").last().click();
@@ -138,8 +136,49 @@ for (const [domain, width] of [
       await judgment
         .getByLabel("Judgment rationale", { exact: true })
         .fill("Retain this pending engineering judgment across verification");
+      const assessmentPage = page.getByRole("region", {
+        name: "Change assessments workspace page",
+        exact: true,
+      });
+      await expect(page.locator("dialog:modal")).toHaveCount(0);
+      const context = assessments.getByRole("region", { name: "Assessment context", exact: true });
+      await expect(context).toContainText(x.before.name);
+      await expect(context).toContainText(after.name);
+      await expect(context).toContainText("Criterion-bearing record");
+      expect(await page.locator(".verification-return-context:visible").innerText()).not.toMatch(
+        /[0-9a-f]{8}-[0-9a-f]{4}-/i,
+      );
+      const visibleContext = await context.evaluate(
+        (element) => (element as HTMLElement).innerText,
+      );
+      expect(visibleContext).not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-/i);
+      expect(
+        await candidate.evaluate((element) => (element as HTMLElement).innerText),
+      ).not.toContain(original.id.slice(0, 8));
+      await context.getByText("Exact identities", { exact: true }).click();
+      await expect(
+        context.getByText(`Before configuration: ${x.before.id}`, { exact: true }),
+      ).toBeVisible();
+      await expect(
+        context.getByText(`After configuration: ${after.id}`, { exact: true }),
+      ).toBeVisible();
+      await context.getByText("Exact identities", { exact: true }).click();
+      page.once("dialog", (dialog) => dialog.dismiss());
+      await assessments.getByRole("button", { name: "New assessment", exact: true }).click();
+      await expect(judgment.getByLabel("Judgment rationale", { exact: true })).toHaveValue(
+        "Retain this pending engineering judgment across verification",
+      );
+      await assessmentPage
+        .getByRole("button", { name: "← Back to investigation", exact: true })
+        .click();
+      await openProjectDestination(page, "Change assessments");
+      await expect(judgment.getByLabel("Judgment rationale", { exact: true })).toHaveValue(
+        "Retain this pending engineering judgment across verification",
+      );
+      await judgment.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: `output/assessment-page/${domain}-${width}-judgment.png` });
       await detail.getByRole("button", { name: "Verify after configuration", exact: true }).click();
-      await expect(page.locator(".verification-return-context")).toContainText("opened r");
+      await expect(page.locator(".verification-return-context:visible")).toContainText("opened r");
       const verification = page.getByRole("region", {
         name: "Requirement verification",
         exact: true,
@@ -185,6 +224,14 @@ for (const [domain, width] of [
       await verification
         .getByLabel("Verification purpose", { exact: true })
         .fill("Exercise selected history independently of later head changes");
+      await openProjectDestination(page, "Change assessments");
+      await expect(judgment.getByLabel("Judgment rationale", { exact: true })).toHaveValue(
+        "Retain this pending engineering judgment across verification",
+      );
+      await openProjectDestination(page, "Verification");
+      await expect(verification.getByLabel("Verification title", { exact: true })).toHaveValue(
+        "Verify selected after configuration",
+      );
       await verification.getByLabel("Requirement", { exact: true }).selectOption(f.requirement.id);
       await verification
         .getByRole("button", { name: "Prepare verification basis", exact: true })
@@ -294,6 +341,17 @@ for (const [domain, width] of [
       await judgment.getByRole("button", { name: "Save candidate judgment", exact: true }).click();
       await expect(judgment).toHaveCount(0);
       await expect(candidate).toContainText("0 open actions");
+      await detail.scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: `output/assessment-page/${domain}-${width}-follow-through.png`,
+      });
+      await assessmentPage
+        .getByRole("button", { name: "← Back to investigation", exact: true })
+        .click();
+      await expect(assessmentPage).not.toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
       expect(await f.tracer.configurations.get(after.id)).toEqual(after);
       expect(await f.tracer.configurations.get(x.before.id)).toEqual(x.before);
     } finally {

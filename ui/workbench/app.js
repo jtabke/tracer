@@ -70,11 +70,23 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     ? createProjectTools(native, {
         changed: refreshAssessmentWorkspace,
         selected: () => state.selected,
-        origin: () => ({
-          key: state.selected,
-          revision: state.revision,
-          perspective: state.settingsOpen ? "Project settings" : state.perspective,
-        }),
+        origin: () => {
+          const record = native.projectSnapshot.entities.find(
+            (entity) => (entity.key ?? entity.id) === state.selected,
+          );
+          return {
+            key:
+              record?.key ||
+              String(
+                record?.fields.title ??
+                  record?.fields.name ??
+                  record?.resource?.label ??
+                  "Investigation",
+              ),
+            revision: state.revision,
+            perspective: state.settingsOpen ? "Project settings" : state.perspective,
+          };
+        },
         settled: () => render(),
         onMap: () => openDevelopmentMap(),
         onSettings: () => {
@@ -851,7 +863,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
 
     function renderWorkspaceHeading() {
-      if (projectTools?.pageOpen()) return "Verification";
+      if (projectTools?.pageOpen())
+        return projectTools.pageOpen() === "assessments" ? "Change assessments" : "Verification";
       if (state.settingsOpen) return "Project settings";
       if (state.evidenceOpen) return "Evidence review";
       if (state.artifactFull) return "Artifact";
@@ -881,7 +894,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       count = visibleKeys().length,
       atHead = state.revision === workspace.head;
     const workspaceTabs = `<nav class="view-switch workspace-perspectives" aria-label="Workspace perspective">${["graph", "matrix", "history"].map((view) => `<button data-view="${view}" aria-pressed="${state.perspective === view}">${icon(view)}${view[0].toUpperCase() + view.slice(1)}</button>`).join("")}</nav>`;
-    app.innerHTML = `<div class="shell sidebar-shell" data-page="${projectTools?.pageOpen() ? "verification" : "workspace"}">${projectSidebar()}
+    app.innerHTML = `<div class="shell sidebar-shell" data-page="${projectTools?.pageOpen() || "workspace"}">${projectSidebar()}
   <main class="workspace"><header class="topbar"><button class="navigation-toggle" data-action="open-navigation" aria-label="Open navigation" aria-haspopup="dialog">☰</button><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}<button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
   <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderContextActions()}</div></section>
   ${renderRevisionBanner()}
@@ -924,7 +937,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
         databases.find((database) => database.id === currentProject)?.title ?? "Local project",
       native: Boolean(native),
       settings: state.settingsOpen,
-      verification: projectTools?.pageOpen(),
+      verification: projectTools?.pageOpen() === "verification",
+      assessments: projectTools?.pageOpen() === "assessments",
     });
   }
   function openNavigation() {

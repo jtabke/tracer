@@ -12,6 +12,7 @@ import {
 import { assessmentCommand } from "./choices.tsx";
 import { AssessmentJudgment } from "./judgment.tsx";
 import { AssessmentCandidateContext } from "./scope.tsx";
+import { AssessmentContext } from "./context.tsx";
 
 export function AssessmentDetail({
   view,
@@ -82,13 +83,18 @@ export function AssessmentDetail({
       )}
       {analysis && (
         <>
-          <AssessmentSummary analysis={analysis} entities={entities} />
-          <AssessmentVerificationHandoff
-            analysis={analysis}
-            subject={subject}
-            current={current}
-            onVerify={onVerify}
+          <AssessmentContext
+            title={`${view.assessment.title} · v${view.assessment.version}`}
+            assessmentId={view.assessment.id}
+            query={view.scope.query}
+            basis={view.scope.basis}
+            entities={entities}
+            epoch={editing.epoch + epoch}
+            report={editing.report}
           />
+          <h3>Scope</h3>
+          <AssessmentSummary analysis={analysis} entities={entities} />
+          <h3>Candidate judgments</h3>
           <AssessmentObligations
             analysis={analysis}
             entities={entities}
@@ -127,6 +133,17 @@ export function AssessmentDetail({
               />
             </>
           )}
+          <h3>Actions &amp; verification</h3>
+          <p>
+            Follow-up actions and their supporting conclusions belong to each candidate judgment.
+            Select a candidate to inspect or manage them; open obligations remain below.
+          </p>
+          <AssessmentVerificationHandoff
+            analysis={analysis}
+            subject={subject}
+            current={current}
+            onVerify={onVerify}
+          />
           <AssessmentLifecycle
             analysis={analysis}
             reason={reason}

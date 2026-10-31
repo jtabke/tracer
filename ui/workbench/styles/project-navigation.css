@@ -88,11 +88,11 @@ body[data-direction="atlas"] .project-sidebar .project-sidebar-footer {
   font-size: 11px;
   text-align: left;
 }
-.sidebar-shell[data-page="verification"] .workspace-perspectives,
-.sidebar-shell[data-page="verification"] .crumb > span,
-.sidebar-shell[data-page="verification"] .crumb > button,
-.sidebar-shell[data-page="verification"] .context p,
-.sidebar-shell[data-page="verification"] .historybar {
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .workspace-perspectives,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .crumb > span,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .crumb > button,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .context p,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .historybar {
   display: none;
 }
 #verification-slot,

@@ -18,6 +18,7 @@ export function renderProjectSidebar({
   native,
   settings,
   verification = false,
+  assessments = false,
 }: {
   brand: string;
   workspaceIcon: string;
@@ -25,6 +26,7 @@ export function renderProjectSidebar({
   native: boolean;
   settings: boolean;
   verification?: boolean;
+  assessments?: boolean;
 }) {
   const groups = native ? projectTaskGroups.filter((group) => group.navigation) : [];
   const destinations = (scope: "work" | "project") =>
@@ -33,10 +35,10 @@ export function renderProjectSidebar({
       .flatMap((group) => group.tasks)
       .map(
         ({ task, title }) =>
-          `<button data-action="task-${task}" aria-label="${escapeHtml(title)}" ${verification && task === "verification" ? 'class="active" aria-current="page"' : ""}>${projectToolIcon(task)}<span>${escapeHtml(title)}</span></button>`,
+          `<button data-action="task-${task}" aria-label="${escapeHtml(title)}" ${(verification && task === "verification") || (assessments && task === "assessments") ? 'class="active" aria-current="page"' : ""}>${projectToolIcon(task)}<span>${escapeHtml(title)}</span></button>`,
       )
       .join("");
-  return `<aside class="rail project-sidebar" aria-label="Project navigation"><div class="brand">${brand}<span>Tracer</span></div><div class="sidebar-project"><strong>${escapeHtml(project)}</strong><span>${native ? "Saved locally" : "Preview"}</span></div><nav class="railnav" aria-label="Engineering work"><button data-action="workspace" aria-label="Workspace" ${settings || verification ? "" : 'class="active" aria-current="page"'}>${workspaceIcon}<span>Workspace</span></button>${destinations("work")}</nav><nav class="railnav project-sidebar-footer" aria-label="Project setup and help">${destinations("project")}${native ? `<button data-action="project-settings" aria-label="Project settings" ${settings && !verification ? 'class="active" aria-current="page"' : ""}>${projectToolIcon("settings")}<span>Project settings</span></button>` : ""}</nav></aside>`;
+  return `<aside class="rail project-sidebar" aria-label="Project navigation"><div class="brand">${brand}<span>Tracer</span></div><div class="sidebar-project"><strong>${escapeHtml(project)}</strong><span>${native ? "Saved locally" : "Preview"}</span></div><nav class="railnav" aria-label="Engineering work"><button data-action="workspace" aria-label="Workspace" ${settings || verification || assessments ? "" : 'class="active" aria-current="page"'}>${workspaceIcon}<span>Workspace</span></button>${destinations("work")}</nav><nav class="railnav project-sidebar-footer" aria-label="Project setup and help">${destinations("project")}${native ? `<button data-action="project-settings" aria-label="Project settings" ${settings && !verification && !assessments ? 'class="active" aria-current="page"' : ""}>${projectToolIcon("settings")}<span>Project settings</span></button>` : ""}</nav></aside>`;
 }
 
 export function renderProjectSettings(refreshDisabled: boolean) {

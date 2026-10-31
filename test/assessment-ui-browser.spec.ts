@@ -22,7 +22,15 @@ for (const [domain, width] of [
     try {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(server.origin);
+      await page.locator('[data-action="search"]').click();
+      await page.locator("#search").fill(f.criterion.id);
+      await page.locator(`[data-result="${f.criterion.id}"]`).click();
+      if (width === 680) await page.getByRole("button", { name: "Matrix", exact: true }).click();
+      const investigation = await page.locator(".context p").textContent();
+      const camera = width === 1440 ? await page.locator(".scene").getAttribute("style") : null;
       const panel = await openTask(page);
+      await expect(page.locator("dialog:modal")).toHaveCount(0);
+      await expect(page.locator(".sidebar-shell")).toHaveAttribute("data-page", "assessments");
       await panel.getByRole("button", { name: "New assessment", exact: true }).click();
       await panel
         .getByLabel("Assessment application model", { exact: true })
@@ -51,8 +59,15 @@ for (const [domain, width] of [
       await panel
         .getByLabel("Judgment rationale", { exact: true })
         .fill("This specific known candidate requires no revision under the declared scope.");
-      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
+      await page.getByRole("button", { name: "← Back to investigation", exact: true }).click();
+      await expect(page.locator(".context p")).toHaveText(investigation!);
+      if (camera) await expect(page.locator(".scene")).toHaveAttribute("style", camera);
       await openTask(page);
+      const rationale = panel.getByLabel("Judgment rationale", { exact: true });
+      await rationale.focus();
+      await page.setViewportSize({ width: width - 20, height: 900 });
+      await expect(rationale).toBeFocused();
+      await page.setViewportSize({ width, height: 900 });
       await expect(panel.getByLabel("Judgment rationale", { exact: true })).toHaveValue(
         "This specific known candidate requires no revision under the declared scope.",
       );
@@ -386,9 +401,9 @@ test("assessment opening rejects a competing native head, retains the prepared d
       actor,
     );
     await panel.getByRole("button", { name: "Open assessment", exact: true }).click();
-    await expect(page.getByRole("dialog", { name: "Project task", exact: true })).toContainText(
-      "Project changed since preview",
-    );
+    await expect(
+      page.getByRole("region", { name: "Change assessments workspace page", exact: true }),
+    ).toContainText("Project changed since preview");
     expect(
       (await f.tracer.queryEntities({ type: f.definition.assessment.type })).items,
     ).toHaveLength(0);
@@ -408,6 +423,41 @@ test("assessment opening rejects a competing native head, retains the prepared d
     expect(
       (await f.tracer.queryEntities({ type: f.definition.assessment.type })).items,
     ).toHaveLength(1);
+  } finally {
+    await closeTestPage(page);
+    await server.close();
+    f.close();
+  }
+});
+
+test("unavailable display names never replace exact assessment scope or expose IDs as primary labels", async ({
+  page,
+}) => {
+  const f = await applicationModelFixture();
+  const opening = await assessmentOpenRequest(f);
+  await f.tracer.changeAssessments.open(opening, actor);
+  const before = await f.tracer.exportProject();
+  const server = await startLocalServer(f.tracer, resolve("dist"), 0);
+  try {
+    await page.route("**/api/baseline?*", (route) => route.abort());
+    await page.goto(server.origin);
+    const panel = await openTask(page);
+    await panel
+      .getByRole("navigation", { name: "Assessment records" })
+      .getByRole("button")
+      .first()
+      .click();
+    const context = panel.getByRole("region", { name: "Assessment context", exact: true });
+    await expect(context).toContainText("Some display names could not be read");
+    expect(await context.innerText()).not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-/i);
+    await context.getByText("Exact identities", { exact: true }).click();
+    await expect(context.getByText(`Baseline: ${f.baseline.id}`, { exact: true })).toBeVisible();
+    await context.getByText("Exact identities", { exact: true }).click();
+    await page.unroute("**/api/baseline?*");
+    await panel.getByRole("button", { name: "Refresh assessments", exact: true }).click();
+    await expect(context).toContainText(f.baseline.name);
+    await expect(context).not.toContainText("Some display names could not be read");
+    expect(await f.tracer.exportProject()).toEqual(before);
   } finally {
     await closeTestPage(page);
     await server.close();

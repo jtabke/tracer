@@ -8,6 +8,7 @@ import { ApplicationTaskHeader, ApplicationRecovery } from "../application-task.
 import { assessmentChoices, modelChoices, useAssessmentDirty } from "./choices.tsx";
 import { AssessmentOpening } from "./opening.tsx";
 import { AssessmentDetail } from "./detail.tsx";
+import { AssessmentContext } from "./context.tsx";
 import "./workspace.css";
 
 export function AssessmentWorkspace({
@@ -78,9 +79,15 @@ export function AssessmentWorkspace({
             A compared pair is available. Your current assessment draft is retained until you
             explicitly start another assessment.
           </p>
-          <p>
-            {intent.pair.beforeId} → {intent.pair.afterId} · root {intent.rootId}
-          </p>
+          <AssessmentContext
+            title="Compared scope"
+            name="Incoming assessment context"
+            sticky={false}
+            query={{ ...intent.pair, rootId: intent.rootId }}
+            entities={entities}
+            epoch={editing.epoch}
+            report={editing.report}
+          />
           <button disabled={editing.busy} onClick={() => navigate("", true, intent)}>
             Start assessment for displayed pair
           </button>

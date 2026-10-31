@@ -27,6 +27,9 @@
   background: var(--paper, var(--color-background));
   color: var(--ink, var(--color-text));
 }
+.native-task.verification-page[hidden] {
+  display: none;
+}
 .verification-page-header {
   position: sticky;
   top: 0;

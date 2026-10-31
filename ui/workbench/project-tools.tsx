@@ -32,16 +32,17 @@ export function createProjectTools(native: typeof Native, options: Options) {
   const dirty = new Set<string>();
   const pageHost = document.createElement("div");
   pageHost.className = "verification-page-host";
-  let pageOpen = false;
+  let pageOpen: "verification" | "assessments" | false = false;
   let pageFocus: HTMLElement | null = null;
-  let pageScroll = 0;
+  const pageScroll = { verification: 0, assessments: 0 };
   let pageFrame = 0;
   let origin: VerificationReturnContext | undefined;
   let sequence = 0;
-  const onPage = (value: boolean) => {
+  const onPage = (value: "verification" | "assessments" | false) => {
     if (pageOpen === value) return;
     pageOpen = value;
-    if (value) origin = options.origin();
+    if (value && !origin) origin = options.origin();
+    if (!value) origin = undefined;
     options.settled();
   };
   let open: ((task: NativeTask | null, request?: VerificationSubjectRequest) => void) | undefined;
@@ -104,9 +105,10 @@ export function createProjectTools(native: typeof Native, options: Options) {
     },
     detachPage: () => {
       cancelAnimationFrame(pageFrame);
-      if (pageHost.isConnected)
-        pageScroll =
-          pageHost.querySelector<HTMLElement>(".verification-page")?.scrollTop ?? pageScroll;
+      const page = pageHost.querySelector<HTMLElement>(".verification-page:not([hidden])");
+      if (pageHost.isConnected && page)
+        pageScroll[page.classList.contains("assessment-page") ? "assessments" : "verification"] =
+          page.scrollTop;
       pageFocus =
         document.activeElement instanceof HTMLElement && pageHost.contains(document.activeElement)
           ? document.activeElement
@@ -115,14 +117,14 @@ export function createProjectTools(native: typeof Native, options: Options) {
     },
     attachPage: (slot: Element | null) => {
       slot?.append(pageHost);
-      const page = pageHost.querySelector<HTMLElement>(".verification-page");
-      if (pageHost.isConnected && page) page.scrollTop = pageScroll;
+      const page = pageHost.querySelector<HTMLElement>(".verification-page:not([hidden])");
+      if (pageHost.isConnected && page && pageOpen) page.scrollTop = pageScroll[pageOpen];
       if (pageFocus?.isConnected) pageFocus.focus({ preventScroll: true });
       pageFocus = null;
       pageFrame = requestAnimationFrame(() => {
-        const page = pageHost.querySelector<HTMLElement>(".verification-page");
-        if (pageOpen && pageHost.isConnected && page && page.scrollTop === 0 && pageScroll > 0)
-          page.scrollTop = pageScroll;
+        const page = pageHost.querySelector<HTMLElement>(".verification-page:not([hidden])");
+        if (pageOpen && pageHost.isConnected && page && page.scrollTop === 0)
+          page.scrollTop = pageScroll[pageOpen];
       });
     },
     hasDrafts: () => dirty.size > 0,
@@ -163,7 +165,7 @@ function ProjectTools({
   epoch: number;
   pageHost: HTMLElement;
   origin?: VerificationReturnContext;
-  onPage(value: boolean): void;
+  onPage(value: "verification" | "assessments" | false): void;
   restoreFocus(): void;
   register(show: (task: NativeTask | null, request?: VerificationSubjectRequest) => void): void;
   onDirty(task: string, value: boolean): void;
@@ -183,7 +185,7 @@ function ProjectTools({
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
     }
     setTask(next);
-    onPage(next === "verification");
+    onPage(next === "verification" || next === "assessments" ? next : false);
   };
   useEffect(() => {
     const route = () => {
