@@ -7,7 +7,7 @@ import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 import type { Entity, Schema } from "../src/core/model.ts";
 import type { Receipt } from "../src/core/evidence.ts";
-import { openView } from "./browser-navigation.ts";
+import { openNativeTask as openView, refreshNativeTask } from "./project-navigation.ts";
 
 const origin = { actor: "focused-evidence-test" };
 const schema: Schema = {
@@ -76,7 +76,7 @@ const test = base.extend<{
       1,
       origin,
     );
-    const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+    const server = await startLocalServer(tracer, resolve("dist"), 0);
     try {
       await use({ tracer, origin: server.origin, inputs, receipt, other });
     } finally {
@@ -135,7 +135,7 @@ test("complete focused evidence, narrow order, retained draft and native compari
     .getByLabel("Review rationale", { exact: true })
     .fill("Keep this receipt's original outcome; assess the exact declared input change.");
   await expect(list.getByRole("button")).toHaveCount(3);
-  await stage.getByRole("button", { name: /Return to Evaluations/ }).click();
+  await stage.getByRole("button", { name: /Return to recorded evaluations/ }).click();
   await expect(stage).toBeHidden();
   await page.getByRole("button", { name: "Return to review draft", exact: true }).click();
   await expect(stage.getByLabel("Review rationale", { exact: true })).toHaveValue(
@@ -155,7 +155,7 @@ test("complete focused evidence, narrow order, retained draft and native compari
     "Keep this receipt's original outcome; assess the exact declared input change.",
   );
   expect((await fixture.tracer.evidence.list("review")).items).toHaveLength(0);
-  await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+  await refreshNativeTask(page, "Evidence");
   await expect(stage.getByText(/Review inputs changed\. Draft retained/)).toBeVisible();
   await expect(
     stage.getByRole("button", { name: "Record review decision", exact: true }),
@@ -199,7 +199,7 @@ test("unknown inputs and failed comparison retain capture while pausing acceptan
     stage.getByRole("button", { name: "Record review decision", exact: true }),
   ).toBeEnabled();
   await page.route("**/api/comparison?*", (route) => route.abort());
-  await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+  await refreshNativeTask(page, "Evidence");
   await expect(stage.getByText(/Receipt comparison could not be established/)).toBeVisible();
   await expect(
     stage.getByRole("button", { name: "Record review decision", exact: true }),
@@ -214,7 +214,7 @@ test("unknown inputs and failed comparison retain capture while pausing acceptan
     fixture.receipt.outcome,
   );
   await page.unroute("**/api/comparison?*");
-  await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+  await refreshNativeTask(page, "Evidence");
   await expect(
     stage.getByRole("button", { name: "Record review decision", exact: true }),
   ).toBeEnabled();
@@ -238,7 +238,7 @@ test("receipt switching requires deliberate discard and uncertain review writes 
   await stage
     .getByLabel("Review rationale", { exact: true })
     .fill("Receipt-specific rationale must not transfer.");
-  await stage.getByRole("button", { name: /Return to Evaluations/ }).click();
+  await stage.getByRole("button", { name: /Return to recorded evaluations/ }).click();
   page.once("dialog", (dialog) => dialog.dismiss());
   await page.getByLabel("Evaluation receipt", { exact: true }).selectOption(fixture.other.id);
   await expect(stage).toBeHidden();
@@ -249,7 +249,7 @@ test("receipt switching requires deliberate discard and uncertain review writes 
   await expect(stage.getByLabel("Review rationale", { exact: true })).toHaveValue(
     "Receipt-specific rationale must not transfer.",
   );
-  await stage.getByRole("button", { name: /Return to Evaluations/ }).click();
+  await stage.getByRole("button", { name: /Return to recorded evaluations/ }).click();
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByLabel("Evaluation receipt", { exact: true }).selectOption(fixture.other.id);
   await expect(stage.getByLabel("Recorded result", { exact: true })).toContainText(
@@ -274,16 +274,14 @@ test("receipt switching requires deliberate discard and uncertain review writes 
     await route.abort();
   });
   await stage.getByRole("button", { name: "Record review decision", exact: true }).click();
-  await expect(
-    page.getByRole("alert").filter({ hasText: "The save outcome is unknown" }),
-  ).toBeVisible();
+  await expect(page.getByRole("alert").filter({ hasText: "Save not confirmed" })).toBeVisible();
   await expect(
     stage.getByRole("button", { name: "Record review decision", exact: true }),
   ).toBeDisabled();
   await expect(stage.getByLabel("Review rationale", { exact: true })).toHaveValue(
     "Retain the attempted review after an uncertain transport outcome.",
   );
-  await stage.getByRole("button", { name: /Return to Evaluations/ }).click();
+  await stage.getByRole("button", { name: /Return to recorded evaluations/ }).click();
   await page.getByRole("button", { name: "Return to review draft", exact: true }).click();
   expect(attempts).toBe(1);
   expect((await fixture.tracer.evidence.list("review")).items).toHaveLength(0);
@@ -393,7 +391,7 @@ for (const width of [1440, 390])
       "UNKNOWN captured criterion",
     );
     await page.route("**/api/configuration?**", (route) => route.abort());
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Configurations");
     await expect(
       page.getByText("Previously read capture retained.", { exact: true }),
     ).toBeVisible();

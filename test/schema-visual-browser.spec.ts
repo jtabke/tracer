@@ -6,7 +6,7 @@ import { seedWorkspace } from "../examples/seed-workspace.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { openView } from "./browser-navigation.ts";
+import { openNativeTask as openView, refreshNativeTask } from "./project-navigation.ts";
 
 const screenshots = "/tmp/tracer-model-configuration";
 
@@ -17,15 +17,14 @@ test("Visual/Text configure one draft: fields, port connections, arrangement, in
   const fixture = await seedWorkspace(join(dir, "project"), "engineering");
   const repo = new SQLiteRepository(fixture.database);
   const tracer = new Tracer(repo);
-  const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+  const server = await startLocalServer(tracer, resolve("dist"), 0);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   mkdirSync(screenshots, { recursive: true });
   try {
     const head = (await tracer.timeline()).head;
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(`${server.origin}/?view=model`);
-    await page.getByRole("button", { name: "Configure model", exact: true }).click();
+    await page.goto(`${server.origin}/#model`);
     const editor = page.getByLabel("Configure project model", { exact: true });
     const visual = editor.getByRole("button", { name: "Visual", exact: true });
     const text = editor.getByRole("button", { name: "Text", exact: true });
@@ -44,6 +43,7 @@ test("Visual/Text configure one draft: fields, port connections, arrangement, in
     await json.fill(JSON.stringify(draft, null, 2));
     await visual.click();
     await editor.getByRole("button", { name: /Return to .* draft flow/ }).click();
+    await editor.getByRole("button", { name: "Show supporting types", exact: true }).click();
     await expect(
       editor.getByRole("button", { name: "Select type · review_note", exact: true }),
     ).toBeVisible();
@@ -106,7 +106,7 @@ test("Visual/Text configure one draft: fields, port connections, arrangement, in
     await expect(note.locator("..")).not.toHaveAttribute("style", noteBefore!);
     await page.screenshot({ path: join(screenshots, "visual-1440.png") });
     await editor.getByRole("button", { name: "Save model", exact: true }).click();
-    await expect(editor).toHaveCount(0);
+    await expect(editor).toContainText("Model saved as v2");
     const saved = (await tracer.getSchema())!;
     expect(saved.version).toBe(2);
     expect(saved.entityTypes.requirement.fields.budget.type).toBe("number");
@@ -114,7 +114,6 @@ test("Visual/Text configure one draft: fields, port connections, arrangement, in
     expect(saved.relationshipTypes.informs_review.target).toEqual(["review_note"]);
     expect((await tracer.timeline()).head).toBe(head + 1);
     await page.reload();
-    await page.getByRole("button", { name: "Configure model", exact: true }).click();
     await editor.getByLabel("Workflow connection", { exact: true }).selectOption("informs_review");
     await editor
       .getByRole("group", { name: "Sources", exact: true })
@@ -136,9 +135,11 @@ test("Visual/Text configure one draft: fields, port connections, arrangement, in
       2,
       { actor: "visual-config-conflict" },
     );
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Model");
     await editor.getByRole("button", { name: "Save model", exact: true }).click();
-    await expect(page.getByRole("alert").first()).toContainText("conflict");
+    await expect(page.getByRole("alert").first()).toContainText(
+      "Expected schema version 2, current version 3",
+    );
     await expect(editor).toContainText("Based on schema v2");
     await openView(page, "Project");
     await openView(page, "Model");
@@ -153,7 +154,8 @@ test("Visual/Text configure one draft: fields, port connections, arrangement, in
     ]);
     page.once("dialog", (dialog) => dialog.accept());
     await editor.getByRole("button", { name: "Cancel", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "Project model", exact: true })).toBeVisible();
+    await expect(page.locator(".model-page")).toBeHidden();
+    await expect(page.locator(".sidebar-shell")).toBeVisible();
     expect(errors).toEqual([]);
   } finally {
     await server.close();

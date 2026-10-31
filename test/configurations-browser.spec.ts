@@ -5,7 +5,8 @@ import { join, resolve } from "node:path";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { evaluationChooser, openView, receiptInputEditor } from "./browser-navigation.ts";
+import { evaluationChooser, receiptInputEditor } from "./evidence-navigation.ts";
+import { openNativeTask as openView, refreshNativeTask } from "./project-navigation.ts";
 import type { Page as BrowserPage } from "./browser-test.ts";
 
 async function fixture() {
@@ -48,7 +49,7 @@ async function fixture() {
     1,
     actor,
   );
-  const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+  const server = await startLocalServer(tracer, resolve("dist"), 0);
   return { directory, database, repo, tracer, server, hardware, software, build, report };
 }
 async function chooseOldHardware(page: BrowserPage, hardwareId: string) {
@@ -146,7 +147,7 @@ test("mixed native revisions are captured, evaluated, compared and reopened with
       path: join(screenshots, "mixed-revisions-narrow.png"),
       fullPage: true,
     });
-    await page.getByRole("button", { name: "Return to Evaluations", exact: true }).click();
+    await page.getByRole("button", { name: "Return to recorded evaluations", exact: true }).click();
     await page.getByRole("button", { name: "Record native-input receipt", exact: true }).click();
     await page.getByLabel("Configuration basis (optional)").selectOption("");
     await page.getByRole("button", { name: "Edit input 1: HARDWARE", exact: true }).click();
@@ -174,12 +175,13 @@ test("mixed native revisions are captured, evaluated, compared and reopened with
     value.repo.close();
     closed = true;
     const reopened = new SQLiteRepository(value.database);
-    const server = await startLocalServer(new Tracer(reopened), resolve(".fallow/legacy-ui"), 0);
+    const server = await startLocalServer(new Tracer(reopened), resolve("dist"), 0);
     try {
       await page.goto(server.origin + "/?item=" + value.build.id);
-      await page.getByRole("button", { name: /^Show details/ }).click();
-      await page.getByText("Captured configurations", { exact: true }).click();
-      await page.getByText(configuration.name + " · " + configuration.at, { exact: true }).click();
+      await openView(page, "Configurations");
+      await page
+        .getByRole("button", { name: `Open configuration ${configuration.name}`, exact: true })
+        .click();
       await expect(page.getByRole("article", { name: "Pinned configuration" })).toContainText(
         "HARDWARE · pinned v1",
       );
@@ -220,7 +222,7 @@ test("capture conflicts and unknown outcomes retain proposals and pause blind re
     );
     await expect(capture.getByLabel("Configuration name")).toHaveValue("Hardware A + software B");
     await expect(capture.getByLabel("Input revision")).toHaveValue("1");
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Configurations");
     await expect(
       capture
         .getByLabel("Configuration subject", { exact: true })
@@ -291,7 +293,7 @@ test("missing configuration support pauses historical writes while retaining the
         body: JSON.stringify({ error: "not_found", message: "Unknown query endpoint" }),
       }),
     );
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Evidence");
     await expect(page.getByRole("alert")).toContainText(
       "This running server does not support configuration captures",
     );

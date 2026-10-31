@@ -9,7 +9,7 @@ Follow engineering intent through requirements, implementation and evidence—an
 
 Tracer is a local-first engineering knowledge and traceability workspace. Define your own record types and relationships, compare sibling responsibilities in aligned traces, inspect captured evidence in context, and save useful working scopes. SQLite stores the project; no account or cloud service is required.
 
-This is a working source preview. It includes a CLI and browser workspace, with explicit limits described below.
+**Unreleased source preview (0.1.0).** Run from this checkout; no npm SDK, desktop installer or hosted service is published. The supported local workflow and current limits are below. See [changes](CHANGELOG.md), [support](SUPPORT.md) and [security](SECURITY.md).
 
 ![Tracer Graph workspace showing a selected pressure requirement, its recorded dependency paths and the contextual inspector](docs/images/aster-workbench-graph.png)
 
@@ -46,6 +46,8 @@ npm start -- --db my-project.sqlite
 Choose **Engineering** in **Model** for acceptance criteria, verification methods, optional subsystem/build references, coverage policies and three saved Matrix views. The setup and your records persist in the database. Reopen the same file to continue.
 
 Follow the [Engineering starter walkthrough](docs/guides/getting-started.md#start-your-own-project) to create a small CO₂-monitor trace and reopen it in a clean browser.
+
+Use the same explicit database path to reopen your work. After the first successful build, `npm run serve -- --db my-project.sqlite` starts without rebuilding. `npm run backup -- my-project.sqlite new-backup.sqlite` creates a new online SQLite backup without overwriting an existing file. See [local operation and recovery](docs/guides/local-operation.md) before upgrading or restoring a project.
 
 For existing spreadsheet records, save the model, then use **Project settings → Import & export → Import CSV** to map columns, preview errors and commit records/links together. See the [CSV import guide](docs/guides/csv-import.md).
 
@@ -107,6 +109,7 @@ Scripts can import `createClient` from `@tracer-local/core/client`. Each client 
 npx playwright install chromium
 npm run check       # formatting, types, hooks, unit/browser tests and quality
 npm test            # focused unit/service/projection checks
+npm run test:smoke  # production desktop/mobile smoke workflows
 npm run build
 npm run clean -- --dry-run  # preview reproducible build/cache cleanup
 ```

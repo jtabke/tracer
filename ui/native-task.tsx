@@ -9,8 +9,8 @@ import { ReferenceWorkspace } from "./reference-workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
-import { ConfigurationWorkspace } from "./configuration-workspace.tsx";
-import { useConfigurationHandoff } from "./use-configuration-handoff.ts";
+import { ConfigurationWorkspace } from "./configurations/workspace.tsx";
+import { useConfigurationHandoff } from "./configurations/use-handoff.ts";
 import { CsvImport } from "./csv-import.tsx";
 import { ProjectExport } from "./project-export.tsx";
 import { NextWork } from "./next-work.tsx";
@@ -22,7 +22,7 @@ import { SchemaEditor } from "./schema-editor.tsx";
 import "./style.css";
 import "./model-page.css";
 import { NativeTypeOptions } from "./type-options.tsx";
-import { WorkItem } from "./work-item.tsx";
+import { WorkItem } from "./records/details.tsx";
 import { ProjectTaskNavigation } from "./project-task-navigation.tsx";
 
 export type NativeTask =
@@ -144,6 +144,8 @@ export function NativeTasks({
     ),
     evaluations: () => (
       <EvidenceView
+        blocked={editing.busy}
+        onOpenConfiguration={onTask ? handoffs.openConfiguration : undefined}
         epoch={editing.epoch}
         changed={changed}
         report={editing.report}
@@ -152,6 +154,9 @@ export function NativeTasks({
     ),
     configurations: () => (
       <ConfigurationWorkspace
+        intent={handoffs.configuration}
+        returnLabel="Return to recorded result"
+        onReturn={onTask && handoffs.configuration ? () => onTask("evaluations") : undefined}
         active={task === "configurations"}
         onAssess={onTask ? handoffs.assess : undefined}
         editing={editing}

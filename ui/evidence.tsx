@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { ExternalIdentity, Observation, Receipt } from "../src/core/evidence.ts";
 import type { Entity, SchemaObject } from "../src/core/model.ts";
 import { read } from "./api.ts";
-import { ConfigurationCapture, useConfigurations } from "./configurations.tsx";
+import { ConfigurationCapture, useConfigurations } from "./configurations/native-capture.tsx";
 import type { Save } from "./editing.ts";
 import { EvidenceReviewStage } from "./evidence-review-stage.tsx";
 import "./evidence.css";
@@ -17,7 +17,11 @@ export function EvidenceView({
   report,
   mutate,
   onOpenReceipt,
+  onOpenConfiguration,
+  blocked = false,
 }: {
+  blocked?: boolean;
+  onOpenConfiguration?(id: string): void;
   onOpenReceipt?(receiptId: string, focusInputId?: string): void;
   mutate: MutationExecutor;
   epoch: number;
@@ -49,7 +53,7 @@ export function EvidenceView({
   );
   const catalog = useConfigurations(epoch);
   const { busy, notice, save } = useEvidenceWrite(changed, mutate);
-  const paused = busy || !ready;
+  const paused = blocked || busy || !ready;
   const {
     artifact,
     setArtifact,
@@ -63,6 +67,7 @@ export function EvidenceView({
     setRepository,
     ref,
     setRef,
+    adoptLocator,
   } = useExternalDraft();
   const options = entities.map((value) => (
     <option key={value.id} value={value.id}>
@@ -70,11 +75,6 @@ export function EvidenceView({
     </option>
   ));
   const binding = external.find((value) => value.id === artifact);
-  function adoptLocator(latest: Observation["locator"] | undefined) {
-    setPath(latest?.path ?? "");
-    setRepository(latest?.system === "git" ? latest.repository : "");
-    setRef(latest?.system === "git" ? latest.ref : "HEAD");
-  }
   function chooseArtifact(id: string) {
     setArtifact(id);
     const value = external.find((item) => item.id === id);
@@ -202,6 +202,8 @@ export function EvidenceView({
         <p>Recorded outcomes and the exact inputs they evaluated.</p>
       </div>
       <LocalEvidenceReview
+        busy={paused}
+        onOpenConfiguration={onOpenConfiguration}
         external={Boolean(onOpenReceipt)}
         selection={selection}
         epoch={epoch}
@@ -209,7 +211,7 @@ export function EvidenceView({
         mutate={mutate}
         report={report}
       />
-      <div hidden={(!onOpenReceipt && reviewActive) || task !== "catalogue"}>
+      <div hidden={catalogueHidden(task === "catalogue", Boolean(onOpenReceipt), reviewActive)}>
         <EvidenceTaskActions
           onRecord={() => {
             setTask("receipt");
@@ -244,8 +246,9 @@ export function EvidenceView({
         />
         {limited && (
           <p role="status">
-            Large project: creation pickers are disabled beyond 1,000 items. Use Work to find and
-            connect items; existing receipts can still be compared and reviewed here.
+            Large project: creation pickers are disabled beyond 1,000 items. Use Search and record
+            tasks to find and connect items; existing receipts can still be compared and reviewed
+            here.
           </p>
         )}
       </div>
@@ -289,6 +292,11 @@ export function EvidenceView({
   );
 }
 
+/** An inline review owns the catalogue space; an external review does not. */
+function catalogueHidden(active: boolean, external: boolean, reviewActive: boolean) {
+  return !active || (!external && reviewActive);
+}
+
 function LegacyConfigurationCapture({
   enabled,
   ...props
@@ -307,6 +315,8 @@ function EvidenceTaskActions({ onRecord, onObserve }: { onRecord(): void; onObse
 }
 
 function LocalEvidenceReview({
+  busy,
+  onOpenConfiguration,
   external,
   selection,
   epoch,
@@ -314,6 +324,8 @@ function LocalEvidenceReview({
   mutate,
   report,
 }: {
+  busy: boolean;
+  onOpenConfiguration?(id: string): void;
   external: boolean;
   selection: ReturnType<typeof useReceiptSelection>;
   epoch: number;
@@ -325,6 +337,9 @@ function LocalEvidenceReview({
   return (
     <>
       <EvidenceReviewStage
+        busy={busy}
+        discardRevision={selection.discardRevision}
+        onOpenConfiguration={onOpenConfiguration}
         receiptId={selection.selected}
         epoch={epoch}
         changed={changed}
@@ -347,14 +362,16 @@ function useReceiptSelection(onOpenReceipt?: (id: string, focusInputId?: string)
   const [selected, setSelected] = useState("");
   const [reviewActive, setReviewActive] = useState(false);
   const [reviewDirty, setReviewDirty] = useState(false);
+  const [discardRevision, setDiscardRevision] = useState(0);
   const chooseReceipt = (id: string) => {
     if (onOpenReceipt) {
       onOpenReceipt(id);
       return;
     }
     if (reviewDirty && id !== selected) {
-      setReviewActive(true);
-      return;
+      if (!window.confirm("Discard this receipt's review draft before changing receipt?")) return;
+      setDiscardRevision((value) => value + 1);
+      setReviewDirty(false);
     }
     setSelected(id);
     setReviewActive(Boolean(id));
@@ -365,6 +382,7 @@ function useReceiptSelection(onOpenReceipt?: (id: string, focusInputId?: string)
     reviewActive,
     setReviewActive,
     reviewDirty,
+    discardRevision,
     setReviewDirty,
     chooseReceipt,
   };
@@ -432,6 +450,11 @@ function useExternalDraft() {
     [path, setPath] = useState(""),
     [repository, setRepository] = useState(""),
     [ref, setRef] = useState("HEAD");
+  function adoptLocator(latest: Observation["locator"] | undefined) {
+    setPath(latest?.path ?? "");
+    setRepository(latest?.system === "git" ? latest.repository : "");
+    setRef(latest?.system === "git" ? latest.ref : "HEAD");
+  }
   return {
     artifact,
     setArtifact,
@@ -445,6 +468,7 @@ function useExternalDraft() {
     setRepository,
     ref,
     setRef,
+    adoptLocator,
   };
 }
 

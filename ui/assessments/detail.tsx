@@ -1,4 +1,4 @@
-import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { ConfigurationHandoff } from "../configurations/handoff.ts";
 import { useRef, useState } from "react";
 import type { Entity } from "../../src/core/model.ts";
 import type { CandidateKey, ChangeAssessmentView } from "../../src/core/change-assessment.ts";

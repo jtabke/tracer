@@ -6,6 +6,7 @@ import type {
   SchemaObject,
 } from "../../src/core/model.ts";
 import type { ProjectSnapshot } from "../../src/core/project-snapshot.ts";
+import { statementText } from "../statement-text.ts";
 
 export type WorkspaceEntity = Entity & { key: string; title: string; statement: string };
 export type WorkspaceRelationship = Relationship & { scope: string };
@@ -35,7 +36,7 @@ export function projectWorkspace(
     ...value,
     key: value.key ?? value.id,
     title: String(value.fields.title ?? value.resource?.label ?? value.key ?? value.id),
-    statement: String(value.fields.statement ?? ""),
+    statement: statementText(value),
   });
   const link = (value: Relationship) => ({
     ...value,

@@ -6,7 +6,8 @@ import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 import type { Entity } from "../src/core/model.ts";
-import { openView, receiptInputEditor } from "./browser-navigation.ts";
+import { receiptInputEditor } from "./evidence-navigation.ts";
+import { openNativeTask as openView } from "./project-navigation.ts";
 
 const actor = { actor: "documentation-native-browser" };
 const test = base.extend<{ fixture: { tracer: Tracer; origin: string; entity: Entity } }>({
@@ -36,7 +37,7 @@ const test = base.extend<{ fixture: { tracer: Tracer; origin: string; entity: En
       1,
       actor,
     );
-    const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+    const server = await startLocalServer(tracer, resolve("dist"), 0);
     try {
       await use({ tracer, origin: server.origin, entity });
     } finally {
@@ -77,7 +78,7 @@ for (const width of [1440, 390])
     page.on("request", (request) => {
       if (request.method() !== "GET") writes++;
     });
-    await page.getByRole("button", { name: "Documentation", exact: true }).click();
+    await openView(page, "Documentation");
     const reader = page.getByRole("region", { name: "Documentation reader", exact: true });
     await expect(
       reader.getByRole("heading", { name: "Getting started with Tracer", exact: true }),
@@ -212,8 +213,11 @@ for (const width of [1440, 390])
     await page.screenshot({ path: `/tmp/tracer-documentation-${width}.png`, fullPage: true });
     if (width === 390)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-    await page.evaluate(() => window.scrollTo(0, 500));
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(500);
+    const scroller = page.getByRole("dialog", { name: "Project task", exact: true });
+    await scroller.evaluate((element) => {
+      element.scrollTop = 500;
+    });
+    await expect.poll(() => scroller.evaluate((element) => element.scrollTop)).toBe(500);
     await openView(page, "Evidence");
     await expect(page.getByLabel("Outcome", { exact: true })).toHaveValue(
       "Retain the engineering judgment while consulting workflow guidance.",
@@ -221,9 +225,9 @@ for (const width of [1440, 390])
     await expect(
       receiptInputEditor(page).getByLabel("Input captured context", { exact: true }),
     ).toContainText(fixture.entity.fields.statement as string);
-    await page.getByRole("button", { name: "Documentation", exact: true }).click();
+    await openView(page, "Documentation");
     await expect(reader.getByRole("heading", { level: 1 })).toContainText("Apple Tesla and SpaceX");
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(500);
+    await expect.poll(() => scroller.evaluate((element) => element.scrollTop)).toBe(500);
     expect(writes).toBe(0);
     expect(await fixture.tracer.history()).toEqual(before);
   });
@@ -232,7 +236,8 @@ test("direct docs URL and rendered examples diagram preserve source links withou
   page,
   fixture,
 }) => {
-  await page.goto(`${fixture.origin}?view=docs`);
+  await page.goto(fixture.origin);
+  await openView(page, "Documentation");
   const reader = page.getByRole("region", { name: "Documentation reader", exact: true });
   await expect(
     reader.getByRole("heading", { name: "Getting started with Tracer", exact: true }),

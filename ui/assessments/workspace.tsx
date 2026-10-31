@@ -1,4 +1,4 @@
-import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { ConfigurationHandoff } from "../configurations/handoff.ts";
 import { useState } from "react";
 import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import type { Editing } from "../editing.ts";

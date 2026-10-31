@@ -3,15 +3,7 @@ name: Check
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
-      - LICENSE
   pull_request:
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
-      - LICENSE
   workflow_dispatch:
     inputs:
       full:
@@ -39,17 +31,18 @@ jobs:
           node-version: "24.15.0"
           cache: npm
       - run: npm ci
-      - name: Formatting, types, hooks, unit tests and production build
+      - name: Formatting, types, hooks and unit tests
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.full) }}
         run: |
           npm run format:check
           npm run typecheck
           npm run lint
           npm test
-          npm run build
       - name: Install Chromium
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full }}
         run: npx playwright install --with-deps chromium
+      - name: Production browser smoke
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.full) }}
+        run: npm run test:smoke
       - name: Full browser coverage and quality checks
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.full }}
         run: npm run check

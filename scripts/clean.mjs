@@ -17,7 +17,6 @@ const generated = [
   "playwright-report",
   "test-results",
   ".fallow/coverage",
-  ".fallow/legacy-ui",
   ".fallow/workbench-static",
   ".fallow/cache.bin",
   ".fallow/churn.bin",

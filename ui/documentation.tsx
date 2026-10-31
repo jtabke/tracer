@@ -69,15 +69,24 @@ function useDocumentationReading(
     const target = location.heading
       ? article.current?.querySelector<HTMLElement>(`[id="${CSS.escape(location.heading)}"]`)
       : article.current?.querySelector<HTMLElement>("h1");
-    target?.focus({ preventScroll: true });
-    if (changed && location.heading) target?.scrollIntoView({ block: "start" });
-    else window.scrollTo({ top: changed ? 0 : retainedScroll.current });
+    const container = article.current?.closest<HTMLElement>(".native-task");
+    const scroller = container ?? window;
+    const frame = requestAnimationFrame(() => {
+      target?.focus({ preventScroll: true });
+      if (changed && location.heading) target?.scrollIntoView({ block: "start" });
+      else scroller.scrollTo({ top: changed ? 0 : retainedScroll.current });
+    });
     retainedLocation.current = location;
     const remember = () => {
-      retainedScroll.current = window.scrollY;
+      if (container instanceof HTMLDialogElement && !container.open) return;
+      if (article.current?.closest("[hidden]")) return;
+      retainedScroll.current = container ? container.scrollTop : window.scrollY;
     };
-    window.addEventListener("scroll", remember, { passive: true });
-    return () => window.removeEventListener("scroll", remember);
+    scroller.addEventListener("scroll", remember, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", remember);
+    };
   }, [article, active, location]);
 }
 function DocumentationTopics({

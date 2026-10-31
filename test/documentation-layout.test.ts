@@ -6,9 +6,14 @@ import { dirname, resolve } from "node:path";
 function markdownFiles() {
   return [
     "README.md",
+    "SUPPORT.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
     "CONTRIBUTING.md",
     "AGENTS.md",
     "test/workbench/README.md",
+    "test/README.md",
+    "ui/README.md",
     ...readdirSync("docs", { recursive: true })
       .map(String)
       .filter((file) => file.endsWith(".md"))

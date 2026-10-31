@@ -3,7 +3,7 @@ import { draftValue } from "./draft-values.ts";
 export { label } from "./entity-label.ts";
 const raw = (value: Json | undefined, field: Field) =>
   value === undefined ? "" : field.type === "string" ? String(value) : JSON.stringify(value);
-export function parse(value: string, field: Field): Json | undefined {
+function parse(value: string, field: Field): Json | undefined {
   if (field.type === "string") return value;
   if (!value.trim()) return undefined;
   if (field.type === "boolean") return value === "true";
@@ -14,7 +14,7 @@ export function parse(value: string, field: Field): Json | undefined {
   }
   return JSON.parse(value) as Json;
 }
-export function setField(fields: Fields, name: string, value: Json | undefined) {
+function setField(fields: Fields, name: string, value: Json | undefined) {
   const result = { ...fields };
   if (value === undefined) delete result[name];
   else

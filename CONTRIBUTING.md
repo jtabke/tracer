@@ -29,7 +29,7 @@ Explore a disposable example with `npm run demo`, or follow [getting started](do
 | `docs/development/`   | Maintained direction/specifications, private-register and archive guidance |
 | `scripts/`, `config/` | Maintenance commands and versioned quality policy                          |
 
-[Architecture](docs/architecture.md) maps implementation owners. The [documentation index](docs/README.md) is the user/reference entry point. A fresh clone needs no private register, generated history export or research archive to build and test.
+[UI ownership](ui/README.md) and the [coverage map](test/README.md) explain feature boundaries and production regression ownership. [Architecture](docs/architecture.md) maps implementation owners. The [documentation index](docs/README.md) is the user/reference entry point. A fresh clone needs no private register, generated history export or research archive to build and test.
 
 ## Scope and preserve behavior
 
@@ -45,16 +45,17 @@ Production must not import tests, studies or private development data. Keep Node
 | ---------------------------- | --------------------------------------------------------------------------------------- |
 | `npm run check`              | Full formatting, strict types, lint, unit/browser, workbench and measured-quality gates |
 | `npm test`                   | Unit/service/projection tests; starts fresh coverage measurements                       |
-| `npm run test:ui`            | Production and test-harness builds plus Chromium workflows                              |
+| `npm run test:ui`            | Production build plus all Chromium workflows                                            |
+| `npm run test:smoke`         | Production desktop/mobile workflow and navigation smoke                                 |
 | `npm run workbench:check`    | Disposable native journeys, geometry, recovery and paired captures                      |
 | `npm run build`              | Product build                                                                           |
 | `npm run clean -- --dry-run` | Preview safe generated-output cleanup                                                   |
 
 Run the full check after shared UI/state/transport changes or broad reorganization. Use focused tests during iteration. Inspect actual desktop/narrow screenshot pixels for layout changes; automation is not representative-user validation. Keep database/server cleanup in `finally` blocks and preserve useful logs in ignored `output/`.
 
-Quality policy in `.fallowrc.json` and `config/` enforces boundaries, complexity, duplication and measured coverage without raised thresholds or baselines. Unit and browser V8 measurements merge through `test/merge-coverage.ts`; `npm run quality` alone needs the current complete captures. Production TypeScript stays strictly checked; the legacy test UI and [workbench harness](test/workbench/README.md) remain clearly isolated.
+Quality policy in `.fallowrc.json` and `config/` enforces boundaries, complexity, duplication and measured coverage without raised thresholds or baselines. Unit and browser V8 measurements merge through `test/merge-coverage.ts`; `npm run quality` alone needs the current complete captures. Production TypeScript stays strictly checked; all browser specs use the shipped build. The duplicate legacy UI has been retired with its shared coverage migrated. The [workbench harness](test/workbench/README.md) remains isolated orchestration over production owners.
 
-The [CI workflow](.github/workflows/check.yml) runs formatting, types, lint, unit tests and the production build for PRs and pushes to `main`. Documentation-only changes skip it; feature pushes avoid duplicate runs and newer runs cancel older ones. Browser/coverage-dependent gates remain required locally and available through **Actions → Check → Run workflow → full**. If branch protection is added, account for documentation-only skipped checks.
+The [CI workflow](.github/workflows/check.yml) runs formatting, types, lint, unit tests and a small production browser smoke suite for PRs and pushes to `main`, including documentation changes because guides are application inputs. Feature pushes avoid duplicate runs and newer runs cancel older ones. The complete browser/coverage-dependent quality gate remains required locally and available through **Actions → Check → Run workflow → full**; the smoke subset does not replace it.
 
 ## Keep the public tree intentional
 
@@ -63,5 +64,7 @@ Commit maintained code, reusable fixtures, user/reference docs and selected `doc
 Stop services using generated assets before `npm run clean`. The cleaner removes explicit build/test/analysis output, not dependencies, private data, backups, logs or source snapshots; it rejects a symlinked cache parent. Cleaning invalidates generated coverage, so rerun `npm run check` before the next quality claim.
 
 ## License and claims
+
+Use [Support](SUPPORT.md) for bug reports and [Security](SECURITY.md) for suspected vulnerabilities. User-facing changes belong in the curated [Changelog](CHANGELOG.md), not internal report dumps. No stable release, support SLA or distribution channel is implied by this source preview.
 
 Original contributions use [MIT](LICENSE); retain third-party notices and establish asset rights. Keep fictional/simulated examples labeled. Do not infer hosted collaboration, backend parity, physical/regulatory conformity, release authority or representative-user validation from local software checks.

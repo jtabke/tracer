@@ -1,5 +1,5 @@
-import { useConfigurations, ConfigurationPaging } from "../configurations.tsx";
-import { ConfigurationChoice } from "../configuration-choice.tsx";
+import { useConfigurations, ConfigurationPaging } from "../configurations/native-capture.tsx";
+import { ConfigurationChoice } from "../configurations/choice.tsx";
 import type { Configuration } from "../../src/core/configuration.ts";
 import type { VerificationTargetPolicy } from "../../src/core/verification-case.ts";
 import type { Editing } from "../editing.ts";

@@ -1,5 +1,6 @@
 import { test as base, expect, type Page } from "./browser-test.ts";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { observeLocal } from "../src/interfaces/local-observer.ts";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
@@ -7,7 +8,8 @@ import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 import type { Entity, Relationship, Schema } from "../src/core/model.ts";
 import type { Receipt } from "../src/core/evidence.ts";
-import { openView, receiptInputEditor } from "./browser-navigation.ts";
+import { receiptInputEditor } from "./evidence-navigation.ts";
+import { openNativeTask as openView, refreshNativeTask } from "./project-navigation.ts";
 
 const actor = { actor: "receipt-authoring-browser" };
 const schema: Schema = {
@@ -26,6 +28,7 @@ const schema: Schema = {
 type Fixture = {
   tracer: Tracer;
   origin: string;
+  sourceFile: string;
   output: Entity;
   middle: Entity;
   input: Entity;
@@ -36,7 +39,9 @@ const test = base.extend<{ fixture: Fixture }>({
   fixture: async ({}, use) => {
     const directory = mkdtempSync(join(tmpdir(), "tracer-receipt-authoring-"));
     const repository = new SQLiteRepository(join(directory, "project.sqlite"));
-    const tracer = new Tracer(repository);
+    const tracer = new Tracer(repository, undefined, observeLocal);
+    const sourceFile = join(directory, "fictional-source.txt");
+    writeFileSync(sourceFile, "Fictional source state for an explicit captured observation.");
     await tracer.setSchema(schema, 0, actor);
     const create = (key: string, statement: string, extra = {}) =>
       tracer.createEntity(
@@ -105,9 +110,9 @@ const test = base.extend<{ fixture: Fixture }>({
       await link(middle, input),
       await link(input, output),
     ];
-    const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+    const server = await startLocalServer(tracer, resolve("dist"), 0);
     try {
-      await use({ tracer, origin: server.origin, output, middle, input, other, links });
+      await use({ tracer, origin: server.origin, output, middle, input, other, links, sourceFile });
     } finally {
       await server.close();
       repository.close();
@@ -241,7 +246,7 @@ for (const width of [1440, 390])
       2,
       actor,
     );
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Evidence");
     await expect(record).toBeDisabled();
     await expect(editor.getByLabel("Native field scope", { exact: true })).toContainText(
       fixture.input.fields.statement as string,
@@ -299,7 +304,7 @@ test("failed authoritative read retains captured content and paused recording un
     record = page.getByRole("button", { name: "Record receipt", exact: true });
   await expect(record).toBeEnabled();
   await page.route("**/api/work?*", (route) => route.abort());
-  await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+  await refreshNativeTask(page, "Evidence");
   await expect(record).toBeDisabled();
   await expect(editor.getByLabel("Input captured context", { exact: true })).toContainText(
     fixture.input.fields.statement as string,
@@ -308,7 +313,45 @@ test("failed authoritative read retains captured content and paused recording un
     "Measured pass for the exact declared input scope.",
   );
   await page.unroute("**/api/work?*");
-  await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+  await refreshNativeTask(page, "Evidence");
   await expect(record).toBeEnabled();
   expect((await fixture.tracer.evidence.list("receipt")).items).toHaveLength(0);
+});
+
+test("production external-file binding and observation capture the explicitly selected immutable input", async ({
+  page,
+  fixture,
+}) => {
+  await page.goto(fixture.origin);
+  await openView(page, "Evidence");
+  await page.getByRole("button", { name: "Observe external artifact", exact: true }).click();
+  await page.getByLabel("Artifact entity", { exact: true }).selectOption(fixture.input.id);
+  await page.getByLabel("Source system", { exact: true }).selectOption("file");
+  await page.getByLabel("Stable external identifier", { exact: true }).fill("fictional-source");
+  await page.getByRole("button", { name: "Bind identity", exact: true }).click();
+  await expect(page.getByText("Stable file identity:", { exact: false })).toBeVisible();
+  await page.getByLabel("Local file path", { exact: true }).fill(fixture.sourceFile);
+  await page.getByRole("button", { name: "Record observation", exact: true }).click();
+  await expect
+    .poll(async () => (await fixture.tracer.evidence.list("observation")).items.length)
+    .toBe(1);
+  const observation = (await fixture.tracer.evidence.list("observation")).items[0];
+  expect(observation.availability).toBe("available");
+  await page.getByRole("button", { name: "Return to recorded evaluations", exact: true }).click();
+  await page.getByRole("button", { name: "Record native-input receipt", exact: true }).click();
+  await page.getByLabel("Output or conclusion", { exact: true }).selectOption(fixture.output.id);
+  await page
+    .getByLabel("Outcome", { exact: true })
+    .fill("SIMULATED observation-capture proof, not physical verification");
+  const input = receiptInputEditor(page);
+  await input.getByLabel("Input entity", { exact: true }).selectOption(fixture.input.id);
+  await input.getByLabel("Exact observation", { exact: true }).selectOption(observation.id);
+  await page.getByRole("button", { name: "Record receipt", exact: true }).click();
+  await expect
+    .poll(async () => (await fixture.tracer.evidence.list("receipt")).items.length)
+    .toBe(1);
+  const receipt = (await fixture.tracer.evidence.list("receipt")).items[0];
+  expect(receipt.inputs[0].observation?.id).toBe(observation.id);
+  expect(receipt.inputs[0].observation?.hash).toBe(observation.hash);
+  expect((await fixture.tracer.evidence.list("observation")).items).toEqual([observation]);
 });

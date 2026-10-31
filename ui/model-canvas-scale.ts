@@ -1,5 +1,5 @@
 /** Shared presentation bounds for read and draft model canvases. */
-export function boundedModelScale(value: number) {
+function boundedModelScale(value: number) {
   return Math.max(0.15, Math.min(1.5, value));
 }
 

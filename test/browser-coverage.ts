@@ -11,7 +11,6 @@ async function recordedScript(script: Script) {
   const asset = basename(new URL(script.url).pathname);
   const file = [
     resolve("dist/assets", asset),
-    resolve(".fallow/legacy-ui/assets", asset),
     resolve(".fallow/workbench-static/assets", asset),
   ].find((file) => existsSync(file));
   if (!file || !existsSync(file + ".map")) return null;

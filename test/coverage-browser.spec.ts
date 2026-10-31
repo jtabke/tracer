@@ -57,11 +57,10 @@ test("native coverage policy survives Model Visual/Text editing, guarded schema 
   };
   await tracer.coverage.set({ expectations, expectedSchemaVersion: 1 }, actor);
   const beforeHead = (await tracer.timeline()).head;
-  const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+  const server = await startLocalServer(tracer, resolve("dist"), 0);
   try {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(`${server.origin}/?view=model`);
-    await page.getByRole("button", { name: "Configure model", exact: true }).click();
+    await page.goto(`${server.origin}/#model`);
     const editor = page.getByLabel("Configure project model", { exact: true });
     await editor.getByRole("button", { name: "Select type · requirement", exact: true }).click();
     await editor.getByLabel("New field name", { exact: true }).fill("policy_note");
@@ -76,14 +75,13 @@ test("native coverage policy survives Model Visual/Text editing, guarded schema 
     await editor.getByRole("button", { name: "Visual", exact: true }).click();
     await expect(editor.getByRole("button", { name: "Save model", exact: true })).toBeEnabled();
     await editor.getByRole("button", { name: "Save model", exact: true }).click();
-    await expect(editor).toHaveCount(0);
+    await expect(editor).toContainText("Model saved as v3");
     const saved = await tracer.getSchema();
     expect(saved?.version).toBe(3);
     expect(saved?.coverageExpectations).toEqual(expectations);
     expect(saved?.entityTypes.requirement.fields.policy_note).toEqual({ type: "string" });
     expect((await tracer.timeline()).head).toBe(beforeHead + 1);
     await page.reload();
-    await page.getByRole("button", { name: "Configure model", exact: true }).click();
     await editor.getByRole("button", { name: "Text", exact: true }).click();
     await editor.getByLabel("Advanced JSON", { exact: true }).check();
     expect(JSON.parse(await json.inputValue()).coverageExpectations).toEqual(expectations);

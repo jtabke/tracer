@@ -1,8 +1,6 @@
 import type { Operation } from "../src/application/commands.ts";
-import type { Entity } from "../src/core/model.ts";
 import type { MutationExecutor } from "./mutation-controller.ts";
 
-export type Focus = Pick<Entity, "id" | "type">;
 export type Editing = {
   busy: boolean;
   error?: string;

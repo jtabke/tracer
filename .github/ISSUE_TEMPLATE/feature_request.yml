@@ -1,0 +1,22 @@
+name: Engineering task request
+description: Explain a user task and its current obstacle.
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: Task and obstacle
+      description: What engineering work are you trying to complete, and what stops you?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the result, not only a proposed screen or implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Fictional example or workaround
+      description: Do not include private records or source documents. Requests are not delivery commitments.

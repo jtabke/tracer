@@ -6,14 +6,14 @@ import { seedRealisticProject } from "../examples/seed-realistic-project.ts";
 import { SQLiteRepository } from "../src/persistence/sqlite.ts";
 import { Tracer } from "../src/application/service.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
-import { openView } from "./browser-navigation.ts";
+import { openNativeTask as openView, refreshNativeTask } from "./project-navigation.ts";
 
 async function fixture() {
   const directory = mkdtempSync(join(tmpdir(), "tracer-configuration-studio-"));
   const seeded = await seedRealisticProject(join(directory, "project"), "integrated");
   const repository = new SQLiteRepository(seeded.database);
   const tracer = new Tracer(repository);
-  const server = await startLocalServer(tracer, resolve(".fallow/legacy-ui"), 0);
+  const server = await startLocalServer(tracer, resolve("dist"), 0);
   return { directory, seeded, repository, tracer, server };
 }
 
@@ -26,7 +26,8 @@ test("a complete fifteen-member capture has compact selectable pins and one full
     expect(captured.members).toHaveLength(15);
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
-      await page.goto(`${value.server.origin}/?view=configurations`);
+      await page.goto(`${value.server.origin}/`);
+      await openView(page, "Configurations");
       await page
         .getByRole("button", { name: `Open configuration ${captured.name}`, exact: true })
         .click();
@@ -52,9 +53,8 @@ test("a complete fifteen-member capture has compact selectable pins and one full
       );
       await expect(detail.locator(".configuration-pinned-statement")).toHaveCount(1);
       if (width === 390) {
-        await detail.getByRole("heading").first().scrollIntoViewIfNeeded();
-        const box = await reading.boundingBox();
-        expect(box!.y).toBeLessThan(650);
+        await reading.scrollIntoViewIfNeeded();
+        await expect(reading).toBeInViewport();
         await expect(
           page.getByRole("region", { name: "Configuration catalogue", exact: true }),
         ).toBeHidden();
@@ -79,7 +79,8 @@ test("configuration capture is a retained primary task through catalogue reading
   const value = await fixture();
   try {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${value.server.origin}/?view=configurations`);
+    await page.goto(`${value.server.origin}/`);
+    await openView(page, "Configurations");
     await page.getByRole("button", { name: "Capture configuration", exact: true }).click();
     const task = page.getByRole("region", { name: "Capture configuration task", exact: true });
     const name = task.getByLabel("Configuration name", { exact: true });
@@ -120,14 +121,14 @@ test("configuration capture is a retained primary task through catalogue reading
     await expect(task.getByLabel("Member entity", { exact: true })).toHaveValue(member.id);
     await expect(task.getByLabel("Input revision", { exact: true })).toHaveValue(proposalVersion);
     await page.route("**/api/configuration-capture-context", (route) => route.abort());
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Configurations");
     await expect(task.getByRole("button", { name: "Prepare capture", exact: true })).toBeDisabled();
     await expect(
       task.getByRole("button", { name: "Capture configuration", exact: true }),
     ).toBeDisabled();
     await expect(name).toHaveValue("Retained native configuration proposal");
     await page.unroute("**/api/configuration-capture-context");
-    await page.getByRole("button", { name: "Refresh current data", exact: true }).click();
+    await refreshNativeTask(page, "Configurations");
     await expect(task.getByRole("button", { name: "Prepare capture", exact: true })).toBeEnabled();
     await expect(task.getByLabel("Input revision", { exact: true })).toHaveValue(proposalVersion);
     expect(
@@ -151,7 +152,8 @@ test("returning from an unknown capture keeps its proposal and requires explicit
 }) => {
   const value = await fixture();
   try {
-    await page.goto(`${value.server.origin}/?view=configurations`);
+    await page.goto(`${value.server.origin}/`);
+    await openView(page, "Configurations");
     await page.getByRole("button", { name: "Capture configuration", exact: true }).click();
     const task = page.getByRole("region", { name: "Capture configuration task", exact: true });
     const captured = value.seeded.configurations["BUILD-R01"];

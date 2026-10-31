@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support and recovery
+    url: https://github.com/jtabke/tracer/blob/main/SUPPORT.md
+    about: Supported local workflow, recovery and safe bug reporting.
+  - name: Security reporting
+    url: https://github.com/jtabke/tracer/blob/main/SECURITY.md
+    about: Read this before sharing suspected vulnerabilities.

@@ -118,6 +118,12 @@ for (const width of [1440, 680, 390])
       await page.locator("#search").fill("Edit record and connections");
       await page.keyboard.press("Enter");
       await expect(task).toContainText("ROOT");
+      const beforeDiscard = await tracer.exportProject();
+      await task.locator(".work-connect-options > summary").click();
+      await task.getByLabel("Find target", { exact: true }).fill("Discard this connection search");
+      await task.getByRole("button", { name: "Discard connection draft", exact: true }).click();
+      await expect(task.getByLabel("Find target", { exact: true })).toHaveValue("");
+      expect(await tracer.exportProject()).toEqual(beforeDiscard);
       await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
       await page.locator('[data-action="details"]').click();
       const expand = page.getByRole("button", { name: "Expand artifact details", exact: true });

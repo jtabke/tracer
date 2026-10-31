@@ -5,7 +5,7 @@ import {
   ConfigurationDetails,
   ConfigurationPaging,
   type useConfigurations,
-} from "./configurations.tsx";
+} from "./configurations/native-capture.tsx";
 import type { Save } from "./editing.ts";
 import { label } from "./entity-label.ts";
 import { ReceiptEntityChoice, ReceiptStatement } from "./receipt-authoring-fields.tsx";

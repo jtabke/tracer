@@ -2,6 +2,14 @@
   "name": "@tracer-local/core",
   "version": "0.1.0",
   "private": true,
+  "description": "Local-first engineering traceability workspace with exact change and evidence context.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jtabke/tracer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jtabke/tracer/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=24.15"
@@ -27,12 +35,14 @@
     "benchmark": "node examples/benchmark.ts",
     "build": "vite build",
     "start": "npm run build && node src/interfaces/serve.ts",
-    "test:ui": "npm run build && npm run build:test-ui && playwright test",
+    "serve": "node src/interfaces/serve.ts",
+    "backup": "node scripts/backup-project.mjs",
+    "test:smoke": "npm run build && playwright test test/main-workflow-browser.spec.ts test/project-sidebar-browser.spec.ts",
+    "test:ui": "npm run build && playwright test",
     "quality": "node test/merge-coverage.ts && fallow dead-code --format compact --fail-on-issues && fallow dupes --format compact --fail-on-issues && fallow health --format compact --fail-on-issues",
     "quality:health": "fallow health",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "build:test-ui": "vite build --config test/legacy-vite.config.ts",
     "lint": "eslint ui --max-warnings 0",
     "workbench": "node test/workbench/serve-native.mjs",
     "workbench:check": "tsc --project test/workbench/tsconfig.json && node test/workbench/check-workbench.mjs",

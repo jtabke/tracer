@@ -296,42 +296,11 @@ console.log(await response.json());
 
 The browser supplies its same-origin `Origin` header for this POST; a Node/other-language HTTP client must provide it explicitly. Refresh the map to load an externally created item. A connection failure after a write can leave the outcome unknown: inspect saved state before resending. Validation/usage normally return 400, missing records/routes 404, version conflicts 409 and busy/storage errors 503; session/origin failures return 403. Unexpected server errors return 500. See [the server adapter](../../src/interfaces/local-server.ts) for the exact route/status behavior.
 
-## Historical query controllers
+## Projection queries
 
-These CLI/API components run in the test-only `test/legacy-ui/` harness. Controls and drawing limits below describe that harness, not additional shipped product interfaces. Detailed query contracts remain in [architecture](../architecture.md).
+Family, chain, graph, matrix, saved-view and recorded-connection queries remain available through the headless services/CLI/API. They retain bounded scope, explicit continuation clocks, directed native identity, historical snapshots and rejection/unknown semantics. The [generated endpoint reference](api-reference.md) and [application query types](../../src/application/views.ts) own exact payloads and limits.
 
-### Earlier working views
-
-The harness retains Project, Work, Evaluations, Configurations and Model, plus direct editor and Graph/Trace/Matrix query tools. Visited owners stay mounted to retain drafts; invalid Visual/Text model drafts share one captured schema state.
-
-```mermaid
-flowchart LR
-    schema["Define types + fields"] --> table["Table<br/>Create / edit entities"]
-    table --> workspace["Graph workspace<br/>Explore, inspect, edit + assess"]
-    workspace --> compare
-    workspace --> table
-    table --> matrix["Matrix<br/>Connect entities"]
-    matrix --> gaps["Review missing links"]
-    gaps --> table
-    matrix --> receipt["Evidence<br/>Observe scoped inputs + record receipt"]
-    receipt --> compare["Compare declared dependencies"]
-    compare --> review["Record immutable review"]
-```
-
-| Surface                   | Controls and scope                                                                                                                                                                                                                                                                                                  |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Direct editor             | Paged text/type/field/gap search, captured field edits, compatible-target search and incident links. Gap checks count ordinary links.                                                                                                                                                                               |
-| Graph query               | Background pan, scroll/+− zoom, node dragging, Fit, Expand/Focus selected and inspector. Manual scope: 60 nodes/200 links/20 expansions; depth 1–6: 200 nodes/600 links. Both allow 50 evaluations/200 inputs and reject overflow. Root browser pages 50 with page-local filtering.                                 |
-| Graph keyboard            | Tab/Enter/Space inspects nodes/links; arrows move focused nodes. Canvas focus enables arrow pan and +− zoom. Touch drags. Positions/camera reset on focus/reload and never create native revisions.                                                                                                                 |
-| Evaluation overlay        | Solid native arrows and selected receipt's dashed input arrows remain distinct. Inspect paths/versions, observe local source again, or record Evidence still applies/Reevaluate/Acknowledge only with rationale. Badges count visible evaluations, not project-wide impact. Deleted inputs remain evidence context. |
-| Native timeline           | Native revision/Earlier revisions and Compare from select complete native commits. Relinks show both routes; positions/camera persist within a focus. Historical graphs exclude evidence/freshness and disable UI writes until Return to current; supporting views remain current.                                  |
-| Relationship-column Table | Up to eight directed columns; 20 roots, 300 paths, 1,000 examined links. Parents span prefixes; shared appearances retain one identity. Show siblings counts distinct identities in the loaded root page; Show all chains restores context. Reset columns adopts current schema.                                    |
-| Editable rows             | 50 entities/page with page-local filtering. Enter saves; Escape discards and adopts current object/schema values. Selected-row bulk edits are atomic; layout switches retain drafts.                                                                                                                                |
-| Matrix query              | 20 items/axis. Click or Tab+Space toggles links; JSON attributes supply required link fields. Gap checks include off-page targets.                                                                                                                                                                                  |
-
-Shared selection reveals off-page Table/Matrix items through indexed anchors. Bulk selection stays independent. Dirty drafts defer navigation; refresh retains original object/schema guards. Failed reads retain the view and pause writes. Review drafts pin comparison tokens and require explicit adoption after relevant drift; acceptance leaves drift visible. Successful edits refresh views.
-
-Family/chain recipes persist as presentation metadata; controller layouts are session-local. Undo/restoration and whole-project historical Table/Matrix are absent. The loopback interface uses the printed origin and no organizational authentication.
+The retired tabbed query UI was a test-only shell, not another supported product interface. Its family/library layout, incoming saved-path authoring, editable-row bulk mutation and query-tab choreography are not promised Atlas features. Core atomic changesets, persisted recipe data and native query contracts remain supported and tested. Current Graph/Matrix/History interaction, explicit engineering scope, read locks and retained drafts are described in the [workspace guide](../guides/workspace-guide.md) and [architecture](../architecture.md).
 
 ## Local resources and contextual references
 
@@ -895,7 +864,7 @@ The [architecture contract](../architecture.md) lists limits and revision guards
 
 ## Saved working views
 
-Work and Trace query expose **Saved view** and **Save view…** for current-data scope recipes in the project database; Project home lists saved scopes. The [architecture contract](../architecture.md) covers limits, version guards, migration and recovery. This mutable metadata is separate from native engineering history and immutable evidence. The CLI exposes `saved-view save/list/remove`; the local UI/API share `Tracer.savedViews`.
+The CLI/API expose `saved-view save/list/remove` through `Tracer.savedViews` for native current-data scope recipes. Production Matrix configurations use the supported recipe owner; the retained Development map's session views are not equivalent persisted Family/Chain authoring. The retired query shell's Home/Work/Trace affordances are no longer product interfaces. The [architecture contract](../architecture.md) covers limits, version guards, migration and recovery. Mutable presentation metadata stays separate from native engineering history, captured configurations and immutable evidence.
 
 ## Direct application input ownership
 

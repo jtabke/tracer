@@ -2,7 +2,7 @@ import type { SchemaObject } from "../src/core/model.ts";
 import { nextWorkDefaults } from "../src/core/next-work.ts";
 import type { Editing } from "./editing.ts";
 import type { Projection } from "./use-projection.ts";
-import { WorkItem } from "./work-item.tsx";
+import { WorkItem } from "./records/details.tsx";
 import { EvidenceReviewStage } from "./evidence-review-stage.tsx";
 import { NextWorkChoices } from "./next-work-choices.tsx";
 import { NextWorkQueues } from "./next-work-queues.tsx";

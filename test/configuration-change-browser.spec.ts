@@ -6,7 +6,7 @@ import { Tracer } from "../src/index.ts";
 import { startLocalServer } from "../src/interfaces/local-server.ts";
 import { pairVerificationFixture } from "./pair-verification-fixture.ts";
 import { verificationActor as actor, verificationTargetInput } from "./verification-fixture.ts";
-import { receiptInputEditor } from "./browser-navigation.ts";
+import { receiptInputEditor } from "./evidence-navigation.ts";
 
 async function openConfigurations(page: Page) {
   await openProjectDestination(page, "Configurations");

@@ -3,6 +3,9 @@ import architectureUrl from "../docs/architecture.md?url";
 import checkpointUrl from "../docs/checkpoint.md?url";
 import developer from "../docs/reference/developer-reference.md?raw";
 import gettingStarted from "../docs/guides/getting-started.md?raw";
+import localOperation from "../docs/guides/local-operation.md?raw";
+import supportUrl from "../SUPPORT.md?url";
+import securityUrl from "../SECURITY.md?url";
 import workspaceGuide from "../docs/guides/workspace-guide.md?raw";
 import csvImport from "../docs/guides/csv-import.md?raw";
 import projectExport from "../docs/guides/project-export.md?raw";
@@ -48,6 +51,13 @@ export const documentationTopics: DocumentationTopic[] = [
     path: "docs/guides/getting-started.md",
     group: "Use Tracer",
     markdown: gettingStarted,
+  },
+  {
+    id: "local-operation",
+    title: "Local operation and recovery",
+    path: "docs/guides/local-operation.md",
+    group: "Use Tracer",
+    markdown: localOperation,
   },
   {
     id: "workspace-guide",
@@ -167,6 +177,8 @@ const sourceUrls: Record<string, string> = {
   "docs/reference/models/requirement-verification-model.json": verificationModelUrl,
   "docs/checkpoint.md": checkpointUrl,
   "README.md": readmeUrl,
+  "SUPPORT.md": supportUrl,
+  "SECURITY.md": securityUrl,
 };
 const imageUrls: Record<string, string> = {
   "docs/images/aster-development-map.jpg": orbitImage,

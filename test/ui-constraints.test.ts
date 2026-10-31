@@ -1,8 +1,6 @@
 import "./register-ui.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { validateFields } from "../src/core/model.ts";
 import type { SchemaObject, Field } from "../src/core/model.ts";
 import { traceColumnKey } from "../src/core/presentation.ts";
@@ -13,24 +11,12 @@ import { MutationController } from "../ui/mutation-controller.ts";
 import type { MutationState } from "../ui/mutation-controller.ts";
 import { readResult } from "../ui/use-read.ts";
 import { decodeWrite } from "../src/interfaces/api-endpoints.ts";
-import type { Editing } from "../ui/editing.ts";
 const { fieldsFrom } = await import("../ui/fields.tsx");
-const { useMappingDraft } = await import("./legacy-ui/components/use-mapping-draft.ts");
 const schema: SchemaObject = {
   id: "project",
   version: 1,
   entityTypes: { item: { fields: {} } },
   relationshipTypes: { alpha: { fields: {} }, beta: { fields: {} } },
-};
-const source = { id: "item", version: 1, type: "item", fields: {} };
-const editing: Editing = {
-  busy: false,
-  epoch: 0,
-  commit: async () => false,
-  mutate: async () => undefined,
-  report(error) {
-    throw error;
-  },
 };
 
 test("optional configurable names never read inherited draft values; explicit names retain their types", () => {
@@ -59,7 +45,7 @@ test("optional configurable names never read inherited draft values; explicit na
     }
   }
 });
-test("mapping and column identity ignore property order and do not collide on delimiters", () => {
+test("production column identity ignores property order and does not collide on delimiters", () => {
   const canonical: TraceColumn = {
     relationshipType: "beta",
     targetType: "item",
@@ -75,13 +61,6 @@ test("mapping and column identity ignore property order and do not collide on de
     traceColumnKey({ ...canonical, relationshipType: "a:b", targetType: "c" }),
     traceColumnKey({ ...canonical, relationshipType: "a", targetType: "b:c" }),
   );
-  function Probe({ slot }: { slot: TraceColumn }) {
-    const draft = useMappingDraft(source, schema, editing, false, () => {}, slot);
-    return createElement("span", null, `${draft.direction}:${draft.meaning}`);
-  }
-  const render = (slot: TraceColumn) => renderToStaticMarkup(createElement(Probe, { slot }));
-  assert.equal(render(canonical), "<span>incoming:beta</span>");
-  assert.equal(render(reordered), render(canonical));
 });
 test("only a matching successful read authorizes writing, including before refresh effects run", () => {
   const snapshot = { statement: "Retained draft context" };

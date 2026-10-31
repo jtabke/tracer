@@ -9,7 +9,6 @@
     "test/*.test.ts",
     "test/*.spec.ts",
     "test/map/*.test.mjs",
-    "test/legacy-entry.tsx",
     "src/client.ts",
     "src/interfaces/headless-server.ts",
     "scripts/register.mjs"

@@ -6,7 +6,7 @@ import type {
   ResolvedApplicationModel,
 } from "../../src/core/application-model.ts";
 import { canonical } from "../../src/core/evidence.ts";
-import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { ConfigurationHandoff } from "../configurations/handoff.ts";
 import type { AssessmentScopeQuery } from "../../src/core/change-assessment.ts";
 import {
   AssessmentPairChoice,

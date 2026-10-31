@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible problem in the source preview.
+body:
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Commit, Node version and operating system.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Startup command and minimal steps using fictional data.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Sanitized diagnostics
+      description: Relevant error text only. Do not attach your working database, documents, credentials or full network logs.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safe report
+      options:
+        - label: This report contains no private project data, credentials or vulnerability details.
+          required: true

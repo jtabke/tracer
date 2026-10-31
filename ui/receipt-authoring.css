@@ -1,14 +1,14 @@
-.studio-app .evidence-create.evidence-author-stage > header {
+:is(.studio-app, .native-task) .evidence-create.evidence-author-stage > header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   gap: 0.5rem;
 }
-.studio-app .evidence-create.evidence-author-stage > header h2 {
+:is(.studio-app, .native-task) .evidence-create.evidence-author-stage > header h2 {
   margin: 0;
 }
-.studio-app .evidence-workspace fieldset.receipt-authoring {
+:is(.studio-app, .native-task) .evidence-workspace fieldset.receipt-authoring {
   display: grid;
   grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.3fr);
   align-items: start;
@@ -37,12 +37,12 @@
 .receipt-authoring section {
   min-width: 0;
 }
-.studio-app .receipt-authoring .receipt-output,
-.studio-app .receipt-authoring .receipt-declarations,
-.studio-app .receipt-authoring .receipt-input-editor,
-.studio-app .receipt-authoring .receipt-configuration-basis,
-.studio-app .receipt-authoring .receipt-field-scope,
-.studio-app .receipt-authoring .receipt-path-editor {
+:is(.studio-app, .native-task) .receipt-authoring .receipt-output,
+:is(.studio-app, .native-task) .receipt-authoring .receipt-declarations,
+:is(.studio-app, .native-task) .receipt-authoring .receipt-input-editor,
+:is(.studio-app, .native-task) .receipt-authoring .receipt-configuration-basis,
+:is(.studio-app, .native-task) .receipt-authoring .receipt-field-scope,
+:is(.studio-app, .native-task) .receipt-authoring .receipt-path-editor {
   background: transparent;
   border: 0;
   padding: 0;
@@ -129,14 +129,14 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
-.studio-app .receipt-mode-controls label {
+:is(.studio-app, .native-task) .receipt-mode-controls label {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
 }
-.studio-app .receipt-authoring input[type="radio"],
-.studio-app .receipt-authoring input[type="checkbox"] {
+:is(.studio-app, .native-task) .receipt-authoring input[type="radio"],
+:is(.studio-app, .native-task) .receipt-authoring input[type="checkbox"] {
   width: auto;
   flex: 0 0 auto;
 }
@@ -145,7 +145,7 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: 0.5rem 1rem;
 }
-.studio-app .receipt-field-choices label {
+:is(.studio-app, .native-task) .receipt-field-choices label {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -197,7 +197,7 @@
   color: var(--color-muted);
 }
 @media (max-width: 1000px) {
-  .studio-app .evidence-workspace fieldset.receipt-authoring {
+  :is(.studio-app, .native-task) .evidence-workspace fieldset.receipt-authoring {
     display: flex;
     flex-direction: column;
   }

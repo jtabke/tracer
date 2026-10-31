@@ -3,8 +3,8 @@ import type { AssessmentScopeQuery } from "../../src/core/change-assessment.ts";
 import type { ConfigurationComparison } from "../../src/core/configuration-comparison.ts";
 import type { Editing } from "../editing.ts";
 import { useProjection } from "../use-projection.ts";
-import { useConfigurations, ConfigurationPaging } from "../configurations.tsx";
-import { ConfigurationChoice } from "../configuration-choice.tsx";
+import { useConfigurations, ConfigurationPaging } from "../configurations/native-capture.tsx";
+import { ConfigurationChoice } from "../configurations/choice.tsx";
 
 export type AssessmentSourceDraft = {
   source: "baseline" | "configuration_pair";

@@ -20,33 +20,25 @@
       "message": "Use the endpoint-typed read API or the shared mutation executor."
     },
     {
-      "id": "shared-editing-owner",
-      "kind": "banned-export",
-      "files": ["test/legacy-ui/components/table.tsx"],
-      "exports": ["Editing", "Focus"],
-      "severity": "error",
-      "message": "Shared UI contracts belong in ui/editing.ts."
-    },
-    {
       "id": "production-only",
       "kind": "banned-import",
       "files": ["ui/**", "src/**"],
       "specifiers": [
-        "../test/legacy-ui",
+        "../test",
+        "../../test",
+        "../../../test",
+        "../../../../test",
         "../docs/ux-artifacts",
-        "../test/workbench",
-        "../../test/legacy-ui",
         "../../docs/ux-artifacts",
-        "../../test/workbench",
-        "../../../test/legacy-ui",
         "../../../docs/ux-artifacts",
-        "../../../test/workbench",
-        "../../../../test/legacy-ui",
         "../../../../docs/ux-artifacts",
-        "../../../../test/workbench"
+        "../.local",
+        "../../.local",
+        "../../../.local",
+        "../../../../.local"
       ],
       "severity": "error",
-      "message": "Production code must not import test harnesses or archived UX studies."
+      "message": "Production code must not import tests, archived UX studies or private development data."
     }
   ]
 }

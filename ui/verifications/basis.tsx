@@ -8,7 +8,7 @@ import type { applicationModelChoices } from "../application-choices.tsx";
 import { fieldsFrom } from "../fields.tsx";
 import { useVerificationBasisSource } from "./basis-source-state.ts";
 import { VerificationTargetChoice } from "./target-choice.tsx";
-import type { ConfigurationHandoff } from "../configuration-handoff.ts";
+import type { ConfigurationHandoff } from "../configurations/handoff.ts";
 import type { VerificationTargetPolicy } from "../../src/core/verification-case.ts";
 import { CriterionSource, MethodAssignments } from "./basis-source.tsx";
 import type { BasisCapture } from "./basis-source.tsx";
