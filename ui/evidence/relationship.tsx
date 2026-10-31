@@ -1,6 +1,6 @@
-import type { InputComparison, RelationshipComparison } from "../src/core/evidence.ts";
-import type { Reference } from "../src/core/references.ts";
-import { label } from "./entity-label.ts";
+import type { InputComparison, RelationshipComparison } from "../../src/core/evidence.ts";
+import type { Reference } from "../../src/core/references.ts";
+import { label } from "../entity-label.ts";
 
 export function RelationshipEvidence({
   inputs = [],

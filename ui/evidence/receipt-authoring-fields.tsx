@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { Entity } from "../src/core/model.ts";
-import { label } from "./entity-label.ts";
+import type { Entity } from "../../src/core/model.ts";
+import { label } from "../entity-label.ts";
 import type { ChosenEntity, InputDraft } from "./receipt-authoring-state.ts";
-import { statementText } from "./statement-text.ts";
+import { statementText } from "../statement-text.ts";
 
 export function ReceiptEntityChoice({
   name,

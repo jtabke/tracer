@@ -1,13 +1,13 @@
-import type { Configuration } from "../src/core/configuration.ts";
-import type { ExternalIdentity, Observation, Receipt } from "../src/core/evidence.ts";
-import type { Entity, SchemaObject } from "../src/core/model.ts";
+import type { Configuration } from "../../src/core/configuration.ts";
+import type { ExternalIdentity, Observation, Receipt } from "../../src/core/evidence.ts";
+import type { Entity, SchemaObject } from "../../src/core/model.ts";
 import {
   ConfigurationDetails,
   ConfigurationPaging,
   type useConfigurations,
-} from "./configurations/native-capture.tsx";
-import type { Save } from "./editing.ts";
-import { label } from "./entity-label.ts";
+} from "../configurations/native-capture.tsx";
+import type { Save } from "../editing.ts";
+import { label } from "../entity-label.ts";
 import { ReceiptEntityChoice, ReceiptStatement } from "./receipt-authoring-fields.tsx";
 import type { InputDraft } from "./receipt-authoring-state.ts";
 import {

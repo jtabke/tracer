@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { EvidenceReviewStage } from "../evidence-review-stage.tsx";
+import { EvidenceReviewStage } from "../evidence/review-stage.tsx";
 import { useProjection } from "../use-projection.ts";
 import type { MutationController, MutationExecutor } from "../mutation-controller.ts";
 import type { WorkingReceipt } from "../../src/core/working-context.ts";

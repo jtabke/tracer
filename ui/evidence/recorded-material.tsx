@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { Entity, Relationship } from "../src/core/model.ts";
-import type { Receipt, Observation } from "../src/core/evidence.ts";
-import type { Editing } from "./editing.ts";
-import { useProjection } from "./use-projection.ts";
-import { label } from "./entity-label.ts";
+import type { Entity, Relationship } from "../../src/core/model.ts";
+import type { Receipt, Observation } from "../../src/core/evidence.ts";
+import type { Editing } from "../editing.ts";
+import { useProjection } from "../use-projection.ts";
+import { label } from "../entity-label.ts";
 export type RecordedMaterial = Receipt | Observation | Relationship;
 export function RecordedMaterialChoice({
   title,

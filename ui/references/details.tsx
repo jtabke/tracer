@@ -1,8 +1,8 @@
 import { useState, useEffect, useEffectEvent } from "react";
-import type { Entity, Relationship } from "../src/core/model.ts";
-import type { Editing } from "./editing.ts";
-import type { ReadResponse } from "../src/interfaces/api-contract.ts";
-import { useProjection } from "./use-projection.ts";
+import type { Entity, Relationship } from "../../src/core/model.ts";
+import type { Editing } from "../editing.ts";
+import type { ReadResponse } from "../../src/interfaces/api-contract.ts";
+import { useProjection } from "../use-projection.ts";
 export function ReferenceDetails({
   link,
   editing,

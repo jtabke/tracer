@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Entity } from "../src/core/model.ts";
 import type { InputComparison } from "../src/core/evidence.ts";
-import { recordedDependencyPath } from "../ui/evidence-path.ts";
+import { recordedDependencyPath } from "../ui/evidence/path.ts";
 
 const output: Entity = { id: "output-id", type: "test", key: "TEST-1", version: 2, fields: {} };
 const input: Entity = { id: "input-id", type: "requirement", key: "REQ-1", version: 3, fields: {} };

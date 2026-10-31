@@ -1,5 +1,5 @@
-import type { Observation } from "../src/core/evidence.ts";
-import type { Entity } from "../src/core/model.ts";
+import type { Observation } from "../../src/core/evidence.ts";
+import type { Entity } from "../../src/core/model.ts";
 
 export function ResourceIdentity({ entity }: { entity: Entity }) {
   return (

@@ -12,6 +12,8 @@
 
 `project-tools.tsx` and `NativeTasks` retain visited editors rather than constructing duplicate task state. Verification and Change assessments share the stable workspace portal/page infrastructure, with independent reading positions. Back to investigation restores the retained workspace; navigating between tasks retains in-session drafts. Model is a separate full-page owner with its existing draft and hash/history handling. Other tasks keep their existing surfaces.
 
+Feature presentation lives under `ui/evidence/`, `ui/references/`, `ui/configurations/`, `ui/records/`, `ui/verifications/` and `ui/assessments/`; [UI ownership](../../../ui/README.md) distinguishes those owners from shared root controls. These directories do not introduce new state stores, transport owners or compatibility entry points. Native task mounting, captured guards and draft lifetime remain unchanged.
+
 Controlled scopes are separate from proposals. Contextual entry is a request, not permission to replace a dirty draft, choose a target or open a controlled record. Cancel retains the original draft; stale inputs require explicit adoption. Historical restrictions and failed-read locks remain authoritative. The shared mutation context guards nested tasks against pending/unknown saves.
 
 ## Bindings and boundaries

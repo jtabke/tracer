@@ -6,7 +6,7 @@ import { VerificationExecutionEditor } from "./execution.tsx";
 import { VerificationResultsEditor } from "./results.tsx";
 import { VerificationBasisEditor } from "./basis.tsx";
 import { ExecutionInspection } from "./inspection.tsx";
-import { EvidenceReviewStage } from "../evidence-review-stage.tsx";
+import { EvidenceReviewStage } from "../evidence/review-stage.tsx";
 import { useApplicationDirty } from "../application-choices.tsx";
 import { RecordedVerificationContext } from "./context.tsx";
 type DetailProps = Omit<VerificationEditorProps, "saved"> & { epoch: number; changed(): void };

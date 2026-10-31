@@ -1,7 +1,7 @@
-import type { Entity, Relationship, SchemaObject, Fields } from "../src/core/model.ts";
-import type { Observation } from "../src/core/evidence.ts";
-import type { Reference, ReferenceState } from "../src/core/references.ts";
-import type { Operation } from "../src/application/commands.ts";
+import type { Entity, Relationship, SchemaObject, Fields } from "../../src/core/model.ts";
+import type { Observation } from "../../src/core/evidence.ts";
+import type { Reference, ReferenceState } from "../../src/core/references.ts";
+import type { Operation } from "../../src/application/commands.ts";
 export type ReferenceContext = {
   source: Entity;
   schema: SchemaObject;

@@ -1,6 +1,6 @@
-import type { InputComparison } from "../src/core/evidence.ts";
-import type { Entity } from "../src/core/model.ts";
-import { label } from "./entity-label.ts";
+import type { InputComparison } from "../../src/core/evidence.ts";
+import type { Entity } from "../../src/core/model.ts";
+import { label } from "../entity-label.ts";
 
 /** Only immutable receipt endpoints have names here; intermediate IDs stay explicit. */
 export function recordedDependencyPath(input: InputComparison, output: Entity): string {

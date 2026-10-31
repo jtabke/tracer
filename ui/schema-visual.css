@@ -7,7 +7,7 @@
   align-items: flex-start;
   gap: 8px;
 }
-:is(.studio-app, .native-task) .schema-editor {
+.native-task .schema-editor {
   max-width: 1800px;
 }
 .schema-mode-switch {
@@ -127,7 +127,7 @@
 .schema-visual-canvas .model-flow-scroll {
   max-height: 660px;
 }
-:is(.studio-app, .native-task) .model-flow-types button.model-flow-port {
+.native-task .model-flow-types button.model-flow-port {
   position: absolute;
   top: 28px;
   width: 16px;
@@ -145,7 +145,7 @@
 .model-flow-types .model-flow-port.is-output {
   right: -8px;
 }
-:is(.studio-app, .native-task) .model-flow-types button.model-flow-port[aria-pressed="true"] {
+.native-task .model-flow-types button.model-flow-port[aria-pressed="true"] {
   background: var(--color-accent);
 }
 .schema-visual-canvas .model-flow-types button[draggable="true"] {
@@ -154,22 +154,22 @@
 .schema-visual-canvas .model-flow-types button[draggable="true"]:active {
   cursor: grabbing;
 }
-:is(.studio-app, .native-task) .schema-editor > fieldset {
+.native-task .schema-editor > fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
-:is(.studio-app, .native-task) .schema-editor > fieldset > legend {
+.native-task .schema-editor > fieldset > legend {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
 }
-:is(.studio-app, .native-task) .schema-editor > .toolbar {
+.native-task .schema-editor > .toolbar {
   margin: 0 0 18px;
 }
-:is(.studio-app, .native-task) .schema-editor > .toolbar h2 {
+.native-task .schema-editor > .toolbar h2 {
   margin: 0 auto 0 0;
   font-size: 26px;
 }
@@ -196,7 +196,7 @@
 .schema-editing-notes > p {
   max-width: 80ch;
 }
-:is(.studio-app, .native-task) .model-flow-types button.model-flow-port.is-input {
+.native-task .model-flow-types button.model-flow-port.is-input {
   border-radius: 4px;
 }
 .schema-fields {
@@ -244,15 +244,15 @@
 .schema-workflow-form > p {
   font-size: 11px;
 }
-:is(.studio-app, .native-task) .schema-properties .schema-guided.is-compact > section,
-:is(.studio-app, .native-task) .schema-properties .schema-workflow-form {
+.native-task .schema-properties .schema-guided.is-compact > section,
+.native-task .schema-properties .schema-workflow-form {
   padding: 0;
   border: 0;
   background: transparent;
   border-radius: 0;
   margin: 0 0 1rem;
 }
-:is(.studio-app, .native-task) .schema-guided.is-compact > section > h3 {
+.native-task .schema-guided.is-compact > section > h3 {
   display: none;
 }
 .schema-properties-heading {

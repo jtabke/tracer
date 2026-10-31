@@ -1,8 +1,8 @@
 import { useEffect, useEffectEvent, useRef } from "react";
-import type { Configuration } from "../src/core/configuration.ts";
-import type { ExternalIdentity, Observation } from "../src/core/evidence.ts";
-import type { Entity, SchemaObject } from "../src/core/model.ts";
-import { NativeRevisionSelect } from "./native-revision-select.tsx";
+import type { Configuration } from "../../src/core/configuration.ts";
+import type { ExternalIdentity, Observation } from "../../src/core/evidence.ts";
+import type { Entity, SchemaObject } from "../../src/core/model.ts";
+import { NativeRevisionSelect } from "../native-revision-select.tsx";
 import {
   ReceiptEntityChoice,
   ReceiptFieldScope,
@@ -16,7 +16,7 @@ import {
   inputSnapshot,
 } from "./receipt-authoring-state.ts";
 import { ReceiptPathEditor } from "./receipt-path-editor.tsx";
-import { useProjection } from "./use-projection.ts";
+import { useProjection } from "../use-projection.ts";
 
 export function ReceiptInputEditor({
   input,

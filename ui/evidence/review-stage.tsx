@@ -1,10 +1,10 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
-import type { Comparison, Receipt, ReviewInput } from "../src/core/evidence.ts";
-import { label } from "./entity-label.ts";
-import { EvidenceInputs } from "./evidence-inputs.tsx";
-import "./evidence.css";
-import type { MutationExecutor } from "./mutation-controller.ts";
-import { useProjection } from "./use-projection.ts";
+import type { Comparison, Receipt, ReviewInput } from "../../src/core/evidence.ts";
+import { label } from "../entity-label.ts";
+import { EvidenceInputs } from "./inputs.tsx";
+import "./workspace.css";
+import type { MutationExecutor } from "../mutation-controller.ts";
+import { useProjection } from "../use-projection.ts";
 
 type ReviewBase = { receiptId: string; token: string };
 type ReviewChoice = ReviewInput["decision"] | "";

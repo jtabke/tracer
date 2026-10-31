@@ -1,14 +1,14 @@
-import { FieldControl, draftFields, fieldsFrom } from "./fields.tsx";
-import type { Field } from "../src/core/model.ts";
+import { FieldControl, draftFields, fieldsFrom } from "../fields.tsx";
+import type { Field } from "../../src/core/model.ts";
 import {
   initialReferenceDraft,
   referenceFamilies,
   referenceOperation,
   canPinReference,
-} from "./reference-draft.ts";
-import type { ReferenceContext } from "./reference-draft.ts";
+} from "./draft.ts";
+import type { ReferenceContext } from "./draft.ts";
 import { useEffect, useState } from "react";
-import type { Editing } from "./editing.ts";
+import type { Editing } from "../editing.ts";
 export function ReferenceEditor({
   context,
   editing,

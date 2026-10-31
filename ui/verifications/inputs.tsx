@@ -7,8 +7,8 @@ export type { VerificationSupportDraft } from "./common.ts";
 import { TargetVerificationInputs } from "./target-inputs.tsx";
 import type { Editing } from "../editing.ts";
 import { RecordChoice } from "../application-choices.tsx";
-import { RecordedMaterialChoice } from "../recorded-material.tsx";
-import type { RecordedMaterial } from "../recorded-material.tsx";
+import { RecordedMaterialChoice } from "../evidence/recorded-material.tsx";
+import type { RecordedMaterial } from "../evidence/recorded-material.tsx";
 import { label } from "../entity-label.ts";
 export function VerificationInputs({
   target,

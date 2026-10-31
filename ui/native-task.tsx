@@ -5,7 +5,7 @@ import type {
   VerificationSubjectRequest,
 } from "./verifications/subject.ts";
 import { AssessmentWorkspace } from "./assessments/workspace.tsx";
-import { ReferenceWorkspace } from "./reference-workspace.tsx";
+import { ReferenceWorkspace } from "./references/workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
@@ -16,7 +16,7 @@ import { ProjectExport } from "./project-export.tsx";
 import { NextWork } from "./next-work.tsx";
 import { DocumentationView } from "./documentation.tsx";
 import type { Editing } from "./editing.ts";
-import { EvidenceView } from "./evidence.tsx";
+import { EvidenceView } from "./evidence/workspace.tsx";
 import { FieldControl, fieldsFrom } from "./fields.tsx";
 import { SchemaEditor } from "./schema-editor.tsx";
 import "./style.css";

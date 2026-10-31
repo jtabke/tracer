@@ -1,12 +1,12 @@
-import { RelationshipEvidence } from "./relationship-evidence.tsx";
+import { RelationshipEvidence } from "./relationship.tsx";
 import { useEffect, useRef, useState } from "react";
-import type { Comparison, InputComparison, Receipt } from "../src/core/evidence.ts";
-import { canonical } from "../src/core/evidence.ts";
-import { label } from "./entity-label.ts";
-import { recordedDependencyPath, inputIdentity } from "./evidence-path.ts";
-import "./evidence.css";
-import { NativePinProvenance } from "./native-pin-provenance.tsx";
-import { ObservedContent, ResourceIdentity } from "./resource-evidence.tsx";
+import type { Comparison, InputComparison, Receipt } from "../../src/core/evidence.ts";
+import { canonical } from "../../src/core/evidence.ts";
+import { label } from "../entity-label.ts";
+import { recordedDependencyPath, inputIdentity } from "./path.ts";
+import "./workspace.css";
+import { NativePinProvenance } from "../native-pin-provenance.tsx";
+import { ObservedContent, ResourceIdentity } from "./resource.tsx";
 
 export function EvidenceInputs({
   comparison,

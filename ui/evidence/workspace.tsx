@@ -1,15 +1,15 @@
 import { useRef, useState } from "react";
-import type { ExternalIdentity, Observation, Receipt } from "../src/core/evidence.ts";
-import type { Entity, SchemaObject } from "../src/core/model.ts";
-import { read } from "./api.ts";
-import { ConfigurationCapture, useConfigurations } from "./configurations/native-capture.tsx";
-import type { Save } from "./editing.ts";
-import { EvidenceReviewStage } from "./evidence-review-stage.tsx";
-import "./evidence.css";
-import { label } from "./fields.tsx";
-import type { MutationExecutor } from "./mutation-controller.ts";
+import type { ExternalIdentity, Observation, Receipt } from "../../src/core/evidence.ts";
+import type { Entity, SchemaObject } from "../../src/core/model.ts";
+import { read } from "../api.ts";
+import { ConfigurationCapture, useConfigurations } from "../configurations/native-capture.tsx";
+import type { Save } from "../editing.ts";
+import { EvidenceReviewStage } from "./review-stage.tsx";
+import "./workspace.css";
+import { label } from "../fields.tsx";
+import type { MutationExecutor } from "../mutation-controller.ts";
 import { ReceiptCapture } from "./receipt-capture.tsx";
-import { useRead } from "./use-read.ts";
+import { useRead } from "../use-read.ts";
 
 export function EvidenceView({
   epoch,

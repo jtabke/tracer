@@ -6,7 +6,7 @@ import type {
   AssessmentNativeCandidate,
 } from "../../src/core/change-assessment.ts";
 import { useProjection } from "../use-projection.ts";
-import { EvidenceInputs } from "../evidence-inputs.tsx";
+import { EvidenceInputs } from "../evidence/inputs.tsx";
 import { label } from "../entity-label.ts";
 import { PairCandidateContext } from "./pair-context.tsx";
 

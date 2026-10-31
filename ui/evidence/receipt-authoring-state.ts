@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Configuration, PinnedEntity } from "../src/core/configuration.ts";
-import type { ExternalIdentity, InputDeclaration, ReceiptInput } from "../src/core/evidence.ts";
-import type { Entity, Relationship, SchemaObject } from "../src/core/model.ts";
+import type { Configuration, PinnedEntity } from "../../src/core/configuration.ts";
+import type { ExternalIdentity, InputDeclaration, ReceiptInput } from "../../src/core/evidence.ts";
+import type { Entity, Relationship, SchemaObject } from "../../src/core/model.ts";
 
 export type ChosenEntity = { entity: Entity; schema: SchemaObject };
 export type PathHop = { relationship: Relationship; target: Entity };

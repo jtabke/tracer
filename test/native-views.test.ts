@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Editing } from "../ui/editing.ts";
-const { EvidenceView } = await import("../ui/evidence.tsx");
+const { EvidenceView } = await import("../ui/evidence/workspace.tsx");
 const editing: Editing = {
   busy: false,
   epoch: 0,

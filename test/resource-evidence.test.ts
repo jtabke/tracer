@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Comparison, InputComparison, RelationshipComparison } from "../src/core/evidence.ts";
-const { EvidenceInputs } = await import("../ui/evidence-inputs.tsx");
+const { EvidenceInputs } = await import("../ui/evidence/inputs.tsx");
 const resource = {
   id: "resource",
   type: "@resource",

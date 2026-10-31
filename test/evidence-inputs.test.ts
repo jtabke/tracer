@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Comparison, Receipt } from "../src/core/evidence.ts";
-const { EvidenceInputs } = await import("../ui/evidence-inputs.tsx");
+const { EvidenceInputs } = await import("../ui/evidence/inputs.tsx");
 const output = { id: "output", key: "REPORT", version: 1, type: "item", fields: {} };
 const entity = { id: "input", key: "REQ", version: 3, type: "item", fields: {} };
 const schema: Receipt["schema"] = {

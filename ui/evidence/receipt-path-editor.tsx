@@ -1,14 +1,14 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
-import type { Entity, Relationship } from "../src/core/model.ts";
-import { read } from "./api.ts";
-import { label } from "./entity-label.ts";
-import { readable } from "./presentation-text.ts";
+import type { Entity, Relationship } from "../../src/core/model.ts";
+import { read } from "../api.ts";
+import { label } from "../entity-label.ts";
+import { readable } from "../presentation-text.ts";
 import type { InputDraft } from "./receipt-authoring-state.ts";
 import { pathComplete } from "./receipt-authoring-state.ts";
-import { statementText } from "./statement-text.ts";
-import { usePageCursor } from "./use-page-cursor.ts";
-import { useProjection } from "./use-projection.ts";
-import { useRead } from "./use-read.ts";
+import { statementText } from "../statement-text.ts";
+import { usePageCursor } from "../use-page-cursor.ts";
+import { useProjection } from "../use-projection.ts";
+import { useRead } from "../use-read.ts";
 
 export function ReceiptPathEditor({
   input,

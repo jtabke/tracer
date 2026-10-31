@@ -5,8 +5,8 @@ import type { VerificationEditorProps } from "./common.ts";
 import { samePreparation, useRecoveredVerification } from "./common.ts";
 import { AdditionalFields, useApplicationDirty } from "../application-choices.tsx";
 import { fieldsFrom } from "../fields.tsx";
-import { RecordedMaterialChoice } from "../recorded-material.tsx";
-import type { RecordedMaterial } from "../recorded-material.tsx";
+import { RecordedMaterialChoice } from "../evidence/recorded-material.tsx";
+import type { RecordedMaterial } from "../evidence/recorded-material.tsx";
 import { VerificationInputs } from "./inputs.tsx";
 import type { VerificationSupportDraft } from "./inputs.tsx";
 type ActivityDraft = {

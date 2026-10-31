@@ -5,8 +5,8 @@ import {
   referenceOperation,
   referenceQualification,
   canPinReference,
-} from "../ui/reference-draft.ts";
-import type { ReferenceContext } from "../ui/reference-draft.ts";
+} from "../ui/references/draft.ts";
+import type { ReferenceContext } from "../ui/references/draft.ts";
 const context: ReferenceContext = {
   source: { id: "subject", type: "need", version: 2, fields: {} },
   schema: {

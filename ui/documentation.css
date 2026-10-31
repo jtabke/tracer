@@ -1,7 +1,7 @@
 .native-task:has(> div:not([hidden]) > .documentation-workspace) {
   width: min(1180px, calc(100vw - 32px));
 }
-:is(.studio-app, .native-task) .documentation-workspace {
+.native-task .documentation-workspace {
   display: grid;
   grid-template-columns: 14rem minmax(0, 1fr);
   gap: 2.5rem;
@@ -14,7 +14,7 @@
   border: 0;
   border-radius: 0;
 }
-:is(.studio-app, .native-task) .documentation-topics {
+.native-task .documentation-topics {
   display: block;
   position: sticky;
   top: 1.5rem;
@@ -22,13 +22,13 @@
   border: 0;
   margin: 0;
 }
-:is(.studio-app, .native-task) .documentation-topics section {
+.native-task .documentation-topics section {
   margin-bottom: 1.5rem;
   padding: 0;
   border: 0;
   background: transparent;
 }
-:is(.studio-app, .native-task) .documentation-topics h2 {
+.native-task .documentation-topics h2 {
   color: var(--color-muted);
   font-size: 0.75rem;
   font-weight: 600;
@@ -76,7 +76,7 @@
   margin: 0 0 1.5rem;
   letter-spacing: -0.035em;
 }
-:is(.studio-app, .native-task) .documentation-article h2 {
+.native-task .documentation-article h2 {
   font-size: 1.3rem;
   line-height: 1.35;
   margin: 2.5rem 0 1rem;
@@ -235,12 +235,12 @@
   line-height: 1.4;
 }
 @media (max-width: 1000px) {
-  :is(.studio-app, .native-task) .documentation-workspace {
+  .native-task .documentation-workspace {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
     padding: 1.25rem;
   }
-  :is(.studio-app, .native-task) .documentation-topics {
+  .native-task .documentation-topics {
     display: none;
   }
   .documentation-topic-select {

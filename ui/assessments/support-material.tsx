@@ -1,7 +1,7 @@
 import type { Entity } from "../../src/core/model.ts";
 import type { SupportReference } from "../../src/core/change-assessment.ts";
 import type { Editing } from "../editing.ts";
-import { RecordedMaterialChoice } from "../recorded-material.tsx";
+import { RecordedMaterialChoice } from "../evidence/recorded-material.tsx";
 export function SupportMaterialChoice(props: {
   title: string;
   kind: "receipt" | "observation" | "relationship";

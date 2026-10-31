@@ -1,13 +1,13 @@
-import { label } from "./entity-label.ts";
-import { useReferenceDrafts } from "./use-reference-drafts.ts";
-import "./reference-workspace.css";
+import { label } from "../entity-label.ts";
+import { useReferenceDrafts } from "./use-drafts.ts";
+import "./workspace.css";
 import { useState } from "react";
-import type { Entity, SchemaObject } from "../src/core/model.ts";
-import type { ReadResponse } from "../src/interfaces/api-contract.ts";
-import type { Editing } from "./editing.ts";
-import { useProjection } from "./use-projection.ts";
-import { ReferenceEditor } from "./reference-editor.tsx";
-import { ReferenceDetails, ReferenceEvaluation } from "./reference-details.tsx";
+import type { Entity, SchemaObject } from "../../src/core/model.ts";
+import type { ReadResponse } from "../../src/interfaces/api-contract.ts";
+import type { Editing } from "../editing.ts";
+import { useProjection } from "../use-projection.ts";
+import { ReferenceEditor } from "./editor.tsx";
+import { ReferenceDetails, ReferenceEvaluation } from "./details.tsx";
 const ignoreDirty = () => {};
 export function ReferenceWorkspace({
   entity,
