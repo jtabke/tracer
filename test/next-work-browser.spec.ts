@@ -280,7 +280,7 @@ test("an empty model shows unconfigured queues and offers model setup rather tha
     await expect(queueChoice(panel, "Unresolved reviews", 0)).toBeVisible();
     await panel.getByRole("button", { name: "Configure model and policies", exact: true }).click();
     await expect(page.locator(".model-page")).toBeVisible();
-    await expect(page.locator(".model-page")).toContainText("Configure model");
+    await expect(page.locator(".model-page")).toContainText("Set up your project");
     await expect(page.locator("dialog:modal")).toHaveCount(0);
     expect((await tracer.getNextWork()).projectRevision).toBe(0);
   } finally {

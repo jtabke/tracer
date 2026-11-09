@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState, type RefObject, type ReactNode } from "react";
 import type { InitialView } from "../src/core/presentation.ts";
 import type { Schema, SchemaObject } from "../src/core/model.ts";
 import { workflowProposal } from "../src/core/workflow-presets.ts";
@@ -8,6 +8,7 @@ import { SchemaEditingSurface } from "./schema-editing-surface.tsx";
 import { SchemaEditorNotices } from "./schema-editor-notices.tsx";
 import type { DefinitionSelection } from "./schema-guided.tsx";
 import { SchemaStarter } from "./schema-starter.tsx";
+import { SchemaModelPreview } from "./schema-model-preview.tsx";
 
 export function SchemaEditor({
   schema,
@@ -64,24 +65,17 @@ export function SchemaEditor({
   };
   return (
     <section className="schema-editor" aria-label="Configure project model">
-      <div className="toolbar">
-        <h2 tabIndex={-1} ref={heading}>
-          Configure model
-        </h2>
+      <ModelIntroduction setup={version === 0} heading={heading}>
         <DraftActions
           busy={busy}
+          setup={version === 0}
           disabled={Boolean(invalid.length + extensions.length)}
+          empty={!Object.keys(draft.entityTypes).length}
           onSave={() => void save()}
           onCancel={cancel}
         />
-      </div>
+      </ModelIntroduction>
       <ModelSaveNotice text={notice} />
-      <DraftVersion version={version} schema={schema} />
-      {workflowProposal(base) !== base && (
-        <p className="schema-flow-proposal">
-          Suggested development flow is included in this draft. Review the paths before saving.
-        </p>
-      )}
       <SchemaDraftRecovery
         schema={schema}
         text={text}
@@ -97,20 +91,14 @@ export function SchemaEditor({
           heading.current?.focus();
         }}
       />
-      <details className="schema-editing-notes">
-        <summary>About model changes</summary>
-        <p>
-          The server validates recorded items and connections before saving. Changes do not
-          automatically rename, backfill or repair records.
-        </p>
-      </details>
       <fieldset disabled={busy}>
         <legend>Native model draft</legend>
         {version === 0 && (
           <SchemaStarter
+            key={starter.generation}
             changed={!!changes.length}
             onChange={(next, views) => {
-              setStarter({ views, includeViews: true, generation: starter.generation + 1 });
+              setStarter({ views, includeViews: true, generation: starter.generation });
               update(next);
               setInvalid("");
             }}
@@ -122,31 +110,42 @@ export function SchemaEditor({
           checked={includeViews}
           onChange={(includeViews) => setStarter({ ...starter, includeViews })}
         />
-        <SchemaEditingSurface
-          key={`${version}:${starter.generation}`}
-          initialSelection={initialSelection}
-          flowOverview={flowOverview}
-          draft={draft}
-          version={version}
-          advanced={advanced}
-          invalid={invalid}
-          text={text}
-          jsonInput={jsonInput}
-          onAdvanced={setAdvanced}
-          onChange={update}
-          onText={(value) => {
-            setNotice("");
-            setText(value);
-            try {
-              setDraft(parseDraft(value));
-              setInvalid("");
-            } catch (error) {
-              setInvalid(error instanceof Error ? error.message : String(error));
-            }
-          }}
-        />
+        <SchemaModelPreview initial={version === 0} draft={draft} />
+        <ModelCustomization setup={version === 0}>
+          <SchemaEditingSurface
+            key={`${version}:${starter.generation}:${initialViews.length}`}
+            initialSelection={initialSelection}
+            flowOverview={flowOverview}
+            draft={draft}
+            version={version}
+            advanced={advanced}
+            invalid={invalid}
+            text={text}
+            jsonInput={jsonInput}
+            onAdvanced={setAdvanced}
+            onChange={update}
+            onText={(value) => {
+              setNotice("");
+              setText(value);
+              try {
+                setDraft(parseDraft(value));
+                setInvalid("");
+              } catch (error) {
+                setInvalid(error instanceof Error ? error.message : String(error));
+              }
+            }}
+          />
+        </ModelCustomization>
         <SchemaEditorNotices base={base} draft={draft} invalid={invalid} />
       </fieldset>
+      <details className="schema-editing-notes">
+        <summary>About model changes</summary>
+        <p>
+          The server validates recorded items and connections before saving. Changes do not
+          automatically rename, backfill or repair records.
+        </p>
+      </details>
+      <DraftVersion version={version} schema={schema} />
     </section>
   );
   async function save() {
@@ -163,6 +162,41 @@ export function SchemaEditor({
     );
     setInvalid("");
   }
+}
+
+function ModelCustomization({ setup, children }: { setup: boolean; children: ReactNode }) {
+  return (
+    <details className="schema-customization" open={!setup || undefined}>
+      <summary>{setup ? "Customize model" : "Edit model"}</summary>
+      {children}
+    </details>
+  );
+}
+
+function ModelIntroduction({
+  setup,
+  heading,
+  children,
+}: {
+  setup: boolean;
+  heading: RefObject<HTMLHeadingElement | null>;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <div className="toolbar">
+        <h2 tabIndex={-1} ref={heading}>
+          {setup ? "Set up your project" : "Configure model"}
+        </h2>
+        {children}
+      </div>
+      <p className="schema-introduction">
+        {setup
+          ? "Choose the records and connections your project needs. Start with a model, review it, then make it your own."
+          : "Review and adapt your project’s record types, fields and connections."}
+      </p>
+    </>
+  );
 }
 
 function useModelDirty(dirty: boolean, onDirty?: (value: boolean) => void) {
@@ -211,18 +245,22 @@ function DraftVersion({ version, schema }: { version: number; schema: SchemaObje
 function DraftActions({
   busy,
   disabled,
+  setup,
+  empty,
   onSave,
   onCancel,
 }: {
   busy: boolean;
   disabled: boolean;
+  setup: boolean;
+  empty: boolean;
   onSave(): void;
   onCancel(): void;
 }) {
   return (
     <>
-      <button className="primary" disabled={busy || disabled} onClick={onSave}>
-        Save model
+      <button className="primary" disabled={busy || disabled || (setup && empty)} onClick={onSave}>
+        {setup ? "Use this model" : "Save model"}
       </button>
       <button disabled={busy} onClick={onCancel}>
         Cancel

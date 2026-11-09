@@ -32,7 +32,23 @@ test("invalid decisions, stale basis and action deletion reject atomically witho
     await f.tracer.changeAssessments.setDisposition(initial, actor);
     const request = await proposal(f, selection, subject),
       before = await f.tracer.exportProject();
+    const malformedActions = [
+      ...["open", "done", "waived"].map((state) => ({
+        ...initial.actions[0],
+        state: [state],
+        resolution: "Must not bypass completion or waiver guards",
+        support: [{ kind: "entity", id: f.criterion.id, version: 1, mode: "historical" }],
+      })),
+      ...["revise", "reverify", "investigate"].map((kind) => ({
+        ...initial.actions[0],
+        kind: [kind],
+      })),
+    ];
     const samples = [
+      ...malformedActions.map((action) => ({
+        ...request,
+        actions: [action] as unknown as typeof request.actions,
+      })),
       { ...request, actions: [] },
       { ...request, decision: "no_action" as const },
       { ...request, decision: "reverify" as const },

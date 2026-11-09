@@ -124,7 +124,7 @@ test("failed native reads retain the map and disable writes; empty projects conf
     await page.goto(server.origin + "/?workspace=map");
     await expect(page.getByRole("button", { name: "Configure model", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Configure model", exact: true }).click();
-    await expect(page.locator(".model-page")).toContainText("Configure model");
+    await expect(page.locator(".model-page")).toContainText("Set up your project");
     await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
     await page.route("**/api/project-snapshot", (route) => route.abort());
     await page.getByRole("button", { name: "Refresh project", exact: true }).click();

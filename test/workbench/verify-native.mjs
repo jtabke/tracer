@@ -166,6 +166,7 @@ try {
     (await snapshot()).relationships.find((link) => link.id === relation.id).fields.scope,
     "Concurrent saved scope",
   );
+  page.once("dialog", (confirmation) => confirmation.accept());
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.setViewportSize({ width: 680, height: 900 });
   await page.locator('[data-action="close-inspector"]').click();
@@ -232,6 +233,7 @@ try {
     "Saved despite a lost response",
   );
   await page.unroute("**/api/changesets");
+  page.once("dialog", (confirmation) => confirmation.accept());
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.locator("#revision-range").fill(String(start.projectRevision));
   await page.locator("#revision-range").dispatchEvent("change");

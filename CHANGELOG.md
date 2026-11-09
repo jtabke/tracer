@@ -6,6 +6,8 @@ No packaged release has been published. `0.1.0` identifies the current source pr
 
 ### Added
 
+- Starter-first project setup with editable Engineering/Software/Custom choices, a readable model preview and persistent workspace navigation.
+
 - A shared Graph / Matrix / History engineering workspace with native history and retained investigation context.
 - Exact configuration comparisons, controlled change assessments and requirement Verification over shared application contracts.
 - Readable retained assessment pages with draft preservation and inspectable exact identities.
@@ -13,6 +15,8 @@ No packaged release has been published. `0.1.0` identifies the current source pr
 - Local online SQLite backup and a build-once browser launch command.
 
 ### Maintenance
+
+- Dialog close controls stay upper-right while scrolling; outside-click and Escape dismissal retain task drafts or confirm discarding transient edits, without bypassing pending-save guards.
 
 - Private development exports/reports and historical experiments no longer belong in the public source tree.
 - The duplicate legacy UI is retired after migrating shared regression coverage to the shipped build; configuration and record UI code now follows feature ownership.

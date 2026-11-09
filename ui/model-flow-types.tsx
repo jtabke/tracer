@@ -33,7 +33,6 @@ export function FlowTypeCards({
       {nodes.map((node) => (
         <li key={node.name} style={{ left: node.x, top: node.y }}>
           <button
-            id={`model-node-${node.name}`}
             aria-label={`Select type · ${node.name}`}
             aria-pressed={linking ? source === node.name : selected === node.name}
             className={connected.has(node.name) || editing ? "flow-connected" : ""}

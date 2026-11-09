@@ -33,61 +33,76 @@ test("local shutdown closes an unused browser preconnection", { timeout: 2000 },
   }
 });
 
-test("shutdown drains an active versioned mutation before the database can close", async () => {
-  const repository = new SQLiteRepository(":memory:");
-  const tracer = new Tracer(repository);
-  let arrive!: () => void;
-  let release!: () => void;
-  const entered = new Promise<void>((resolve) => {
-    arrive = resolve;
-  });
-  const ready = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-  const setSchema = tracer.setSchema.bind(tracer);
-  tracer.setSchema = async (...args: [SetSchemaCommand] | [Schema, number, Provenance]) => {
-    arrive();
-    await ready;
-    return args.length === 1 ? setSchema(args[0]) : setSchema(...args);
-  };
-  const server = await startLocalServer(tracer, resolve("ui"), 0);
-  let closing: Promise<void> | undefined;
-  try {
-    const { token } = (await (await fetch(server.origin + "/api/session")).json()) as {
-      token: string;
+for (const { disconnected, fails } of [
+  { disconnected: false, fails: false },
+  { disconnected: true, fails: false },
+  { disconnected: true, fails: true },
+]) {
+  test(`shutdown drains an active versioned mutation${disconnected ? " after client disconnection" : ""}${fails ? " and failure" : ""} before the database can close`, async () => {
+    const repository = new SQLiteRepository(":memory:");
+    const tracer = new Tracer(repository);
+    let arrive!: () => void;
+    let release!: () => void;
+    const entered = new Promise<void>((resolve) => {
+      arrive = resolve;
+    });
+    const ready = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const setSchema = tracer.setSchema.bind(tracer);
+    tracer.setSchema = async (...args: [SetSchemaCommand] | [Schema, number, Provenance]) => {
+      arrive();
+      await ready;
+      if (fails) throw new Error("Mutation failed after disconnection");
+      return args.length === 1 ? setSchema(args[0]) : setSchema(...args);
     };
-    const mutation = fetch(server.origin + "/api/schema", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: server.origin,
-        "X-Tracer-Token": token,
-      },
-      body: JSON.stringify({
-        expectedVersion: 0,
-        schema: { entityTypes: { item: { fields: {} } }, relationshipTypes: {} },
-      }),
-    });
-    await entered;
-    let closed = false;
-    const firstClose = server.close();
-    assert.strictEqual(server.close(), firstClose);
-    closing = firstClose.then(() => {
-      closed = true;
-    });
-    await new Promise<void>((resolve) => setImmediate(resolve));
-    assert.equal(closed, false);
-    release();
-    const response = await mutation;
-    assert.equal(response.status, 200);
-    await response.json();
-    await closing;
-    assert.strictEqual(server.close(), firstClose);
-    await server.close();
-    assert.equal((await tracer.getSchema())?.version, 1);
-  } finally {
-    release();
-    await (closing ?? server.close());
-    repository.close();
-  }
-});
+    const server = await startLocalServer(tracer, resolve("ui"), 0);
+    let closing: Promise<void> | undefined;
+    try {
+      const { token } = (await (await fetch(server.origin + "/api/session")).json()) as {
+        token: string;
+      };
+      const controller = new AbortController();
+      const mutation = fetch(server.origin + "/api/schema", {
+        signal: controller.signal,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: server.origin,
+          "X-Tracer-Token": token,
+        },
+        body: JSON.stringify({
+          expectedVersion: 0,
+          schema: { entityTypes: { item: { fields: {} } }, relationshipTypes: {} },
+        }),
+      });
+      await entered;
+      if (disconnected) {
+        controller.abort();
+        await assert.rejects(mutation, { name: "AbortError" });
+      }
+      let closed = false;
+      const firstClose = server.close();
+      assert.strictEqual(server.close(), firstClose);
+      closing = firstClose.then(() => {
+        closed = true;
+      });
+      await new Promise<void>((resolve) => setTimeout(resolve, 50));
+      assert.equal(closed, false);
+      release();
+      if (!disconnected) {
+        const response = await mutation;
+        assert.equal(response.status, 200);
+        await response.json();
+      }
+      await closing;
+      assert.strictEqual(server.close(), firstClose);
+      await server.close();
+      assert.equal((await tracer.getSchema())?.version, fails ? undefined : 1);
+    } finally {
+      release();
+      await (closing ?? server.close());
+      repository.close();
+    }
+  });
+}

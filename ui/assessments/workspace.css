@@ -1,17 +1,7 @@
-.native-task:has(> div:not([hidden]) > .scoped-assessments) {
+.native-task:has(> .native-task-body > div:not([hidden]) > .scoped-assessments) {
   width: min(1200px, calc(100vw - 32px));
   height: 92dvh;
   max-height: 92dvh;
-}
-.native-task:has(> div:not([hidden]) > .scoped-assessments) > .native-task-header {
-  position: sticky;
-  top: -22px;
-  z-index: 5;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  background: var(--panel, #151c20);
-  padding-block: 12px;
 }
 .scoped-assessments {
   max-width: 1200px;

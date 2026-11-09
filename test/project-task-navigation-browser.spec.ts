@@ -79,7 +79,8 @@ for (const width of [1440, 680, 390])
       await expect(page.getByRole("region", { name: "Documentation reader" })).toBeVisible();
       await navigation().selectOption("schema");
       await expect(page.getByRole("region", { name: "Project model page" })).toBeVisible();
-      await navigation().selectOption("create");
+      await page.getByRole("button", { name: "Return to workspace", exact: true }).click();
+      await page.locator('[data-action="create-record"]').first().click();
       await expect(task.getByLabel("New record title", { exact: true })).toHaveValue(
         "Retain across task switches",
       );

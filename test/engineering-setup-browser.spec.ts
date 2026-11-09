@@ -38,18 +38,27 @@ for (const width of [1440, 680])
       await page.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await openProjectDestination(page, "Model");
       const editor = page.getByLabel("Configure project model", { exact: true });
-      await editor.getByLabel("Starter structure").selectOption("engineering");
+      await expect(editor.getByRole("heading", { name: "Set up your project" })).toBeVisible();
+      await expect(editor.getByRole("button", { name: "Text", exact: true })).toBeHidden();
+      await editor.getByRole("button", { name: /^Engineering/ }).click();
       page.once("dialog", (dialog) => dialog.accept());
       await editor.getByRole("button", { name: "Cancel", exact: true }).click();
       await openProjectDestination(page, "Model");
-      await expect(editor.getByLabel("Starter structure")).toHaveValue("empty");
+      await expect(editor.getByRole("button", { name: /^Engineering/ })).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      );
       expect(await tracer.getSchema()).toBeUndefined();
-      await editor.getByLabel("Starter structure").selectOption("engineering");
+      await editor.getByRole("button", { name: /^Engineering/ }).click();
+      await expect(editor.getByRole("region", { name: "Model preview" })).toContainText(
+        "requirement",
+      );
+      await editor.getByText("Customize model", { exact: true }).click();
       await expect(editor).toContainText("verification method and expected result");
       await expect(
         editor.getByRole("heading", { name: "New model definition", exact: true }),
       ).toHaveCount(0);
-      await expect(editor.locator(".model-flow-route")).toHaveCount(4);
+      await expect(editor.locator(".schema-customization .model-flow-route")).toHaveCount(4);
       await expect(
         editor.getByRole("checkbox", { name: "Save 3 starter Matrix views with this model" }),
       ).toBeChecked();
@@ -61,7 +70,7 @@ for (const width of [1440, 680])
         )
         .toBeLessThanOrEqual(1);
       await page.screenshot({ path: resolve("output", `engineering-starter-${width}.png`) });
-      await editor.getByRole("button", { name: "Save model", exact: true }).click();
+      await editor.getByRole("button", { name: "Use this model", exact: true }).click();
       await expect(editor.getByRole("status")).toContainText("with 3 Matrix views");
       await expect(editor.getByText("No changes", { exact: true })).toBeVisible();
       expect((await tracer.savedViews.list()).length).toBe(3);

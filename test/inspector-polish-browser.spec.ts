@@ -338,6 +338,8 @@ test("a pending connection keeps its exact proposal and cannot be dismissed as a
   await expect(page.locator("#connection-target")).toBeDisabled();
   await page.keyboard.press("Escape");
   await expect(form).toBeVisible();
+  await page.mouse.click(1, 1);
+  await expect(form).toBeVisible();
   release();
   await expect(page.locator("#workspace-dialog")).not.toBeVisible();
   await expect(page.getByLabel("Relationship inspector", { exact: true })).toContainText(
@@ -428,6 +430,7 @@ test("dialog cancellation restores its logical opener after a workspace resize",
   await page.setViewportSize({ width: 1380, height: 960 });
   await expect.poll(() => opener!.evaluate((element) => element.isConnected)).toBe(false);
   await page.getByRole("combobox", { name: "Target", exact: true }).fill("pressure");
+  page.once("dialog", (confirmation) => confirmation.accept());
   await page.keyboard.press("Escape");
   await expect(page.locator("#workspace-dialog")).not.toBeVisible();
   await expect(page.getByRole("button", { name: "Add relationship", exact: true })).toBeFocused();

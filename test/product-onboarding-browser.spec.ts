@@ -26,10 +26,11 @@ test("worked product guide creates a native model, items and links from an empty
       await page.goto(server.origin + "/?workspace=map");
       await page.getByRole("button", { name: "Configure model", exact: true }).click();
       const task = page.locator(".native-task:visible");
+      await task.getByText("Customize model", { exact: true }).click();
       await task.getByRole("button", { name: "Text", exact: true }).click();
       await task.getByLabel("Advanced JSON", { exact: true }).check();
       await task.getByLabel("Project schema JSON", { exact: true }).fill(json);
-      await task.getByRole("button", { name: "Save model", exact: true }).click();
+      await task.getByRole("button", { name: "Use this model", exact: true }).click();
       await expect.poll(async () => (await tracer.getSchema())?.version).toBe(1);
       await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await page.getByRole("button", { name: "New item", exact: true }).click();

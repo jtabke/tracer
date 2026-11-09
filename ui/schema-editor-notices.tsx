@@ -1,3 +1,4 @@
+import { workflowProposal } from "../src/core/workflow-presets.ts";
 import type { Schema } from "../src/core/model.ts";
 import { pendingChanges, rootExtensions } from "./schema-draft.ts";
 export function SchemaEditorNotices({
@@ -13,6 +14,11 @@ export function SchemaEditorNotices({
   const extensions = rootExtensions(draft);
   return (
     <>
+      {workflowProposal(base) !== base && (
+        <p className="schema-flow-proposal">
+          Suggested development flow is included in this draft. Review the paths before saving.
+        </p>
+      )}
       {invalid && <p role="alert">Invalid native JSON: {invalid}. Your text is retained.</p>}
       {!!extensions.length && (
         <p role="alert">

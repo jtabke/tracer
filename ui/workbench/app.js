@@ -208,9 +208,6 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   };
   const nativePending = () => ["saving", "unknown"].includes(native?.mutations.snapshot().status);
   const writesBlocked = () => state.saving || recoveredUncertain || nativePending();
-  dialog.oncancel = (event) => {
-    if (state.saving) event.preventDefault();
-  };
   initializeRecovery();
   function adoptInitialMatrix() {
     if (!native || workspace.data.entities.length) return;
@@ -297,6 +294,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   const openDialog = createWorkspaceDialog({
     app,
     dialog,
+    canDismiss: () => !state.saving,
     escape: editingContext.escape,
     prepare: () => {
       graphInput.clearSelection();
@@ -735,6 +733,15 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     });
   }
   function prepareWorkspaceRender() {
+    const matrixView =
+      state.perspective === "matrix"
+        ? app.querySelector(".traceability-matrix")?.closest(".view")
+        : null;
+    // Retain this DOM-owned offset across a same-perspective render, not as a
+    // second persisted investigation state or when switching perspectives.
+    const matrixViewScroll = matrixView
+      ? { left: matrixView.scrollLeft, top: matrixView.scrollTop }
+      : null;
     const previousScroll = app.querySelector(".matrix-scroll");
     if (previousScroll)
       state.matrixScroll = { top: previousScroll.scrollTop, left: previousScroll.scrollLeft };
@@ -752,6 +759,9 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       state.matrixRootType = Object.keys(workspace.data.schema.entityTypes)[0] ?? "";
       state.matrixSteps = [];
     }
+    return () => {
+      if (matrixViewScroll) app.querySelector("#view")?.scrollTo(matrixViewScroll);
+    };
   }
   function modalInspector() {
     return (
@@ -864,7 +874,9 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
 
     function renderWorkspaceHeading() {
       if (projectTools?.pageOpen())
-        return projectTools.pageOpen() === "assessments" ? "Change assessments" : "Verification";
+        return { assessments: "Change assessments", verification: "Verification", schema: "Model" }[
+          projectTools.pageOpen()
+        ];
       if (state.settingsOpen) return "Project settings";
       if (state.evidenceOpen) return "Evidence review";
       if (state.artifactFull) return "Artifact";
@@ -888,7 +900,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       if (state.evidenceOpen) return "assessment-focused";
       return state.artifactFull ? "artifact-focused" : "";
     }
-    prepareWorkspaceRender();
+    const restoreViewScroll = prepareWorkspaceRender();
     document.body.dataset.panel = panelMode();
     const record = model.records.get(state.selected),
       count = visibleKeys().length,
@@ -905,6 +917,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     applyGeometry(app);
     const matrixScroll = app.querySelector(".matrix-scroll");
     if (matrixScroll) matrixScroll.scrollTo(state.matrixScroll.left, state.matrixScroll.top);
+    restoreViewScroll();
     if (state.artifactFull && !state.settingsOpen && !projectTools?.pageOpen())
       app.querySelector(".view").inert = true;
     if (modalInspector()) {
@@ -939,6 +952,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       settings: state.settingsOpen,
       verification: projectTools?.pageOpen() === "verification",
       assessments: projectTools?.pageOpen() === "assessments",
+      schema: projectTools?.pageOpen() === "schema",
     });
   }
   function openNavigation() {
@@ -2109,11 +2123,13 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   function handleWorkspaceKey(event) {
     const typing =
       /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable;
-    if (document.querySelector(".native-task[open], .model-page:not([hidden])")) return;
+    if (document.querySelector(".native-task[open]")) return;
     if (searchShortcut(event, typing)) return;
     if (
       dialog.open ||
-      document.querySelector(".native-task[open], .verification-page:not([hidden])")
+      document.querySelector(
+        ".native-task[open], .verification-page:not([hidden]), .model-page:not([hidden])",
+      )
     )
       return;
     if (state.evidenceOpen) {

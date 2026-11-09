@@ -1,4 +1,4 @@
-.native-task:has(> div:not([hidden]) > .documentation-workspace) {
+.native-task:has(> .native-task-body > div:not([hidden]) > .documentation-workspace) {
   width: min(1180px, calc(100vw - 32px));
 }
 .native-task .documentation-workspace {
@@ -7,7 +7,7 @@
   gap: 2.5rem;
   max-width: 82rem;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   min-width: 0;
   align-items: start;
   background: transparent;
@@ -238,7 +238,7 @@
   .native-task .documentation-workspace {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
-    padding: 1.25rem;
+    padding: 0;
   }
   .native-task .documentation-topics {
     display: none;

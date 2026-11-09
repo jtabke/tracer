@@ -213,7 +213,9 @@ for (const width of [1440, 390])
     await page.screenshot({ path: `/tmp/tracer-documentation-${width}.png`, fullPage: true });
     if (width === 390)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-    const scroller = page.getByRole("dialog", { name: "Project task", exact: true });
+    const scroller = page
+      .getByRole("dialog", { name: "Project task", exact: true })
+      .locator(".native-task-body");
     await scroller.evaluate((element) => {
       element.scrollTop = 500;
     });
@@ -225,6 +227,11 @@ for (const width of [1440, 390])
     await expect(
       receiptInputEditor(page).getByLabel("Input captured context", { exact: true }),
     ).toContainText(fixture.entity.fields.statement as string);
+    // Other retained tasks share the body scroller but not the reader's position.
+    await scroller.evaluate((element) => {
+      element.scrollTop = 0;
+    });
+    await expect.poll(() => scroller.evaluate((element) => element.scrollTop)).toBe(0);
     await openView(page, "Documentation");
     await expect(reader.getByRole("heading", { level: 1 })).toContainText("Apple Tesla and SpaceX");
     await expect.poll(() => scroller.evaluate((element) => element.scrollTop)).toBe(500);

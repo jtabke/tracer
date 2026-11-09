@@ -71,11 +71,13 @@ for (const width of [1440, 680, 390]) {
       await expect(page).toHaveURL(/#model$/);
       await expect(page.locator("dialog:modal")).toHaveCount(0);
       const bounds = await model.boundingBox();
-      expect(bounds?.x).toBe(0);
-      expect(bounds?.y).toBe(0);
-      expect(bounds?.width).toBe(width);
-      expect(bounds?.height).toBe(900);
-      expect(await page.locator("#app").evaluate((e) => (e as HTMLElement).inert)).toBe(true);
+      const hostBounds = await page.locator("#verification-slot").boundingBox();
+      expect(bounds).toEqual(hostBounds);
+      expect(bounds!.width).toBe(width > 760 ? width - 176 : width);
+      expect(await page.locator("#app").evaluate((e) => (e as HTMLElement).inert)).toBe(false);
+      await expect(
+        page.getByRole("button", { name: "Search", exact: false }).first(),
+      ).toBeVisible();
       await expect(model.locator(".model-flow-scroll")).toBeVisible();
       await expect(model.locator(".model-flow-types > li")).toHaveCount(3);
       await expect(
@@ -89,7 +91,8 @@ for (const width of [1440, 680, 390]) {
       await model.getByRole("button", { name: "Development flow", exact: true }).click();
       await expect(model.locator(".model-flow-types > li")).toHaveCount(3);
       await page.keyboard.press("ControlOrMeta+k");
-      await page.keyboard.press("/");
+      await expect(page.locator("#workspace-dialog")).toBeVisible();
+      await page.keyboard.press("Escape");
       await expect(page.locator("#workspace-dialog")).toBeHidden();
       await model.getByRole("button", { name: "Text", exact: true }).click();
       await model.getByLabel("Advanced JSON", { exact: true }).check();

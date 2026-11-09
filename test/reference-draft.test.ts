@@ -37,6 +37,12 @@ test("reference draft captures endpoint versions, native pins and unknown select
   const op = referenceOperation(context, draft);
   assert.equal(op.op, "reference.create");
   if (op.op !== "reference.create") return;
+  assert.match(op.id!, /^[0-9a-f-]{36}$/);
+  assert.equal(referenceOperation(context, { ...draft, explanation: "Edited proposal" }).id, op.id);
+  assert.notEqual(
+    referenceOperation(context, initialReferenceDraft(context, "next-command")).id,
+    op.id,
+  );
   assert.equal(op.input.sourceVersion, 2);
   assert.equal(op.input.targetVersion, 4);
   const pinned = {

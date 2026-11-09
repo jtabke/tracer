@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { VerificationWorkspace } from "./verifications/workspace.tsx";
 import { VerificationPage } from "./verifications/page.tsx";
 import type {
@@ -212,6 +213,7 @@ export function NativeTasks({
         />
       )}
       <ModelPage
+        target={verificationTarget}
         active={task === "schema"}
         visited={visited.includes("schema")}
         error={editing.error}
@@ -238,23 +240,32 @@ export function NativeTasks({
           {task && onTask && (
             <ProjectTaskNavigation task={task} hasEntity={!!entity} onTask={onTask} />
           )}
-          <button onClick={onClose}>Return to workspace</button>
+          <button
+            className="native-task-close"
+            aria-label="Return to workspace"
+            title="Close dialog and return to workspace"
+            onClick={onClose}
+          >
+            ×
+          </button>
         </header>
-        {editing.error && <p role="alert">{editing.error}</p>}
-        <p className="task-draft-note">
-          Switching tasks or returning to the workspace retains in-session drafts until reload.
-        </p>
-        {visited
-          .filter(
-            (name) =>
-              name !== "schema" &&
-              !((name === "verification" || name === "assessments") && verificationTarget),
-          )
-          .map((name) => (
-            <div key={name} hidden={task !== name}>
-              {panels[name]()}
-            </div>
-          ))}
+        <div className="native-task-body">
+          {editing.error && <p role="alert">{editing.error}</p>}
+          <p className="task-draft-note">
+            Switching tasks or returning to the workspace retains in-session drafts until reload.
+          </p>
+          {visited
+            .filter(
+              (name) =>
+                name !== "schema" &&
+                !((name === "verification" || name === "assessments") && verificationTarget),
+            )
+            .map((name) => (
+              <div key={name} hidden={task !== name}>
+                {panels[name]()}
+              </div>
+            ))}
+        </div>
       </dialog>
     </>
   );
@@ -266,7 +277,9 @@ function ModelPage({
   render,
   onClose,
   navigation,
+  target,
 }: {
+  target?: HTMLElement;
   active: boolean;
   visited: boolean;
   error?: string;
@@ -274,20 +287,25 @@ function ModelPage({
   onClose(): void;
   navigation?: React.ReactNode;
 }) {
-  return (
-    <section className="native-task model-page" hidden={!active} aria-label="Project model page">
+  const page = (
+    <section
+      className={`native-task model-page ${target ? "" : "model-page-standalone"}`}
+      hidden={!active}
+      aria-label="Project model page"
+    >
       <header className="model-page-header">
         <div>
           <strong>Model</strong>
           <span>Project types and relationships</span>
         </div>
-        {navigation}
+        {!target && navigation}
         <button onClick={onClose}>Return to workspace</button>
       </header>
       {error && <p role="alert">{error}</p>}
       {visited && render()}
     </section>
   );
+  return target ? createPortal(page, target) : page;
 }
 
 function syncTaskSurface(
@@ -319,6 +337,7 @@ function syncTaskDialog(dialog: HTMLDialogElement | null, task: NativeTask | nul
     dialog.close();
     return;
   }
+  dialog.setAttribute("closedby", "any");
   if (!dialog.open) dialog.showModal();
 }
 function chooseFocusedEntity(

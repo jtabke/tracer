@@ -670,14 +670,45 @@ dialog::backdrop {
   background: #0b151866;
   backdrop-filter: blur(5px);
 }
-.dialog-head {
+#workspace-dialog[open] {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+.workspace-dialog-body {
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 20px 20px;
+}
+.search-dialog .workspace-dialog-body:empty {
+  display: none;
+}
+.navigation-dialog .workspace-dialog-body {
+  flex: 1;
+  padding: 0;
+}
+.dialog-head {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 20px;
+  gap: 16px;
+  padding: 16px 20px;
+  margin: 0;
+  background: var(--panel);
 }
 .dialog-head button {
+  flex-shrink: 0;
+  min-width: 40px;
+  min-height: 40px;
   color: var(--muted);
+}
+.dialog-head h2 {
+  min-width: 0;
+  align-self: center;
 }
 dialog input {
   width: 100%;

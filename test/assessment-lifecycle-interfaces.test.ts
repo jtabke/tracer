@@ -22,7 +22,7 @@ for (const domain of ["engineering", "research"] as const)
         require: { features: ["change-assessment-dispositions", "change-assessment-closure"] },
         fetch: async (...args) => {
           const response = await fetch(...args);
-          if (String(args[0]).endsWith(path)) {
+          if (String(args[0]).endsWith(path) && response.ok) {
             lost++;
             assert.equal(response.status, 200);
             throw Error("Lost committed application response");
@@ -41,6 +41,28 @@ for (const domain of ["engineering", "research"] as const)
       const before = await write.read("/api/assessment-analysis", selection);
       assert.equal(before.obligations[0].state, "undisposed");
       const request = await proposal(f, selection, subject);
+      const beforeInvalid = await f.tracer.exportProject();
+      await assert.rejects(
+        write.write("/api/change-assessments/disposition", {
+          ...request,
+          decision: "reverify",
+          actions: [
+            {
+              id: "repeat",
+              kind: "reverify",
+              title: "Do not accept a coerced completion state",
+              state: ["done"],
+              resolution: "No current result supplied",
+              support: [
+                { kind: "entity", id: f.method.id, version: f.method.version, mode: "historical" },
+              ],
+            },
+          ],
+        } as never),
+        { code: "validation" },
+      );
+      assert.deepEqual(await f.tracer.exportProject(), beforeInvalid);
+      assert.equal(await f.tracer.evaluations.getOutcome(request.commandId), null);
       await assert.rejects(write.write("/api/change-assessments/disposition", request), {
         code: "outcome_unknown",
       });
@@ -139,17 +161,31 @@ for (const domain of ["engineering", "research"] as const)
           code: "read_failed",
         });
       }
-      const corrupt = createClient({
-        fetch: async () =>
-          Response.json({
-            ...detail,
-            data: { ...detail.data, subject: { kind: "entity", id: "other" } },
-          }),
-      });
-      await assert.rejects(
-        corrupt.read("/api/assessment-disposition", { ...selection, ...subject }),
-        { code: "read_failed" },
-      );
+      for (const value of [
+        { ...detail, data: { ...detail.data, subject: { kind: "entity", id: "other" } } },
+        { ...detail, decision: ["no_action"] },
+        ...["open", "done", "waived"].map((state) => ({
+          ...detail,
+          actions: [
+            {
+              id: "repeat",
+              kind: "reverify",
+              title: "Malformed persisted obligation",
+              state: [state],
+              resolution: "Unproven completion",
+              support: [
+                { kind: "entity", id: f.method.id, version: f.method.version, mode: "historical" },
+              ],
+            },
+          ],
+        })),
+      ]) {
+        const corrupt = createClient({ fetch: async () => Response.json(value) });
+        await assert.rejects(
+          corrupt.read("/api/assessment-disposition", { ...selection, ...subject }),
+          { code: "read_failed" },
+        );
+      }
       await client.write("/api/change-assessments/reopen", await command(f, selection));
       assert.equal(
         (await client.read("/api/assessment-analysis", selection)).completion.state,

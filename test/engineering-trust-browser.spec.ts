@@ -23,7 +23,8 @@ for (const width of [1440, 680]) {
       await page.goto(server.origin);
       await openProjectDestination(page, "Model");
       const editor = page.getByLabel("Configure project model", { exact: true });
-      await editor.getByLabel("Starter structure").selectOption("engineering");
+      await editor.getByRole("button", { name: /^Engineering/ }).click();
+      await editor.getByText("Customize model", { exact: true }).click();
       // Explicit custom model keeps the unsupported-field regression even as the starter evolves.
       await editor.getByRole("button", { name: "Text", exact: true }).click();
       await editor.getByLabel("Advanced JSON", { exact: true }).check();
@@ -31,7 +32,7 @@ for (const width of [1440, 680]) {
       const custom = JSON.parse(await raw.inputValue());
       delete custom.entityTypes.requirement.fields.acceptance;
       await raw.fill(JSON.stringify(custom));
-      await editor.getByRole("button", { name: "Save model", exact: true }).click();
+      await editor.getByRole("button", { name: "Use this model", exact: true }).click();
       await expect(editor).toContainText("Based on schema v1 · Current project v1");
       await expect(editor.getByText("No changes", { exact: true })).toBeVisible();
       await expect(editor.getByRole("alert")).toHaveCount(0);

@@ -88,11 +88,19 @@ body[data-direction="atlas"] .project-sidebar .project-sidebar-footer {
   font-size: 11px;
   text-align: left;
 }
-.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .workspace-perspectives,
-.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .crumb > span,
-.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .crumb > button,
-.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .context p,
-.sidebar-shell:is([data-page="verification"], [data-page="assessments"]) .historybar {
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"], [data-page="schema"])
+  .workspace-perspectives,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"], [data-page="schema"])
+  .crumb
+  > span,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"], [data-page="schema"])
+  .crumb
+  > button,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"], [data-page="schema"])
+  .context
+  p,
+.sidebar-shell:is([data-page="verification"], [data-page="assessments"], [data-page="schema"])
+  .historybar {
   display: none;
 }
 #verification-slot,
@@ -202,6 +210,41 @@ body[data-direction="atlas"] .navigation-dialog .railnav button {
   color: var(--muted);
 }
 @media (max-width: 760px) {
+  .sidebar-shell .context,
+  body[data-direction="atlas"] .sidebar-shell .context {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    gap: 12px;
+  }
+  .sidebar-shell .context > div:first-child {
+    flex: none;
+    width: 100%;
+  }
+  .sidebar-shell .context p {
+    max-width: none;
+  }
+  .sidebar-shell .context-actions {
+    flex-wrap: wrap;
+    margin: 0;
+    gap: 8px;
+  }
+  .sidebar-shell .context-actions > button {
+    max-width: 100%;
+    min-height: 36px;
+    white-space: normal;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+  .sidebar-shell .empty-workspace {
+    max-width: 100%;
+    padding: 24px 16px;
+    line-height: 1.6;
+  }
+  .sidebar-shell .empty-workspace h2 {
+    font-size: 20px;
+    line-height: 1.35;
+  }
   body[data-direction="atlas"] .sidebar-shell {
     grid-template-columns: minmax(0, 1fr);
   }

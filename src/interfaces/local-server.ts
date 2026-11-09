@@ -146,7 +146,7 @@ export async function startLocalServer(
   );
   const catalogue = [...registry].map(([id, project]) => ({ id, title: project.title }));
   let origin = "";
-  const server = createServer(async (request, response) => {
+  const handleRequest = async (request: IncomingMessage, response: ServerResponse) => {
     const send = (status: number, value: unknown) => {
       response.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
       response.end(JSON.stringify(value));
@@ -184,11 +184,20 @@ export async function startLocalServer(
       if (!response.headersSent) send(result.status, result.value);
       else response.end();
     }
+  };
+  const activeRequests = new Set<Promise<void>>();
+  const server = createServer((request, response) => {
+    const handling = handleRequest(request, response);
+    activeRequests.add(handling);
+    void handling.then(
+      () => activeRequests.delete(handling),
+      () => activeRequests.delete(handling),
+    );
   });
   server.requestTimeout = 10000;
   server.headersTimeout = 10000;
   server.maxHeadersCount = 40;
-  const close = localServerClose(server);
+  const close = localServerClose(server, activeRequests);
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
     server.listen(port, "127.0.0.1", () => {
@@ -204,8 +213,10 @@ export async function startLocalServer(
   };
 }
 
-/** Node 24 can retain browser preconnect sockets during close; drain actual requests normally. */
-function localServerClose(server: Server) {
+/** Stop accepting connections, then drain handlers even if their clients disconnected.
+ * Socket closure alone cannot authorize the host to close its repositories.
+ */
+function localServerClose(server: Server, activeRequests: ReadonlySet<Promise<void>>) {
   const preconnections = new Set<Socket>();
   server.on("connection", (socket) => {
     preconnections.add(socket);
@@ -215,7 +226,12 @@ function localServerClose(server: Server) {
   let closing: Promise<void> | undefined;
   return () =>
     (closing ??= new Promise<void>((resolve, reject) => {
-      server.close((error) => (error ? reject(error) : resolve()));
+      server.close((error) => {
+        if (error) reject(error);
+        // No new requests can enter after the server has closed. Handler failures
+        // use the normal HTTP error path; shutdown only owns their completion.
+        else void Promise.allSettled([...activeRequests]).then(() => resolve());
+      });
       for (const socket of preconnections) if (socket.bytesRead === 0) socket.destroy();
     }));
 }

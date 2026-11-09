@@ -148,6 +148,7 @@ try {
   assert.ok((await page.locator("#connection-target-status").textContent()).includes("VER-03"));
   assert.equal(await page.locator("#connection-target").getAttribute("aria-expanded"), "false");
   assert.equal(await page.locator("#connection-type").inputValue(), "verified_by");
+  page.once("dialog", (confirmation) => confirmation.accept());
   await page.keyboard.press("Escape");
   await page.locator('.edgehit[aria-label="PRS-01 verified by VER-03"]').focus();
   await page.keyboard.press("Enter");
@@ -259,8 +260,13 @@ try {
   await page.setViewportSize({ width: 680, height: 900 });
   await page.waitForFunction(() => document.body.dataset.panel === "sheet");
   await select(page.locator('[data-grid-artifact="PRS-01"]'));
+  // Only the inner table owns scrolling; focus must not move a second wrapper
+  // whose offset would be lost when opening the editor replaces its DOM.
+  assert.equal(await page.locator(".traceability-matrix").evaluate((el) => el.scrollTop), 0);
   const narrowGeometry = await geometry();
+  const controlsScroll = await page.locator("#view").evaluate((el) => el.scrollTop);
   await page.keyboard.press("F2");
+  assert.equal(await page.locator("#view").evaluate((el) => el.scrollTop), controlsScroll);
   assert.deepEqual(await geometry(), narrowGeometry);
   const bounds = await page.locator("#matrix-cell-popover").boundingBox();
   assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= 680 && bounds.y + bounds.height <= 900);

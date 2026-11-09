@@ -31,7 +31,7 @@ Our model is:
 
 `has_requirement` permits product → requirement. `allocated_to` permits requirement → component. Each has an authored development-flow label; those labels affect presentation, while recorded links retain their native direction.
 
-Open **Configure model**. Choose **Text**, enable **Advanced JSON**, and replace **Project schema JSON** with this complete definition:
+Open **Model** (or **Configure model** in the retained Development map). On a fresh project, open **Customize model**, then choose **Text**, enable **Advanced JSON**, and replace **Project schema JSON** with this complete definition:
 
 ```json
 {
@@ -96,7 +96,7 @@ Open **Configure model**. Choose **Text**, enable **Advanced JSON**, and replace
 }
 ```
 
-Choose **Save model**, wait for the project refresh, then **Return to map**. The model now has three types and two allowed routes, with no items yet. **Visual** and guided **Text** editing change this same model draft; JSON is used here to make the tutorial reproducible. Alternatively, use **Definition kind** and **Add definition** to create the types and relationships individually, with their fields and permitted source/target types. Save the full draft when finished.
+Choose **Use this model** on first setup (**Save model** for later changes), wait for the project refresh, then **Return to map**. The model now has three types and two allowed routes, with no items yet. **Visual** and guided **Text** editing change this same model draft; JSON is used here to make the tutorial reproducible. Alternatively, use **Definition kind** and **Add definition** to create the types and relationships individually, with their fields and permitted source/target types. Save the full draft when finished.
 
 Model updates validate existing saved data. Adding a required field or removing a used type can be rejected; changing a definition does not automatically migrate existing records.
 

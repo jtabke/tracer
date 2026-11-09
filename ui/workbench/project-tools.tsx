@@ -32,13 +32,13 @@ export function createProjectTools(native: typeof Native, options: Options) {
   const dirty = new Set<string>();
   const pageHost = document.createElement("div");
   pageHost.className = "verification-page-host";
-  let pageOpen: "verification" | "assessments" | false = false;
+  let pageOpen: "verification" | "assessments" | "schema" | false = false;
   let pageFocus: HTMLElement | null = null;
-  const pageScroll = { verification: 0, assessments: 0 };
+  const pageScroll = { verification: 0, assessments: 0, schema: 0 };
   let pageFrame = 0;
   let origin: VerificationReturnContext | undefined;
   let sequence = 0;
-  const onPage = (value: "verification" | "assessments" | false) => {
+  const onPage = (value: "verification" | "assessments" | "schema" | false) => {
     if (pageOpen === value) return;
     pageOpen = value;
     if (value && !origin) origin = options.origin();
@@ -105,10 +105,17 @@ export function createProjectTools(native: typeof Native, options: Options) {
     },
     detachPage: () => {
       cancelAnimationFrame(pageFrame);
-      const page = pageHost.querySelector<HTMLElement>(".verification-page:not([hidden])");
-      if (pageHost.isConnected && page)
-        pageScroll[page.classList.contains("assessment-page") ? "assessments" : "verification"] =
-          page.scrollTop;
+      const page = pageHost.querySelector<HTMLElement>(
+        ".verification-page:not([hidden]), .model-page:not([hidden])",
+      );
+      if (pageHost.isConnected && page) {
+        const key = page.classList.contains("model-page")
+          ? "schema"
+          : page.classList.contains("assessment-page")
+            ? "assessments"
+            : "verification";
+        pageScroll[key] = page.scrollTop;
+      }
       pageFocus =
         document.activeElement instanceof HTMLElement && pageHost.contains(document.activeElement)
           ? document.activeElement
@@ -117,12 +124,16 @@ export function createProjectTools(native: typeof Native, options: Options) {
     },
     attachPage: (slot: Element | null) => {
       slot?.append(pageHost);
-      const page = pageHost.querySelector<HTMLElement>(".verification-page:not([hidden])");
+      const page = pageHost.querySelector<HTMLElement>(
+        ".verification-page:not([hidden]), .model-page:not([hidden])",
+      );
       if (pageHost.isConnected && page && pageOpen) page.scrollTop = pageScroll[pageOpen];
       if (pageFocus?.isConnected) pageFocus.focus({ preventScroll: true });
       pageFocus = null;
       pageFrame = requestAnimationFrame(() => {
-        const page = pageHost.querySelector<HTMLElement>(".verification-page:not([hidden])");
+        const page = pageHost.querySelector<HTMLElement>(
+          ".verification-page:not([hidden]), .model-page:not([hidden])",
+        );
         if (pageOpen && pageHost.isConnected && page && page.scrollTop === 0)
           page.scrollTop = pageScroll[pageOpen];
       });
@@ -165,7 +176,7 @@ function ProjectTools({
   epoch: number;
   pageHost: HTMLElement;
   origin?: VerificationReturnContext;
-  onPage(value: "verification" | "assessments" | false): void;
+  onPage(value: "verification" | "assessments" | "schema" | false): void;
   restoreFocus(): void;
   register(show: (task: NativeTask | null, request?: VerificationSubjectRequest) => void): void;
   onDirty(task: string, value: boolean): void;
@@ -185,26 +196,18 @@ function ProjectTools({
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
     }
     setTask(next);
-    onPage(next === "verification" || next === "assessments" ? next : false);
+    onPage(next === "verification" || next === "assessments" || next === "schema" ? next : false);
   };
   useEffect(() => {
     const route = () => {
       setTask(window.location.hash === "#model" ? "schema" : null);
-      onPage(false);
+      onPage(window.location.hash === "#model" ? "schema" : false);
     };
+    onPage(window.location.hash === "#model" ? "schema" : false);
     window.addEventListener("popstate", route);
     return () => window.removeEventListener("popstate", route);
   }, [onPage]);
-  useEffect(() => {
-    const workspace = document.getElementById("app");
-    const overflow = document.body.style.overflow;
-    if (workspace) workspace.inert = task === "schema";
-    if (task === "schema") document.body.style.overflow = "hidden";
-    return () => {
-      if (workspace) workspace.inert = false;
-      document.body.style.overflow = overflow;
-    };
-  }, [task]);
+
   const [subjectRequest, setSubjectRequest] = useState<VerificationSubjectRequest>();
   const [error, setError] = useState("");
   const mutation = useSyncExternalStore(native.mutations.subscribe, native.mutations.snapshot);

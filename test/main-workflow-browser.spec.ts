@@ -30,6 +30,7 @@ for (const width of [1440, 680])
       await expect(page.getByRole("heading", { name: "Define your project model" })).toBeVisible();
       await page.setViewportSize({ width, height: 1000 });
       const task = await projectTask(page, "Model");
+      await task.getByText("Customize model", { exact: true }).click();
       await task.getByRole("button", { name: "Text", exact: true }).click();
       await task.getByLabel("Advanced JSON", { exact: true }).check();
       await task.getByLabel("Project schema JSON", { exact: true }).fill(
@@ -51,7 +52,7 @@ for (const width of [1440, 680])
           },
         }),
       );
-      await task.getByRole("button", { name: "Save model", exact: true }).click();
+      await task.getByRole("button", { name: "Use this model", exact: true }).click();
       await expect.poll(async () => (await tracer.getSchema())?.version).toBe(1);
       await task.getByRole("button", { name: /Return to (map|workspace)/ }).click();
       await projectTask(page, "Create record");

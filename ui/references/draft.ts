@@ -21,6 +21,7 @@ export function referenceFamilies(context: ReferenceContext) {
 export function initialReferenceDraft(context: ReferenceContext, sourceId: string) {
   const reference = context.link?.reference;
   return {
+    id: context.link?.id ?? crypto.randomUUID(),
     resourceId: context.link?.target ?? "",
     sourceId,
     label: "",
@@ -91,6 +92,7 @@ export function referenceOperation(
   const target = context.resources.find((r) => r.id === draft.resourceId);
   return {
     op: "reference.create",
+    id: draft.id,
     input: {
       type: draft.type,
       source: context.source.id,

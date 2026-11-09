@@ -35,6 +35,8 @@ export function WorkItem({
   const {
     base,
     setBase,
+    connectionId,
+    setConnectionId,
     relationships,
     relationshipType,
     setRelationshipType,
@@ -71,6 +73,7 @@ export function WorkItem({
     const meaning = permitted.includes(relationshipType) ? relationshipType : (permitted[0] ?? "");
     const types = schema.relationshipTypes[meaning]?.target ?? Object.keys(schema.entityTypes);
     setBase(schema);
+    setConnectionId(crypto.randomUUID());
     setRelationshipType(meaning);
     setTargetType(types.includes(targetType) ? targetType : (types[0] ?? ""));
     setSearch("");
@@ -95,12 +98,14 @@ export function WorkItem({
           [
             {
               op: "relationship.create",
+              id: connectionId,
               input: { type: relationshipType, source: entity.id, target: target.id, fields },
             },
           ],
           base.version,
         )
       ) {
+        setConnectionId(crypto.randomUUID());
         setTarget(undefined);
         setValues({});
       }
@@ -381,6 +386,8 @@ export function WorkItem({
 
 function useConnectionDraft(schema: SchemaObject, entity: Entity, editing: Editing) {
   const [base, setBase] = useState(schema);
+  // Retain the proposed identity through rejected/unknown saves for exact inspection.
+  const [connectionId, setConnectionId] = useState(() => crypto.randomUUID());
   const relationships = Object.keys(base.relationshipTypes).filter(
     (name) =>
       !base.relationshipTypes[name].source ||
@@ -411,6 +418,8 @@ function useConnectionDraft(schema: SchemaObject, entity: Entity, editing: Editi
   return {
     base,
     setBase,
+    connectionId,
+    setConnectionId,
     relationships,
     relationshipType,
     setRelationshipType,

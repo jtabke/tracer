@@ -7,6 +7,10 @@ import type {
   CandidateKey,
   DispositionView,
 } from "./change-assessment.ts";
+/** Validation and downstream strict-equality guards must recognize the same values. */
+function isChoice(value: unknown, choices: string[]): boolean {
+  return typeof value === "string" && choices.includes(value);
+}
 export function assessmentText(value: unknown, limit = 4000): asserts value is string {
   ensure(
     typeof value === "string" && value.trim().length > 0 && value.length <= limit,
@@ -18,7 +22,7 @@ export function parseCandidate(value: unknown): CandidateKey {
   ensure(record(value), "validation", "Select an assessment candidate");
   knownProperties(value, ["kind", "id"]);
   ensure(
-    ["entity", "relationship", "receipt"].includes(String(value.kind)),
+    isChoice(value.kind, ["entity", "relationship", "receipt"]),
     "validation",
     "Invalid candidate kind",
   );
@@ -33,23 +37,24 @@ export function parseSupport(value: unknown): SupportReference[] {
   );
   for (const reference of value) {
     ensure(record(reference), "validation", "Invalid supporting reference");
+    const native = isChoice(reference.kind, ["entity", "relationship"]);
     knownProperties(reference, [
       "kind",
       "id",
       "mode",
       ...(reference.mode === "configuration" ? ["configurationId"] : []),
-      ...(["entity", "relationship"].includes(String(reference.kind)) ? ["version"] : []),
+      ...(native ? ["version"] : []),
     ]);
     assessmentText(reference.id, 200);
     ensure(
-      ["entity", "relationship", "receipt", "observation"].includes(String(reference.kind)) &&
-        (["historical", "current"].includes(String(reference.mode)) ||
+      isChoice(reference.kind, ["entity", "relationship", "receipt", "observation"]) &&
+        (isChoice(reference.mode, ["historical", "current"]) ||
           (reference.kind === "receipt" && reference.mode === "configuration")),
       "validation",
       "Supporting references need a kind and explicit historical/current/configuration mode",
     );
     if (reference.mode === "configuration") assessmentText(reference.configurationId, 200);
-    if (reference.kind === "entity" || reference.kind === "relationship")
+    if (native)
       ensure(
         Number.isSafeInteger(reference.version) && Number(reference.version) > 0,
         "validation",
@@ -72,8 +77,8 @@ export function parseActions(value: unknown): AssessmentAction[] {
     assessmentText(action.title, 200);
     ensure(
       !seen.has(action.id) &&
-        ["revise", "reverify", "investigate"].includes(String(action.kind)) &&
-        ["open", "done", "waived"].includes(String(action.state)),
+        isChoice(action.kind, ["revise", "reverify", "investigate"]) &&
+        isChoice(action.state, ["open", "done", "waived"]),
       "validation",
       "Actions need distinct identities and recognized kind/state",
     );
@@ -141,7 +146,7 @@ function resolvedBasisReference(value: Record<string, unknown>) {
       "Supporting target differs from captured pair context",
     );
     ensure(
-      ["applicable", "not_applicable", "unknown"].includes(String(value.applicability)),
+      isChoice(value.applicability, ["applicable", "not_applicable", "unknown"]),
       "validation",
       "Selected verification support needs explicit applicability",
     );
@@ -248,9 +253,13 @@ export function parseDispositionView(value: unknown): DispositionView {
   assessmentText(value.title, 200);
   assessmentText(value.rationale);
   ensure(
-    ["no_action", "revise", "reverify", "investigate", "acknowledge_unknown"].includes(
-      String(value.decision),
-    ),
+    isChoice(value.decision, [
+      "no_action",
+      "revise",
+      "reverify",
+      "investigate",
+      "acknowledge_unknown",
+    ]),
     "validation",
     "Invalid disposition decision",
   );

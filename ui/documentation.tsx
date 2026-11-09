@@ -69,7 +69,8 @@ function useDocumentationReading(
     const target = location.heading
       ? article.current?.querySelector<HTMLElement>(`[id="${CSS.escape(location.heading)}"]`)
       : article.current?.querySelector<HTMLElement>("h1");
-    const container = article.current?.closest<HTMLElement>(".native-task");
+    const dialog = article.current?.closest<HTMLDialogElement>("dialog.native-task");
+    const container = article.current?.closest<HTMLElement>(".native-task-body");
     const scroller = container ?? window;
     const frame = requestAnimationFrame(() => {
       target?.focus({ preventScroll: true });
@@ -78,7 +79,7 @@ function useDocumentationReading(
     });
     retainedLocation.current = location;
     const remember = () => {
-      if (container instanceof HTMLDialogElement && !container.open) return;
+      if (dialog && !dialog.open) return;
       if (article.current?.closest("[hidden]")) return;
       retainedScroll.current = container ? container.scrollTop : window.scrollY;
     };

@@ -1,4 +1,9 @@
 /* The trace grid groups presentation prefixes, while every edit targets a real identity. */
+.traceability-matrix {
+  /* The inner .matrix-scroll owns table scrolling. A second narrow-screen
+     scroll container loses its focus-induced offset when the editor rerenders. */
+  overflow: visible;
+}
 .matrix-view-controls {
   display: flex;
   align-items: center;

@@ -21,6 +21,7 @@ Production must not import tests, studies or private development data. Node/file
 - [Commands and API](reference/architecture/commands-and-api.md): version guards, invocation-time ownership, atomicity, bounded reads and uncertain-command recovery.
 - [Evidence and engineering change](reference/architecture/evidence-and-change.md): captured results versus applicability, assessment obligations and controlled Verification conclusions.
 - [Workspace ownership](reference/architecture/workspace.md): retained pages, investigation context, draft lifetime and transport boundaries.
+- [State machines](reference/architecture/state-machines.md): transition owners, invariants, recovery boundaries and remaining review checkpoints.
 - [API/CLI reference](reference/developer-reference.md) and [generated endpoints](reference/api-reference.md): exact payloads, limits and available operations.
 
 ## Primitive contracts for extension
