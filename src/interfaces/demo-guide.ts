@@ -14,6 +14,7 @@ export type DemoTask = {
   presentation?: { layout: "trace"; columns: TraceColumn[] };
 };
 export type DemoGuide = {
+  workspace?: { keys: string[] };
   title: string;
   description: string;
   tasks: DemoTask[];
@@ -49,6 +50,14 @@ function task(value: unknown): DemoTask {
       ? {}
       : { presentation: taskPresentation(value.presentation, value.rootId) }),
   };
+}
+function workspacePreset(value: unknown) {
+  ensure(
+    record(value) && Array.isArray(value.keys) && value.keys.length > 0 && value.keys.length <= 8,
+    "usage",
+    "Workspace preset needs 1–8 record keys",
+  );
+  return { keys: value.keys.map((key) => text(key, "workspace key")) };
 }
 function step(value: unknown): ChainStep {
   ensure(record(value), "usage", "Invalid demo chain step");
@@ -91,6 +100,7 @@ export function demoGuide(value: unknown): DemoGuide {
   return {
     title: text(value.title, "title", 300),
     description: text(value.description, "description", 4000),
+    ...(value.workspace === undefined ? {} : { workspace: workspacePreset(value.workspace) }),
     tasks: value.tasks.map(task),
     chains: value.chains.map(chain),
   };

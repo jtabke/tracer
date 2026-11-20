@@ -30,6 +30,8 @@ function matrixSteps(value: unknown) {
 // Browser-local presentation context. Never restore drafts, evidence tokens or mutation attempts.
 const fields = [
   "selected",
+  "selectedId",
+  "recordIds",
   "visible",
   "baseScope",
   "perspective",
@@ -82,6 +84,16 @@ function revive(_key: string, value: unknown): unknown {
   return value;
 }
 function compatibleField(context: ContextState, state: ContextState, field: string) {
+  if (field === "recordIds") {
+    const ids = context[field];
+    return (
+      ids === undefined ||
+      (ids instanceof Map &&
+        [...ids].every(([k, id]) => typeof k === "string" && typeof id === "string"))
+    );
+  }
+  if (field === "selectedId")
+    return context[field] === undefined || typeof context[field] === "string";
   if (!Object.hasOwn(context, field)) return state[field] === undefined;
   const value = context[field],
     initial = state[field];

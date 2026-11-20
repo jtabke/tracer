@@ -275,6 +275,7 @@ const chainQuery = object({
   limit: optional(number),
 });
 export const guide = object({
+  workspace: optional(object({ keys: array(text) })),
   title: text,
   description: text,
   tasks: array(

@@ -1,3 +1,4 @@
+import { createWorkspaceSurface } from "./workspace-surface.ts";
 import { createWorkspaceSession } from "./workspace-session.ts";
 import { createDomBindings } from "./dom-bindings.ts";
 import { escapeHtml as escape, mono } from "./html.ts";
@@ -6,13 +7,14 @@ import { createInspectorBindings } from "./inspector-bindings.ts";
 import { createRelationshipScopeEditor } from "./relationship-scope-editor.ts";
 import { createArtifactEditor } from "./artifact-editor.ts";
 import { createAuthoringDialogs } from "./authoring-dialogs.ts";
-import { createWorkspaceDialog } from "./workspace-dialog.ts";
+import { captureOpener, createWorkspaceDialog } from "./workspace-dialog.ts";
 import { textDraftChanged } from "./artifact-draft.ts";
 import { createInspectorInteractions } from "./inspector-interactions.ts";
 import { mountWorkspaceSearch } from "./workspace-search.ts";
 import { matrixColumns, matrixColumnChoices } from "./matrix-columns.ts";
 import { createNavigationState, createWorkspaceNavigation } from "./workspace-navigation.ts";
 import { rowPath } from "./matrix-selection.ts";
+import { graphEdges, graphPanel, updateGraphNodes } from "./graph-renderer.ts";
 import { createGraphLayout } from "./graph-layout.ts";
 import { createGraphInput } from "./graph-input.ts";
 import { listenWorkbenchEvents } from "./workspace-events.ts";
@@ -31,9 +33,9 @@ import { createRecovery } from "./recovery.ts";
 import "./workspace.css";
 import { changedText } from "./authoring-policy.ts";
 import { reachableTrace, recordedRoute } from "./trace-context.mjs";
-import { traceRows, groupedTraceRows } from "./trace-table.mjs";
+import { traceRows, groupedTraceRows } from "./trace-table.ts";
 import { createGridEditor } from "./matrix-editor.ts";
-import { renderGrid, renderGridEditor } from "./matrix-renderer.ts";
+import { renderGrid, renderGridEditor, renderRelationshipTable } from "./matrix-renderer.ts";
 import {
   relationshipLabel,
   historyFeed,
@@ -42,8 +44,9 @@ import {
   potentialPaths,
 } from "./workspace-journeys.mjs";
 import { MAX_VISIBLE, typeName, titleCase } from "./presentation.ts";
+import { createWorkspaceIdentities } from "./workspace-identities.ts";
+import { createWorkspaceReader, viewIntent } from "./workspace-reader.ts";
 import { significantEvents, diffAt } from "./workspace-history.ts";
-import { allowedTypes } from "./relationship-policy.ts";
 export async function startWorkbench({ staticData, staticDatabases } = {}) {
   const params = new URLSearchParams(location.search);
   const native = staticData ? null : await import("./native-client.ts");
@@ -61,14 +64,47 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   document.body.classList.toggle("presentation", !staticData || params.has("presentation"));
   const app = document.querySelector("#app"),
     dialog = document.querySelector("#workspace-dialog");
+  const updateSurface = createWorkspaceSurface(app);
   const inspectorInteractions = createInspectorInteractions(app);
   const workspaceBindings = createDomBindings(app);
   const { on, click } = workspaceBindings;
   const currentProject = params.get("project") ?? "default";
   const evidenceWorkspace = native ? createEvidenceWorkspace(native.mutations) : null;
+  let wideRequested = false,
+    catalogRequested = location.hash === "#model";
+  let readPending = false,
+    viewFailure = false;
+  const identities = createWorkspaceIdentities();
+  const reader =
+    native &&
+    createWorkspaceReader(native, initialData, {
+      replace: (data) => workspace.replace(data),
+      busy: (value) => {
+        readPending = value;
+        app.inert = value;
+        app.setAttribute("aria-busy", String(value));
+      },
+      ready: () => render(),
+      failed: (error) => {
+        state.readBlocked = true;
+        viewFailure = true;
+        const notice = document.createElement("section");
+        notice.className = "workspace-notice";
+        notice.setAttribute("role", "alert");
+        notice.textContent = `Workspace read failed. ${error.message} Editing is paused. `;
+        const retry = document.createElement("button");
+        const unknown = native.mutations.snapshot().status === "unknown";
+        retry.textContent = unknown ? "Inspect saved result" : "Refresh project";
+        retry.dataset.action = unknown ? "inspect-pending-save" : "refresh-project";
+        retry.onclick = unknown ? showPendingSave : refreshAssessmentWorkspace;
+        notice.append(retry);
+        app.replaceChildren(notice);
+      },
+    });
   const projectTools = native
     ? createProjectTools(native, {
         changed: refreshAssessmentWorkspace,
+        prepare: () => requireProject(state.perspective !== "matrix"),
         selected: () => state.selected,
         origin: () => {
           const record = native.projectSnapshot.entities.find(
@@ -92,13 +128,15 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
         onSettings: () => {
           void action("project-settings");
         },
-        current: () => state.revision === workspace.head && !state.readBlocked && !state.saving,
+        current: () =>
+          state.revision === workspace.head && !state.readBlocked && !readPending && !state.saving,
       })
     : null;
   let databases = native ? native.projects.map((project) => ({ ...project, url: null })) : [];
   if (!native && staticDatabases) databases = await staticDatabases();
   const state = {
     settingsOpen: false,
+    selectedId: undefined,
     ...createNavigationState(
       workspace.data.trace.root,
       workspace.data.trace.keys,
@@ -208,7 +246,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   };
   const nativePending = () => ["saving", "unknown"].includes(native?.mutations.snapshot().status);
   const writesBlocked = () => state.saving || recoveredUncertain || nativePending();
-  initializeRecovery();
+  await initializeRecovery();
   function adoptInitialMatrix() {
     if (!native || workspace.data.entities.length) return;
     const view = native.savedViews
@@ -228,11 +266,28 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     state.perspective = "matrix";
     state.inspector = false;
   }
-  function initializeRecovery() {
+  async function restoreNeighborhood() {
+    if (!initialData.partial || state.revision !== workspace.head) return;
+    const keys = [...new Set([state.selected, ...state.visible])];
+    const missing = keys.filter((key) => {
+      const id = state.recordIds?.get(key);
+      return !initialData.entities.some((row) => (id ? row.id === id : row.key === key));
+    });
+    if (missing.length) {
+      // Reopen only the restored neighborhood, even when a label has since been reused.
+      const ids = keys.map((key) => state.recordIds?.get(key)).filter(Boolean);
+      const labels = keys.filter((key) => !state.recordIds?.has(key));
+      initialData = await native.load(ids, labels, workspace.head);
+      workspace.replace(initialData);
+      reader.reset(initialData);
+    }
+  }
+  async function initializeRecovery() {
     if (native) {
       recoveryIdentity = workspace.data.changesets[0]?.id;
       recovery = createRecovery(workspaceStorage, recoveryIdentity);
       const saved = recovery.restore(state, workspace.head);
+      if (saved) await restoreNeighborhood();
       if (!saved && !params.has("view")) adoptInitialMatrix();
       if (["graph", "matrix", "history"].includes(params.get("view"))) {
         state.perspective = params.get("view");
@@ -301,7 +356,13 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       rememberDraft();
     },
   });
-  const { openCreate, openConnect } = createAuthoringDialogs({ ...editingContext, openDialog });
+  const dialogs = createAuthoringDialogs({ ...editingContext, openDialog });
+  async function openCreate(...args) {
+    if (await requireProject(true)) dialogs.openCreate(...args);
+  }
+  async function openConnect(...args) {
+    if (await requireProject(state.perspective !== "matrix")) dialogs.openConnect(...args);
+  }
   const {
     pickEvent,
     stepEvent,
@@ -488,7 +549,8 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     errorElement = null,
     schemaVersion = workspace.data.schema.version,
   ) {
-    if (state.saving || state.readBlocked || state.revision !== workspace.head) return null;
+    if (state.saving || readPending || state.readBlocked || state.revision !== workspace.head)
+      return null;
     state.saving = true;
     inspectorInteractions.busy(true, true);
     const dialogControls = [
@@ -503,7 +565,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     let saved;
     try {
       saved = await native.save(schemaVersion, operations);
-      const next = await native.load();
+      const next = await reloadWindow(saved.results.map((item) => item.id));
       workspace.adopt(next, "saved", state);
       model = workspace.model(state);
       return saved;
@@ -549,9 +611,11 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
   }
   function relevantFeed() {
+    if (workspace.data.feed) return workspace.data.feed;
     return historyFeed(workspace.data, {
       scope: state.timelineFilter,
       key: state.historySubject?.key ?? state.selected,
+      id: state.historySubject ? state.historySubject.id : state.selectedId,
       linkId: state.historySubject ? state.historySubject.linkId : state.edge,
     });
   }
@@ -585,7 +649,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       );
       dialog.querySelector("#acknowledge-pending-save").onclick = async () => {
         try {
-          const next = await native.load();
+          const next = await reloadWindow();
           native.mutations.acknowledge();
           if (matchingReview) state.evidenceDiscard++;
           workspace.adopt(next, "pending-inspected", state);
@@ -683,7 +747,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     rememberDraft();
     const starting = !Object.keys(workspace.data.schema.entityTypes).length;
     try {
-      workspace.adopt(await native.load(), "refreshed", state);
+      workspace.adopt(await reloadWindow(), "refreshed", state);
       if (starting) adoptInitialMatrix();
       state.readBlocked = recoveredUncertain;
       render();
@@ -700,7 +764,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
         ? state.evidenceSubject
         : assessmentSubject();
     const slot = app.querySelector("#evidence-slot");
-    if (slot) slot.append(evidenceWorkspace.host);
+    if (slot && evidenceWorkspace.host.parentElement !== slot) slot.append(evidenceWorkspace.host);
     if (!subject) return;
     evidenceWorkspace.update({
       subject,
@@ -732,6 +796,37 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       onRefresh: refreshAssessmentWorkspace,
     });
   }
+  async function reloadWindow(extra = []) {
+    const ids = [
+      ...extra,
+      state.selectedId,
+      ...[...state.visible].map((key) => model?.records.get(key)?.id),
+    ].filter(Boolean);
+    const next = await native.load(ids);
+    reader.reset(next);
+    wideRequested = false;
+    catalogRequested = projectTools?.taskOpen() ?? false;
+    if (viewFailure) state.readBlocked = recoveredUncertain;
+    viewFailure = false;
+    return next;
+  }
+  function desiredView() {
+    return viewIntent(state, workspace.head, model?.records, wideRequested, catalogRequested);
+  }
+  async function requireProject(catalogOnly = false) {
+    if (!reader) return true;
+    if (viewFailure) return false;
+    if (catalogOnly) catalogRequested = true;
+    else wideRequested = true;
+    const restore = captureOpener(app);
+    const pending = reader.prepare(desiredView());
+    if (pending) {
+      if (!(await pending)) return false;
+      if (!dialog.open) restore();
+    }
+    model = workspace.model(state);
+    return true;
+  }
   function prepareWorkspaceRender() {
     const matrixView =
       state.perspective === "matrix"
@@ -746,9 +841,10 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     if (previousScroll)
       state.matrixScroll = { top: previousScroll.scrollTop, left: previousScroll.scrollLeft };
     gridEditor.dispose();
-    evidenceWorkspace?.host.remove();
-    projectTools?.detachPage();
+    if (!projectTools?.pageOpen() && app.querySelector("#verification-slot"))
+      projectTools?.detachPage();
     model = workspace.model(state);
+    identities(state, model.records);
     if (!model.records.size) state.inspector = false;
     if (!state.selected && workspace.data.trace.root) {
       state.selected = workspace.data.trace.root;
@@ -788,7 +884,14 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       ? '<div class="pending-save"><span>Project state needs recovery</span><button data-action="refresh-project">Refresh project</button></div>'
       : "";
   }
+  function activePanel() {
+    if (projectTools?.pageOpen()) return "task";
+    if (state.settingsOpen) return "settings";
+    if (state.evidenceOpen) return "evidence";
+    return state.perspective;
+  }
   function render() {
+    if (viewFailure || reader?.prepare(desiredView())) return;
     inspectorInteractions.capture();
     inspectorBindings.dispose();
     workspaceBindings.dispose();
@@ -906,14 +1009,22 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       count = visibleKeys().length,
       atHead = state.revision === workspace.head;
     const workspaceTabs = `<nav class="view-switch workspace-perspectives" aria-label="Workspace perspective">${["graph", "matrix", "history"].map((view) => `<button data-view="${view}" aria-pressed="${state.perspective === view}">${icon(view)}${view[0].toUpperCase() + view.slice(1)}</button>`).join("")}</nav>`;
-    app.innerHTML = `<div class="shell sidebar-shell" data-page="${projectTools?.pageOpen() || "workspace"}">${projectSidebar()}
-  <main class="workspace"><header class="topbar"><button class="navigation-toggle" data-action="open-navigation" aria-label="Open navigation" aria-haspopup="dialog">☰</button><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}<button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>
-  <section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderContextActions()}</div></section>
-  ${renderRevisionBanner()}
-  ${renderInvestigationBanner()}
-  ${renderAssessmentSummarySlot()}
-  <div class="workarea ${workareaMode()}">${renderInspectorBackdrop()}<div class="view" id="view">${renderWorkspacePerspective()}</div>${renderWorkspaceInspector()}</div>
-  ${state.notice ? `<div class="workspace-notice" role="status">${e(state.notice)}<button data-action="dismiss-notice" aria-label="Dismiss notification">×</button></div>` : ""}${renderPendingSaveBanner()}${renderReadRecovery()}${renderReloadAcknowledgment()}${timeline()}</main></div>`;
+    updateSurface({
+      page: projectTools?.pageOpen() || "workspace",
+      panel: activePanel(),
+      sidebar: projectSidebar(),
+      header: `<header class="topbar"><button class="navigation-toggle" data-action="open-navigation" aria-label="Open navigation" aria-haspopup="dialog">☰</button><div class="crumb">${databasePicker()}<span>/</span><button data-action="reset">${workspace.data.schema.entityTypes.product_requirement ? "Requirement trace" : "Connections"}</button></div>${workspaceTabs}<button class="search-button" data-action="search">Search <kbd>⌘ K</kbd></button></header>`,
+      context: `<section class="context details-visible"><div><h1>${renderWorkspaceHeading()}</h1><p>${mono(state.selected)}${state.edge ? " · Relationship selected" : ""}${state.perspective === "matrix" ? "" : ` &nbsp; / &nbsp; ${count} artifacts`}${state.revision !== workspace.head ? ` &nbsp; / &nbsp; r${state.revision} · read-only` : ""}</p></div><div class="context-actions">${renderContextActions()}</div></section>`,
+      banners: renderRevisionBanner() + renderInvestigationBanner() + renderAssessmentSummarySlot(),
+      mode: workareaMode(),
+      backdrop: renderInspectorBackdrop(),
+      view: renderWorkspacePerspective(),
+      inspector: renderWorkspaceInspector(),
+      footer: `${state.notice ? `<div class="workspace-notice" role="status">${e(state.notice)}<button data-action="dismiss-notice" aria-label="Dismiss notification">×</button></div>` : ""}${renderPendingSaveBanner()}${renderReadRecovery()}${renderReloadAcknowledgment()}${timeline()}`,
+    });
+    bindRenderedSurface(restoreViewScroll);
+  }
+  function bindRenderedSurface(restoreViewScroll) {
     applyGeometry(app);
     const matrixScroll = app.querySelector(".matrix-scroll");
     if (matrixScroll) matrixScroll.scrollTo(state.matrixScroll.left, state.matrixScroll.top);
@@ -929,14 +1040,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     }
     bind();
     inspectorInteractions.restore();
-    if (
-      state.perspective === "graph" &&
-      !projectTools?.pageOpen() &&
-      !state.settingsOpen &&
-      !state.evidenceOpen &&
-      model.records.size
-    )
-      mountGraph();
+    if (activePanel() === "graph" && model.records.size) mountGraph();
     updateEvidenceWorkspace();
     projectTools?.attachPage(app.querySelector("#verification-slot"));
     projectTools?.update(state.evidenceEpoch);
@@ -978,27 +1082,14 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
   }
   function graph() {
     if (!model.records.size) return emptyWorkspace();
-    const filterTypes = [
-      ...new Set(
-        model.links
-          .filter((link) => state.visible.has(link.source) && state.visible.has(link.target))
-          .map((link) => link.type),
-      ),
-    ];
-    return `<div class="graph-toolbar"><label class="sr-only" for="link-filter">Relationship filter</label><select id="link-filter"><option value="all">All relationships</option>${filterTypes.map((type) => `<option value="${type}" ${state.filter === type ? "selected" : ""}>${titleCase(type)}</option>`).join("")}</select><form id="focus-form" class="neighborhood-controls" aria-label="Neighborhood focus"><label class="sr-only" for="focus-direction">Connection direction</label><select id="focus-direction" name="direction"><option value="downstream">Downstream</option><option value="upstream" ${state.focusConfig.direction === "upstream" ? "selected" : ""}>Upstream</option><option value="both" ${state.focusConfig.direction === "both" ? "selected" : ""}>Both directions</option></select><label class="sr-only" for="focus-depth">Connection depth</label><select id="focus-depth" name="depth">${[0, 1, 2, 3].map((depth) => `<option value="${depth}" ${state.focusConfig.depth === depth ? "selected" : ""}>${depth === 0 ? "This artifact" : `${depth} ${depth === 1 ? "step" : "steps"}`}</option>`).join("")}</select><button type="submit" class="focus-apply" title="Focus the scope on ${e(state.selected)}">Focus</button></form><label class="sr-only" for="node-detail">Node detail</label><select id="node-detail" aria-label="Node detail">${[
-      ["compact", "Titles"],
-      ["expanded", "Details"],
-      ["overview", "Identifiers"],
-    ]
-      .map(
-        ([value, label]) =>
-          `<option value="${value}" ${state.density === value ? "selected" : ""}>${label}</option>`,
-      )
-      .join(
-        "",
-      )}</select>${state.focusReturn ? '<button class="return-scope" data-action="return-focus" title="Return to previous scope">← Previous scope</button>' : `<span class="graph-count">${visibleLinks().length} links</span>`}</div>
-${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix path · r${state.pathPreview.revision}</span><button data-view="matrix">Back to matrix</button><button data-action="clear-matrix-path">Show neighborhood</button></div>` : state.pathLinkIds ? investigationContext() + pathSummary() : ""}
- <div class="canvas density-${state.density} mode-trace" aria-label="Engineering graph"><div class="scene"><svg class="edges" aria-label="Directed relationships"></svg><div class="node-layer"></div></div><div class="node-action-layer"></div><div class="canvas-tools" title="Scroll or pinch to zoom · Drag canvas to pan · Shift-scroll to pan"><button data-action="zoom-out" aria-label="Zoom out">−</button><button data-action="frame">Fit</button><button data-action="zoom-in" aria-label="Zoom in">+</button></div>${state.edge && !(native && state.inspector) ? edgeDetail() : ""}</div>`;
+    return graphPanel({
+      state,
+      links: model.links,
+      count: visibleLinks().length,
+      native: Boolean(native),
+      pathContext: () => investigationContext() + pathSummary(),
+      edgeDetail,
+    });
   }
 
   function mountGraph() {
@@ -1012,23 +1103,18 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
             .map((diff) => diff.after?.key ?? diff.before?.key)
         : [],
     );
-    const related = new Set([
-      state.selected,
-      ...visibleLinks()
-        .filter((link) => link.source === state.selected || link.target === state.selected)
-        .flatMap((link) => [link.source, link.target]),
-    ]);
-    scene.querySelector(".node-layer").innerHTML =
-      (visibleKeys().every((key) => workspace.data.trace.keys.includes(key))
-        ? `<div class="graph-lane" data-style="left:4%;width:28%"><span>${workspace.data.schema.entityTypes.product_requirement ? "Product requirement" : "Selected artifact"}</span></div><div class="graph-lane" data-style="left:37%;width:28%"><span>${workspace.data.schema.entityTypes.product_requirement ? "Subsystem allocations" : "Connections"}</span></div><div class="graph-lane" data-style="left:70%;width:28%"><span>${workspace.data.schema.entityTypes.product_requirement ? "Verification plan" : "Connected artifacts"}</span></div>`
-        : "") +
-      visibleKeys()
-        .map((key) => {
-          const record = model.records.get(key),
-            point = projectPoint(state.layout.get(key));
-          return `<button class="node ${state.pathLinkIds ? "path-context" : ""} ${changed.has(key) ? "changed" : ""} ${key === state.selected ? "selected" : ""} ${state.fade && !related.has(key) ? "dim" : ""}" data-key="${e(key)}" data-style="left:${point.x}px;top:${point.y}px" aria-pressed="${key === state.selected}" title="${e(key)}: ${e(record.title)}" aria-label="${e(key)}: ${e(record.title)}"><span class="node-meta">${icon(record.type)}${mono(key)}${changed.has(key) ? '<span class="change-mark" title="Changed in selected revision">Δ</span>' : ""}${state.localEntities.has(key) && state.revision === workspace.head ? '<span class="local-dot" title="Local edit">●</span>' : ""}</span><strong>${e(record.title)}</strong>${state.density === "expanded" ? `<span class="node-type">${e(typeName(record.type))}</span>` : ""}</button>`;
-        })
-        .join("");
+    updateGraphNodes(
+      scene.querySelector(".node-layer"),
+      state,
+      model.records,
+      visibleKeys(),
+      visibleLinks(),
+      workspace.data.trace,
+      changed,
+      state.revision === workspace.head,
+      (key) => projectPoint(state.layout.get(key)),
+      icon,
+    );
     applyGeometry(scene);
     transform();
     drawEdges();
@@ -1037,60 +1123,20 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     if (frameGraph) action("frame");
   }
 
-  // Keep neighbors in directional columns with room for readable cards.
-
-  function edgeRoleClass(type) {
-    if (type === "verified_by") return "verification-edge";
-    if (["executed_as", "examines_output"].includes(type)) return "evidence-edge";
-    if (type === "realized_by") return "implementation-edge";
-    return ["decomposes_into", "depends_on"].includes(type) ? "" : "reference-edge";
-  }
-  function renderEdge(link, d, focused) {
-    return `<g><title>${e(link.source)} → ${e(titleCase(link.type))} → ${e(link.target)}</title><path class="edge ${state.pathLinkIds?.has(link.id) ? "recorded-path" : ""} ${state.assessment && diffAt(workspace.data, state.assessment).some((diff) => diff.kind === "relationship" && diff.id === link.id) ? "changed-edge" : ""} ${focused ? "focused" : state.fade ? "dim" : ""} ${edgeRoleClass(link.type)}" d="${d}" marker-end="url(#arrow)"/><path class="edgehit" d="${d}" data-edge="${e(link.id)}" tabindex="0" role="button" aria-label="${e(link.source)} ${e(titleCase(link.type))} ${e(link.target)}"/></g>`;
-  }
   function drawEdges() {
-    const svg = document.querySelector("svg.edges");
+    const svg = app.querySelector("svg.edges");
     if (!svg) return;
-    svg.innerHTML =
-      `<defs><marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 8 4 0 8" fill="none" stroke="var(--edge)"/></marker></defs>` +
-      visibleLinks()
-        .map((link) => {
-          const a = projectPoint(state.layout.get(link.source)),
-            b = projectPoint(state.layout.get(link.target)),
-            width = state.density === "overview" ? 72 : 174,
-            height = state.density === "expanded" ? 100 : state.density === "overview" ? 32 : 66;
-          const reverse = b.x < a.x;
-          let sx = a.x + (reverse ? -width / 2 : width / 2),
-            tx = b.x + (reverse ? width / 2 : -width / 2),
-            sy = a.y,
-            ty = b.y;
-          let d;
-          if (link.source === link.target) {
-            d = `M${a.x + width / 2} ${a.y} C${a.x + width} ${a.y - height - 60} ${a.x - width} ${a.y - height - 60} ${a.x - width / 2} ${a.y}`;
-          } else if (link.source === "PRS-01" && link.target === "VER-03") {
-            sx = a.x;
-            sy = a.y + height / 2;
-            tx = b.x;
-            ty = b.y + height / 2;
-            const top =
-              Math.max(...visibleKeys().map((key) => projectPoint(state.layout.get(key)).y)) +
-              height / 2 +
-              24;
-            d = `M${sx} ${sy} V${top - 12} Q${sx} ${top} ${sx + 12} ${top} H${tx - 12} Q${tx} ${top} ${tx} ${top - 12} V${ty}`;
-          } else if (Math.abs(a.x - b.x) < 2) {
-            const side = a.x + width / 2 + 40;
-            d = `M${a.x + width / 2} ${a.y} C${side} ${a.y} ${side} ${b.y} ${b.x + width / 2} ${b.y}`;
-          } else {
-            const mid = (sx + tx) / 2;
-            d = `M${sx} ${sy} C${mid} ${sy} ${mid} ${ty} ${tx} ${ty}`;
-          }
-          const focused =
-            link.id === state.edge ||
-            link.source === state.selected ||
-            link.target === state.selected;
-          return renderEdge(link, d, focused);
-        })
-        .join("");
+    const changed = new Set(
+      state.assessment
+        ? diffAt(workspace.data, state.assessment)
+            .filter((item) => item.kind === "relationship")
+            .map((item) => item.id)
+        : [],
+    );
+    const point = (key) => projectPoint(state.layout.get(key));
+    svg.innerHTML = graphEdges(visibleLinks(), state, workspace.data.trace, changed, point, () =>
+      Math.max(...visibleKeys().map((key) => point(key).y)),
+    );
     for (const path of svg.querySelectorAll("[data-edge]")) {
       const open = () => {
         rememberDraft();
@@ -1166,7 +1212,8 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       drawNodeActions();
     }
   }
-  function expand() {
+  async function expand() {
+    if (!(await requireProject())) return;
     rememberDraft();
     const neighbors = model.links
       .filter((link) => link.source === state.selected || link.target === state.selected)
@@ -1252,7 +1299,7 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       errorElement.append(acknowledge);
       acknowledge.onclick = async () => {
         try {
-          const next = await native.load();
+          const next = await reloadWindow();
           native.mutations.acknowledge();
           workspace.adopt(next, "editor-inspected", state);
           model = workspace.model(state);
@@ -1379,6 +1426,23 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       return `<p class="matrix-empty">No ${type} artifacts yet. Use New ${type} to begin this trace.</p>`;
     return '<p class="matrix-empty">No rows match this row type, scope and search. <button data-action="matrix-show-project">Show this type across the project</button> <button data-action="matrix-use-selection">Use selected artifact as row</button></p>';
   }
+  function matrixRoots() {
+    return (
+      state.matrixScope === "selected"
+        ? [state.matrixSubject]
+        : state.matrixScope === "project"
+          ? [...model.records.keys()]
+          : visibleKeys()
+    )
+      .filter((key) => {
+        const record = model.records.get(key);
+        return (
+          record?.type === state.matrixRootType &&
+          `${key} ${record.title}`.toLowerCase().includes(state.matrixSearch.toLowerCase())
+        );
+      })
+      .sort();
+  }
   function traceabilityMatrix() {
     function renderNewMatrixRow() {
       return native && state.revision === workspace.head
@@ -1427,24 +1491,12 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
         choices.filter((choice) => choice.type === step.type).map((choice) => choice.targetType),
       )}</select>`;
     };
-    const roots = (
-      state.matrixScope === "selected"
-        ? [state.matrixSubject]
-        : state.matrixScope === "project"
-          ? [...model.records.keys()]
-          : visibleKeys()
-    )
-      .filter((key) => {
-        const record = model.records.get(key);
-        return (
-          record?.type === state.matrixRootType &&
-          `${key} ${record.title}`.toLowerCase().includes(state.matrixSearch.toLowerCase())
-        );
-      })
-      .sort();
+    const roots = matrixRoots();
     const links = state.pathLinkIds
       ? visibleLinks()
-      : model.links.filter((link) => state.filter === "all" || link.type === state.filter);
+      : state.filter === "all"
+        ? model.links
+        : model.links.filter((link) => link.type === state.filter);
     const result = (state.matrixPresentation === "grouped" ? groupedTraceRows : traceRows)(
       model.records,
       links,
@@ -1461,23 +1513,13 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
   }
   function matrix() {
     if (state.matrixMode === "traceability") return traceabilityMatrix();
-    const keys = visibleKeys(),
-      links = visibleLinks();
-    const rows =
-      state.matrixScope === "selected" ? keys.filter((key) => key === state.selected) : keys;
-    return `<div class="matrix">${matrixHeader()}<div class="matrix-controls"><label>Scope <select id="matrix-scope"><option value="selected">${e(state.selected)} only</option><option value="neighborhood" ${state.matrixScope === "neighborhood" ? "selected" : ""}>Visible neighborhood</option></select></label><label>Relationships <select id="matrix-filter"><option value="all">All</option>${[...new Set(model.links.map((link) => link.type))].map((type) => `<option value="${type}" ${state.filter === type ? "selected" : ""}>${titleCase(type)}</option>`).join("")}</select></label></div><table><thead><tr><th>Source → Target</th>${keys.map((key) => `<th>${mono(key)}</th>`).join("")}</tr></thead><tbody>${rows
-      .map(
-        (key) =>
-          `<tr class="${key === state.selected ? "selected" : ""}"><td><button data-related="${e(key)}">${mono(key)}${e(model.records.get(key).title)}</button></td>${keys
-            .map((target) => {
-              const cell = links.filter((link) => link.source === key && link.target === target);
-              return `<td class="mark ${cell.some((link) => link.id === state.edge) ? "selected-link" : ""}">${cell.length ? cell.map((link) => `<button data-matrix-edge="${e(link.id)}" title="${e(titleCase(link.type))}" aria-label="${key} ${e(titleCase(link.type))} ${target}">${link.type === "verified_by" ? "◇" : "●"}</button>`).join("") : state.revision === workspace.head && allowedTypes(workspace.data.schema, model.records.get(key), model.records.get(target)).length ? `<button data-cell-source="${e(key)}" data-cell-target="${e(target)}" aria-label="Connect ${e(key)} to ${e(target)}" title="Create a typed relationship">＋</button>` : "·"}</td>`;
-            })
-            .join("")}</tr>`,
-      )
-      .join(
-        "",
-      )}</tbody></table>${!rows.length ? "<p>The selected artifact is not present at this revision.</p>" : ""}<p class="legend">● Recorded link &nbsp; ◇ Verification link &nbsp; · No recorded link</p>${state.pathLinkIds ? pathSummary() : ""}</div>`;
+    return renderRelationshipTable(
+      matrixContext(),
+      visibleKeys(),
+      visibleLinks(),
+      matrixHeader(),
+      pathSummary,
+    );
   }
   function history() {
     function renderConnectedWorkSection() {
@@ -1546,29 +1588,45 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     const selectedLink =
       model.links.find((link) => link.id === state.edge) ??
       workspace.data.relationships.find((link) => link.id === state.edge);
-    const subjectLink =
-      workspace.data.relationships.find((link) => link.id === state.historySubject?.linkId) ??
-      selectedLink;
-    const scope = state.historySubject?.linkId
-      ? `${subjectLink?.source ?? ""} → ${subjectLink?.target ?? ""}`
-      : (state.historySubject?.key ?? state.selected);
+    function scopeLabel() {
+      if (!state.historySubject?.linkId) return state.historySubject?.key ?? state.selected;
+      const link =
+        workspace.data.relationships.find((item) => item.id === state.historySubject.linkId) ??
+        selectedLink;
+      return `${link?.source ?? ""} → ${link?.target ?? ""}`;
+    }
+    const scope = scopeLabel();
     if (!feed.length)
       return `<section class="history-workspace"><p>No recorded revisions for this local selection.</p><p class="draft-note">Local edits are not saved history.</p><button data-action="graph">Back to graph</button></section>`;
-    return `<section class="history-workspace"><div class="history-scope"><span class="history-scope-label">${feed.length} changesets</span><label class="sr-only" for="event-filter">History scope</label><select id="event-filter"><option value="selected" ${state.timelineFilter === "selected" ? "selected" : ""}>${e(scope)} only</option><option value="project" ${state.timelineFilter === "project" ? "selected" : ""}>Project</option></select></div><div class="history-columns"><nav class="changeset-feed" aria-label="Changesets">${renderChangesetButtons()}${feed.length > state.historyLimit ? '<button data-action="more-history">Show more</button>' : ""}</nav><div class="change-detail"><div class="change-heading"><h3>${renderChangeCount()}</h3></div><p class="change-reason">${e(reason)}</p>${renderChangedFields()}${renderConnectedWorkSection()}</div></div></section>`;
+    return `<section class="history-workspace"><div class="history-scope"><span class="history-scope-label">${feed.length} changesets</span><label class="sr-only" for="event-filter">History scope</label><select id="event-filter"><option value="selected" ${state.timelineFilter === "selected" ? "selected" : ""}>${e(scope)} only</option><option value="project" ${state.timelineFilter === "project" ? "selected" : ""}>Project</option></select></div><div class="history-columns"><nav class="changeset-feed" aria-label="Changesets">${renderChangesetButtons()}${feed.length > state.historyLimit || workspace.data.historyMore ? '<button data-action="more-history">Show more</button>' : ""}</nav><div class="change-detail"><div class="change-heading"><h3>${renderChangeCount()}</h3></div><p class="change-reason">${e(reason)}</p>${renderChangedFields()}${renderConnectedWorkSection()}</div></div></section>`;
   }
   function timeline() {
     if (!workspace.head) return '<footer class="historybar">No saved changes yet</footer>';
     const events =
-      state.timelineScope === "project"
-        ? significantEvents(workspace.data)
-        : historyFeed(workspace.data, { key: state.selected, linkId: state.edge }).map((event) => ({
-            ...event,
-            title: event.title,
-          }));
+      native && state.timelineScope === "project"
+        ? workspace.data.changesets.map((change) => ({
+            revision: change.projectRevision,
+            title: change.reason ?? "Recorded changeset",
+          }))
+        : native && workspace.data.feed
+          ? workspace.data.feed
+          : state.timelineScope === "project"
+            ? significantEvents(workspace.data)
+            : historyFeed(workspace.data, {
+                key: state.selected,
+                id: state.selectedId,
+                linkId: state.edge,
+              }).map((event) => ({
+                ...event,
+                title: event.title,
+              }));
     return `<footer class="historybar continuous-history"><label class="sr-only" for="timeline-scope">Timeline scope</label><select id="timeline-scope"><option value="project">Project</option><option value="selected" ${state.timelineScope === "selected" ? "selected" : ""}>Selection</option></select><span class="timeline-scale">Revisions 1–${workspace.head}</span><div class="revision-axis"><div class="axis-ticks">${events.map((event) => `<button data-axis-event="${event.revision}" data-style="left:${((event.revision - 1) / (workspace.head - 1)) * 100}%" title="r${event.revision} · ${e(event.title)}" aria-label="Revision ${event.revision}: ${e(event.title)}"></button>`).join("")}</div><label class="sr-only" for="revision-range">Project revision</label><input id="revision-range" type="range" min="1" max="${workspace.head}" step="1" value="${state.revision}" aria-valuetext="Revision ${state.revision} of ${workspace.head}"></div><div class="revision-controls"><button data-action="previous-event" aria-label="Previous changeset">‹</button><span class="mono">r${state.revision}</span><button data-action="next-event" aria-label="Next changeset">›</button></div></footer>`;
   }
   const workspaceActions = {
     "open-navigation": openNavigation,
+    "load-connections": async () => {
+      if (await requireProject()) render();
+    },
     "development-map": openDevelopmentMap,
     "verify-requirement": verifySelectedRequirement,
     workspace: () => changeWorkspacePage(false),
@@ -1610,7 +1668,9 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
     "zoom-out": zoomInAction,
     "inspect-pending-save": inspectPendingSaveAction,
     "clear-matrix-path": clearMatrixPathAction,
-    focus: focusAction,
+    focus: async () => {
+      if (await requireProject()) focusAction();
+    },
     "close-edge": closeEdgeAction,
     "back-artifact": backArtifactAction,
     "edit-edge": () => openConnect(model.links.find((link) => link.id === state.edge)),
@@ -2011,7 +2071,8 @@ ${state.pathPreview ? `<div class="matrix-path-context"><span>Selected matrix pa
       state.matrixRootType = record.type;
     }
   }
-  function openSearch() {
+  async function openSearch() {
+    if (!(await requireProject(state.perspective !== "matrix"))) return;
     openDialog("Search or run a command", "");
     const commands = [
       [

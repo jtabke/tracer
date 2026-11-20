@@ -139,6 +139,7 @@ for (const width of [1440, 680, 390])
       await page.locator('[data-action="close-inspector"]').click();
       await page.getByRole("button", { name: "History", exact: true }).click();
       await page.getByRole("slider", { name: "Project revision", exact: true }).fill("1");
+      await expect(page.locator(".context p")).toContainText("r1 · read-only");
       const historicalContext = await page.locator(".context p").textContent();
       await openProjectDestination(page, "Documentation");
       await navigation().selectOption("schema");

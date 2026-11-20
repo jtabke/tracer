@@ -36,6 +36,7 @@ export type ExampleDefinition = {
   changes: { key: string; statement: string; reason: string }[];
   configurations?: { key: string; members: string[]; scope: string }[];
   followUpConfiguration?: { subject: string; name: string; members: string[]; reason: string };
+  workspace?: { keys: string[] };
   tasks: ExampleTask[];
   chains: { title: string; query: ChainQuery }[];
 };

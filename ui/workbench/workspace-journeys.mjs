@@ -19,15 +19,20 @@ export function relationshipLabel(type, outgoing) {
     labels[type]?.[outgoing ? 0 : 1] ?? `${outgoing ? "Outgoing" : "Incoming"} · ${titleCase(type)}`
   );
 }
-export function historyFeed(data, { scope = "selected", key, linkId } = {}) {
+export function historyFeed(data, { scope = "selected", key, id, linkId } = {}) {
+  const subject = id ?? data.entities?.find((record) => record.key === key)?.id;
   const relevantIds = new Set(
     data.revisions
       .filter((entry) =>
         linkId
           ? entry.kind === "relationship" && entry.id === linkId
-          : entry.snapshot?.key === key ||
-            entry.snapshot?.source === key ||
-            entry.snapshot?.target === key,
+          : subject
+            ? entry.id === subject ||
+              entry.snapshot?.sourceId === subject ||
+              entry.snapshot?.targetId === subject
+            : entry.snapshot?.key === key ||
+              entry.snapshot?.source === key ||
+              entry.snapshot?.target === key,
       )
       .map((entry) => `${entry.kind}:${entry.id}`),
   );
@@ -66,9 +71,10 @@ export function connectedWork(data, revision) {
   const snapshot = snapshotAt(data, revision),
     diffs = diffAt(data, revision);
   const keys = new Set(
-    diffs
-      .filter((diff) => diff.kind === "entity")
-      .map((diff) => diff.after?.key ?? diff.before?.key),
+    changedRoots(
+      snapshot.records,
+      diffs.filter((diff) => diff.kind === "entity"),
+    ),
   );
   const result = new Map();
   for (const link of snapshot.links) {
@@ -124,26 +130,26 @@ export function focusedNeighborhood(
   return { keys: keys.slice(0, MAX_VISIBLE), omitted: Math.max(0, keys.length - MAX_VISIBLE) };
 }
 
+function changedRoots(records, diffs) {
+  const names = new Map([...records.values()].map((record) => [record.id, record.key]));
+  const keys = new Set();
+  for (const diff of diffs) {
+    const value = diff.after ?? diff.before;
+    const ids =
+      diff.kind === "entity"
+        ? [diff.id]
+        : diff.kind === "relationship" && value
+          ? [value.sourceId ?? value.source, value.targetId ?? value.target]
+          : [];
+    for (const id of ids) if (names.has(id)) keys.add(names.get(id));
+  }
+  return [...keys];
+}
 // Recorded downstream paths are candidates for exploration, never assessed impacts.
 export function potentialPaths(data, revision, depth = 2) {
   const model = snapshotAt(data, revision),
     diffs = diffAt(data, revision);
-  const roots = [
-    ...new Set(
-      diffs
-        .flatMap((diff) =>
-          diff.kind === "entity"
-            ? [diff.after?.key ?? diff.before?.key]
-            : diff.kind === "relationship"
-              ? [
-                  diff.after?.source ?? diff.before?.source,
-                  diff.after?.target ?? diff.before?.target,
-                ]
-              : [],
-        )
-        .filter((key) => model.records.has(key)),
-    ),
-  ];
+  const roots = changedRoots(model.records, diffs);
   const levels = new Map(roots.map((key) => [key, 0])),
     queue = [...roots];
   for (let i = 0; i < queue.length; i++) {

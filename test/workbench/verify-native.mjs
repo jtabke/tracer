@@ -1,5 +1,6 @@
 import { disposableOrigin } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
+import { expect } from "@playwright/test";
 import { launchVerifiedBrowser } from "./verification-browser.mjs";
 import { mkdirSync } from "node:fs";
 import { traceRows } from "./trace-table.mjs";
@@ -46,7 +47,7 @@ try {
   await page.locator(".node").first().waitFor();
   const start = await snapshot();
   await page.locator('[data-view="matrix"]').click();
-  assert.equal(await page.locator(".traceability-matrix").count(), 1);
+  await expect(page.locator(".traceability-matrix")).toBeVisible();
   await capture("workbench-traceability");
   await page.locator('[data-action="create-artifact"]').click();
   await page.locator("[data-cell-details]").click();
@@ -68,7 +69,7 @@ try {
   await page.locator('[data-trace-relation="1"]').selectOption("verified_by");
   await page.locator('[data-trace-target="1"]').selectOption("verification_protocol");
   await page.locator("#trace-column-count").selectOption("2");
-  assert.equal(await page.locator(".traceability-matrix th").count(), 3);
+  await expect(page.locator(".traceability-matrix th")).toHaveCount(3);
   await page.locator('[data-grid-col="1"] [data-cell-add]').click();
   await page.locator('#matrix-cell-form [name="query"]').fill("OUT-01");
   await page.locator('[data-picker-key="OUT-01"]').click();
@@ -82,10 +83,10 @@ try {
   const relation = linked.relationships.find((link) => link.source === entity.id);
   assert.equal(relation.type, "realized_by");
   assert.equal(linked.projectRevision, start.projectRevision + 2);
-  assert.equal(await page.locator(`[data-matrix-edge="${relation.id}"]`).count(), 1);
+  await expect(page.locator(`[data-matrix-edge="${relation.id}"]`)).toHaveCount(1);
   await capture("workbench-matrix-linked");
   await page.locator('[data-view="graph"]').click();
-  assert.equal(await page.locator(".relationship-inspector").count(), 1);
+  await expect(page.locator(".relationship-inspector")).toBeVisible();
   assert.ok(
     (await page.locator(".relationship-inspector").textContent()).includes(
       "Pressure acquisition design input",
@@ -237,7 +238,7 @@ try {
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.locator("#revision-range").fill(String(start.projectRevision));
   await page.locator("#revision-range").dispatchEvent("change");
-  assert.equal(await page.locator('[data-action="create-artifact"]').isDisabled(), true);
+  await expect(page.locator('[data-action="create-artifact"]')).toBeDisabled();
   // Expected API conflict is a browser console 409; no script/CSP failures allowed.
   assert.deepEqual(
     errors.filter((error) => !error.includes("409") && !error.includes("net::ERR_FAILED")),

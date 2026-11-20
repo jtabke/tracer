@@ -78,11 +78,10 @@ approved migration or rewrite backlog:
 
 1. **Workspace refresh publication/adoption ordering.**
    `ui/workbench/app.js:refreshAssessmentWorkspace` checks mutation authority before
-   awaiting `native.load()`, without rechecking it before adoption. The loader
-   publishes `savedViews`/`projectSnapshot` globals and checks the final native
-   revision before loading views. Reproduce deferred A/B completion and a mutation
-   starting during refresh; qualify generation/authority checks at publication and
-   adoption together. Do not patch just one boundary and claim the race resolved.
+   awaiting the reload, without rechecking it before adoption. The bounded loader
+   now checks the native clock and its request generation after reading both the
+   window and saved views. That guards superseded loads, not a mutation starting
+   during refresh. Qualify mutation authority at publication and adoption together.
 2. **Restored latest context versus pinned investigations.**
    `ui/workbench/recovery.ts` can advance a formerly latest `revision` while retaining
    the old selected `event`. Its existing tests also retain pinned investigation

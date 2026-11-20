@@ -71,6 +71,10 @@ GET query parameters below mark required values with `*`. Encodings: text, canon
 | GET | `/api/verification-model` | `entityId`* (text), `version`* (integer), `field`* (text) |
 | GET | `/api/work` | `after` (text), `limit` (integer), `type` (text), `key` (text), `search` (text), `field` (text), `value` (text), `without` (text), `targetType` (text) |
 | GET | `/api/working-context` | `query`* (json) |
+| GET | `/api/workspace-clock` | — |
+| GET | `/api/workspace-event` | `head`* (integer), `revision`* (integer), `subject` (text), `before` (integer), `limit` (integer) |
+| GET | `/api/workspace-page` | `revision`* (integer), `kind`* (text), `type` (text), `after` (text) |
+| GET | `/api/workspace-window` | `keys` (json), `ids` (csv) |
 | POST | `/api/baselines` | `id`, `name`, `expectedProjectRevision`, `projectRevision` |
 | POST | `/api/change-assessments/close` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `reason` |
 | POST | `/api/change-assessments/disposition` | `commandId`, `assessmentId`, `openingCommandId`, `expectedSchemaVersion`, `expectedProjectRevision`, `expectedEvidenceRevision`, `expectedAssessmentVersion`, `subject`, `dispositionId`, `membershipId`, `expectedDispositionVersion`, `expectedBasisDigest`, `title`, `decision`, `rationale`, `actions`, `support`, `additionalFields` |

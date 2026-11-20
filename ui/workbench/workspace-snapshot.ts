@@ -9,7 +9,11 @@ import type { ProjectSnapshot } from "../../src/core/project-snapshot.ts";
 import { statementText } from "../statement-text.ts";
 
 export type WorkspaceEntity = Entity & { key: string; title: string; statement: string };
-export type WorkspaceRelationship = Relationship & { scope: string };
+export type WorkspaceRelationship = Relationship & {
+  scope: string;
+  sourceId?: string;
+  targetId?: string;
+};
 type RevisionMetadata = Omit<Revision, "kind" | "snapshot">;
 export type WorkspaceRevision = RevisionMetadata &
   (
@@ -24,28 +28,26 @@ export function projectWorkspace(
   revisions: Revision[],
   changesets: Changeset[],
   preferredRoot?: string,
+  preset?: { keys: string[] },
 ) {
   const names = new Map(snapshot.entities.map((entity) => [entity.id, entity.key ?? entity.id]));
-  // Deleted endpoints still need readable identities in historical relationship snapshots.
-  for (const revision of revisions)
-    if (revision.kind === "entity" && revision.snapshot) {
-      const entity = revision.snapshot as Entity;
-      names.set(entity.id, entity.key ?? entity.id);
-    }
+  const historicalNames = new Map(names);
   const entity = (value: Entity) => ({
     ...value,
     key: value.key ?? value.id,
     title: String(value.fields.title ?? value.resource?.label ?? value.key ?? value.id),
     statement: statementText(value),
   });
-  const link = (value: Relationship) => ({
+  const link = (value: Relationship, labels: Map<string, string>): WorkspaceRelationship => ({
     ...value,
-    source: names.get(value.source) ?? value.source,
-    target: names.get(value.target) ?? value.target,
+    sourceId: value.source,
+    targetId: value.target,
+    source: labels.get(value.source) ?? value.source,
+    target: labels.get(value.target) ?? value.target,
     scope: String(value.fields.scope ?? ""),
   });
-  const relationships = snapshot.relationships.map(link);
-  const { root, keys } = initialTrace(snapshot.entities, relationships, preferredRoot);
+  const relationships = snapshot.relationships.map((value) => link(value, names));
+  const { root, keys } = initialTrace(snapshot.entities, relationships, preferredRoot, preset);
   return {
     schema: snapshot.schema ?? { version: 0, entityTypes: {}, relationshipTypes: {} },
     snapshotReference: { revision: snapshot.projectRevision, historicalSnapshotsLoaded: true },
@@ -56,6 +58,8 @@ export function projectWorkspace(
       .map((entry): WorkspaceRevision => {
         switch (entry.kind) {
           case "entity":
+            if (entry.snapshot)
+              historicalNames.set(entry.id, (entry.snapshot as Entity).key ?? entry.id);
             return {
               ...entry,
               kind: "entity",
@@ -65,7 +69,9 @@ export function projectWorkspace(
             return {
               ...entry,
               kind: "relationship",
-              snapshot: entry.snapshot ? link(entry.snapshot as Relationship) : null,
+              snapshot: entry.snapshot
+                ? link(entry.snapshot as Relationship, historicalNames)
+                : null,
             };
           case "schema":
             return { ...entry, kind: "schema", snapshot: entry.snapshot as SchemaObject | null };
@@ -73,6 +79,7 @@ export function projectWorkspace(
       }),
     changesets: [...changesets].sort((a, b) => a.projectRevision - b.projectRevision),
     trace: {
+      ...(preset && keys[0] === preset.keys[0] ? { preset: true } : {}),
       root,
       keys,
       links: relationships.filter(
@@ -86,16 +93,13 @@ function initialTrace(
   entities: Entity[],
   relationships: { source: string; target: string }[],
   preferredRoot?: string,
+  preset?: { keys: string[] },
 ) {
   const entityKeys = entities.map((value) => value.key ?? value.id);
-  if (entityKeys.includes("PRS-01"))
-    return {
-      root: "PRS-01",
-      keys: ["PRS-01", "SYS-03", "SYS-04", "SYS-09", "SYS-10", "VER-03"].filter((key) =>
-        entityKeys.includes(key),
-      ),
-    };
-  const root = preferredRoot ?? entityKeys[0] ?? "";
+  const selected = preset?.keys.filter((key) => entityKeys.includes(key));
+  if (selected?.length) return { root: selected[0], keys: selected };
+  const root =
+    preferredRoot && entityKeys.includes(preferredRoot) ? preferredRoot : (entityKeys[0] ?? "");
   const keys = root ? [root] : [];
   for (let index = 0; index < keys.length && keys.length < 8; index++) {
     const neighbors = relationships.flatMap((value) => {

@@ -1,30 +1,49 @@
 import { createPortal } from "react-dom";
-import { VerificationWorkspace } from "./verifications/workspace.tsx";
 import { VerificationPage } from "./verifications/page.tsx";
 import type {
   VerificationReturnContext,
   VerificationSubjectRequest,
 } from "./verifications/subject.ts";
-import { AssessmentWorkspace } from "./assessments/workspace.tsx";
-import { ReferenceWorkspace } from "./references/workspace.tsx";
 import type { InitialView } from "../src/core/presentation.ts";
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useEffectEvent, useRef, useState } from "react";
 import type { Entity, Schema, SchemaObject } from "../src/core/model.ts";
-import { ConfigurationWorkspace } from "./configurations/workspace.tsx";
 import { useConfigurationHandoff } from "./configurations/use-handoff.ts";
-import { CsvImport } from "./csv-import.tsx";
-import { ProjectExport } from "./project-export.tsx";
-import { NextWork } from "./next-work.tsx";
-import { DocumentationView } from "./documentation.tsx";
 import type { Editing } from "./editing.ts";
-import { EvidenceView } from "./evidence/workspace.tsx";
 import { FieldControl, fieldsFrom } from "./fields.tsx";
-import { SchemaEditor } from "./schema-editor.tsx";
 import "./style.css";
 import "./model-page.css";
 import { NativeTypeOptions } from "./type-options.tsx";
-import { WorkItem } from "./records/details.tsx";
 import { ProjectTaskNavigation } from "./project-task-navigation.tsx";
+
+const VerificationWorkspace = lazy(() =>
+  import("./verifications/workspace.tsx").then((m) => ({ default: m.VerificationWorkspace })),
+);
+const AssessmentWorkspace = lazy(() =>
+  import("./assessments/workspace.tsx").then((m) => ({ default: m.AssessmentWorkspace })),
+);
+const ReferenceWorkspace = lazy(() =>
+  import("./references/workspace.tsx").then((m) => ({ default: m.ReferenceWorkspace })),
+);
+const ConfigurationWorkspace = lazy(() =>
+  import("./configurations/workspace.tsx").then((m) => ({ default: m.ConfigurationWorkspace })),
+);
+const CsvImport = lazy(() => import("./csv-import.tsx").then((m) => ({ default: m.CsvImport })));
+const ProjectExport = lazy(() =>
+  import("./project-export.tsx").then((m) => ({ default: m.ProjectExport })),
+);
+const NextWork = lazy(() => import("./next-work.tsx").then((m) => ({ default: m.NextWork })));
+const DocumentationView = lazy(() =>
+  import("./documentation.tsx").then((m) => ({ default: m.DocumentationView })),
+);
+const EvidenceView = lazy(() =>
+  import("./evidence/workspace.tsx").then((m) => ({ default: m.EvidenceView })),
+);
+const SchemaEditor = lazy(() =>
+  import("./schema-editor.tsx").then((m) => ({ default: m.SchemaEditor })),
+);
+const WorkItem = lazy(() => import("./records/details.tsx").then((m) => ({ default: m.WorkItem })));
+
+const loading = <p role="status">Loading task…</p>;
 
 export type NativeTask =
   | "references"
@@ -197,7 +216,7 @@ export function NativeTasks({
           origin={verificationOrigin}
           error={editing.error}
           onClose={onClose}
-          render={panels.verification}
+          render={() => <Suspense fallback={loading}>{panels.verification()}</Suspense>}
         />
       )}
       {verificationTarget && (
@@ -209,7 +228,7 @@ export function NativeTasks({
           origin={verificationOrigin}
           error={editing.error}
           onClose={onClose}
-          render={panels.assessments}
+          render={() => <Suspense fallback={loading}>{panels.assessments()}</Suspense>}
         />
       )}
       <ModelPage
@@ -217,7 +236,7 @@ export function NativeTasks({
         active={task === "schema"}
         visited={visited.includes("schema")}
         error={editing.error}
-        render={panels.schema}
+        render={() => <Suspense fallback={loading}>{panels.schema()}</Suspense>}
         onClose={onClose}
         navigation={
           onTask && <ProjectTaskNavigation task="schema" hasEntity={!!entity} onTask={onTask} />
@@ -262,7 +281,7 @@ export function NativeTasks({
             )
             .map((name) => (
               <div key={name} hidden={task !== name}>
-                {panels[name]()}
+                <Suspense fallback={loading}>{panels[name]()}</Suspense>
               </div>
             ))}
         </div>

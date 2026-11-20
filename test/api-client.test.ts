@@ -216,6 +216,10 @@ test("every read endpoint has a paired query codec", () => {
     "/api/project-export": {},
     "/api/projects": {},
     "/api/project-snapshot": {},
+    "/api/workspace-clock": {},
+    "/api/workspace-window": { keys: ["A,B"], ids: ["id"] },
+    "/api/workspace-page": { revision: 2, kind: "entity", type: "sample" },
+    "/api/workspace-event": { head: 3, revision: 2, subject: "id", limit: 30 },
     "/api/working-context": { focusId: "focus", recipe: { routes: [] }, receipts: { limit: 2 } },
     "/api/impact": {
       baselineId: "baseline",

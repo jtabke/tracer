@@ -7,7 +7,11 @@ import { referenceContext } from "./reference-query.ts";
 import { createReference, checkResourceIdentity } from "./reference-command.ts";
 import { changesetLimits } from "../core/command-limits.ts";
 import { changesetCommandId, changesetIntent } from "./changeset-command.ts";
-import { validateNativeEntity, validateNativeRelationship } from "./native-validation.ts";
+import {
+  validateNativeEntity,
+  validateNativeRelationship,
+  validateSchemaPopulation,
+} from "./native-validation.ts";
 import { previewSchema } from "./schema-preview.ts";
 import type { SchemaPreviewInput } from "../core/schema-preview.ts";
 import { captureCommand } from "./native-command.ts";
@@ -25,6 +29,14 @@ import type {
   ChangesetResult,
 } from "./commands.ts";
 import type { EntityQuery, RelationshipQuery, WorkingSetQuery } from "../core/model.ts";
+import {
+  workspaceWindow,
+  workspacePage,
+  workspaceEvent,
+  type WindowQuery,
+  type WorkspacePage,
+  type EventQuery,
+} from "./workspace-reads.ts";
 import { projectSnapshot } from "./project-snapshot.ts";
 import { projectExport } from "./project-export.ts";
 import { nextWork } from "./next-work.ts";
@@ -179,10 +191,7 @@ export class Tracer {
         kind: "schema",
         id: "project",
       });
-      for (const entity of await nativeObjects(tx, "entity"))
-        validateNativeEntity(schema, entity as Entity);
-      for (const link of await nativeObjects(tx, "relationship"))
-        await validateNativeRelationship(tx, schema, link as Relationship);
+      await validateSchemaPopulation(tx, schema);
       const result: SchemaObject = {
         entityTypes: schema.entityTypes,
         relationshipTypes: schema.relationshipTypes,
@@ -686,6 +695,21 @@ export class Tracer {
   }
   getConnections(query: ConnectionsQuery): Promise<Connections> {
     return this.queries.getConnections(query);
+  }
+  workspaceClock() {
+    return this.repository.transaction((tx) => tx.headRevision(), { readOnly: true });
+  }
+  workspaceWindow(input: WindowQuery = {}) {
+    const query = snapshotInput(input);
+    return this.repository.transaction((tx) => workspaceWindow(tx, query), { readOnly: true });
+  }
+  workspacePage(input: WorkspacePage) {
+    const query = snapshotInput(input);
+    return this.repository.transaction((tx) => workspacePage(tx, query), { readOnly: true });
+  }
+  workspaceEvent(input: EventQuery) {
+    const query = snapshotInput(input);
+    return this.repository.transaction((tx) => workspaceEvent(tx, query), { readOnly: true });
   }
   getProjectSnapshot() {
     return this.repository.transaction(projectSnapshot, { readOnly: true });

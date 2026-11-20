@@ -34,7 +34,7 @@ export function mountWorkspaceSearch({ dialog, records, commands, escape: e, sel
     const matches = records
       .map((record) => ({ record, rank: matchRank(record, query) }))
       .filter(({ rank }) => rank >= 0)
-      .sort((a, b) => a.rank - b.rank);
+      .sort((a, b) => a.rank - b.rank || a.record.key.localeCompare(b.record.key));
     const commandMatches = commands
       .map(([name], index) =>
         name.toLowerCase().includes(query)

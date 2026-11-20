@@ -50,14 +50,16 @@ test("graph replacement cancels delayed selection and detached handlers; blur en
   const selected = await page.locator('.node[aria-pressed="true"]').getAttribute("data-key");
   const old = await page.locator('.node[aria-pressed="false"]').first().elementHandle();
   const revision = (await app.tracer.getProjectSnapshot()).projectRevision;
-  // A resize replaces the canvas before the pointer single-click delay expires.
+  // Resize cancels the pointer single-click delay; changing perspective retires its bindings.
   await old!.evaluate((node) => {
     node.dispatchEvent(new MouseEvent("click", { detail: 1, bubbles: true }));
     window.dispatchEvent(new Event("resize"));
   });
   await page.clock.runFor(350);
-  expect(await old!.evaluate((node) => node.isConnected)).toBe(false);
   await expect(page.locator('.node[aria-pressed="true"]')).toHaveAttribute("data-key", selected!);
+  await page.locator('[data-view="matrix"]').click();
+  expect(await old!.evaluate((node) => node.isConnected)).toBe(false);
+  await page.locator('[data-view="graph"]').click();
   // Retained references to removed DOM cannot invoke selection or neighborhood actions.
   await old!.evaluate((node) => {
     node.dispatchEvent(new KeyboardEvent("keydown", { key: "e", bubbles: true }));
@@ -223,7 +225,7 @@ for (const width of [1440, 680, 390]) {
     await expect(dialog).not.toBeVisible();
     await expect(trigger).toBeFocused();
     await trigger.click();
-    // Resize replaces the opener. Dismissal must still return to a usable control.
+    // Dismissal after a resize must return to the same logical control.
     await page.setViewportSize({ width, height: 860 });
     await input.press("Escape");
     await expect(trigger).toBeFocused();
@@ -248,7 +250,9 @@ test("workspace controls discard detached listeners and resume one scope after p
   const oldSearch = await page.locator('[data-action="search"]').elementHandle();
   const oldDetail = await page.locator("#node-detail").elementHandle();
   const density = await page.locator("#node-detail").inputValue();
-  await page.setViewportSize({ width: 1441, height: 1000 });
+  // A resize keeps the shell; a perspective switch replaces the active header and controls.
+  await page.locator('[data-view="matrix"]').click();
+  await page.locator('[data-view="graph"]').click();
   await expect.poll(() => oldMatrix!.evaluate((element) => element.isConnected)).toBe(false);
   for (const button of [oldMatrix, oldSearch])
     await button!.evaluate((element) =>

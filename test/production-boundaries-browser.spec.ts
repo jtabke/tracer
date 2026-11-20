@@ -171,12 +171,12 @@ test("dense recorded connections and structured statements remain readable while
     await expect(inspector).toContainText(
       `Exact neighbor statement ${outsideGraph!.split("-")[1]}`,
     );
-    await page.route("**/api/project-snapshot", (route) => route.abort());
+    await page.route("**/api/workspace-window*", (route) => route.abort());
     await refreshNativeTask(page, "Workspace");
     await expect(page.getByText("Project state needs recovery", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Create record", exact: true })).toBeDisabled();
     expect(await f.tracer.exportProject()).toEqual(before);
-    await page.unroute("**/api/project-snapshot");
+    await page.unroute("**/api/workspace-window*");
     await refreshNativeTask(page, "Workspace");
     await expect(page.getByRole("button", { name: "Create record", exact: true })).toBeEnabled();
     await select(page, "ROOT");

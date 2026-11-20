@@ -86,7 +86,15 @@ for (const [domain, width] of [
       await title.evaluate((input) => (input as HTMLInputElement).setSelectionRange(4, 10));
       const beforeResize = await page.locator(".sidebar-shell").elementHandle();
       await page.setViewportSize({ width: width - 20, height: 900 });
-      await expect.poll(() => beforeResize!.evaluate((element) => element.isConnected)).toBe(false);
+      const afterResize = () =>
+        page.evaluate(
+          () =>
+            new Promise<void>((done) =>
+              requestAnimationFrame(() => requestAnimationFrame(() => done())),
+            ),
+        );
+      await afterResize();
+      expect(await beforeResize!.evaluate((element) => element.isConnected)).toBe(true);
       await expect(title).toBeFocused();
       await expect
         .poll(() =>
@@ -96,11 +104,9 @@ for (const [domain, width] of [
           ]),
         )
         .toEqual([4, 10]);
-      const beforeRestore = await page.locator(".sidebar-shell").elementHandle();
       await page.setViewportSize({ width, height: 900 });
-      await expect
-        .poll(() => beforeRestore!.evaluate((element) => element.isConnected))
-        .toBe(false);
+      await afterResize();
+      expect(await beforeResize!.evaluate((element) => element.isConnected)).toBe(true);
       await expect(title).toHaveValue("Retained full-page verification draft");
       await workspace.evaluate((element) => {
         element.scrollTop = element.scrollHeight / 2;

@@ -1,16 +1,16 @@
 import { canonical } from "../core/evidence.ts";
 import { snapshotInput } from "../core/input-snapshot.ts";
 import { TracerError, validateSchema } from "../core/model.ts";
-import type { Entity, Relationship, Schema } from "../core/model.ts";
+import type { Schema } from "../core/model.ts";
 import type {
   SchemaChange,
   SchemaPreviewInput,
   SchemaPreview,
   SchemaIssue,
 } from "../core/schema-preview.ts";
-import type { Repository, Transaction } from "./ports/repository.ts";
-import { nativeObjects, validatePageLimit, queryShape } from "./native-query-support.ts";
-import { validateNativeEntity, validateNativeRelationship } from "./native-validation.ts";
+import type { Repository } from "./ports/repository.ts";
+import { validatePageLimit, queryShape } from "./native-query-support.ts";
+import { validateSchemaPopulation } from "./native-validation.ts";
 import { expectVersion } from "./version-guard.ts";
 
 function changedGroup(
@@ -47,25 +47,6 @@ function appendIssue(result: SchemaPreview, issue: SchemaIssue, maximum: number)
   if (result.issues.length < maximum) result.issues.push(issue);
 }
 
-async function inspectObjects(
-  tx: Transaction,
-  schema: Schema,
-  result: SchemaPreview,
-  maximum: number,
-  kind: "entity" | "relationship",
-) {
-  const objects = await nativeObjects(tx, kind);
-  result.checked[kind === "entity" ? "entities" : "relationships"] = objects.length;
-  for (const value of objects) {
-    try {
-      if (kind === "entity") validateNativeEntity(schema, value as Entity);
-      else await validateNativeRelationship(tx, schema, value as Relationship);
-    } catch (error) {
-      appendIssue(result, validationIssue(error, kind, value.id), maximum);
-    }
-  }
-}
-
 export async function previewSchema(
   repository: Repository,
   input: SchemaPreviewInput,
@@ -89,8 +70,9 @@ export async function previewSchema(
         totalIssues: 0,
         truncated: false,
       };
-      await inspectObjects(tx, input.schema, result, input.limit ?? 100, "entity");
-      await inspectObjects(tx, input.schema, result, input.limit ?? 100, "relationship");
+      result.checked = await validateSchemaPopulation(tx, input.schema, (error, kind, id) => {
+        appendIssue(result, validationIssue(error, kind, id), input.limit ?? 100);
+      });
       result.valid = result.totalIssues === 0;
       result.truncated = result.totalIssues > result.issues.length;
       return result;

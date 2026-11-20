@@ -4,13 +4,13 @@
 
 [ui/main.tsx](../../../ui/main.tsx) opens [ui/workbench/app.js](../../../ui/workbench/app.js). Graph, Matrix and History share selected identities, revision, exact relationships and investigation scope. The retained Development map under [ui/map/](../../../ui/map/) is another presentation over the same native contracts, not an independent engineering model.
 
-`workspace-session.ts` owns loaded snapshots, derived head and revision caches. Adoption reasons distinguish confirmed saves, manual refresh and uncertain-save inspection. `workspace-navigation.ts` owns perspective/selection/revision transitions and draft capture order. Graph layout/input and Matrix geometry/input remain separate view owners; navigation does not reset a user's camera.
+The default graph opens from a transactionally consistent `/api/workspace-window` (a small project or a bounded neighborhood), not the entire project or its audit trail. A lightweight clock check guards publication. `workspace-reader.ts` loads broader revision-pinned pages for search, tasks and matrix columns, and requests history by native subject on demand. Stale or failed reads do not authorize writes. `workspace-session.ts` owns the installed view, derived head and revision caches. Selection and connection endpoints follow native IDs; displayed keys belong to the viewed revision. Adoption reasons distinguish confirmed saves, manual refresh and uncertain-save inspection. `workspace-navigation.ts` owns perspective/selection/revision transitions and draft capture order. Graph layout/input and Matrix geometry/input remain separate view owners; navigation does not reset a user's camera.
 
 ## Retained task pages and drafts
 
 `project-navigation.ts` projects one task catalog into the desktop sidebar and modal mobile drawer. Search remains available. Mobile navigation owns containment, dismissal, scrolling and focus restoration.
 
-`project-tools.tsx` and `NativeTasks` retain visited editors rather than constructing duplicate task state. Verification and Change assessments share the stable workspace portal/page infrastructure, with independent reading positions. Back to investigation restores the retained workspace; navigating between tasks retains in-session drafts. Model is a separate full-page owner with its existing draft and hash/history handling. Other tasks keep their existing surfaces.
+`project-tools.tsx` and `NativeTasks` retain visited editors rather than constructing duplicate task state. Verification, Change assessments and Model use the stable workspace page host, with independent reading positions. Back to investigation restores the retained workspace; navigating between tasks retains in-session drafts. Model keeps its own draft and hash/history handling. Other tasks keep their existing surfaces.
 
 Feature presentation lives under `ui/evidence/`, `ui/references/`, `ui/configurations/`, `ui/records/`, `ui/verifications/` and `ui/assessments/`; [UI ownership](../../../ui/README.md) distinguishes those owners from shared root controls. These directories do not introduce new state stores, transport owners or compatibility entry points. Native task mounting, captured guards and draft lifetime remain unchanged.
 
@@ -18,7 +18,7 @@ Controlled scopes are separate from proposals. Contextual entry is a request, no
 
 ## Bindings and boundaries
 
-`dom-bindings.ts` aborts direct listeners when replacing workbench DOM. Effects release subscriptions/listeners/frames on cleanup; caret/focus and scroll restore only to the appropriate retained surface. Transport identity is document/project-bound: switching databases reloads it, respects save locks and confirms discard when drafts exist.
+`workspace-surface.ts` retains the shell and separate Graph/Matrix hosts. The TypeScript graph and matrix renderers project the active view; trace traversal and cells share a link index for its snapshot. Task code loads on first use without discarding visited editor state. `dom-bindings.ts` aborts direct listeners when replacing workbench DOM. Effects release subscriptions/listeners/frames on cleanup; caret/focus and scroll restore only to the appropriate retained surface. Transport identity is document/project-bound: switching databases reloads it, respects save locks and confirms discard when drafts exist.
 
 `workspace.css` composes ordered styles using Atlas theme tokens. Production components cannot import fixtures or the test harness. Browser-local recovery excludes drafts/proposals and does not promise cross-client continuation.
 

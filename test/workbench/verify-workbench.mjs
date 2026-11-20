@@ -165,11 +165,11 @@ try {
   await page.locator("#relationship-scope-form textarea").press("Control+Enter");
   await page.waitForFunction(() => !document.querySelector("#relationship-scope-form"));
   await page.locator('[data-action="relationship-history"]').click();
-  assert.ok(
-    (await page.locator(".field-diff .after").allTextContents())
-      .join(" ")
-      .includes("Scope edited directly"),
-  );
+  await page
+    .locator(".field-diff .after")
+    .filter({ hasText: "Scope edited directly" })
+    .first()
+    .waitFor();
   // Scope quick edits use the same captured-version protection as the structured editor.
   await page.locator('[data-view="graph"]').click();
   await page.locator("[data-edit-relationship-scope]").click();

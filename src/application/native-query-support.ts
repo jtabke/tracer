@@ -13,19 +13,26 @@ export async function projectSchema(
     expectVersion(schema.version, expectedVersion, true, { kind: "schema", id: "project" });
   return schema;
 }
-/** Used only by whole-schema validation, cascade deletion and bounded traversal owners. */
+export async function* nativePages(
+  tx: Transaction,
+  kind: "entity" | "relationship",
+  query: ObjectQuery = {},
+) {
+  let after: string | undefined;
+  do {
+    const page = await tx.query(kind, { ...query, after, limit: 1000 });
+    yield page.items;
+    after = page.nextAfter;
+  } while (after !== undefined);
+}
+
 export async function nativeObjects(
   tx: Transaction,
   kind: "entity" | "relationship",
   query: ObjectQuery = {},
 ) {
   const items: Stored[] = [];
-  let after: string | undefined;
-  do {
-    const page = await tx.query(kind, { ...query, after, limit: 1000 });
-    items.push(...page.items);
-    after = page.nextAfter;
-  } while (after !== undefined);
+  for await (const page of nativePages(tx, kind, query)) items.push(...page);
   return items;
 }
 export function queryShape(

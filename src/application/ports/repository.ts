@@ -113,7 +113,7 @@ export interface Transaction {
   queryAt(
     kind: "entity" | "relationship",
     revision: number,
-    query: { after?: string; limit?: number },
+    query: { after?: string; limit?: number; type?: string },
   ): Promise<Page<Stored>>;
   getConfiguration(id: string): Promise<Configuration | undefined>;
   configurations(query: EvidenceQuery): Promise<Page<Configuration>>;
@@ -140,6 +140,11 @@ export interface Transaction {
     revision: number,
   ): Promise<StoredByKind[K] | undefined>;
   incidentAt(id: string, revision: number, limit: number): Promise<Page<Stored>>;
+  /** Native creation order, independent of opaque IDs; an update retains its original position. */
+  orderedRelationships(
+    at: number | undefined,
+    query: { after?: string; type?: string; limit: number },
+  ): Promise<Page<StoredByKind["relationship"]>>;
   entityPredecessor(id: string, type: string): Promise<string | undefined>;
   query(kind: "entity" | "relationship", query: ObjectQuery): Promise<Page<Stored>>;
   workingSet(query: ObjectQuery): Promise<{
@@ -165,7 +170,9 @@ export interface Transaction {
   beginChangeset(id: string, schemaVersion: number, provenance: Provenance): Promise<Changeset>;
   save(kind: Kind, object: Stored, expectedVersion: number): Promise<void>;
   remove(kind: "entity" | "relationship", id: string, expectedVersion: number): Promise<void>;
-  history(query: HistoryQuery): Promise<Page<Revision>>;
+  history(query: HistoryQuery & { atRevision?: number }): Promise<Page<Revision>>;
+  /** One representative native change per commit, newest first, optionally scoped to a stable object and its incident link identities. */
+  changeFeed(before: number, limit: number, subject?: string): Promise<Revision[]>;
   changesets(afterRevision: number, limit: number): Promise<Changeset[]>;
 }
 export interface Repository {

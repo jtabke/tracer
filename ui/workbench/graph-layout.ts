@@ -27,7 +27,7 @@ type Options = {
   state: GraphLayoutState;
   app: HTMLElement;
   native: boolean;
-  trace(): { root: string; keys: string[] };
+  trace(): { root: string; keys: string[]; preset?: boolean };
   links(): GraphLink[];
   visibleKeys(): string[];
   visibleLinks(): GraphLink[];
@@ -41,7 +41,8 @@ export function createGraphLayout(options: Options) {
     return state.scene;
   }
   function initialLayout(width: number, height: number) {
-    if (!options.trace().keys.includes("PRS-01")) {
+    const trace = options.trace();
+    if (!trace.preset || trace.keys.length < 3) {
       const levels = new Map<string, number>([[options.trace().root, 0]]);
       for (let pass = 0; pass < 4; pass++)
         for (const link of visibleLinks())
@@ -50,15 +51,18 @@ export function createGraphLayout(options: Options) {
       state.layout = pathLayout({ keys: visibleKeys(), levels }, width, height);
       return;
     }
-    const base = new Map([
-      ["PRS-01", { x: width * 0.18, y: height * 0.46 }],
-      ["SYS-03", { x: width * 0.51, y: height * 0.23 }],
-      ["SYS-04", { x: width * 0.51, y: height * 0.41 }],
-      ["SYS-09", { x: width * 0.51, y: height * 0.59 }],
-      ["SYS-10", { x: width * 0.51, y: height * 0.77 }],
-      ["VER-03", { x: width * 0.84, y: height * 0.46 }],
+    const [root, ...rest] = trace.keys;
+    const last = rest.pop()!;
+    state.layout = new Map([
+      [root, { x: width * 0.18, y: height * 0.46 }],
+      [last, { x: width * 0.84, y: height * 0.46 }],
     ]);
-    for (const [key, point] of base) state.layout.set(key, point);
+    rest.forEach((key, i) =>
+      state.layout.set(key, {
+        x: width * 0.51,
+        y: height * (rest.length === 1 ? 0.46 : 0.23 + (0.54 * i) / (rest.length - 1)),
+      }),
+    );
   }
   function canvasViewport(canvas: HTMLElement = app.querySelector<HTMLElement>(".canvas")!) {
     const bounds = canvas.getBoundingClientRect();

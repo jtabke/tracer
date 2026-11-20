@@ -14,6 +14,7 @@ import type {
   HistoryQuery,
   Page,
 } from "../core/model.ts";
+import { orderedRelationships } from "./workspace-relationships.ts";
 import { workspaceViewTransaction } from "./workspace-views.ts";
 import { configurationTransaction } from "./configurations.ts";
 import { baselineTransaction } from "./baselines.ts";
@@ -264,23 +265,33 @@ export class SQLiteRepository implements Repository {
             .get(kind, id, revision);
           return row?.snapshot_json == null ? undefined : JSON.parse(String(row.snapshot_json));
         },
+        orderedRelationships: async (at, query) => {
+          check();
+          return orderedRelationships(this.db, at, query);
+        },
         incidentAt: async (id, revision, limit) => {
           check();
           const rows = this.db
             .prepare(
               `
-            SELECT r.object_id, r.snapshot_json FROM object_revisions r
+            WITH candidates AS MATERIALIZED (
+              SELECT rowid AS rid FROM object_revisions INDEXED BY revision_source
+              WHERE kind='relationship' AND json_extract(snapshot_json,'$.source')=?
+              UNION
+              SELECT rowid AS rid FROM object_revisions INDEXED BY revision_target
+              WHERE kind='relationship' AND json_extract(snapshot_json,'$.target')=?
+            )
+            SELECT r.object_id, r.snapshot_json FROM candidates
+            CROSS JOIN object_revisions r ON r.rowid=candidates.rid
             JOIN changesets c ON c.id=r.changeset_id
-            WHERE r.kind='relationship' AND c.project_revision<=?
-              AND (json_extract(r.snapshot_json,'$.source')=? OR json_extract(r.snapshot_json,'$.target')=?)
-              AND NOT EXISTS (
-                SELECT 1 FROM object_revisions newer JOIN changesets nc ON nc.id=newer.changeset_id
-                WHERE newer.object_id=r.object_id AND newer.version>r.version AND nc.project_revision<=?
-              )
+            WHERE c.project_revision<=? AND NOT EXISTS (
+              SELECT 1 FROM object_revisions newer JOIN changesets nc ON nc.id=newer.changeset_id
+              WHERE newer.object_id=r.object_id AND newer.version>r.version AND nc.project_revision<=?
+            )
             ORDER BY r.object_id COLLATE BINARY LIMIT ?
           `,
             )
-            .all(revision, id, id, revision, limit + 1);
+            .all(id, id, revision, revision, limit + 1);
           return page(
             rows.map((row) => JSON.parse(String(row.snapshot_json)) as Stored),
             limit,
@@ -486,10 +497,35 @@ export class SQLiteRepository implements Repository {
           this.db.prepare(`DELETE FROM ${tables[kind]} WHERE id=?`).run(id);
           append(kind, id, expectedVersion + 1, null);
         },
-        history: async (query: HistoryQuery) => {
+        changeFeed: async (before, limit, subject) => {
+          check();
+          const scoped = subject !== undefined;
+          const sql = scoped
+            ? `
+            WITH ids(id) AS (
+              SELECT ? UNION SELECT object_id FROM object_revisions WHERE kind='relationship' AND json_extract(snapshot_json,'$.source')=?
+              UNION SELECT object_id FROM object_revisions WHERE kind='relationship' AND json_extract(snapshot_json,'$.target')=?
+            )
+            SELECT r.*,c.project_revision,c.schema_version,MIN(r.ordinal) FROM ids
+            JOIN object_revisions r ON r.object_id=ids.id JOIN changesets c ON c.id=r.changeset_id
+            WHERE c.project_revision<? GROUP BY c.project_revision ORDER BY c.project_revision DESC LIMIT ?
+          `
+            : `SELECT r.*,c.project_revision,c.schema_version FROM changesets c
+            JOIN object_revisions r ON r.changeset_id=c.id AND r.ordinal=1
+            WHERE c.project_revision<? ORDER BY c.project_revision DESC LIMIT ?`;
+          return this.db
+            .prepare(sql)
+            .all(...(scoped ? [subject, subject, subject] : []), before, limit)
+            .map(decodeRevision);
+        },
+        history: async (query: HistoryQuery & { atRevision?: number }) => {
           check();
           const clauses = ["1=1"],
             params: SQLInputValue[] = [];
+          if (query.atRevision !== undefined) {
+            clauses.push("c.project_revision=?");
+            params.push(query.atRevision);
+          }
           if (query.kind !== undefined) {
             clauses.push("r.kind=?");
             params.push(query.kind);

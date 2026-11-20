@@ -193,12 +193,8 @@ try {
     current.relationships.some((link) => link.source === out1.id && link.target === candidate.id),
   );
   await page.locator('[data-view="history"]').click();
-  assert.ok(
-    (await page.locator(".field-diff .before").allTextContents()).join(" ").includes("OUT-01"),
-  );
-  assert.ok(
-    (await page.locator(".field-diff .after").allTextContents()).join(" ").includes("OUT-02"),
-  );
+  await page.locator(".field-diff .before").filter({ hasText: "OUT-01" }).first().waitFor();
+  await page.locator(".field-diff .after").filter({ hasText: "OUT-02" }).first().waitFor();
   await page.locator('[data-view="matrix"]').click();
   // Create an artifact and its typed relationship atomically, inside the verification cell.
   const beforeCreate = current.projectRevision;
@@ -248,11 +244,11 @@ try {
   assert.equal(await page.locator("#matrix-scope option:checked").textContent(), `${key} only`);
   assert.equal(await page.locator('[data-grid-artifact="' + verification + '"]').count(), 1);
   await page.locator('[data-view="history"]').click();
-  assert.ok(
-    (await page.locator(".field-diff .after").allTextContents())
-      .join(" ")
-      .includes("Verification scope recorded"),
-  );
+  await page
+    .locator(".field-diff .after")
+    .filter({ hasText: "Verification scope recorded" })
+    .first()
+    .waitFor();
   await page.locator('[data-view="matrix"]').click();
   // A stale in-cell edit must retain the proposed scope without overwriting the external edit.
   await page.locator(`[data-matrix-edge="${outgoing.id}"]`).dblclick();
@@ -292,8 +288,10 @@ try {
     (await snapshot()).relationships.find((link) => link.id === stored.id).fields.scope,
     "External saved scope",
   );
-  // Draft survives other lenses and requires confirmation before a database switch.
+  // The next read detects the competing head. Refresh adopts it without replaying or discarding the draft.
   await page.locator('[data-view="history"]').click();
+  await page.locator('[role="alert"] [data-action="refresh-project"]').click();
+  await page.locator(".history-workspace").waitFor();
   await page.locator('[data-view="matrix"]').click();
   assert.equal(
     await page.locator('#matrix-cell-form [name="scope"]').inputValue(),

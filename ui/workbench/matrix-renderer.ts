@@ -1,11 +1,12 @@
+import { traceIndex } from "./trace-table.ts";
 import { escapeHtml as esc, mono } from "./html.ts";
 import { inRange } from "./matrix-selection.ts";
 import { duplicateTarget } from "./matrix-proposal.ts";
 import { requiredField } from "./authoring-policy.ts";
 import { allowedTypes } from "./relationship-policy.ts";
-import { typeName } from "./presentation.ts";
+import { typeName, titleCase } from "./presentation.ts";
 import { ancestorSpans } from "./matrix-spans.ts";
-import type { WorkspaceEntity } from "./workspace-snapshot.ts";
+import type { WorkspaceEntity, WorkspaceRelationship } from "./workspace-snapshot.ts";
 import type {
   MatrixDraft,
   MatrixEditorContext,
@@ -138,6 +139,7 @@ function editor(context: MatrixRenderContext, draft: MatrixDraft) {
 }
 export function renderGrid(context: MatrixRenderContext) {
   const { state, projection, model, head, native } = context;
+  const linkIndex = traceIndex(model.records, model.links);
   const columns = state.matrixSteps.length + 1;
   const spans =
     state.matrixPresentation === "grouped"
@@ -174,15 +176,9 @@ export function renderGrid(context: MatrixRenderContext) {
                 ? items
                     .map((item) => {
                       const record = model.records.get(item.key)!,
-                        link = model.links.find((link) => link.id === item.linkId);
+                        link = item.linkId ? linkIndex.byId.get(item.linkId) : undefined;
                       const parentCount = link
-                        ? new Set(
-                            model.links
-                              .filter(
-                                (other) => other.target === item.key && other.type === link.type,
-                              )
-                              .map((other) => other.source),
-                          ).size
+                        ? (linkIndex.parents.get(record.id ?? item.key)?.get(link.type)?.size ?? 0)
                         : 0;
                       const info = link
                         ? `${link.source} — ${link.type.replaceAll("_", " ")} → ${link.target}\nDirect relationship ${link.id} · v${link.version}\nArtifacts v${model.records.get(link.source)?.version} → v${record.version}\n${link.scope}`
@@ -201,6 +197,50 @@ export function renderGrid(context: MatrixRenderContext) {
     .join("");
   return html;
 }
+export function renderRelationshipTable(
+  {
+    state,
+    model,
+    head,
+    data,
+  }: MatrixRenderContext & {
+    state: MatrixRenderContext["state"] & {
+      matrixScope: string;
+      filter: string;
+      pathLinkIds: ReadonlySet<string> | null;
+    };
+  },
+  keys: string[],
+  links: WorkspaceRelationship[],
+  header: string,
+  summary: () => string,
+) {
+  const e = esc;
+  const cells = new Map<string, Map<string, WorkspaceRelationship[]>>();
+  for (const link of links) {
+    const row = cells.get(link.source) ?? new Map<string, WorkspaceRelationship[]>();
+    const cell = row.get(link.target) ?? [];
+    cell.push(link);
+    row.set(link.target, cell);
+    cells.set(link.source, row);
+  }
+  const rows =
+    state.matrixScope === "selected" ? keys.filter((key) => key === state.selected) : keys;
+  return `<div class="matrix">${header}<div class="matrix-controls"><label>Scope <select id="matrix-scope"><option value="selected">${e(state.selected)} only</option><option value="neighborhood" ${state.matrixScope === "neighborhood" ? "selected" : ""}>Visible neighborhood</option></select></label><label>Relationships <select id="matrix-filter"><option value="all">All</option>${[...new Set(model.links.map((link) => link.type))].map((type) => `<option value="${e(type)}" ${state.filter === type ? "selected" : ""}>${e(titleCase(type))}</option>`).join("")}</select></label></div><table><thead><tr><th>Source → Target</th>${keys.map((key) => `<th>${mono(key)}</th>`).join("")}</tr></thead><tbody>${rows
+    .map(
+      (key) =>
+        `<tr class="${key === state.selected ? "selected" : ""}"><td><button data-related="${e(key)}">${mono(key)}${e(model.records.get(key)!.title)}</button></td>${keys
+          .map((target) => {
+            const cell = cells.get(key)?.get(target) ?? [];
+            return `<td class="mark ${cell.some((link) => link.id === state.edge) ? "selected-link" : ""}">${cell.length ? cell.map((link) => `<button data-matrix-edge="${e(link.id)}" title="${e(titleCase(link.type))}" aria-label="${e(key)} ${e(titleCase(link.type))} ${e(target)}">${link.type === "verified_by" ? "◇" : "●"}</button>`).join("") : state.revision === head && allowedTypes(data.schema, model.records.get(key)!, model.records.get(target)!).length ? `<button data-cell-source="${e(key)}" data-cell-target="${e(target)}" aria-label="Connect ${e(key)} to ${e(target)}" title="Create a typed relationship">＋</button>` : "·"}</td>`;
+          })
+          .join("")}</tr>`,
+    )
+    .join(
+      "",
+    )}</tbody></table>${!rows.length ? "<p>The selected artifact is not present at this revision.</p>" : ""}<p class="legend">● Recorded link &nbsp; ◇ Verification link &nbsp; · No recorded link</p>${state.pathLinkIds ? summary() : ""}</div>`;
+}
+
 export function renderGridEditor(context: MatrixRenderContext) {
   if (!context.state.matrixDraft) return "";
   return `<div id="matrix-cell-popover" popover="manual" role="dialog" aria-modal="false" aria-label="Matrix cell editor">${editor(context, context.state.matrixDraft)}</div>`;

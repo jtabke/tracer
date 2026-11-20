@@ -5,7 +5,13 @@ import type {
   projectWorkspace,
 } from "./workspace-snapshot.ts";
 
-type WorkspaceData = ReturnType<typeof projectWorkspace>;
+export type WorkspaceData = ReturnType<typeof projectWorkspace> & {
+  modelRevision?: number;
+  partial?: boolean;
+  projectWide?: boolean;
+  historyMore?: boolean;
+  feed?: ReturnType<typeof import("./workspace-history.ts").nativeFeed>;
+};
 type AdoptionReason = "saved" | "refreshed" | "pending-inspected" | "editor-inspected";
 type RevisionState = {
   revision: number;
@@ -30,6 +36,10 @@ export function createWorkspaceSession(initial: WorkspaceData) {
     get head() {
       return data.snapshotReference.revision;
     },
+    replace(next: WorkspaceData) {
+      data = next;
+      cache.clear();
+    },
     adopt(next: WorkspaceData, reason: AdoptionReason, state: RevisionState) {
       data = next;
       cache.clear();
@@ -43,6 +53,11 @@ export function createWorkspaceSession(initial: WorkspaceData) {
         snapshot = snapshotAt(data, state.revision);
         cache.set(state.revision, snapshot);
       }
+      if (
+        state.revision !== data.snapshotReference.revision ||
+        !(state.localEntities.size || state.localLinks.size || state.removed.size)
+      )
+        return snapshot;
       const records = new Map(snapshot.records);
       let links = snapshot.links;
       if (state.revision === data.snapshotReference.revision) {

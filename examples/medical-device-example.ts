@@ -916,6 +916,7 @@ connect("affects", "CHG-02", [
 ]);
 
 export const medicalDeviceExample: ExampleDefinition = {
+  workspace: { keys: ["PRS-01", "SYS-03", "SYS-04", "SYS-09", "SYS-10", "VER-03"] },
   title: "Aster Home BP — fictional design-and-development file",
   description:
     "Aster Home BP is a fictional home blood-pressure monitor. Follow user needs through product and subsystem requirements, design outputs, risk controls and captured verification/validation evidence. All targets and outcomes are invented; no clinical, usability or physical testing was performed.",

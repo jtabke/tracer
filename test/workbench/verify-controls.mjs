@@ -47,7 +47,7 @@ try {
   assert.equal(await page.locator("#inline-value").count(), 0);
   assert.equal(await page.locator(".context h1").textContent(), "Connections");
   await page.locator('[data-view="matrix"]').click();
-  assert.ok(await page.locator("tbody tr").count());
+  await page.locator("tbody tr").first().waitFor();
   const rootType = await page.locator("#trace-root-type").inputValue();
   assert.notEqual(rootType, "product_requirement");
   await page.locator("#database-picker").selectOption("default");

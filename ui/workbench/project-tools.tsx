@@ -18,6 +18,7 @@ import type {
 
 type Options = {
   changed(): Promise<void>;
+  prepare(): Promise<boolean>;
   current(): boolean;
   selected(): string;
   settled(): void;
@@ -48,10 +49,10 @@ export function createProjectTools(native: typeof Native, options: Options) {
   let open: ((task: NativeTask | null, request?: VerificationSubjectRequest) => void) | undefined;
   let opener: HTMLElement | null = null;
   let returnAction: string | null = null;
-  const show = (task: NativeTask, request?: VerificationSubjectRequest) => {
+  const show = async (task: NativeTask, request?: VerificationSubjectRequest) => {
     opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     returnAction = opener?.dataset.action ?? null;
-    open?.(task, request);
+    if (await options.prepare()) open?.(task, request);
   };
   const restoreFocus = () => {
     const replacement = returnAction
@@ -99,6 +100,8 @@ export function createProjectTools(native: typeof Native, options: Options) {
         projectRevision: native.projectSnapshot.projectRevision,
         sequence: ++sequence,
       }),
+    taskOpen: () =>
+      Boolean(pageOpen || host.querySelector(".native-task[open], .model-page:not([hidden])")),
     pageOpen: () => pageOpen,
     closePage: () => {
       if (pageOpen) open?.(null);
@@ -123,7 +126,8 @@ export function createProjectTools(native: typeof Native, options: Options) {
       pageHost.remove();
     },
     attachPage: (slot: Element | null) => {
-      slot?.append(pageHost);
+      if (!slot || pageHost.parentElement === slot) return;
+      slot.append(pageHost);
       const page = pageHost.querySelector<HTMLElement>(
         ".verification-page:not([hidden]), .model-page:not([hidden])",
       );
@@ -222,7 +226,7 @@ function ProjectTools({
     error,
     report: (failure) => setError(String(failure)),
     mutate: async (path, input) => {
-      if (busy) return undefined;
+      if (busy || !options.current()) return undefined;
       const result = await native.mutations.run(path, input);
       if (result === undefined) {
         const resultState = native.mutations.snapshot();

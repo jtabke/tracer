@@ -33,7 +33,13 @@ try {
     source: "../../examples/seed-realistic-project.ts",
     provenance:
       "Disposable fictional Aster export; fixture timestamps are not real engineering activity.",
-    ...projectWorkspace(snapshot, revisions, changesets),
+    ...projectWorkspace(
+      snapshot,
+      revisions,
+      changesets,
+      seeded.guide.tasks[0]?.root,
+      seeded.guide.workspace,
+    ),
   };
   writeFileSync(new URL("./data.json", import.meta.url), JSON.stringify(data, null, 2) + "\n");
   console.log(

@@ -34,6 +34,7 @@ export type InspectorRenderContext = {
   data(): {
     schema: SchemaObject;
     revisions: WorkspaceRevision[];
+    partial?: boolean;
     relationships: WorkspaceRelationship[];
   };
   panelMode(): string;
@@ -130,7 +131,7 @@ export function renderInspector(context: InspectorRenderContext): string {
         .filter(
           (entry) =>
             entry.kind === "entity" &&
-            entry.snapshot?.key === record.key &&
+            entry.id === record.id &&
             entry.projectRevision <= state.revision,
         )
         .slice(-2)
@@ -148,10 +149,10 @@ export function renderInspector(context: InspectorRenderContext): string {
         : `<h2 id="artifact-heading" tabindex="-1">${e(record.title)}</h2>${fieldContent("statement", record)}${supportsTextField(record, "acceptance") || record.fields.acceptance !== undefined ? `<div class="section-label">Acceptance criterion</div>${fieldContent("acceptance", record)}` : ""}`;
     }
     function renderRelationships() {
-      return `<section class="relationship-groups"><div class="inspector-section-heading"><h3>Direct connections <span>${links.length}</span></h3><button data-action="connect" ${historical ? "disabled" : ""} aria-label="Add relationship">＋</button></div>${[...groups].map(([label, items]) => `<section class="relationship-group"><h4>${e(label)} <span>${items.length}</span></h4>${items.map(({ link, key }) => `<div class="relationship-entry"><button class="connection-row" data-related="${e(key)}"><span>${mono(key)}<strong>${e(model.records.get(key)?.title ?? key)}</strong></span></button><button data-inspect-link="${e(link.id)}" aria-label="Inspect relationship ${e(link.source)} to ${e(link.target)}" title="Inspect relationship">↗</button></div>`).join("")}</section>`).join("")}</section>`;
+      return `<section class="relationship-groups"><div class="inspector-section-heading"><h3>Direct connections <span>${links.length}${data.partial ? "+" : ""}</span></h3>${data.partial ? '<button data-action="load-connections">Load complete connections</button>' : ""}<button data-action="connect" ${historical ? "disabled" : ""} aria-label="Add relationship">＋</button></div>${[...groups].map(([label, items]) => `<section class="relationship-group"><h4>${e(label)} <span>${items.length}</span></h4>${items.map(({ link, key }) => `<div class="relationship-entry"><button class="connection-row" data-related="${e(key)}"><span>${mono(key)}<strong>${e(model.records.get(key)?.title ?? key)}</strong></span></button><button data-inspect-link="${e(link.id)}" aria-label="Inspect relationship ${e(link.source)} to ${e(link.target)}" title="Inspect relationship">↗</button></div>`).join("")}</section>`).join("")}</section>`;
     }
     function renderReachableSection() {
-      return `<section class="reachable-trace"><div class="inspector-section-heading"><h3>Reachable in trace <span>${reachable.entries.length}${reachable.truncated ? "+" : ""}</span></h3></div><p class="trace-scope-note">Current matrix path · up to ${state.matrixSteps.length} steps</p>${reachable.entries.map((item) => `<button class="reachable-entry" data-trace-route="${e(JSON.stringify(item.links))}">${mono(item.key)}<strong>${e(model.records.get(item.key)?.title ?? item.key)}</strong><small>${item.keys.map(e).join(" → ")}</small></button>`).join("")}${!reachable.entries.length ? '<p class="trace-scope-note">No indirect matches in this configured path.</p>' : ""}${reachable.truncated ? '<p class="trace-scope-note">Bounded path view; narrow the configured trace.</p>' : ""}</section>`;
+      return `<section class="reachable-trace"><div class="inspector-section-heading"><h3>Reachable in trace <span>${reachable.entries.length}${reachable.truncated ? "+" : ""}</span></h3></div><p class="trace-scope-note">Current matrix path · up to ${state.matrixSteps.length} steps</p>${reachable.entries.map((item) => `<button class="reachable-entry" data-trace-route="${e(JSON.stringify(item.links))}">${mono(item.key)}<strong>${e(model.records.get(item.key)?.title ?? item.key)}</strong><small>${item.keys.map(e).join(" → ")}</small></button>`).join("")}${!reachable.entries.length ? `<p class="trace-scope-note">${data.partial ? "No indirect matches in the loaded neighborhood." : "No indirect matches in this configured path."}</p>` : ""}${reachable.truncated ? '<p class="trace-scope-note">Bounded path view; narrow the configured trace.</p>' : ""}</section>`;
     }
 
     const draft: TextDraft = state.drafts.get(record.key) ?? record,

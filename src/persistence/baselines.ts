@@ -41,6 +41,7 @@ export function baselineTransaction(
         SELECT r.object_id,r.snapshot_json FROM object_revisions r
         JOIN changesets c ON c.id=r.changeset_id
         WHERE r.kind=? AND c.project_revision<=? AND r.snapshot_json IS NOT NULL
+          ${query.type === undefined ? "" : "AND json_extract(r.snapshot_json,'$.type')=?"}
           AND (? IS NULL OR r.object_id>? COLLATE BINARY)
           AND NOT EXISTS (
             SELECT 1 FROM object_revisions newer JOIN changesets nc ON nc.id=newer.changeset_id
@@ -49,7 +50,15 @@ export function baselineTransaction(
         ORDER BY r.object_id COLLATE BINARY LIMIT ?
       `,
         )
-        .all(kind, revision, query.after ?? null, query.after ?? null, revision, limit + 1);
+        .all(
+          kind,
+          revision,
+          ...(query.type === undefined ? [] : [query.type]),
+          query.after ?? null,
+          query.after ?? null,
+          revision,
+          limit + 1,
+        );
       return jsonPage<Stored>(rows, limit, "snapshot_json", "object_id");
     },
   };

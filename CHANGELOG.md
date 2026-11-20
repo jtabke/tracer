@@ -17,7 +17,7 @@ No packaged release has been published. `0.1.0` identifies the current source pr
 ### Maintenance
 
 - Dialog close controls stay upper-right while scrolling; outside-click and Escape dismissal retain task drafts or confirm discarding transient edits, without bypassing pending-save guards.
-
+- The graph opens on a bounded neighborhood rather than downloading an entire project and its history. Record selections and connections follow their native identity through renames, including when an old identifier is reused. Matrix traces are indexed and task screens load on demand.
 - Private development exports/reports and historical experiments no longer belong in the public source tree.
 - The duplicate legacy UI is retired after migrating shared regression coverage to the shipped build; configuration and record UI code now follows feature ownership.
 - Corrected retained receipt review, exact configuration return, documentation scroll and structured statement integration behavior.

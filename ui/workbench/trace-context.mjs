@@ -1,4 +1,4 @@
-import { traceRows } from "./trace-table.mjs";
+import { traceRows } from "./trace-table.ts";
 export function reachableTrace(model, root, steps) {
   const projection = traceRows(model.records, model.links, [root], steps);
   const direct = new Set(

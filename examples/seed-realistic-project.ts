@@ -137,6 +137,7 @@ export async function seedRealisticProject(destination: string, domain: Realisti
         }),
     }));
     const manifest = {
+      ...(definition.workspace ? { workspace: definition.workspace } : {}),
       title: definition.title,
       description: definition.description,
       domain,
@@ -160,6 +161,13 @@ export async function seedRealisticProject(destination: string, domain: Realisti
     writeFileSync(join(paths.directory, "GUIDE.md"), guide(definition, tasks));
     return {
       ...paths,
+      guide: {
+        ...manifest,
+        tasks: tasks.map((task) => ({
+          ...task,
+          direction: task.direction ?? ("outgoing" as const),
+        })),
+      },
       domain,
       entities,
       relationships,

@@ -120,6 +120,59 @@ export const nativeReads = {
     }),
     handle: ({ tracer }) => tracer.exportProject(),
   }),
+  "/api/workspace-clock": read({
+    query: q.query({}),
+    response: integer(),
+    handle: ({ tracer }) => tracer.workspaceClock(),
+  }),
+  "/api/workspace-window": read({
+    query: q.query({
+      keys: q.optionalParam(q.jsonParam(array(text))),
+      ids: q.optionalParam(q.csv),
+    }),
+    response: object({
+      schema: nullable(schema),
+      projectRevision: integer(),
+      entities: array(entity),
+      relationships: array(relationship),
+      partial: boolean,
+      changesets: array(changeset),
+      recent: array(revision),
+    }),
+    handle: ({ tracer }, input) => tracer.workspaceWindow(input),
+  }),
+  "/api/workspace-page": read({
+    query: q.query({
+      revision: q.integerParam,
+      kind: q.choice("entity", "relationship"),
+      type: q.optionalParam(q.textParam),
+      after: q.optionalParam(q.textParam),
+    }),
+    response: object({
+      entities: array(entity),
+      relationships: array(relationship),
+      nextAfter: optional(text),
+    }),
+    handle: ({ tracer }, input) => tracer.workspacePage(input),
+  }),
+  "/api/workspace-event": read({
+    query: q.query({
+      head: q.integerParam,
+      revision: q.positive,
+      subject: q.optionalParam(q.textParam),
+      before: q.optionalParam(q.positive),
+      limit: q.optionalParam(q.positive),
+    }),
+    response: object({
+      change: changeset,
+      schema: nullable(schema),
+      feed: array(revision),
+      more: boolean,
+      entries: array(revision),
+      prior: array(revision),
+    }),
+    handle: ({ tracer }, input) => tracer.workspaceEvent(input),
+  }),
   "/api/project-snapshot": read({
     query: q.query({}, { empty: "Project snapshot accepts no filters" }),
     response: object({

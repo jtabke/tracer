@@ -15,23 +15,56 @@ type Snapshot = WorkspaceRevision["snapshot"];
 type FieldDiff = { key: string; before: Json | undefined; after: Json | undefined };
 const identity = (entry: WorkspaceRevision) => `${entry.kind}:${entry.id}`;
 
-export function snapshotAt(data: Pick<History, "revisions">, revision: number) {
+type Materialized = {
+  modelRevision?: number;
+  entities?: WorkspaceEntity[];
+  relationships?: WorkspaceRelationship[];
+};
+function replayVersion<T>(map: Map<string, T>, id: string, snapshot: T | null) {
+  if (snapshot) map.set(id, snapshot);
+  else map.delete(id);
+}
+export function snapshotAt(data: Pick<History, "revisions"> & Materialized, revision: number) {
+  if (data.modelRevision === revision && data.entities && data.relationships)
+    return {
+      records: new Map(data.entities.map((value) => [value.key, value])),
+      links: data.relationships,
+    };
   const records = new Map<string, WorkspaceEntity>();
   const links = new Map<string, WorkspaceRelationship>();
   for (const entry of data.revisions) {
     if (entry.projectRevision > revision) break;
-    if (entry.kind === "entity") {
-      if (entry.snapshot) records.set(entry.id, entry.snapshot);
-      else records.delete(entry.id);
-    } else if (entry.kind === "relationship") {
-      if (entry.snapshot) links.set(entry.id, entry.snapshot);
-      else links.delete(entry.id);
-    }
+    if (entry.kind === "entity") replayVersion(records, entry.id, entry.snapshot);
+    if (entry.kind === "relationship") replayVersion(links, entry.id, entry.snapshot);
   }
   return {
     records: new Map([...records.values()].map((record) => [record.key, record])),
-    links: [...links.values()],
+    links: [...links.values()].map((link) => {
+      if (!link.sourceId || !link.targetId) return link;
+      return {
+        ...link,
+        source: records.get(link.sourceId)?.key ?? link.sourceId,
+        target: records.get(link.targetId)?.key ?? link.targetId,
+      };
+    }),
   };
+}
+export function nativeFeed(revisions: import("../../src/core/model.ts").Revision[]) {
+  return revisions.map((entry) => {
+    const item = entry.snapshot;
+    const title =
+      item && "fields" in item
+        ? String(("key" in item && item.key) || item.fields.title || item.type)
+        : entry.kind === "schema"
+          ? "Project model"
+          : "Removed record";
+    return {
+      revision: entry.projectRevision,
+      title,
+      kind: entry.kind,
+      operation: item === null ? "Removed" : entry.version === 1 ? "Added" : "Modified",
+    };
+  });
 }
 function selectedHistoryEntry(entry: WorkspaceRevision, selected: string) {
   if (entry.kind === "entity") return entry.snapshot?.key === selected;

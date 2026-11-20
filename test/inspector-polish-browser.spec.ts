@@ -21,7 +21,7 @@ const test = base.extend<Fixture>({
     const fixture = await seedRealisticProject(join(directory, "project"), "medical");
     const repository = new SQLiteRepository(fixture.database);
     const tracer = new Tracer(repository);
-    const server = await startLocalServer(tracer, resolve("dist"), 0);
+    const server = await startLocalServer(tracer, resolve("dist"), 0, fixture.guide);
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     try {
@@ -283,7 +283,7 @@ test("saving one field retains the confirmed version when another actor edits be
   await selectArtifact(page, "PRS-01");
   await page.getByRole("button", { name: "Edit statement", exact: true }).click();
   let intervened = false;
-  await page.route("**/api/project-snapshot", async (route) => {
+  await page.route("**/api/workspace-window*", async (route) => {
     if (!intervened) {
       intervened = true;
       const current = await app.tracer.getEntity(app.entities["PRS-01"].id);
@@ -574,7 +574,7 @@ test("a confirmed save with a failed reload retains its proposal and blocks writ
     writes++;
     await route.continue();
   });
-  await page.route("**/api/project-snapshot", (route) => route.abort());
+  await page.route("**/api/workspace-window*", (route) => route.abort());
   await page.locator("#inline-value").press("Control+Enter");
   await expect(page.locator(".workspace-notice")).toContainText("Saved, but the refreshed project");
   await expect(page.locator("#inline-value")).toHaveValue(proposal);
@@ -582,7 +582,7 @@ test("a confirmed save with a failed reload retains its proposal and blocks writ
   expect(writes).toBe(1);
   expect((await app.tracer.getProjectSnapshot()).projectRevision).toBe(revision + 1);
   expect((await app.tracer.getEntity(app.entities["PRS-01"].id)).fields.statement).toBe(proposal);
-  await page.unroute("**/api/project-snapshot");
+  await page.unroute("**/api/workspace-window*");
   await expect(page.locator('[data-action="refresh-project"]')).toBeVisible();
   await page.locator('[data-action="refresh-project"]').click();
   await expect(page.locator('[data-apply-field="statement"]')).toBeEnabled();
@@ -622,14 +622,14 @@ for (const recovery of ["editor", "pending"] as const) {
       exact: true,
     });
     await expect(acknowledge).toBeVisible();
-    await page.route("**/api/project-snapshot", (route) => route.abort());
+    await page.route("**/api/workspace-window*", (route) => route.abort());
     await acknowledge.click();
     await expect(
       page.locator(recovery === "editor" ? ".workspace-notice" : "#announcement"),
     ).toContainText("Could not read the project");
     await expect(page.locator('[data-apply-field="statement"]')).toBeDisabled();
     await expect(page.locator("#inline-value")).toHaveValue(proposal);
-    await page.unroute("**/api/project-snapshot");
+    await page.unroute("**/api/workspace-window*");
     await acknowledge.click();
     if (recovery === "editor") {
       await expect(page.locator(".save-recovery")).toContainText("Project refreshed");
