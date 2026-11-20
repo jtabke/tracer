@@ -2,9 +2,8 @@ import assert from "node:assert/strict";
 import { wheelIntent } from "./canvas-input.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 import { launchVerifiedBrowser } from "./verification-browser.mjs";
-import { snapshotAt, diffAt, allowedTypes } from "./workspace-model.mjs";
+import { snapshotAt, diffAt, allowedTypes, relationshipLabel } from "./workspace-model.mjs";
 import {
-  relationshipLabel,
   historyFeed,
   focusedNeighborhood,
   connectedWork,

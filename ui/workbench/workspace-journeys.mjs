@@ -1,24 +1,6 @@
-import { MAX_VISIBLE, titleCase } from "./presentation.ts";
+import { MAX_VISIBLE } from "./presentation.ts";
 import { snapshotAt, diffAt } from "./workspace-history.ts";
 
-// Presentation labels do not change the canonical relationship's type or endpoints.
-export function relationshipLabel(type, outgoing) {
-  const labels = {
-    decomposes_into: ["Decomposes into", "Decomposed from"],
-    verified_by: ["Verified by", "Verification criteria for"],
-    validated_by: ["Validated by", "Validation criteria for"],
-    realized_by: ["Realized by", "Realizes"],
-    specified_by: ["Specified by", "Specifies"],
-    references: ["References", "Referenced by"],
-    depends_on: ["Depends on", "Required by"],
-    contains: ["Contains", "Contained in"],
-    executed_as: ["Executed as", "Execution of"],
-    examines_output: ["Examines output", "Examined by"],
-  };
-  return (
-    labels[type]?.[outgoing ? 0 : 1] ?? `${outgoing ? "Outgoing" : "Incoming"} · ${titleCase(type)}`
-  );
-}
 export function historyFeed(data, { scope = "selected", key, id, linkId } = {}) {
   const subject = id ?? data.entities?.find((record) => record.key === key)?.id;
   const relevantIds = new Set(

@@ -37,13 +37,13 @@ import { traceRows, groupedTraceRows } from "./trace-table.ts";
 import { createGridEditor } from "./matrix-editor.ts";
 import { renderGrid, renderGridEditor, renderRelationshipTable } from "./matrix-renderer.ts";
 import {
-  relationshipLabel,
   historyFeed,
   connectedWork,
   focusedNeighborhood,
   potentialPaths,
 } from "./workspace-journeys.mjs";
-import { MAX_VISIBLE, typeName, titleCase } from "./presentation.ts";
+import { MAX_VISIBLE, relationshipLabel, typeName, titleCase } from "./presentation.ts";
+import { renderHistoryPanel, renderTimeline } from "./history-renderer.ts";
 import { createWorkspaceIdentities } from "./workspace-identities.ts";
 import { createWorkspaceReader, viewIntent } from "./workspace-reader.ts";
 import { significantEvents, diffAt } from "./workspace-history.ts";
@@ -1020,7 +1020,7 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       backdrop: renderInspectorBackdrop(),
       view: renderWorkspacePerspective(),
       inspector: renderWorkspaceInspector(),
-      footer: `${state.notice ? `<div class="workspace-notice" role="status">${e(state.notice)}<button data-action="dismiss-notice" aria-label="Dismiss notification">×</button></div>` : ""}${renderPendingSaveBanner()}${renderReadRecovery()}${renderReloadAcknowledgment()}${timeline()}`,
+      footer: `${state.notice ? `<div class="workspace-notice" role="status">${e(state.notice)}<button data-action="dismiss-notice" aria-label="Dismiss notification">×</button></div>` : ""}${renderPendingSaveBanner()}${renderReadRecovery()}${renderReloadAcknowledgment()}${renderTimeline({ head: workspace.head, revision: state.revision, scope: state.timelineScope, events: timelineEvents() })}`,
     });
     bindRenderedSurface(restoreViewScroll);
   }
@@ -1251,18 +1251,6 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
       });
       if (clipped) action("frame");
     }
-  }
-  function diffMarkup(field) {
-    const before = typeof field.before === "string" ? field.before : JSON.stringify(field.before);
-    const after = typeof field.after === "string" ? field.after : JSON.stringify(field.after);
-    const parts = changedText(before, after);
-    const line = (kind, value, part, symbol) =>
-      value === undefined
-        ? ""
-        : `<p class="${kind}"><span>${symbol}</span>${e(part.prefix)}${part.change ? `<mark>${e(part.change)}</mark>` : ""}${e(part.suffix)}</p>`;
-    return (
-      line("before", field.before, parts.before, "−") + line("after", field.after, parts.after, "+")
-    );
   }
   function investigationContext() {
     const diff = diffAt(workspace.data, state.pathRevision).find(
@@ -1522,105 +1510,50 @@ export async function startWorkbench({ staticData, staticDatabases } = {}) {
     );
   }
   function history() {
-    function renderConnectedWorkSection() {
-      return work.length
-        ? `<section class="connected-work"><h3>Connected engineering work <span>${work.length}</span></h3><p>Connected artifacts, not assessed impacts.</p>${work
-            .map(
-              ({ record, relationships }) =>
-                `<button data-review-artifact="${e(record.key)}">${mono(record.key)}<span><strong>${e(record.title)}</strong><small>${e(
-                  relationships
-                    .map((link) =>
-                      relationshipLabel(
-                        link.type,
-                        changedArtifacts.some((diff) => diff.after?.key === link.source),
-                      ),
-                    )
-                    .join(" · "),
-                )}</small></span><span>↗</span></button>`,
-            )
-            .join("")}</section>`
-        : "";
-    }
-
-    function renderChangedFields() {
-      return diffs
-        .map(
-          (diff) =>
-            `<article><h3>${e(diff.after?.key ?? diff.before?.key ?? titleCase(diff.kind))}<span>${diff.before ? (diff.after ? "Modified" : "Removed") : "Added"}</span></h3>${diff.after?.source ? `<p>${mono(diff.after.source)} → ${e(titleCase(diff.after.type))} → ${mono(diff.after.target)}</p>` : ""}${diff.fields.map((field) => `<section class="field-diff"><h4>${e(titleCase(field.key))}</h4>${diffMarkup(field)}</section>`).join("")}</article>`,
-        )
-        .join("");
-    }
-
-    function renderChangeCount() {
-      return changedArtifacts.length
-        ? `${changedArtifacts.length} artifact${changedArtifacts.length === 1 ? "" : "s"} changed`
-        : changedLinks.length
-          ? `${changedLinks.length} relationship${changedLinks.length === 1 ? "" : "s"} changed`
-          : relevantChange
-            ? "Project model changed"
-            : `No change to this selection at r${state.event}`;
-    }
-
-    function renderChangesetButtons() {
-      return (
-        feed
-          .slice(0, state.historyLimit)
-          .map(
-            (event) =>
-              `<button data-event="${event.revision}" class="${state.event === event.revision ? "selected" : ""}" aria-pressed="${state.event === event.revision}">${mono(`r${event.revision}`)}<strong>${e(event.title)}</strong><span>${e(event.operation)} · ${event.kind === "relationship" ? "Relationship" : event.kind === "schema" ? "Model" : "Artifact"}</span></button>`,
-          )
-          .join("") || "<p>No native history for this local selection.</p>"
-      );
-    }
-
-    function renderChange() {
-      return workspace.data.changesets.find((item) => item.projectRevision === state.event);
-    }
-
-    const feed = relevantFeed(),
-      relevantChange = feed.some((item) => item.revision === state.event),
-      diffs = relevantChange ? diffAt(workspace.data, state.event) : [],
-      change = renderChange(),
-      work = relevantChange ? connectedWork(workspace.data, state.event) : [];
-    const changedArtifacts = diffs.filter((diff) => diff.kind === "entity"),
-      changedLinks = diffs.filter((diff) => diff.kind === "relationship");
-    const reason = relevantChange ? (change?.reason ?? "") : "";
-    const selectedLink =
-      model.links.find((link) => link.id === state.edge) ??
-      workspace.data.relationships.find((link) => link.id === state.edge);
-    function scopeLabel() {
-      if (!state.historySubject?.linkId) return state.historySubject?.key ?? state.selected;
+    const event = state.event,
+      feed = relevantFeed(),
+      subject = state.historySubject;
+    let label = subject?.key ?? state.selected;
+    if (subject?.linkId) {
       const link =
-        workspace.data.relationships.find((item) => item.id === state.historySubject.linkId) ??
-        selectedLink;
-      return `${link?.source ?? ""} → ${link?.target ?? ""}`;
+        workspace.data.relationships.find((item) => item.id === subject.linkId) ??
+        model.links.find((item) => item.id === state.edge) ??
+        workspace.data.relationships.find((item) => item.id === state.edge);
+      label = `${link?.source ?? ""} → ${link?.target ?? ""}`;
     }
-    const scope = scopeLabel();
-    if (!feed.length)
-      return `<section class="history-workspace"><p>No recorded revisions for this local selection.</p><p class="draft-note">Local edits are not saved history.</p><button data-action="graph">Back to graph</button></section>`;
-    return `<section class="history-workspace"><div class="history-scope"><span class="history-scope-label">${feed.length} changesets</span><label class="sr-only" for="event-filter">History scope</label><select id="event-filter"><option value="selected" ${state.timelineFilter === "selected" ? "selected" : ""}>${e(scope)} only</option><option value="project" ${state.timelineFilter === "project" ? "selected" : ""}>Project</option></select></div><div class="history-columns"><nav class="changeset-feed" aria-label="Changesets">${renderChangesetButtons()}${feed.length > state.historyLimit || workspace.data.historyMore ? '<button data-action="more-history">Show more</button>' : ""}</nav><div class="change-detail"><div class="change-heading"><h3>${renderChangeCount()}</h3></div><p class="change-reason">${e(reason)}</p>${renderChangedFields()}${renderConnectedWorkSection()}</div></div></section>`;
+    return renderHistoryPanel({
+      event,
+      feed,
+      filter: state.timelineFilter,
+      subject: label,
+      limit: state.historyLimit,
+      more: workspace.data.historyMore,
+      detail: feed.some((item) => item.revision === event)
+        ? {
+            reason: workspace.data.changesets.find((item) => item.projectRevision === event)
+              ?.reason,
+            diffs: diffAt(workspace.data, event),
+            work: connectedWork(workspace.data, event),
+          }
+        : undefined,
+    });
   }
-  function timeline() {
-    if (!workspace.head) return '<footer class="historybar">No saved changes yet</footer>';
-    const events =
-      native && state.timelineScope === "project"
+  function timelineEvents() {
+    if (!workspace.head) return [];
+    if (state.timelineScope === "project") {
+      return native
         ? workspace.data.changesets.map((change) => ({
             revision: change.projectRevision,
             title: change.reason ?? "Recorded changeset",
           }))
-        : native && workspace.data.feed
-          ? workspace.data.feed
-          : state.timelineScope === "project"
-            ? significantEvents(workspace.data)
-            : historyFeed(workspace.data, {
-                key: state.selected,
-                id: state.selectedId,
-                linkId: state.edge,
-              }).map((event) => ({
-                ...event,
-                title: event.title,
-              }));
-    return `<footer class="historybar continuous-history"><label class="sr-only" for="timeline-scope">Timeline scope</label><select id="timeline-scope"><option value="project">Project</option><option value="selected" ${state.timelineScope === "selected" ? "selected" : ""}>Selection</option></select><span class="timeline-scale">Revisions 1–${workspace.head}</span><div class="revision-axis"><div class="axis-ticks">${events.map((event) => `<button data-axis-event="${event.revision}" data-style="left:${((event.revision - 1) / (workspace.head - 1)) * 100}%" title="r${event.revision} · ${e(event.title)}" aria-label="Revision ${event.revision}: ${e(event.title)}"></button>`).join("")}</div><label class="sr-only" for="revision-range">Project revision</label><input id="revision-range" type="range" min="1" max="${workspace.head}" step="1" value="${state.revision}" aria-valuetext="Revision ${state.revision} of ${workspace.head}"></div><div class="revision-controls"><button data-action="previous-event" aria-label="Previous changeset">‹</button><span class="mono">r${state.revision}</span><button data-action="next-event" aria-label="Next changeset">›</button></div></footer>`;
+        : significantEvents(workspace.data);
+    }
+    if (native && workspace.data.feed) return workspace.data.feed;
+    return historyFeed(workspace.data, {
+      key: state.selected,
+      id: state.selectedId,
+      linkId: state.edge,
+    });
   }
   const workspaceActions = {
     "open-navigation": openNavigation,

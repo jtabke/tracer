@@ -18,7 +18,7 @@ Controlled scopes are separate from proposals. Contextual entry is a request, no
 
 ## Bindings and boundaries
 
-`workspace-surface.ts` retains the shell and separate Graph/Matrix hosts. The TypeScript graph and matrix renderers project the active view; trace traversal and cells share a link index for its snapshot. Task code loads on first use without discarding visited editor state. `dom-bindings.ts` aborts direct listeners when replacing workbench DOM. Effects release subscriptions/listeners/frames on cleanup; caret/focus and scroll restore only to the appropriate retained surface. Transport identity is document/project-bound: switching databases reloads it, respects save locks and confirms discard when drafts exist.
+`workspace-surface.ts` retains the shell and separate Graph/Matrix hosts. The Graph and Matrix renderers project the active view; trace traversal and cells share a link index for its snapshot. `history-renderer.ts` renders the scoped feed, change details and timeline from display data. It does not select a revision, fetch history or own drafts. Task code loads on first use without discarding visited editor state. `dom-bindings.ts` aborts direct listeners when replacing workbench DOM. Effects release subscriptions/listeners/frames on cleanup; caret/focus and scroll restore only to the appropriate retained surface. Transport identity is document/project-bound: switching databases reloads it, respects save locks and confirms discard when drafts exist.
 
 `workspace.css` composes ordered styles using Atlas theme tokens. Production components cannot import fixtures or the test harness. Browser-local recovery excludes drafts/proposals and does not promise cross-client continuation.
 
